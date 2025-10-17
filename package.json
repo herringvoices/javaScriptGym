@@ -10,11 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/runtime": "7.28.4",
+    "@codemirror/autocomplete": "6.19.0",
+    "@codemirror/lang-html": "6.4.11",
+    "@codemirror/lint": "6.9.0",
+    "@codemirror/matchbrackets": "0.19.4",
+    "@codemirror/view": "6.38.6",
     "@codesandbox/sandpack-react": "^2.18.2",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@mdx-js/react": "^3.1.0",
     "@stitches/core": "^1.2.8",
     "@stitches/react": "^1.2.8",
+    "@uiw/codemirror-theme-vscode": "^4.25.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-markdown": "^10.1.0",

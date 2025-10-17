@@ -167,4 +167,20 @@ User edits persist per challenge in `localStorage` under `playground:<challengeI
 
 * Add new endpoints: expand `src/runner/fetchMock.js`.
 * Add global seeds/chaos options when calling the adapter (`toSandpackFiles`).
+# Editor upgrades (Sandpack)
+
+We’ve upgraded Sandpack’s editor to feel closer to VS Code while keeping things light:
+
+- VS Code-like theme via `@uiw/codemirror-theme-vscode`
+- Smart editing: auto-close brackets and HTML tags, bracket matching, active-line highlight
+- Basic autocomplete plus optional custom completions for common snippets
+
+Where it’s wired:
+
+- `src/lib/editorExtensions.js` exports `getDefaultEditorExtensions()` which bundles theme + extensions
+- Used in both `ChallengePage.jsx` and `MiniSandpack.jsx` via the `extensions` prop on `SandpackCodeEditor`
+
+Notes:
+
+- This is still CodeMirror in Sandpack, not Monaco, so language-server IntelliSense is out of scope. If you need full VS Code features, consider replacing the editor with Monaco and bridging Sandpack files/state.
 # javaScriptGym

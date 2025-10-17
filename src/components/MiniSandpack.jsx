@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { sandpackDark } from "@codesandbox/sandpack-themes"; // theme object
+import { dracula } from "@codesandbox/sandpack-themes"; // theme object
 import {
   SandpackProvider,
   SandpackLayout,
@@ -9,6 +9,7 @@ import {
 } from "@codesandbox/sandpack-react";
 import { useSandpack } from "@codesandbox/sandpack-react";
 import { createSandpackSetup } from "../lib/sandpack";
+import { getDefaultEditorExtensions } from "../lib/editorExtensions";
 // Removed persistence hook as tabs/buttons were removed
 
 /**
@@ -97,7 +98,13 @@ export default function MiniSandpack({
       <SandpackLayout style={{ borderRadius: 0 }}>
         {/* Code Editor region */}
         <div className="w-full">
-          <SandpackCodeEditor showTabs showLineNumbers onChange={handleEditorChange} />
+          <SandpackCodeEditor
+            showTabs
+            showLineNumbers
+            onChange={handleEditorChange}
+            // Inject our VS Code-like CodeMirror extensions
+            extensions={getDefaultEditorExtensions()}
+          />
         </div>
         {/* Output panels always visible (console optional) */}
         <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
@@ -139,8 +146,8 @@ export default function MiniSandpack({
           Object.entries(setup.files).map(([path, spec]) => [path, spec.code])
         )}
         customSetup={{ entry: setup.customSetup.entry }}
-        // Apply a dark theme object (other imports available from sandpack-react or sandpack-themes)
-        theme={sandpackDark}
+  // Apply Dracula theme from Sandpack themes
+  theme={dracula}
         options={{
           externalResources: [],
           visibleFiles: setup.options.visibleFiles,

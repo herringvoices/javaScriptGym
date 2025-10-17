@@ -8,7 +8,7 @@ import {
   SandpackProvider,
   useSandpack,
 } from "@codesandbox/sandpack-react";
-import { sandpackDark } from "@codesandbox/sandpack-themes";
+import { dracula } from "@codesandbox/sandpack-themes";
 import { useNavigate, useParams } from "react-router-dom";
 import Markdown from "../components/Markdown";
 import StandardsBadges from "../components/StandardsBadges";
@@ -16,6 +16,7 @@ import challenges from "../data/challenges";
 import standards from "../data/standards";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
+import { getDefaultEditorExtensions } from "../lib/editorExtensions";
 import Modal from "../components/Modal";
 import Callout from "../components/Callout";
 import { loadMastered, saveMastered } from "../lib/mastery";
@@ -210,7 +211,7 @@ function ChallengeWorkspace({ challenge, navigate }) {
         template={sandpackSetup.template}
         files={sandpackSetup.files}
         customSetup={sandpackSetup.customSetup}
-        theme={sandpackDark}
+        theme={dracula}
         options={{
           ...sandpackSetup.options,
           showLineNumbers: true,
@@ -514,6 +515,7 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
             showLineNumbers
             showInlineErrors
             wrapContent
+            extensions={getDefaultEditorExtensions()}
             style={{ height: "100%" }}
             className={`flex-1 border-b border-slate-800 lg:border-b-0 ${showRightPanel ? "lg:border-r" : ""}`}
           />
