@@ -1,0 +1,185 @@
+/**
+ * @type {Record<string, import("../types").StandardMeta>}
+ */
+const standards = {
+  overview: {
+    id: "overview",
+    title: "How to use the handbook",
+    short: "Read this first when onboarding to the practice playground.",
+    // Content migrated to src/handbook/overview.mdx
+  },
+  "JS.PF.CON": {
+    id: "JS.PF.CON",
+    title: "Program Flow · Conditionals",
+    short: "Branch logic with if/else and switch statements.",
+    bodyMd: `### Why it matters\n\nConditionals unlock dynamic behavior. Use \`if/else\` when you have small sets of checks and grab \`switch\` when many cases share a subject.\n\n### Checklist\n\n- Compare values with \`===\`, \`>\`, and logical operators like \`&&\` or \`||\`.\n- Guard against falsy values and be explicit about default cases.\n- Prefer early returns over deeply nested ladders for clarity.\n\n### Debugging tips\n\nLog each branch condition, and double-check data types so coercion does not surprise you.`,
+  },
+  "JS.PF.ITR": {
+    id: "JS.PF.ITR",
+    title: "Program Flow · Iteration",
+    short: "Loop through data safely without off-by-one bugs.",
+    bodyMd: `### Why it matters\n\nLoops keep UI and data in sync. Reach for \`for..of\` to read arrays, \`for\` when you need indices, and array helpers for declarative transformations.\n\n### Checklist\n\n- Always validate the collection length before iterating.\n- Avoid mutating arrays while looping unless you understand the side effects.\n- Prefer extracting helpers for nested loops to keep intent clear.\n\n### Debugging tips\n\nReproduce infinite loops by logging the iterator. Use DevTools breakpoints on the loop line to observe index changes.`,
+  },
+  "JS.VDT.PRM": {
+    id: "JS.VDT.PRM",
+    title: "Variables & Data Types · Primitives",
+    short: "Store and evaluate primitive values with clarity.",
+    bodyMd: `### Essentials\n\n- Use \`const\` by default; switch to \`let\` when reassignment is required.\n- Prefer template literals for readable string output.\n- Know the truthiness of empty strings, \`0\`, \`null\`, and \`undefined\` to avoid surprise branches.\n\n### Common pitfalls\n\nWatch for implicit coercion when concatenating strings and numbers; cast intentionally with \`Number()\` or \`String()\`.`,
+  },
+  "JS.VDT.COL": {
+    id: "JS.VDT.COL",
+    title: "Variables & Data Types · Collections",
+    short: "Choose and manage objects and arrays for structured data.",
+    bodyMd: `### Key practices\n\n- Create and access objects to group related data with clear keys.\n- Create and access arrays to store ordered lists of values.\n- Work with arrays of objects to mirror structured API-style responses.\n- Pick the collection shape (object, array, hybrid) that best matches the use case.`,
+  },
+  "JS.VDT.MTH": {
+    id: "JS.VDT.MTH",
+    title: "Variables & Data Types · Methods & Properties",
+    short: "Leverage built-in helpers to shape strings, numbers, and objects.",
+    bodyMd: `### Key methods\n\n- Use string helpers like \`.length\`, \`.trim()\`, \`.toLowerCase()\`, \`.split()\`, and \`.replace()\`.\n- Parse and format numbers with \`Number()\`, \`parseInt()\`, \`parseFloat()\`, \`Number.isNaN()\`, and \`.toFixed()\`.\n- Shape objects using \`Object.keys()\`, \`Object.values()\`, and \`Object.entries()\` to inspect and transform data.`,
+  },
+  "JS.FN.BAS": {
+    id: "JS.FN.BAS",
+    title: "Functions · Basics",
+    short: "Write focused functions that accept inputs and return results.",
+    bodyMd: `### Habits\n\n- Name functions after intent, not implementation.\n- Keep side effects obvious—return values where possible.\n- Document parameter expectations near the function definition.\n- Combine small helpers for complex flows rather than writing a mega function.`,
+  },
+  "JS.FN.HOF": {
+    id: "JS.FN.HOF",
+    title: "Functions · Higher-Order Functions",
+    short: "Pass functions as values and supply well-shaped callbacks.",
+    bodyMd: `### Key skills\n\n- Decide when to pass a function reference versus invoking it immediately (e.g., event listeners).\n- Provide callbacks with the right parameters so array helpers, listeners, and timers can drive the expected behavior.\n- Reuse named handlers when logic repeats, and reach for inline arrows when you need to pipe arguments or customize a call.`,
+  },
+  "JS.AR.ACC": {
+    id: "JS.AR.ACC",
+    title: "Arrays · Access & Updates",
+    short: "Update arrays and objects without losing track of mutations.",
+    bodyMd: `### Key practices\n\n- Add, change, or remove properties and elements with the appropriate syntax.\n- Distinguish between mutating operations (like \`.push()\`) and immutable patterns.\n- Represent state with arrays of objects when modeling structured lists or datasets.`,
+  },
+  "JS.AR.MTH": {
+    id: "JS.AR.MTH",
+    title: "Arrays · Transform Methods",
+    short: "Shape data with map, filter, reduce, and friends.",
+    bodyMd: `### Patterns\n\n- \`map\` returns a new array—use it to convert structures.\n- \`filter\` keeps only matches; remember it never mutates the original array.\n- \`reduce\` accumulates into numbers, objects, or even Promises; provide a seed value to avoid undefined reducers.\n- Use \`find\`, \`some\`, and \`every\` to search or validate collections efficiently.\n- Order or reshape arrays with \`sort\`, \`flat\`, and \`flatMap\`, supplying comparators or mappers as needed.`,
+  },
+  "JS.DB.ERR": {
+    id: "JS.DB.ERR",
+    title: "Debugging · Error Messages",
+    short: "Read stack traces and understand root causes before fixing.",
+    bodyMd: `### Strategy\n\n- Copy the exact error message and search docs or the repo.\n- Use the stack trace to jump to the failing file and line quickly.\n- Reproduce the bug reliably before attempting a fix so you can confirm the patch.`,
+  },
+  "JS.DB.TRC": {
+    id: "JS.DB.TRC",
+    title: "Debugging · Tracing & Inspection",
+    short: "Trace program flow with logs and breakpoints.",
+    bodyMd: `### Practice\n\n- Insert focused \`console.log\` statements to follow control flow and critical values.\n- Set breakpoints in DevTools, then step through frames to inspect scope data.\n- Watch how state changes between steps to validate your assumptions.`,
+  },
+  "JS.DB.BUG": {
+    id: "JS.DB.BUG",
+    title: "Debugging · Common Bugs & Fixes",
+    short: "Recognize and resolve frequent JavaScript bugs.",
+    bodyMd: `### Common fixes\n\n- Diagnose and repair off-by-one and infinite loop errors during iteration.\n- Track down undefined, null, or type errors caused by selectors and missing data.\n- Resolve async timing or DOM sync issues by reordering logic and updating the correct node.`,
+  },
+  "JS.SD.ELM": {
+    id: "JS.SD.ELM",
+    title: "State & DOM · Element Manipulation",
+    short: "Select and update the DOM intentionally.",
+    bodyMd: `### Quick hits\n\n- Cache frequently accessed selectors to avoid duplicate lookups.\n- Use \`textContent\` for plain text and \`innerHTML\` only when markup is needed.\n- Toggle classes through \`classList\` to avoid string juggling.`,
+  },
+  "JS.SD.EVH": {
+    id: "JS.SD.EVH",
+    title: "State & DOM · Event Handling",
+    short: "Attach event listeners that manage user interactions cleanly.",
+    bodyMd: `### Key practices\n\n- Attach listeners with \`addEventListener\` on the right elements.\n- Use the event object—\`event.target\`, \`preventDefault\`, and friends—to react to user input.\n- Apply event delegation on a stable parent to handle dynamic child elements.`,
+  },
+  "JS.SD.STA": {
+    id: "JS.SD.STA",
+    title: "State & DOM · State Synchronization",
+    short: "Keep UI and state aligned as users interact.",
+    bodyMd: `### Key practices\n\n- Model UI state with variables or objects that reflect current inputs.\n- Update the DOM whenever state changes so the interface stays consistent.\n- Read values from form controls and feed them back into state.\n- Clear, reset, or toggle DOM elements in response to state updates.`,
+  },
+  "JS.AS.PRO": {
+    id: "JS.AS.PRO",
+    title: "Async · Promises",
+    short: "Manage asynchronous work with promise chains.",
+    bodyMd: `### Key practices\n\n- Chain \`.then()\` callbacks to work with async results as they resolve.\n- Use \`.catch()\` to surface and handle failures.\n- Explain the difference between synchronous blocking code and asynchronous, non-blocking flows.`,
+  },
+  "JS.AS.AAW": {
+    id: "JS.AS.AAW",
+    title: "Async · Async/Await",
+    short: "Refactor promise chains with async/await for clarity.",
+    bodyMd: `### Key practices\n\n- Declare functions with \`async\` and pause execution with \`await\`.\n- Refactor straightforward \`.then()\` chains into \`async/await\` while preserving behavior and error handling.`,
+  },
+  "JS.AS.FET": {
+    id: "JS.AS.FET",
+    title: "Async · Fetch",
+    short: "Fetch data and present loading and error states.",
+    bodyMd: `### Lifecycle\n\n1. Show a loading indicator before making the request.\n2. Use \`fetch\` for GET, POST, PUT, and DELETE calls, then parse the JSON response.\n3. Handle non-200 statuses explicitly and surface useful error messages.\n\nWrap fetch logic inside dedicated service functions so UI components stay lean.`,
+  },
+  "JS.AS.ERR": {
+    id: "JS.AS.ERR",
+    title: "Async · Error Handling",
+    short: "Catch async errors and inform the user gracefully.",
+    bodyMd: `### Key practices\n\n- Wrap async logic with \`.catch()\` or \`try/catch\` to capture failures.\n- Provide user-facing feedback whenever a request or async task fails.`,
+  },
+  "JS.DA.SCH": {
+    id: "JS.DA.SCH",
+    title: "Data & Applications · Schema Planning",
+    short: "Plan data with ERDs, foreign keys, and join tables.",
+    bodyMd: `### Key practices\n\n- Diagram entities and relationships with ERDs before building features.\n- Use foreign keys to represent one-to-many relationships.\n- Introduce join tables when modeling many-to-many relationships.`,
+  },
+  "JS.DA.SER": {
+    id: "JS.DA.SER",
+    title: "Data & Applications · Services & Handlers",
+    short: "Centralize API requests in modular service files.",
+    bodyMd: `### Key practices\n\n- Group fetch helpers by resource, like \`getUsers()\` or \`createPost()\`.\n- Keep service functions in dedicated modules for reuse.\n- Call the same services across the app so UI components stay lean.`,
+  },
+  "JS.DA.UTA": {
+    id: "JS.DA.UTA",
+    title: "Data & Applications · Utilizing Data in Apps",
+    short: "Render and react to data changes in the UI.",
+    bodyMd: `### Key practices\n\n- Render state or API responses directly into the DOM.\n- Reflect creates, updates, and deletes immediately in the interface.\n- Handle empty, loading, and error states while data is in flight.\n- Provide simple filtering, sorting, or searching to help users explore datasets.`,
+  },
+  "JS.MO.STR": {
+    id: "JS.MO.STR",
+    title: "Modules & Organization · Project Structure",
+    short: "Organize files so features are easy to find and maintain.",
+    bodyMd: `### Key practices\n\n- Choose a structure—feature folders or layered groups—and stick to it.\n- Name files and directories predictably with lowerCamelCase or kebab-case.\n- Keep assets in a dedicated \`assets/\` or \`public/\` folder and reference them consistently.`,
+  },
+  "JS.MO.IMP": {
+    id: "JS.MO.IMP",
+    title: "Modules & Organization · Import/Export",
+    short: "Share code with clean ES module imports and exports.",
+    bodyMd: `### Key practices\n\n- Use named or default exports based on how consumers will import the module.\n- Keep import statements tidy and readable.\n- Move shared logic into modules and reuse them through imports.`,
+  },
+};
+
+export const standardOrder = [
+    "overview",
+    "JS.VDT.PRM",
+    "JS.VDT.COL",
+    "JS.VDT.MTH",
+    "JS.FN.BAS",
+    "JS.PF.CON",
+    "JS.PF.ITR",
+    "JS.AR.ACC",
+    "JS.AR.MTH",
+    "JS.FN.HOF",
+    "JS.DB.ERR",
+    "JS.DB.TRC",
+    "JS.DB.BUG",
+    "JS.SD.ELM",
+    "JS.SD.EVH",
+    "JS.SD.STA",
+    "JS.MO.STR",
+    "JS.MO.IMP",
+    "JS.AS.PRO",
+    "JS.AS.AAW",
+    "JS.AS.FET",
+    "JS.AS.ERR",
+    "JS.DA.SCH",
+    "JS.DA.SER",
+    "JS.DA.UTA",
+];
+
+export default standards;

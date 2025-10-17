@@ -1,0 +1,162 @@
+---
+id: JS.VDT.MTH
+title: Toolbelts for Your Data
+short: Use built‑in properties (facts) and methods (actions) on strings, numbers, and objects.
+---
+
+<Callout type="note">Every data type ships with a <strong>toolbelt</strong>. <em>Property</em> = fact (no parentheses). <em>Method</em> = action (has parentheses). You won’t memorize them all at once—treat this as a reference you revisit.</Callout>
+
+So far, you’ve built <strong>boxes</strong> (variables) that can hold any kind of value, including <strong>arrays</strong> (like playlists) and <strong>objects</strong> (like contact cards). Here’s the secret: every data type—whether it’s a primitive, an array, or an object—comes with its own <strong>toolbelt</strong>: built‑in <em>properties</em> and <em>methods</em> you can use to check facts, clean things up, or transform values.
+
+Think of it like this:
+
+- <strong>Strings</strong> bring tools like <code>.split()</code> (cut into parts), <code>.trim()</code> (remove extra spaces), and <code>.toUpperCase()</code> (change case).
+- <strong>Numbers</strong> have helpers like <code>parseFloat()</code> (turn text into a number), <code>.toFixed()</code> (format decimals), and <code>Number.isNaN()</code> (check for not‑a‑number).
+- <strong>Objects</strong> can be explored with <code>Object.keys()</code>, <code>Object.values()</code>, and <code>Object.entries()</code> to list labels and values.
+
+### In this chapter, you’ll learn (JS.VDT.MTH)
+
+* **JS.VDT.MTH.1 — Strings:** Use string properties and methods (`.length`, `.trim()`, `.toLowerCase()`, `.split()`, `.replace()`).
+* **JS.VDT.MTH.2 — Numbers:** Use number parsing and formatting methods (`Number()`, `parseInt()`, `parseFloat()`, `Number.isNaN()`, `.toFixed()`).
+* **JS.VDT.MTH.3 — Objects:** Use object utilities (`Object.keys()`, `Object.values()`, `Object.entries()`) to explore object shape.
+
+---
+
+## 1) Properties vs Methods
+
+We’re going to be using both:
+
+* **Property** = a **fact** you read (no `()`)
+* **Method** = an **action** you perform (has `()`)
+
+```js
+let name = "Ada";
+name.length;        // property → 3 characters
+name.toUpperCase(); // method → "ADA"
+```
+
+Rule of thumb: no `()` = fact; `()` = do something.
+
+---
+
+## 2) String Toolbelt (MTH.1)
+
+Strings show up everywhere (usernames, search boxes, messages). A few high‑leverage tools:
+
+```js
+let username = "  Nick  ";
+username.length;        // 8 (spaces count)
+username.trim();        // "Nick"
+username.toLowerCase();  // "nick"
+"a,b,c".split(",");      // ["a","b","c"]
+"I love JabaScript!".replace("Jaba", "Java"); // "I love JavaScript!"
+```
+
+| Tool | What it does | Example |
+| :---- | :---- | :---- |
+| `.length` | Count characters (spaces too) | `username.length` |
+| `.trim()` | Remove leading & trailing spaces | `input.trim()` |
+| `.toLowerCase()` | Normalize case (search/compare) | `query.toLowerCase()` |
+| `.split(sep)` | Cut string into an array | `tags.split(',')` |
+| `.replace(a,b)` | Swap first occurrence | `msg.replace('x','y')` |
+
+<PracticeCard prompt="Lowercase and trim '   Momo   '">
+  <code>{`'   Momo   '.trim().toLowerCase()`}</code>
+</PracticeCard>
+
+---
+
+## 3) Number Toolbelt (MTH.2)
+
+Form inputs arrive as **strings**—parse before math, format for display after.
+
+```js
+Number("42");        // 42
+parseInt("42px", 10); // 42 (stops at non‑digit)
+parseFloat("3.14");  // 3.14
+Number.isNaN(NaN);    // true
+(2.5).toFixed(2);     // "2.50" (string)
+```
+
+| Tool | Purpose | Notes |
+| :---- | :---- | :---- |
+| `Number(str)` | Parse number (int or decimal) | Invalid → NaN |
+| `parseInt(str,10)` | Parse integer prefix | Specify radix (10) |
+| `parseFloat(str)` | Parse decimal | Stops at first invalid char |
+| `Number.isNaN(v)` | Check for real NaN | Avoid loose `isNaN()` coercion |
+| `.toFixed(n)` | Format decimal places | Returns string |
+
+<PracticeCard prompt="Show '2.99' as $2.99 with 2 decimals">
+  <code>{`'$' + Number('2.99').toFixed(2)`}</code>
+</PracticeCard>
+
+---
+
+## 4) Object Toolbelt (MTH.3)
+
+Turn an object’s structure into arrays so you can iterate, map, filter.
+
+```js
+let user = { name: "Nick", role: "Instructor" };
+Object.keys(user);    // ["name","role"]
+Object.values(user);  // ["Nick","Instructor"]
+Object.entries(user); // [["name","Nick"],["role","Instructor"]]
+```
+
+| Tool | Returns | Use it when |
+| :---- | :---- | :---- |
+| `Object.keys(obj)` | Array of keys | Build dynamic forms / tables |
+| `Object.values(obj)` | Array of values | Aggregate or list values |
+| `Object.entries(obj)` | Array of `[key,value]` pairs | Need both labels and data |
+
+<PracticeCard prompt="Keys & values of { title: 'Web Dev', level: 'Beginner' }">
+  <code>keys → ['title','level']; values → ['Web Dev','Beginner']</code>
+</PracticeCard>
+
+---
+
+## 5) Mini playground
+
+<Playground console={true} code={`const msg = 'Hello CSS';\nconsole.log(msg.replace('CSS','JavaScript'));\nconst price = '2.5';\nconsole.log(Number(price).toFixed(2));\n`} />
+
+---
+
+## 6) Practice — Grab Some Tools
+
+<PracticeCard prompt="1) Clean '   Momo   ' to lowercase">
+  <code>{`'   Momo   '.trim().toLowerCase()`}</code>
+</PracticeCard>
+<PracticeCard prompt="2) '$2.99' from '2.99'">
+  <code>{`'$' + Number('2.99').toFixed(2)`}</code>
+</PracticeCard>
+<PracticeCard prompt="3) Keys & values of course object">
+  <div>
+    <p className="m-0">Assume:</p>
+    <pre className="m-0 whitespace-pre-wrap">{`const course = { title: 'Web Dev', level: 'Beginner' };`}</pre>
+    <p className="mt-2 mb-0">Answer: <code>Object.keys(course); Object.values(course)</code></p>
+  </div>
+</PracticeCard>
+<PracticeCard prompt="4) Replace 'CSS' with 'JavaScript' in 'I love CSS'">
+  <code>{`'I love CSS'.replace('CSS','JavaScript')`}</code>
+</PracticeCard>
+
+---
+
+## 7) Vocabulary Review
+
+| Term | Beginner-friendly definition | Example |
+| :---- | :---- | :---- |
+| Property | A fact you can read about a value (no `()`). | `name.length` |
+| Method | An action you invoke on a value (has `()`). | `name.toUpperCase()` |
+| Return value | The result a method gives back. | `arr.pop()` → removed item |
+| Mutate | Change the original value/structure in place. | `arr.push('x')` |
+| Toolbelt | The set of built-in properties/methods for a type. | String methods like `.trim()` |
+
+---
+
+## 8) Checklist
+
+- Spot property vs method: parentheses are the tell.
+- Clean user input: `trim()` first, then normalize case.
+- Parse strings to numbers before math; format after with `.toFixed()`.
+- Reach for `Object.entries()` when you need both key and value together.

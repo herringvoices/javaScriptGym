@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply scroll-smooth;
+}
+
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+/* Override Tailwind Typography default inline code adorners (backticks) */
+.prose code::before,
+.prose code::after,
+.prose-invert code::before,
+.prose-invert code::after {
+  content: none !important;
+}
+
+/* Keep code styling consistent */
+/* Inline code styling (keep minimal since MDXProvider also styles) */
+.prose code,
+.prose-invert code {
+  background-color: #0f172a; /* slate-900 */
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500;
+  color: #a5b4fc; /* brand-ish light indigo; adjust if needed */
+}
+
+/* MiniSandpack refinements */
+.mini-sp { border-radius: 0.5rem; border: 1px solid #334155; background:#0f172a; box-shadow:0 4px 16px -4px rgba(0,0,0,0.6); overflow:hidden; }
+.mini-sp-toolbar button, .mini-sp-tabs button { transition: color .15s ease, background-color .15s ease, border-color .15s ease; }
+.mini-sp-preview-wrapper { background:#020617; }
+.mini-sp-console-wrapper { background:#0f172a; }
+.mini-sp-console-wrapper pre { background: transparent !important; color:#e2e8f0 !important; }

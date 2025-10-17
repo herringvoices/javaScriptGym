@@ -1,0 +1,210 @@
+---
+id: JS.FN.BAS
+title: Basic Functions · Recipe Cards for Behavior
+short: Write reusable recipe cards (functions), pass inputs, return outputs, and compose helpers.
+---
+
+<Callout type="note" title="Mental model">Declaring a function is writing a <strong>recipe card</strong>. Invoking it (adding <code>()</code>) asks the engine to <strong>cook that recipe now</strong>.</Callout>
+
+Sometimes you want to run the same code more than once—on a click, when a page loads, or whenever you need to format a price. **Functions** make that possible: a function is a named bundle of instructions you can run whenever you need. Think: **variables store data; functions store behavior**.
+
+### In this chapter you’ll learn (FN.BAS)
+
+* **JS.FN.BAS.1 — Declare & invoke functions:** Write a recipe (declare), then cook the dish (invoke). Some recipes take **parameters** and/or **return** a value, some don’t.
+* **JS.FN.BAS.2 — Function forms:** Write functions with the `function` keyword and with **arrow syntax**; choose **named** functions for reuse/clarity and **anonymous** ones for quick, inline use.
+* **JS.FN.BAS.3 — Parameters & returns:** Pass data **in** (parameters) and **out** (return values). Prefer passing data **through** the function instead of relying on outside variables.
+* **JS.FN.BAS.4 — Compose small helpers:** Break bigger problems into **small, single‑purpose functions** and combine them.
+
+---
+
+## 1) What is a function? (The recipe card)
+
+```js
+function greet() {          // declaration (write the recipe)
+  console.log("Hello there!");
+}
+
+greet(); // invocation (cook it now)
+```
+
+| Term | Beginner-friendly definition | Example |
+| :---- | :---- | :---- |
+| Function | A named reusable recipe for behavior. | `function greet(){}` |
+| Declare | Write the recipe (no run yet). | `function add(){}` |
+| Invoke / Call | Run it now with `()` at the end. | `add()` |
+| Body | The code inside `{}` that executes. | `{ console.log(x) }` |
+| Expression | Produces a value (can appear in larger code). | `a + b`, `square(2)` |
+
+---
+
+## 2) Parameters & arguments (customizing the dish)
+
+Parameters are **blanks on the recipe card** (placeholders). Arguments are the **real values you pass in today**.
+
+```js
+function greet(name) {        // name = parameter
+  console.log("Hello, " + name + "!");
+}
+greet("Ada");                 // "Ada" is the argument
+```
+
+### Returning a value (handing a plated dish back to you)
+
+`return` hands a value back to the caller and immediately stops the function.
+
+```js
+function fullName(first, last) {
+  return first + " " + last;
+}
+let label = "Customer: " + fullName("Ada", "Lovelace");
+```
+
+If there’s no `return`, JavaScript gives you `undefined`.
+
+| Term | Beginner-friendly definition | Example |
+| :---- | :---- | :---- |
+| Parameter | Named input placeholder. | `function add(a,b){}` |
+| Argument | Actual value passed at call site. | `add(2,3)` |
+| Return value | Value that replaces the call expression. | `return a + b` |
+| Side effect | External impact (log, DOM, network). | `console.log()` |
+
+<PracticeCard prompt="What happens when a function hits return?">
+  <code>It stops and the value returned fills in where it was called.</code>
+</PracticeCard>
+
+---
+
+## 3) Two ways to write functions (declarations & arrows)
+
+### A) `function` declaration (great default for named, reusable helpers)
+
+```js
+function add(a, b) {
+  return a + b;
+}
+```
+
+### B) Arrow function (short, great for inline helpers & callbacks)
+
+```js
+const subtract = (a, b) => {
+  return a - b;
+};
+```
+
+**Single‑expression shortcuts (implicit return)**
+
+```js
+const square = n => n * n;
+const greetName = name => `Hi, ${name}!`;
+const roll = () => Math.floor(Math.random() * 6) + 1;
+```
+
+Return an object literal (wrap in parentheses):
+
+```js
+const makeUser = (id, name) => ({ id, name });
+```
+
+<Callout type="tip">If you use braces `{}` with an arrow, add an explicit `return`. Without braces the expression’s value is returned automatically.</Callout>
+
+### Named vs anonymous functions (quick primer)
+
+```js
+function formatPrice(n){ return "$" + n.toFixed(2); } // named
+setTimeout(() => { console.log("Hi"); }, 500);         // anonymous arrow
+```
+
+---
+
+## 4) Prefer passing data in & returning data out (clean functions)
+
+Aim for functions that depend only on parameters and return a value (makes them easier to reuse & test).
+
+Less reusable (reaches outside):
+
+```js
+let taxRate = 0.1;
+function totalWithTax(subtotal) {
+  return subtotal + subtotal * taxRate;
+}
+```
+
+More reusable (explicit input):
+
+```js
+function totalWithTax(subtotal, taxRate) {
+  return subtotal + subtotal * taxRate;
+}
+```
+
+Rule of thumb: If your function needs a value, **make it a parameter**. If your function produces a value, **return** it.
+
+---
+
+## 5) Compose Small Helpers
+
+Break larger problems into small, single‑purpose helpers you can combine.
+
+```js
+function subtotal(items){
+  return items.reduce((sum,i) => sum + i.price, 0);
+}
+function tax(amount, rate){
+  return amount * rate;
+}
+function total(items, rate){
+  const s = subtotal(items);
+  return s + tax(s, rate);
+}
+```
+
+---
+
+## 6) Practice
+
+<PracticeCard prompt="Write loseLife() that subtracts 1 from numLives (start 3) then call it 3 times.">
+  <pre className="m-0 whitespace-pre-wrap">{`let numLives = 3;\nfunction loseLife(){ numLives = numLives - 1; }\nloseLife(); loseLife(); loseLife(); // numLives === 0`}</pre>
+</PracticeCard>
+
+<PracticeCard prompt="Convert function add(a,b){ return a+b } to an implicit arrow">
+  <code>{`const add = (a,b) => a + b;`}</code>
+</PracticeCard>
+
+<PracticeCard prompt="Square function as arrow with explicit return">
+  <code>{`const square = (n) => { return n * n; };`}</code>
+</PracticeCard>
+
+<PracticeCard prompt="Make makeUser(id,name) as arrow returning an object">
+  <code>{`const makeUser = (id,name) => ({ id, name });`}</code>
+</PracticeCard>
+
+---
+
+## 7) Mini playground
+
+<Playground console={true} code={`const add = (a,b) => a + b;\nfunction label(x){ return 'Value: ' + x; }\nconsole.log(label(add(2,3)));\n`} />
+
+---
+
+## 8) Vocabulary Review
+
+| Term | Beginner-friendly definition | Example |
+| :---- | :---- | :---- |
+| Function declaration | Named function using `function`. | `function foo(){}` |
+| Arrow function | Concise `=>` function form. | `const foo = () => 1` |
+| Parameter | Placeholder for an input. | `(a,b)` |
+| Argument | Real value you pass. | `foo(3,4)` |
+| Return value | Output a function hands back. | `return a*b` |
+| Side effect | External effect (log, DOM). | `console.log()` |
+| Compose | Combine helpers for a result. | `total(subtotal(items), r)` |
+
+---
+
+## 9) Checklist
+
+- Name functions by **intent** (what) not implementation (how).
+- Keep functions small; extract when they grow.
+- Pass data **in** via parameters; return results **out**.
+- Prefer pure (no side effects) for logic; isolate side effects at the edges.
+- Use arrow functions for small inline or callback helpers.
