@@ -4,13 +4,26 @@ import mdx from "@mdx-js/rollup";
 import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
 import rehypeSlug from "rehype-slug";
+import rehypePrettyCode from "rehype-pretty-code";
 import mkcert from "vite-plugin-mkcert";
+const prettyCodeOptions = {
+  theme: "dracula",
+  keepBackground: false,
+  defaultLang: "js",
+  onVisitLine(node) {
+    // Ensure empty lines render with proper height
+    if (node.children.length === 0) {
+      node.children = [{ type: "text", value: " " }];
+    }
+  },
+};
+
 export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     mdx({
       remarkPlugins: [remarkGfm, remarkFrontmatter],
-      rehypePlugins: [rehypeSlug],
+      rehypePlugins: [rehypeSlug, [rehypePrettyCode, prettyCodeOptions]],
       providerImportSource: "@mdx-js/react",
     }),
     ...(command === "serve" ? [mkcert()] : []),

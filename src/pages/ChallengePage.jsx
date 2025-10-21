@@ -20,6 +20,7 @@ import { getDefaultEditorExtensions } from "../lib/editorExtensions";
 import Modal from "../components/Modal";
 import Callout from "../components/Callout";
 import { loadMastered, saveMastered } from "../lib/mastery";
+import { EditorView } from "@codemirror/view";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const difficultyLabel = (value) => {
@@ -181,30 +182,28 @@ function ChallengeWorkspace({ challenge, navigate }) {
             >
               ← Challenges
             </button>
-            <span className="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-300">
-              {challenge.challengeType.replaceAll("_", " ")}
-            </span>
             {isCompleted ? (
               <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
                 Completed
               </span>
             ) : null}
           </div>
+          <h1 className="text-3xl font-semibold text-white">{challenge.title}</h1>
           <span className="rounded-full bg-slate-800 px-3 py-1 text-sm text-slate-200">
             Difficulty {difficultyLabel(challenge.difficulty)}
           </span>
         </div>
 
-        <div className="flex flex-wrap items-start justify-between gap-6">
+        {/* <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="space-y-3">
-            <h1 className="text-3xl font-semibold text-white">{challenge.title}</h1>
+
             <Markdown className="max-w-3xl text-sm text-slate-300">
               {challenge.description}
             </Markdown>
           </div>
         </div>
 
-        <StandardsBadges standards={challenge.standards} />
+        <StandardsBadges standards={challenge.standards} /> */}
       </header>
 
       <SandpackProvider
@@ -450,113 +449,131 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
 
       {/* Identify Value challenge type removed */}
 
-      <div className="rounded-3xl border border-slate-800 bg-slate-950/70">
-        {/* Live region for accessibility */}
-        <div aria-live="polite" ref={liveRef} className="sr-only" />
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <button
-              type="button"
-              onClick={() => setShowExplorer((value) => !value)}
-              className={`rounded-full border px-3 py-1 transition ${
-                showExplorer
-                  ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                  : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-              }`}
-            >
-              {showExplorer ? "Hide" : "Show"} file tree
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowRightPanel((value) => !value)}
-              className={`rounded-full border px-3 py-1 transition ${
+      {/* Sandpack area */}
+      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
+        <div className="rounded-3xl border w-full border-slate-800 bg-slate-950/70 [--sp-font-size:1rem]">
+          {/* Live region for accessibility */}
+          <div aria-live="polite" ref={liveRef} className="sr-only" />
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <button
+                type="button"
+                onClick={() => setShowExplorer((value) => !value)}
+                className={`rounded-full border px-3 py-1 transition ${
+                  showExplorer
+                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                }`}
+              >
+                {showExplorer ? "Hide" : "Show"} file tree
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowRightPanel((value) => !value)}
+                className={`rounded-full border px-3 py-1 transition ${
+                  showRightPanel
+                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                }`}
+              >
+                {showRightPanel ? "Hide" : "Show"} {rightPanel === "console" ? "console" : "preview"}
+              </button>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <button
+                type="button"
+                onClick={() => setRightPanel("preview")}
+                className={`rounded-full border px-3 py-1 transition ${
+                  rightPanel === "preview"
+                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                }`}
+              >
+                Preview
+              </button>
+              <button
+                type="button"
+                onClick={() => setRightPanel("console")}
+                className={`rounded-full border px-3 py-1 transition ${
+                  rightPanel === "console"
+                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                }`}
+              >
+                Console
+              </button>
+            </div>
+          </div>
+
+          <SandpackLayout className="flex flex-col gap-0 lg:flex-row">
+            {showExplorer ? (
+              <div className="hidden min-w-[200px] max-w-[240px]   border-b border-slate-800 bg-slate-950/80 lg:block lg:border-b-0 lg:border-r">
+                <SandpackFileExplorer autoHiddenFiles style={{ height: "100%" }} />
+              </div>
+            ) : null}
+            <SandpackCodeEditor
+              showTabs
+              showLineNumbers
+              showInlineErrors
+              wrapContent
+              extensions={[
+                ...getDefaultEditorExtensions(),
+                EditorView.theme(
+                  {
+                    "&": { fontSize: "1rem", lineHeight: "1.5" },      // editor surface
+                    // Ensure long lines wrap even in read-only files
+                    ".cm-content": {
+                      fontSize: "1rem",
+                      whiteSpace: "pre-wrap",
+                      overflowWrap: "anywhere",
+                    },
+                    ".cm-line": { wordBreak: "break-word" },
+                    ".cm-gutters": { fontSize: "1rem" },                // line numbers
+                  },
+                  { dark: true }
+                )
+              ]}
+              style={{ height: "100%" }}
+              className={`flex-1 border-b border-slate-800 lg:border-b-0 ${showRightPanel ? "lg:border-r" : ""}`}
+            />
+            {/* Always keep the SandpackPreview mounted so the sandbox client (runtime) stays alive.
+                We toggle visibility instead of conditionally rendering; otherwise the console
+                would have no connected client and user logs would never appear. */}
+            <div
+              className={
                 showRightPanel
-                  ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                  : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-              }`}
+                  ? "min-h-[320px] flex-1 bg-slate-950/80 relative"
+                  : "min-h-[0] flex-1 bg-slate-950/80 relative hidden lg:block" // hide from flex layout when not shown (still mounted if needed)
+              }
+              style={showRightPanel ? {} : { display: "none" }}
             >
-              {showRightPanel ? "Hide" : "Show"} {rightPanel === "console" ? "console" : "preview"}
-            </button>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <button
-              type="button"
-              onClick={() => setRightPanel("preview")}
-              className={`rounded-full border px-3 py-1 transition ${
-                rightPanel === "preview"
-                  ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                  : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-              }`}
-            >
-              Preview
-            </button>
-            <button
-              type="button"
-              onClick={() => setRightPanel("console")}
-              className={`rounded-full border px-3 py-1 transition ${
-                rightPanel === "console"
-                  ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                  : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-              }`}
-            >
-              Console
-            </button>
-          </div>
+              <div
+                className={
+                  rightPanel === "preview"
+                    ? "h-full"
+                    : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
+                }
+              >
+                <SandpackPreview
+                  showOpenInCodeSandbox={false}
+                  showRefreshButton
+                  style={{ height: "100%" }}
+                />
+              </div>
+              <div
+                className={
+                  rightPanel === "console"
+                    ? "h-full"
+                    : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
+                }
+              >
+                <SandpackConsole showHeader style={{ height: "100%" }} />
+              </div>
+            </div>
+          </SandpackLayout>
+          {/* Test results & completion panels removed */}
         </div>
-
-        <SandpackLayout className="flex flex-col gap-0 lg:flex-row">
-          {showExplorer ? (
-            <div className="hidden min-w-[200px] max-w-[240px] border-b border-slate-800 bg-slate-950/80 lg:block lg:border-b-0 lg:border-r">
-              <SandpackFileExplorer autoHiddenFiles style={{ height: "100%" }} />
-            </div>
-          ) : null}
-          <SandpackCodeEditor
-            showTabs
-            showLineNumbers
-            showInlineErrors
-            wrapContent
-            extensions={getDefaultEditorExtensions()}
-            style={{ height: "100%" }}
-            className={`flex-1 border-b border-slate-800 lg:border-b-0 ${showRightPanel ? "lg:border-r" : ""}`}
-          />
-          {/* Always keep the SandpackPreview mounted so the sandbox client (runtime) stays alive.
-              We toggle visibility instead of conditionally rendering; otherwise the console
-              would have no connected client and user logs would never appear. */}
-          <div
-            className={
-              showRightPanel
-                ? "min-h-[320px] flex-1 bg-slate-950/80 relative"
-                : "min-h-[0] flex-1 bg-slate-950/80 relative hidden lg:block" // hide from flex layout when not shown (still mounted if needed)
-            }
-            style={showRightPanel ? {} : { display: "none" }}
-          >
-            <div
-              className={
-                rightPanel === "preview"
-                  ? "h-full"
-                  : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
-              }
-            >
-              <SandpackPreview
-                showOpenInCodeSandbox={false}
-                showRefreshButton
-                style={{ height: "100%" }}
-              />
-            </div>
-            <div
-              className={
-                rightPanel === "console"
-                  ? "h-full"
-                  : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
-              }
-            >
-              <SandpackConsole showHeader style={{ height: "100%" }} />
-            </div>
-          </div>
-        </SandpackLayout>
-        {/* Test results & completion panels removed */}
       </div>
-
     </div>
   );
 }

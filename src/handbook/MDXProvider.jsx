@@ -32,18 +32,20 @@ const components = {
   Tip,
   h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
   h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
-  code: (props) => (
-    <code
-      {...props}
-      className="rounded bg-slate-900 px-1.5 py-0.5 text-xs font-medium text-brand-200"
-    />
-  ),
-  pre: (props) => (
-    <pre
-      {...props}
-      className="overflow-auto rounded-lg bg-slate-900 p-4 text-sm shadow-inner"
-    />
-  ),
+  // Only style inline code; let rehype-pretty-code render fenced blocks.
+  code: (props) => {
+    const className = props?.className || "";
+    // If this code node is part of a fenced block, it will have language-*
+    if (/\blanguage-/.test(className)) {
+      return <code {...props} />;
+    }
+    return (
+      <code
+        {...props}
+        className="rounded bg-slate-900 px-1.5 py-0.5 text-sm font-medium text-brand-200"
+      />
+    );
+  },
 };
 
 export default function HandbookMDXProvider({ children }) {
