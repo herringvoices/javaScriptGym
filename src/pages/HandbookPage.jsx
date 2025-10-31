@@ -56,7 +56,7 @@ export default function HandbookPage() {
 
   // Generate TOC from either MDX frontmatter/content (simplified: rely on legacy for now) or legacy bodyMd.
   const sections = useMemo(() => {
-    if (hasMdx) return []; // TODO: optional enhancement - parse compiled AST for headings.
+    if (hasMdx) return []; 
     if (!meta?.bodyMd) return [];
     const matches = [...meta.bodyMd.matchAll(/^###\s+(.*)$/gm)];
     return matches.map(([, heading]) => ({

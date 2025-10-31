@@ -242,6 +242,8 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
   const { sandpack, listen } = useSandpack();
   // Removed unused clientId state
   const [isCompiling, setIsCompiling] = useState(false);
+  // Remount key to force-clear SandpackConsole between runs
+  const [consoleKey, setConsoleKey] = useState(0);
   // Removed unused isRunning state
   const [showExplorer, setShowExplorer] = useState(
     challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
@@ -267,7 +269,12 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
       }
 
       if (message.type === "sandpack/status") {
-        setIsCompiling(message.status === "running");
+        const compiling = message.status === "running";
+        setIsCompiling(compiling);
+        // Clear console at the very start of a new run
+        if (compiling) {
+          setConsoleKey((k) => k + 1);
+        }
       }
     });
 
@@ -567,7 +574,12 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
                     : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
                 }
               >
-                <SandpackConsole showHeader style={{ height: "100%" }} />
+                <SandpackConsole
+                  key={consoleKey}
+                  showHeader
+                  resetOnPreviewRestart
+                  style={{ height: "100%" }}
+                />
               </div>
             </div>
           </SandpackLayout>

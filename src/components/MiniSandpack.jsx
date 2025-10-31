@@ -56,7 +56,7 @@ export default function MiniSandpack({
   const setup = createSandpackSetup(challengeLike);
 
   const consoleRef = useRef(null);
-  const [consoleKey] = useState(0); // retained for potential future console reset
+  const [consoleKey, setConsoleKey] = useState(0); // remount console to clear logs
 
   // Inner playground UI that consumes Sandpack context
   function PlaygroundInner() {
@@ -73,9 +73,11 @@ export default function MiniSandpack({
         if (activeFile) {
           // Avoid logging duplicate lines when Sandpack triggers intermediate states
           if (logRef.current[activeFile] !== newCode) {
+            // Clear console first so old logs don't linger into the next run
+            setConsoleKey((k) => k + 1);
             logRef.current[activeFile] = newCode;
-            // Single consolidated console output per change
-            console.log("[MiniSandpack change]", activeFile, newCode);
+            // Optional devtools breadcrumb
+            // console.debug("[MiniSandpack] change:", activeFile);
           }
         }
       },
@@ -87,11 +89,24 @@ export default function MiniSandpack({
       const files = sandpackCtx?.sandpack?.state?.files || {};
       Object.entries(files).forEach(([path, spec]) => {
         if (logRef.current[path] !== spec.code) {
+          // Clear before programmatic changes take effect
+          setConsoleKey((k) => k + 1);
           logRef.current[path] = spec.code;
-          console.log("[MiniSandpack change]", path, spec.code);
         }
       });
     }, [sandpackCtx?.sandpack?.state?.files]);
+
+    // Also clear when the sandbox starts a new compile/run cycle
+    useEffect(() => {
+      const listen = sandpackCtx?.listen;
+      if (!listen) return;
+      const unsub = listen((message) => {
+        if (message.type === "sandpack/status" && message.status === "running") {
+          setConsoleKey((k) => k + 1);
+        }
+      });
+      return () => unsub?.();
+    }, [sandpackCtx?.listen]);
 
     return (
       // Main sandbox layout wrapper supplied by Sandpack
@@ -124,6 +139,7 @@ export default function MiniSandpack({
                 style={{ height, fontSize: 12, background: "#0f172a", color: "#e2e8f0" }}
                 showHeader={false}
                 showSetupProgress
+                resetOnPreviewRestart
               />
             </div>
           )}
