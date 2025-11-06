@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import standards, { standardOrder } from "../data/standards";
-import { handbookChapters, loadHandbookEntry, getChapterLoader } from "../handbook/manifest";
+import { handbookChapters, loadHandbookEntry, getChapterLoader, getChaptersForStandard } from "../handbook/manifest";
 import HandbookMDXProvider from "../handbook/MDXProvider";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import HandbookSidebar from "../components/HandbookSidebar";
@@ -123,6 +123,13 @@ export default function HandbookPage() {
     };
   }, [resolvedId, chapterId]);
 
+  // Ensure navigating via previous/next lands at the top of the page
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, [resolvedId, chapterId]);
+
   // No per-page TOC; sidebar now focuses on standards and chapters.
 
   // Legacy standardNav retained for potential future use (e.g., breadcrumbs). Removed from rendering.
@@ -151,33 +158,41 @@ export default function HandbookPage() {
     <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
       <div className="space-y-4 px-6 lg:px-8">
         {/* Header with toggles */}
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
-          <div>
-            <p className="text-sm uppercase tracking-widest text-brand-300">JavaScript Handbook</p>
-            <h1 className="mt-0 text-2xl font-semibold">{meta.title}</h1>
-          </div>
-          <div className="flex gap-2">
-            <button
-              className={toggleBtnClass(showTOC)}
-              aria-pressed={showTOC}
-              onClick={() => setShowTOC((v) => !v)}
-            >
-              {showTOC ? "Hide Table of Contents" : "Show Table of Contents"}
-            </button>
-            <button
-              className={toggleBtnClass(showHandbook)}
-              aria-pressed={showHandbook}
-              onClick={() => setShowHandbook((v) => !v)}
-            >
-              {showHandbook ? "Hide handbook" : "Show handbook"}
-            </button>
-            <button
-              className={toggleBtnClass(showEditor)}
-              aria-pressed={showEditor}
-              onClick={() => setShowEditor((v) => !v)}
-            >
-              {showEditor ? "Hide editor" : "Show editor"}
-            </button>
+        <div className="rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
+          <p className="text-sm uppercase tracking-widest text-brand-300">JavaScript Handbook</p>
+          <h1 className="mt-0 text-2xl font-semibold">{meta.title}</h1>
+        </div>
+
+        {/* Sticky toggle controls bar */}
+        <div className="sticky top-0 z-30 -mx-1 rounded-md bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-slate-900/50 border border-slate-700 px-2 py-2">
+          <div className="grid grid-cols-3 items-center gap-2 text-xs sm:text-sm">
+            <div className="justify-self-start">
+              <button
+                className={toggleBtnClass(showTOC)}
+                aria-pressed={showTOC}
+                onClick={() => setShowTOC((v) => !v)}
+              >
+                {showTOC ? "Hide Table of Contents" : "Show Table of Contents"}
+              </button>
+            </div>
+            <div className="justify-self-center">
+              <button
+                className={toggleBtnClass(showHandbook)}
+                aria-pressed={showHandbook}
+                onClick={() => setShowHandbook((v) => !v)}
+              >
+                {showHandbook ? "Hide handbook" : "Show handbook"}
+              </button>
+            </div>
+            <div className="justify-self-end">
+              <button
+                className={toggleBtnClass(showEditor)}
+                aria-pressed={showEditor}
+                onClick={() => setShowEditor((v) => !v)}
+              >
+                {showEditor ? "Hide editor" : "Show editor"}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -268,12 +283,89 @@ export default function HandbookPage() {
                 ) : (
                   <p className="text-sm text-slate-400">Content coming soon…</p>
                 )}
+
+                {/* Chapter footer navigation */}
+                {(() => {
+                  // Build global ordered sequence across all standards using standardOrder.
+                  // Each standard contributes its intro (chapterId=null) followed by its chapters (if any).
+                  const globalSequence = standardOrder.flatMap((sid) => {
+                    const metaForSid = standards[sid];
+                    if (!metaForSid) return [];
+                    const chapters = getChaptersForStandard(sid);
+                    const base = [{ standardId: sid, id: null, title: metaForSid.title, isIntro: true }];
+                    if (!chapters || chapters.length === 0) return base;
+                    return base.concat(
+                      chapters.map((c) => ({ standardId: sid, id: c.id, title: c.title, isIntro: false }))
+                    );
+                  });
+
+                  // Find current node index
+                  const currentIndex = globalSequence.findIndex((node) =>
+                    node.standardId === resolvedId && (chapterId ? node.id === chapterId : node.id === null)
+                  );
+                  if (currentIndex === -1) return null; // Shouldn't happen
+                  const prev = currentIndex > 0 ? globalSequence[currentIndex - 1] : null;
+                  const next = currentIndex < globalSequence.length - 1 ? globalSequence[currentIndex + 1] : null;
+
+                  const makeHref = (node) =>
+                    !node || node.isIntro || !node.id
+                      ? `/handbook/${node.standardId}`
+                      : `/handbook/${node.standardId}/${node.id}`;
+
+                  const btnClass =
+                    "inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70";
+                  const inactiveClass = "opacity-40 cursor-not-allowed";
+                  const prevClass = "bg-slate-900/60 text-slate-200 border-slate-700 hover:bg-slate-800";
+                  const nextClass = "bg-brand-600 text-white border-brand-600 hover:bg-brand-500";
+
+                  return (
+                    <nav aria-label="Chapter navigation" className="mt-10 flex flex-col gap-4 border-t border-slate-700 pt-6">
+                      <div className="flex justify-between gap-4">
+                        {prev ? (
+                          <Link to={makeHref(prev)} className={`${btnClass} ${prevClass}`}>
+                            <span className="text-lg" aria-hidden="true">←</span>
+                            <span className="flex flex-col text-left">
+                              <span className="text-xs uppercase tracking-wide text-brand-300">Previous</span>
+                              {prev.isIntro ? `${standards[prev.standardId]?.title || "Intro"}` : prev.title}
+                            </span>
+                          </Link>
+                        ) : (
+                          <span className={`${btnClass} ${inactiveClass}`} aria-disabled>
+                            <span className="text-lg" aria-hidden="true">←</span>
+                            <span className="flex flex-col text-left">
+                              <span className="text-xs uppercase tracking-wide">Previous</span>
+                              —
+                            </span>
+                          </span>
+                        )}
+
+                        {next ? (
+                          <Link to={makeHref(next)} className={`${btnClass} ${nextClass}`}>
+                            <span className="flex flex-col text-right">
+                              <span className="text-xs uppercase tracking-wide text-brand-200">Next</span>
+                              {next.isIntro ? `${standards[next.standardId]?.title || "Intro"}` : next.title}
+                            </span>
+                            <span className="text-lg" aria-hidden="true">→</span>
+                          </Link>
+                        ) : (
+                          <span className={`${btnClass} ${inactiveClass}`} aria-disabled>
+                            <span className="flex flex-col text-right">
+                              <span className="text-xs uppercase tracking-wide">Next</span>
+                              —
+                            </span>
+                            <span className="text-lg" aria-hidden="true">→</span>
+                          </span>
+                        )}
+                      </div>
+                    </nav>
+                  );
+                })()}
               </article>
 
               <section
                 className={
                   showEditor
-                    ? "sticky top-4 self-start max-h-[calc(100vh-8rem)] overflow-auto"
+                    ? "sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto"
                     : "hidden"
                 }
               >
