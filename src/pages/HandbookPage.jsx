@@ -1,22 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import standards, { standardOrder } from "../data/standards";
-import { handbookChapters, loadHandbookEntry } from "../handbook/manifest";
+import { handbookChapters, loadHandbookEntry, getChapterLoader } from "../handbook/manifest";
 import HandbookMDXProvider from "../handbook/MDXProvider";
 import HandbookWorkbench from "../components/HandbookWorkbench";
+import HandbookSidebar from "../components/HandbookSidebar";
 
-const slugify = (value) =>
-  value
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/[\s-]+/g, "-");
+// Removed page-level heading TOC ("On this page"); keep file lean.
 
 export default function HandbookPage() {
-  const { standardId } = useParams();
+  const { standardId, chapterId } = useParams();
 
   const resolvedId = standards[standardId] ? standardId : standardOrder[0];
   const meta = standards[resolvedId];
@@ -36,6 +32,11 @@ export default function HandbookPage() {
   const [mdxModule, setMdxModule] = useState(null);
   const [mdxError, setMdxError] = useState(null);
   const [loadingMdx, setLoadingMdx] = useState(false);
+
+  // Chapter-specific MDX (new sidebar chapters)
+  const [chapterModule, setChapterModule] = useState(null);
+  const [chapterError, setChapterError] = useState(null);
+  const [loadingChapter, setLoadingChapter] = useState(false);
 
   // Load new-style entry if available
   useEffect(() => {
@@ -91,23 +92,40 @@ export default function HandbookPage() {
     };
   }, [resolvedId, hasMdx]);
 
-  // Generate TOC from either MDX frontmatter/content (simplified: rely on legacy for now) or legacy bodyMd.
-  const sections = useMemo(() => {
-    const md = entry?.handbookMarkdown || (meta?.bodyMd ?? "");
-    if (!md) return [];
-    const matches = [...md.matchAll(/^###\s+(.*)$/gm)];
-    return matches.map(([, heading]) => ({ heading, href: `#${slugify(heading)}` }));
-  }, [entry?.handbookMarkdown, meta]);
+  // Load chapter module if chapterId present and structure declares it
+  useEffect(() => {
+    let cancelled = false;
+    setChapterModule(null);
+    setChapterError(null);
+    setLoadingChapter(false);
+    if (!chapterId) return;
+    const loader = getChapterLoader(resolvedId, chapterId);
+    if (!loader) return;
+    setLoadingChapter(true);
+    loader()
+      .then((mod) => {
+        if (!cancelled) {
+          setChapterModule(mod);
+          setChapterError(null);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setChapterError(err);
+          setChapterModule(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingChapter(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [resolvedId, chapterId]);
 
-  const standardNav = standardOrder
-    .map((id) => standards[id])
-    .filter(Boolean)
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      short: item.short,
-      isActive: item.id === resolvedId,
-    }));
+  // No per-page TOC; sidebar now focuses on standards and chapters.
+
+  // Legacy standardNav retained for potential future use (e.g., breadcrumbs). Removed from rendering.
 
   // NEW: unified toggle button styles consistent with brand
   const toggleBtnClass = (isOn) =>
@@ -175,53 +193,25 @@ export default function HandbookPage() {
           return (
             <div className={`grid gap-8 ${gridColsLg}`}>
               <aside className={showTOC ? "space-y-6" : "hidden"}>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-brand-300">
-                    Standards
-                  </p>
-                  <ul className="mt-3 space-y-1">
-                    {standardNav.map((item) => (
-                      <li key={item.id}>
-                        <Link
-                          to={`/handbook/${item.id}`}
-                          className={`block rounded-md px-3 py-2 text-sm transition-colors ${
-                            item.isActive
-                              ? "bg-brand-500 text-white shadow"
-                              : "text-slate-200 hover:bg-slate-800 hover:text-white"
-                          }`}
-                          aria-current={item.isActive ? "page" : undefined}
-                        >
-                          <span className="block font-medium">{item.title}</span>
-                          <span className="block text-xs text-slate-300">{item.short}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {sections.length > 0 ? (
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-brand-300">
-                      On this page
-                    </p>
-                    <ul className="mt-3 space-y-1">
-                      {sections.map((section) => (
-                        <li key={section.href}>
-                          <a
-                            href={section.href}
-                            className="block rounded-md px-3 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white"
-                          >
-                            {section.heading}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
+                <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
               </aside>
 
               <article className={`prose prose-invert max-w-none ${showHandbook ? "block" : "hidden"}`}>
-                {entry && entry.handbookMarkdown ? (
+                {chapterId && chapterModule ? (
+                  <div>
+                    {loadingChapter && (
+                      <p className="text-sm text-slate-400">Loading chapter…</p>
+                    )}
+                    {chapterError && (
+                      <p className="text-sm text-red-400">Failed to load chapter: {chapterError.message}</p>
+                    )}
+                    {chapterModule && (
+                      <HandbookMDXProvider>
+                        <chapterModule.default />
+                      </HandbookMDXProvider>
+                    )}
+                  </div>
+                ) : entry && entry.handbookMarkdown ? (
                   <ReactMarkdown
                     rehypePlugins={[rehypeSlug]}
                     remarkPlugins={[remarkGfm]}

@@ -42,3 +42,41 @@ export async function loadHandbookEntry(standardId) {
     return null;
   }
 }
+
+// Hierarchical structure: substandard intro plus chapter list/loaders
+// This drives the sidebar tree and chapter routing.
+export const handbookStructure = {
+  // Variables & Primitives: intro lives in JS.VDT.PRM.mdx (top-level),
+  // chapters live under standards/JS.VDT.PRM/*.mdx
+  'JS.VDT.PRM': {
+    // Explicit chapter list with stable ids and user-facing titles
+    chapters: [
+      {
+        id: 'strings-introduction',
+        title: 'String Values',
+        load: () => import('./standards/JS.VDT.PRM/strings-introduction.mdx'),
+      },
+      {
+        id: 'collections-overview',
+        title: 'Collections Overview',
+        load: () => import('./standards/JS.VDT.PRM/collections-overview.mdx'),
+      },
+    ],
+    // Intro loader: reuse the existing top-level chapter as the intro
+    loadIntro: () => import('./JS.VDT.PRM.mdx'),
+  },
+  // Add more standards here as their chapters are authored
+};
+
+export function getChaptersForStandard(standardId) {
+  const node = handbookStructure[standardId];
+  return node?.chapters || [];
+}
+
+export function getChapterLoader(standardId, chapterId) {
+  const node = handbookStructure[standardId];
+  if (!node) return null;
+  if (!chapterId) return node.loadIntro || null;
+  const item = node.chapters.find((c) => c.id === chapterId);
+  return item ? item.load : null;
+}

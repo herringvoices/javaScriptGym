@@ -34,6 +34,14 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      {
+        path: "/handbook/:standardId/:chapterId",
+        element: (
+          <Suspense fallback={null}>
+            <HandbookPage />
+          </Suspense>
+        ),
+      },
     ],
   },
 ]);
