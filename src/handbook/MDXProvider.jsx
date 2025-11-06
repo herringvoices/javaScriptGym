@@ -2,6 +2,7 @@ import { MDXProvider } from "@mdx-js/react";
 import React from "react";
 import Callout from "../components/Callout";
 import PracticeCard from "../components/PracticeCard";
+import HandbookChallenge from "../components/HandbookChallenge";
 import MiniSandpack from "../components/MiniSandpack";
 import Playground from "../components/Playground";
 
@@ -26,6 +27,7 @@ function Tip(props) {
 const components = {
   Callout,
   PracticeCard,
+  HandbookChallenge,
   MiniSandpack,
   Playground,
   Note,

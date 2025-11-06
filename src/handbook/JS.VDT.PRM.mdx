@@ -110,6 +110,29 @@ let totalLine = `You bought ${quantity} items for ${price * quantity} dollars.`;
 	</ul>
 </PracticeCard>
 
+<HandbookChallenge
+	title="Strings in the console"
+	answers={[
+		<code key="a">{`console.log("first")`}</code>,
+		<code key="b">{`console.log("second")`}</code>,
+		<code key="c">{`console.log("third")`}</code>,
+	]}
+>
+	<p className="m-0">
+		Try this quick exercise in the editor. In three separate lines, log three strings:
+		<code> "first"</code>, <code>"second"</code>, and <code>"third"</code>.
+	</p>
+	<ol className="mt-3 mb-0 list-decimal pl-5">
+		<li>Write three lines: <code>console.log("first")</code>, then <code>console.log("second")</code>, then <code>console.log("third")</code>.</li>
+		<li>Run the code and notice the order of messages in the console.</li>
+		<li>Now change the order of the three lines and run again. What changed?</li>
+		<li>Finally, remove the quotes from one of the words (e.g., <code>console.log(first)</code>). What error do you see, and why?</li>
+	</ol>
+	<p className="mt-3 mb-0 text-slate-300">
+		Hint: Quotes make a <em>string</em> value. Without quotes, JavaScript thinks <code>first</code> is a variable name—and if there’s no such box, you’ll get a ReferenceError.
+	</p>
+</HandbookChallenge>
+
 *When to use strings:* names, labels, messages, IDs not used for math.
 
 ### Numbers: Your Math Boxes
