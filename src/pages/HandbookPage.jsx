@@ -207,7 +207,7 @@ export default function HandbookPage() {
               : "lg:grid-cols-1";
           return (
             <div className={`grid gap-8 ${gridColsLg}`}>
-              <aside className={showTOC ? "space-y-6" : "hidden"}>
+              <aside className={showTOC ? "space-y-6 sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto" : "hidden"}>
                 <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
               </aside>
 
