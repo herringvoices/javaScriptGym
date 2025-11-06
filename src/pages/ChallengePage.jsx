@@ -577,6 +577,7 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
                 <SandpackConsole
                   key={consoleKey}
                   showHeader
+                  showSyntaxError
                   resetOnPreviewRestart
                   style={{ height: "100%" }}
                 />
