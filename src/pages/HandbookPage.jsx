@@ -280,7 +280,13 @@ export default function HandbookPage() {
                 )}
               </article>
 
-              <section className={showEditor ? "block" : "hidden"}>
+              <section
+                className={
+                  showEditor
+                    ? "sticky top-4 self-start max-h-[calc(100vh-8rem)] overflow-auto"
+                    : "hidden"
+                }
+              >
                 {entryError ? (
                   <div className="rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">
                     Failed to load entry: {entryError.message}
