@@ -59,11 +59,7 @@ const entry = {
       path: "/main.js",
       active: true,
       content:
-        "// Try editing and watch Console & Preview update\n" +
-        "console.clear();\n\n" +
-        "const items = [\"apples\", \"bananas\", \"cherries\"];\n" +
-        "console.log(\"We have\", items.length, \"items:\", items);\n\n" +
-        "document.querySelector(\"#list\").innerHTML = items.map(function(x){ return '<li>' + x + '</li>'; }).join(\"\");\n",
+        "// Try editing and watch Console & Preview update\n" 
     },
   ],
   entry: "/index.html",
@@ -72,19 +68,60 @@ const entry = {
     html: "<div id='app'></div>",
   },
   mock: undefined,
-  handbookMarkdown: `# Welcome to the Handbook Workbench
+  handbookMarkdown: `# Welcome to your JavaScript Handbook!!
 
-This page shows the new layout:
+As you read, you’ll see **challenges** that ask you to try ideas in the editor on the right. Do them as you go—no one learns just by reading or listening. Everyone and their mom learns by **doing**.
 
-- Toggle the Table of Contents, Handbook, and Editor using the header buttons.
-- The editor panel has two rows: (1) Files + Editor; (2) Preview or Console.
-- Changes compile live; use the Console to inspect logs.
+**Editor basics (quick):**
 
-### Tips
+* If you’re just writing JS, open the **Console**.
+* If you’re also working with HTML or CSS, look at the **Preview**.
+* Code runs automatically. If it gets finicky, nudge it—make a tiny change and change it back.
 
-- Click a file in the sidebar to switch editors.
-- Switch the bottom panel between Preview and Console.
-- Use Reset in the Challenge pages to clear local changes; here simply edit and experiment.
+## What JavaScript is (and isn’t)
+
+JavaScript isn’t magic. It can feel that way at first, but it’s really a **toolbox for manipulating data**.
+
+* Posting on Instagram → **Create** data
+* Scrolling your feed → **Read** data
+* Changing your username → **Update** data
+* Deleting a post → **Delete** data
+
+That’s **CRUD**, and it’s most of what we do.
+
+Our goal here isn’t to teach you *every* tool in the JS toolbox. It’s to teach you the **basic tools you’ll actually use** in web development—and **when** to use them.
+
+## Your first tool: \`console.log\`
+
+Think of \`console.log\` as your **stethoscope**—it lets you *hear* what your code is doing.
+
+\`\`\`js
+console.log("Hello, handbook!");
+\`\`\`
+
+You’ll use it constantly to check values, confirm what ran, and debug surprises.
+
+---
+
+### Challenge: Strings in the console
+
+Try this quick exercise in the editor. In three separate lines, log three strings: \`"first"\`, \`"second"\`, and \`"third"\`.
+
+1) Write three lines:
+
+\`\`\`js
+console.log("first");
+console.log("second");
+console.log("third");
+\`\`\`
+
+2) Run the code and notice the order of messages in the console.
+
+3) Now change the order of the three lines and run again. What changed?
+
+4) Finally, remove the quotes from one of the words (e.g., \`console.log(first)\`). What error do you see, and why?
+
+Hint: Quotes make a *string* value. Without quotes, JavaScript thinks \`first\` is a variable name—and if there’s no such box, you’ll get a \`ReferenceError\`.
 `,
   tags: ["intro"],
 };

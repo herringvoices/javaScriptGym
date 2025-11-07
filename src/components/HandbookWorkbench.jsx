@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { EditorView } from "@codemirror/view";
 import { dracula } from "@codesandbox/sandpack-themes";
 import {
@@ -219,31 +219,7 @@ function WorkbenchLayout({ showFiles, bottomPanel, storageKey }) {
             <SandpackFileExplorer autoHiddenFiles style={{ height: "100%", fontSize: "var(--sp-font-size)" }} />
           </div>
         ) : null}
-        <SandpackCodeEditor
-          showTabs
-          showLineNumbers
-          showInlineErrors
-          wrapContent
-          extensions={[
-            ...getDefaultEditorExtensions(),
-            // Drive editor font size from the same CSS var as other panes
-            EditorView.theme(
-              {
-                "&": { fontSize: "1.25rem", lineHeight: "1.6" },
-                ".cm-content": {
-                  fontSize: "1.25rem",
-                  whiteSpace: "pre-wrap",
-                  overflowWrap: "anywhere",
-                },
-                ".cm-line": { wordBreak: "break-word" },
-                ".cm-gutters": { fontSize: "1.25rem" },
-              },
-              { dark: true }
-            ),
-          ]}
-          style={{ height: "100%" }}
-          className="flex-1"
-        />
+        <WorkbenchEditor />
       </div>
 
       {/* Row 2: preview OR console (keep both mounted, toggle visibility) */}
@@ -262,5 +238,35 @@ function WorkbenchLayout({ showFiles, bottomPanel, storageKey }) {
         </div>
       </div>
     </SandpackLayout>
+  );
+}
+
+function WorkbenchEditor() {
+  // Build a stable extensions array to avoid frequent reconfiguration causing ChangeSet position mismatches
+  const baseExtensions = useMemo(() => getDefaultEditorExtensions(), []);
+  const fontSizeTheme = useMemo(
+    () =>
+      EditorView.theme(
+        {
+          "&": { fontSize: "1.25rem", lineHeight: "1.6" },
+          ".cm-content": { fontSize: "1.25rem" },
+          ".cm-line": { wordBreak: "break-word" },
+          ".cm-gutters": { fontSize: "1.25rem" },
+        },
+        { dark: true }
+      ),
+    []
+  );
+  const extensions = useMemo(() => [...baseExtensions, fontSizeTheme], [baseExtensions, fontSizeTheme]);
+  return (
+    <SandpackCodeEditor
+      showTabs
+      showLineNumbers
+      showInlineErrors
+      wrapContent
+      extensions={extensions}
+      style={{ height: "100%" }}
+      className="flex-1"
+    />
   );
 }

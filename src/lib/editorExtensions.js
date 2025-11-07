@@ -36,12 +36,15 @@ export function customCompletionSource(context) {
  * @returns {import("@codemirror/state").Extension[]}
  */
 export function getDefaultEditorExtensions() {
+  // Important: return a fresh, plain array of extensions. Callers should memoize this
+  // to avoid reconfiguring the editor on every render, which can cause ChangeSet
+  // mapping issues while users type/delete quickly.
   const extensions = [
     // Theme first so downstream extensions can adjust if needed
     vscodeDark,
     // Editor UX
   closeBrackets(),
-  autoCloseTags,
+    autoCloseTags,
     bracketMatching(),
     highlightActiveLine(),
     // Register autocompletion once; avoid override conflicts with Sandpack's config.
