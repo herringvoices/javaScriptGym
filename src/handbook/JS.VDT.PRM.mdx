@@ -1,306 +1,180 @@
 ---
 id: JS.VDT.PRM
-title: Variables & Primitives
-short: Build boxes (variables) so programs remember values; use the right primitive type.
+title: Variables · Boxes for Data
+short: Declare a variable, put a value in it, and change it when the world changes.
 ---
 
-<Callout type="note" title="Mental model">Variables are <strong>boxes you make so your program can remember something</strong>. You build a box, give it a label, and put something inside. Later you use the label to look up what’s there.</Callout>
+# Variables: boxes that hold information
 
-Welcome! Today you’ll meet the first big idea in JavaScript: **variables**. A variable is a *box* you make in code so your program can **remember** something—like a player’s score, a visitor’s name, or how many items are in a cart.
+So, JavaScript is a **toolbox for manipulating information**—data. To use those tools well, we need **easy labels** for the pieces of data we’re working with. We do this in real life all the time.
 
-Keep this pocket model close: **Variables are boxes.** You build a box, give it a label, and put something inside. Later you use the label to look up what’s in the box. We’ll gently turn that idea into real JavaScript.
+Imagine your friend Nick says, “I’m 35 years old.” Your brain makes a little box, writes **Nick’s age** on the label, and tucks that fact inside. Later, if someone asks, “How old is Nick?” you look back in your memory, find the box labeled “Nick’s age,” and read what’s inside.
 
-### In this chapter, you’ll learn (VDT.PRM)
+That’s a **variable**: a labeled box that holds a value. The **label** is the variable’s name; the **value** is what’s inside.
 
-* **JS.VDT.PRM.1 — Build and label boxes (variables):** How to *declare* variables with `let` and `const`, when to choose a box you can change (`let`) vs. a box you promise not to re‑label (`const`).
-* **JS.VDT.PRM.2 — What goes in the box (primitives):** How to store and use **strings** (text), **numbers** (math), **booleans** (true/false), and the two kinds of “empty”: `null` (empty on purpose) and `undefined` (not assigned yet).
-* **JS.VDT.PRM.3 — Work with values using operators:** How to do **arithmetic** with numbers, **concatenation** and **interpolation** with strings, and a gentle peek at **comparisons** (`===`, `>`, etc.) and **logical operators** (`&&`, `||`, `!`) to produce `true`/`false`—without jumping into `if/else` yet.
-* **JS.VDT.PRM.4 — Pick the right type:** How to decide whether a value should be a **string**, **number**, or **boolean**, and when to use `null` for “nothing yet.”
+## Build the box (declare), then peek inside
+
+We build a box with the keyword `let`—a special, reserved word in JavaScript. Keywords are like command words: when you use one, the language does a specific built‑in job. In this case, `let` tells JavaScript to make a new variable.
+
+### Name the box (the label)
+
+After we build the box, we need to create a label for it—the variable’s name. Choose names that **say what’s inside** and still make sense a week from now. Imagine leaving a sticky note for future‑you and your teammates. nickName beats nn; favoriteColor beats c.
+
+**Bad → Better (and why)**
+
+| Bad                                                  | Better            | Why                     |
+| ---------------------------------------------------- | ----------------- | ----------------------- |
+| `nn`                                                 | `nickName`        | Says what it holds      |
+| `c`                                                  | `favoriteColor`   | Specific, not cryptic   |
+| `theNameOfTheUserWhoIsCurrentlyLoggedIn`             | `currentUserName` | Too wordy; hard to scan |
+| `theTitleThatIsDisplayedAtTheTopOfTheCurrentWebpage` | `pageTitle`       | Concise and clear       |
+
+Use **camelCase** for names:
+
+* start lowercase: myName
+* New words start uppercase: favoriteColor
+* no spaces; don’t start with a number; avoid reserved words
+
+```js
+let myName;
+console.log(myName); // undefined (box exists, but it’s empty)
+```
+
+## Put something in the box (assign)
+
+After building your box, you use the **assignment operator** (the equals sign, `=`) to put a value inside it.
+
+For example:
+
+```js
+let myName; // build the box (declare the variable)
+myName = "Nick"; // put a value inside (assign)
+console.log(myName); // "Nick"
+```
+
+The most important rule to remember is: **JavaScript always solves the right-hand side first.** It looks at everything to the right of the `=`—whether it's a simple number, a math problem, or other variables—and works until it has one single, final value.
+
+Then, it takes that single result and stores it in the one variable (the "box label") on the left-hand side. The left side must always be a single box name, ready to receive the value.
+
+For example, if the value you're storing is text, it must be wrapped in quotes (like "Nick").
+
+Usually we assign variables a value when we first declare them. This is called **initializing**.
+
+```js
+let myName = "Nick";
+console.log(myName); // "Nick"
+```
 
 ---
-
-## 1) Building a box
-
-To build a box in JavaScript, you use the word `let`. `let` is a **keyword** (a reserved word with special meaning) that tells JavaScript: “Create a new box for me.”
-
-```js
-let score;
-```
-
-You just made a box named `score`. It’s empty right now. To put something inside, use the `=` sign (that’s **assignment**):
-
-```js
-score = 0;
-```
-
-If you already know what should go inside when you build the box, you can do both in one step:
-
-```js
-let score = 0;
-```
-
-From now on, whenever you write `score` in your code, JavaScript will hand you whatever is inside that box at that moment.
-
-### Technical Vocabulary
-
-| Term | Beginner-friendly definition | Quick example |
-| :---- | :---- | :---- |
-| **Variable** | A named **box in memory** that holds a value you can use later. | `let score = 0;` |
-| **Declare** | **Build the box.** With `let` or `const`. | `let score;` |
-| **Assign** | **Put a value in the box** or replace what’s inside using `=`. | `score = 0;` |
-
----
-
-## 2) Labeling your box (naming)
-
-Good labels make code easier to read.
-
-* Must start with a **letter**; can include letters/numbers/`$`/`_` after
-* JavaScript cares about **capitalization**: `username` vs `userName`
-* Use **camelCase** for multi‑word names: `totalPrice`, `firstName`
-* Be specific: `cartTotal` is clearer than `x`
-
-```js
-let userName = "Momo";
-let cartTotal = 12.50;
-```
-
----
-
-## 3) What can go in the box? (Primitives)
-
-JavaScript has five simple data types called **primitives**. A **data type** tells you what kind of value is in the box *and* what operations make sense.
-
-### Strings: Your Word Boxes
-
-Strings hold **text**. Use quotes: double, single, or backticks.
-
-```js
-let greeting = "Hello";
-```
-
-Glue strings together with `+` (**concatenation**):
-
-```js
-let first = "Nick";
-let message = "Hello, " + first + "!"; // "Hello, Nick!"
-```
-
-Important: `"2"` is a **string** while `2` is a **number**.
-
-```js
-"2" + 2;                // "22"
-Number("2") + 2;        // 4
-parseInt("2", 10) + 2;  // 4
-```
-
-➡️ **Interpolation** (string templates) uses backticks and `${ }` to drop variables/expressions straight into a string:
-
-```js
-let message2 = `Hello, ${first}!`;
-let price = 2; let quantity = 3;
-let totalLine = `You bought ${quantity} items for ${price * quantity} dollars.`;
-```
-
-<PracticeCard prompt='Why prefer interpolation over long concatenations?'>
-	<ul className="m-0 list-disc pl-5">
-		<li>Cleaner to read (no " + value + ") chains</li>
-		<li>Lets you embed expressions directly (`${'{qty * price}'}`)</li>
-		<li>Great for multi‑value or multi‑line messages</li>
-	</ul>
-</PracticeCard>
 
 <HandbookChallenge
-	title="Strings in the console"
-	answers={[
-		<code key="a">{`console.log("first")`}</code>,
-		<code key="b">{`console.log("second")`}</code>,
-		<code key="c">{`console.log("third")`}</code>,
-	]}
+title="Hello, box"
+hints={[
+"Declare first, then log. After that, assign, then log again.",
+"Words need quotes.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let myName;\nconsole.log(myName);\nmyName = "Ada";\nconsole.log(myName);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`let myName;\nconsole.log(myName); // undefined\nmyName = "Your Name";\nconsole.log(myName);`}</pre>
+}
 >
-	<p className="m-0">
-		Try this quick exercise in the editor. In three separate lines, log three strings:
-		<code> "first"</code>, <code>"second"</code>, and <code>"third"</code>.
-	</p>
-	<ol className="mt-3 mb-0 list-decimal pl-5">
-		<li>Write three lines: <code>console.log("first")</code>, then <code>console.log("second")</code>, then <code>console.log("third")</code>.</li>
-		<li>Run the code and notice the order of messages in the console.</li>
-		<li>Now change the order of the three lines and run again. What changed?</li>
-		<li>Finally, remove the quotes from one of the words (e.g., <code>console.log(first)</code>). What error do you see, and why?</li>
-	</ol>
-	<p className="mt-3 mb-0 text-slate-300">
-		Hint: Quotes make a <em>string</em> value. Without quotes, JavaScript thinks <code>first</code> is a variable name—and if there’s no such box, you’ll get a ReferenceError.
-	</p>
+
+  <p className="m-0">
+    Make a variable called <code>myName</code>. Log it (you should see <code>undefined</code>). Then assign your real name and log it again.
+  </p>
+
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`undefined\nYour Name`}</pre>
 </HandbookChallenge>
 
-*When to use strings:* names, labels, messages, IDs not used for math.
+---
 
-### Numbers: Your Math Boxes
+<HandbookChallenge
+title="Favorite things"
+hints={[
+"Make one variable per favorite.",
+"Use clear names in camelCase, like <code>favColor</code>.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let favColor = "pink";\nconsole.log(favColor);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`let favColor = "pink";\nlet favSong = "Thunder Road";\nlet favBook = "The Hobbit";\nlet favMovie = "Spider-Verse";\nlet favFruit = "Mango";\nconsole.log(favColor, favSong, favBook, favMovie, favFruit);`}</pre>
+}
+>
 
-One number type for whole + decimal values.
+  <p className="m-0">
+    Create variables for your favorites: <code>favColor</code>, <code>favSong</code>, <code>favBook</code>, <code>favMovie</code>, <code>favFruit</code>. Assign each to a word and log them.
+  </p>
 
-```js
-let lives = 3;
-let price2 = 2.99;
-let quantity2 = 3;
-let total = price2 * quantity2; // 8.97
-```
+  <p className="mt-3 mb-1 text-slate-300"><strong>Possible console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`pink Thunder Road The Hobbit Spider-Verse Mango`}</pre>
+  <Note>
+    Be sure you log the <strong>variables</strong> (like <code>console.log(favColor)</code>) and not
+    hard‑coded strings (like <code>console.log("pink")</code>).
+  </Note>
+</HandbookChallenge>
 
-<Callout type="tip">You may see `0.1 + 0.2` give `0.30000000000000004`. That’s floating‑point quirks—format for display later, don’t stress now.</Callout>
+## Changing what’s in the box (reassignment)
 
-*When to use numbers:* counts, prices, scores, measurements.
+Why change a value later? Because once a site is live, users change things. They click buttons, type into inputs, and flip settings. Your code needs to respond. Sometimes you keep the same label but replace what’s inside the box—that’s **reassignment**.
 
-### Booleans: Your Light Switch Boxes
+We use two keywords to declare a variable:
 
-Booleans answer **yes/no** questions: `true` or `false`.
-
-```js
-let isLoggedIn = false;
-let totalDue = 41.25;
-let isFreeShipping = totalDue >= 35; // true
-let isMuted = false;
-isMuted = !isMuted; // toggle
-```
-
-*When to use:* logged in? dark mode on? checkbox checked?
-
-### Null & Undefined: Empty Boxes
-
-Both mean “no value,” but:
-
-* `null` — empty **on purpose** (you set it)
-* `undefined` — not assigned yet (JavaScript’s default)
+* **`const`** when you don’t plan to change what’s inside that box
+* **`let`** when the value might change later
 
 ```js
-let selectedItem = null; // will fill later
-let nextThing;           // undefined
+const siteName = "JS Handbook";
+console.log(siteName);
+// siteName = "New Name"; // ❌ TypeError if you try to reassign
+
+let favColor = "pink";
+favColor = "teal";         // ✅ value changed
+console.log(favColor);
 ```
 
-| Empty value | Meaning | Who sets it? |
-| :---- | :---- | :---- |
-| `null` | “Nothing here yet (intentionally).” | You |
-| `undefined` | “No value was assigned.” | JS (default) |
+<HandbookChallenge
+title="Won’t change / might change"
+hints={[
+"Pick a label that shouldn’t change (like a site or course name) — that’s a const.",
+"Pick a label that might change (like a favorite) — that’s a let.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const siteName = "JS Handbook";\nconsole.log(siteName);\n// siteName = "New Name"; // ❌ TypeError\n\nlet favColor = "pink";\nconsole.log(favColor);\nfavColor = "teal";\nconsole.log(favColor);`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const siteName = "JS Handbook";\nconsole.log(siteName);\n// siteName = "New Name"; // TypeError: Assignment to constant variable.\n\nlet favColor = "pink";\nconsole.log(favColor);\nfavColor = "teal";\nconsole.log(favColor);`}</pre>
+}
+>
 
-### Technical Vocabulary (Primitives)
+  <div className="space-y-2">
+    <p className="m-0">
+      Make one variable you won’t change (as a <code>const</code>) and one you might change (as a <code>let</code>). Log each. Then change the <code>let</code> and see the new value.
+    </p>
+    <p className="m-0">
+      Optional: try to change the <code>const</code> line to see the error—then comment that line back out.
+    </p>
+  </div>
 
-| Term | Beginner-friendly definition | Quick example |
-| :---- | :---- | :---- |
-| **String** | Text inside quotes. | `"Hello"` |
-| **Interpolation** | Put values inside a backtick string with `${}`. | `` `Hi ${name}` `` |
-| **Number** | A numeric value for math. | `42`, `3.14` |
-| **Boolean** | A true/false value. | `true`, `false` |
-| **null** | Intentional empty placeholder. | `let item = null` |
-| **undefined** | Declared but not assigned yet. | `let x;` |
-| **Data type** | The kind of value (string, number, …). | `lives` is a number |
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`JS Handbook\npink\nteal`}</pre>
+  <p className="m-0 text-slate-400"><em>If you try to reassign the const:</em> <code>TypeError: Assignment to constant variable.</code></p>
+</HandbookChallenge>
 
 ---
 
-## 4) Working with values (operators)
+## Technical Vocabulary
 
-Arithmetic:
-
-```js
-3 + 2; 7 - 4; 2 * 3; 8 / 2; 7 % 3; 2 ** 3;
-```
-
-String building:
-
-```js
-"Hello, " + name + "!";
-`Hello, ${name}!`;
-```
-
-Comparisons (produce booleans):
-
-```js
-age >= 18;    // true / false
-score === 10; // strict equality
-count !== 0;  // not equal
-```
-
-Logical:
-
-```js
-isLoggedIn && isAdmin;
-!isGameOver;
-```
+| Term                  | Plain-English meaning                 | Tiny example                                |
+| :-------------------- | :------------------------------------ | :------------------------------------------ |
+| variable              | Labeled box that holds a value        | `let myName;`                               |
+| identifier (name)     | The label on the box                  | `myName`                                    |
+| declare / declaration | Make the box                          | `let myName;`                               |
+| assign / assignment   | Put a value in the box with `=`       | `myName = "Nick";`                          |
+| initialize            | Declare **and** assign in one step    | `let myName = "Nick";`                      |
+| reassign              | Replace the value later               | `favColor = "teal";`                        |
+| keyword               | Reserved command word in JS           | `let`, `const`                              |
+| `const`               | A variable you don’t plan to reassign | `const siteName = "JS Handbook";`           |
+| `let`                 | A variable you might reassign         | `let favColor = "pink";`                    |
+| assignment operator   | The `=` that assigns values           | `x = y;`                                    |
+| camelCase             | Naming style for variables            | `favoriteColor`                             |
+| `undefined`           | The box exists, but it’s empty        | after `let myName;` → `console.log(myName)` |
 
 ---
 
-## 5) Picking the right type
+## Wrap‑up
 
-Ask: *What am I doing with this value?* Math → number. Display label → string. Toggle → boolean. Waiting for a future object → `null`.
+You learned how to **declare** a variable, **name** it clearly, **assign** a value with `=`, and when to choose **`const`** vs **`let`**. You also saw `undefined`—what shows up when the box exists but nothing’s inside yet.
 
-<PracticeCard prompt='Which type: user’s name, items in cart, dark mode enabled, shipping method not chosen yet?'>
-	<ul className="m-0 list-disc pl-5">
-		<li>User’s name → string</li>
-		<li>Items in cart → number</li>
-		<li>Dark mode enabled → boolean</li>
-		<li>Shipping method not chosen yet → null</li>
-	</ul>
-</PracticeCard>
-
----
-
-### Practice: Which box would you use?
-
-<PracticeCard prompt='Decide the best type for each (name, candy bar price, checkbox checked?, loading screen image not chosen, daily high temperature, dark mode?, middle initial, remaining lives, not‑yet‑chosen shipping method).'>
-	<p className="m-0">Suggested answers:</p>
-	<ul className="mt-2 mb-0 list-disc pl-5">
-		<li>Name → string</li>
-		<li>Candy bar price → number</li>
-		<li>Checkbox checked? → boolean</li>
-		<li>Loading screen image not chosen → null</li>
-		<li>Daily high temperature → number</li>
-		<li>Dark mode? → boolean</li>
-		<li>Middle initial → string</li>
-		<li>Remaining lives → number</li>
-		<li>Shipping method not yet chosen → null</li>
-	</ul>
-</PracticeCard>
-
-### Mini challenge
-
-Which type is each: `"42"`, `42`, `true`, `null`, `undefined`? Bonus: rewrite concatenation with interpolation.
-
-<PracticeCard prompt='Mini challenge solutions'>
-	<ul className="m-0 list-disc pl-5">
-		<li>`"42"` → string</li>
-		<li>`42` → number</li>
-		<li>`true` → boolean</li>
-		<li>`null` → null</li>
-		<li>`undefined` → undefined</li>
-		<li>Rewrite: <code>let greeting = `Hello, ${'{name}' }!`;</code></li>
-	</ul>
-</PracticeCard>
-
----
-
-## 6) Try it (mini playground)
-
-<Playground console={true} showPreview={false} code={`const first = 'Ada';\nconst last = 'Lovelace';\nconst full = first + ' ' + last;\nlet lives = 3;\nconst isAlive = lives > 0;\nconsole.log(full, isAlive);\n`} />
-
----
-
-## 7) Vocabulary review
-
-| Term | Beginner-friendly definition | Quick example |
-| :---- | :---- | :---- |
-| Variable | Named box holding a value. | `let count = 0;` |
-| String | Text inside quotes. | `"Hello"` |
-| Number | Numeric value for math. | `42` |
-| Boolean | `true` / `false`. | `let ready = false` |
-| null | Intentional empty placeholder. | `let selected = null` |
-| undefined | Declared but not assigned yet. | `let x;` |
-| Interpolation | Inject values into a backtick string. | `` `Hi ${name}` `` |
-| Operator | Symbol performing an action. | `+`, `===`, `&&` |
-
----
-
-## 8) Checklist
-
-- Default to `const`; drop to `let` only when you reassign.
-- Pick the primitive that fits the usage (math? toggle? label?).
-- Prefer template literals for multi‑value strings.
-- Use `null` for “waiting for a value”; expect `undefined` before assignment.
-- Write boolean names that read clearly (`isOpen`, `hasError`).
+**Up next: *Data Types*.** That’s just “what kinds of things can go in the box.” We’ll start with text in quotes, then branch out.

@@ -111,6 +111,55 @@ Mastery state persists in `localStorage` under `practiceTool.masteredStandards` 
 
 With this skeleton in place, you can focus on authoring challenges and handbook chapters without additional setup.
 
+## Offline Sandpack bundler (local vs remote)
+
+We vendor a built copy of Sandpack's bundler under `public/sandpack/` (it must contain `frame.html`, worker chunks, and related assets). A small runtime settings file toggles whether the app uses those local assets or Sandpack's default remote bundler.
+
+### Runtime settings
+
+`public/settings.js` (loaded before the app) defines:
+
+```js
+window.APP_SETTINGS = {
+  useLocalBundler: false, // hosted/prod default: rely on Sandpack's remote bundler
+  bundlerURL: "/sandpack/" // absolute path to vendored bundler when enabled
+};
+```
+
+Flip to offline mode (e.g. classroom machines without internet) by overwriting the file:
+
+```bash
+cat > public/settings.js <<'EOF'
+window.APP_SETTINGS = { useLocalBundler: true, bundlerURL: "/sandpack/" };
+EOF
+```
+
+Because `public/sandpack/` is committed, students only need `npm install && npm run dev`.
+
+### Refreshing vendored assets
+
+1. Clone and build the bundler:
+	```bash
+	git clone https://github.com/codesandbox/sandpack-bundler.git tools/sandpack-bundler
+	cd tools/sandpack-bundler
+	yarn && yarn build
+	```
+2. Copy the build output (adjust if build folder differs):
+	```bash
+	rsync -a --delete dist/ ../../public/sandpack/
+	```
+3. Commit updated `public/sandpack/` contents.
+
+### Verification
+
+Run `npm run dev` and open a sandbox page. In DevTools → Network you should see requests to `/sandpack/frame.html` when `useLocalBundler: true`. Hosted builds (with `useLocalBundler: false`) will omit those and talk to the remote bundler.
+
+### Notes
+
+* Keep `bundlerURL` absolute (`/sandpack/`) so route changes don't break asset paths.
+* If repository size becomes large, consider Git LFS or a separate package for the bundler assets; the runtime toggle still works.
+* In development (`vite`), if `settings.js` is missing we default to using the local bundler for convenience.
+
 ## Automated completion tests (removed)
 
 Earlier iterations supported an optional `completion` block on each challenge that executed predicate code inside the sandbox to auto‑grade a solution. This repository has been simplified: those blocks were removed and the runner now returns a neutral result when no completion rule is present. Practical implications:

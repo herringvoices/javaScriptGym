@@ -12,6 +12,7 @@ import {
 } from "@codesandbox/sandpack-react";
 import { getDefaultEditorExtensions } from "../lib/editorExtensions";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
+import { getBundlerURL } from "../lib/getBundlerURL";
 
 /**
  * HandbookWorkbench
@@ -99,6 +100,8 @@ export default function HandbookWorkbench({ entry }) {
     };
   }, [challengeLike, savedFilesForEntry]);
 
+  const bundlerURL = getBundlerURL();
+
   if (!entry || !sandpackSetup) {
     return (
       <div className="rounded border border-slate-800 p-3 text-sm text-slate-300">Select a standard to load its editor.</div>
@@ -153,6 +156,7 @@ export default function HandbookWorkbench({ entry }) {
         files={sandpackSetup.files}
         customSetup={sandpackSetup.customSetup}
         theme={dracula}
+        bundlerURL={bundlerURL}
         options={{
           ...sandpackSetup.options,
           showLineNumbers: true,

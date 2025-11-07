@@ -21,6 +21,7 @@ import Modal from "../components/Modal";
 import Callout from "../components/Callout";
 import { loadMastered, saveMastered } from "../lib/mastery";
 import { EditorView } from "@codemirror/view";
+import { getBundlerURL } from "../lib/getBundlerURL";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const difficultyLabel = (value) => {
@@ -134,6 +135,9 @@ function ChallengeWorkspace({ challenge, navigate }) {
     };
   }, [challenge, initialFiles]);
 
+  // Decide at runtime whether to use local vendored bundler or Sandpack's online bundler
+  const bundlerURL = getBundlerURL();
+
   const handleFileChange = useCallback(
     (path, code) => {
       if (path.startsWith("/.playground")) return;
@@ -211,6 +215,7 @@ function ChallengeWorkspace({ challenge, navigate }) {
         files={sandpackSetup.files}
         customSetup={sandpackSetup.customSetup}
         theme={dracula}
+        bundlerURL={bundlerURL}
         options={{
           ...sandpackSetup.options,
           showLineNumbers: true,

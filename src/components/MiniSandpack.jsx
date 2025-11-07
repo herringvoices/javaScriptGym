@@ -10,6 +10,7 @@ import {
 import { useSandpack } from "@codesandbox/sandpack-react";
 import { createSandpackSetup } from "../lib/sandpack";
 import { getDefaultEditorExtensions } from "../lib/editorExtensions";
+import { getBundlerURL } from "../lib/getBundlerURL";
 // Removed persistence hook as tabs/buttons were removed
 
 /**
@@ -57,6 +58,7 @@ export default function MiniSandpack({
 
   const consoleRef = useRef(null);
   const [consoleKey, setConsoleKey] = useState(0); // remount console to clear logs
+  const bundlerURL = getBundlerURL();
 
   // Inner playground UI that consumes Sandpack context
   function PlaygroundInner() {
@@ -164,6 +166,7 @@ export default function MiniSandpack({
         customSetup={{ entry: setup.customSetup.entry }}
   // Apply Dracula theme from Sandpack themes
   theme={dracula}
+        bundlerURL={bundlerURL}
         options={{
           externalResources: [],
           visibleFiles: setup.options.visibleFiles,

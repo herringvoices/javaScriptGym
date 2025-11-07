@@ -8,6 +8,8 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Load runtime settings (decides local vs online Sandpack bundler) before app entry -->
+    <script defer src="/settings.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
