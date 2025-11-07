@@ -1,12 +1,172 @@
-## String Values
+---
+id: JS.VDT.STR
+title: Strings · Text Data
+short: Create text values, join them, and embed variables with template literals.
+---
 
-Strings are text wrapped in quotes. You can use single (`'`), double (`"`), or backticks (`` ` `` for template literals). They let you label things, show messages, and combine pieces of information.
+# Data Types → Strings
+
+Variables can hold lots of different types of data. We call those different types of data... **data types**. Because we are very clever and good at naming things.
+
+The simplest types are called **primitives**: **string**, **number**, **boolean**, **null**, and **undefined**.
+
+In this chapter we’re starting with **strings**—just text.
+
+<Callout type="note" title="Strings, in one breath">
+A <strong>string</strong> is text. Write it in quotes, like <code>"Hello world"</code>. For consistency, we’ll use <strong>double quotes</strong> in this course. Later you’ll also see single quotes and backticks.
+</Callout>
+
+## 1) Your first strings
+
+<Callout type="tip" title="Problem this solves">
+When you write <code>console.log(Nashville)</code>, JavaScript goes “Who’s Nashville?” and throws a <em>ReferenceError</em>. We need a way to say “this is <em>text</em>, not a variable name.” Quotes do that.
+</Callout>
 
 ```js
-let firstName = "Ada";
-let greeting = "Hello, " + firstName + "!"; // concatenation
-let greeting2 = `Hello, ${firstName}!`;       // interpolation
+const firstName = "Riley";
+const hometown = "Nashville";
+console.log(firstName, hometown); // Riley Nashville
 ```
 
-Try editing the examples in the editor pane. Change the value of `firstName`, add another variable for a last name, and build a full name string.
+<HandbookChallenge
+title="Make some strings"
+hints={[
+"Use double quotes around your text.",
+"Declare with const; log the variables to see their values.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const favoriteCity = "Savannah";
+const petName = "Dexter";
+console.log(favoriteCity, petName);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const favoriteCity = "Savannah";
+const petName = "Dexter";
+console.log(favoriteCity, petName);`}</pre>
+}
+
+>
+
+	<p className="m-0">
+		Create two variables with text values (your choice, e.g., <code>favoriteCity</code>, <code>petName</code>) and log them on one line.
+	</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`Savannah Dexter`}</pre>
+</HandbookChallenge>
+
+---
+
+## 2) Gluing text together with <code>+</code> (concatenation)
+
+<Callout type="tip" title="Problem this solves">
+You can log pieces separately, but humans read <em>sentences</em>, not piles of words. We need a way to stitch multiple strings into one line.
+</Callout>
+
+The <code>+</code> operator <strong>concatenates</strong>—it squishes two strings together and glues them. You control spacing and punctuation.
+
+```js
+const animal = "otter";
+const mood = "sleepy";
+const sentence = "The " + animal + " looks " + mood + ".";
+console.log(sentence); // "The otter looks sleepy."
+```
+
+<Callout type="warn" title="But… this gets old fast">
+With a few pieces, <code>+</code> is fine. With four or five, it turns into quotes‑and‑pluses spaghetti. Miss one space and you get <code>"HelloRiley"</code>. Wouldn’t it be nice if there were an easier way? Maybe one with an even more obnoxious name??
+</Callout>
+
+
+<HandbookChallenge
+title="Glue a sentence with +"
+hints={[
+"Remember to add spaces yourself: e.g., 'I enjoy ' + hobby + ' at ' + place + '.'",
+"Store your result in a new variable, then log it.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const hobby = "hiking";
+const place = "Radnor Lake";
+const about = "I enjoy " + hobby + " at " + place + ".";
+console.log(about);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const hobby = "hiking";
+const place = "Radnor Lake";
+const about = "I enjoy " + hobby + " at " + place + ".";
+console.log(about);`}</pre>
+}
+
+>
+
+	<p className="m-0">
+		Make two short strings (like a <code>hobby</code> and a <code>place</code>). Concatenate them with <code>+</code> into one sentence and log it.
+	</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`I enjoy hiking at Radnor Lake.`}</pre>
+</HandbookChallenge>
+
+---
+
+## 3) Interpolation (insert values into a string)
+
+<Callout type="tip" title="Problem this solves">
+Concatenation works, but it’s fragile and hard to read with many parts. We want a cleaner way to write sentences without babysitting spaces. Enter <strong>template literals</strong>—yes, that gloriously obnoxious name.
+</Callout>
+
+Template literals use <strong>backticks</strong> (the key under ESC) and let you embed variables with <code>${"{"}...{"}"}</code>.
+
+```js
+const drink = "chai latte";
+const cafe = "River & Rye";
+const line = `Order ready: ${drink} at ${cafe}.`;
+console.log(line); // "Order ready: chai latte at River & Rye."
+```
+
+<Callout type="warn" title="Backticks, not quotes">
+Interpolation only works inside <strong>backticks</strong> ( <code>`</code> ). <code>"Hi ${"{"}name{"}"}"</code> won’t interpolate; you’ll just see the symbols.
+</Callout>
+
+<HandbookChallenge
+title="Rewrite with interpolation"
+hints={[
+"Use backticks around the whole string.",
+"Insert variables with ${...}.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const snack = "pretzels";
+const show = "Lost";
+const msg = \`Now streaming ${"{"}show{"}"} — bring ${"{"}snack{"}"}!\`;
+console.log(msg);`}</pre>,
+	]}
+	answers={     <pre className="m-0 whitespace-pre-wrap">{`const snack = "pretzels";
+const show = "Lost";
+const msg = \`Now streaming ${"{"}show{"}"} — bring ${"{"}snack{"}"}!\`;
+console.log(msg);`}</pre>
+}
+
+>
+
+	<p className="m-0">
+		Take the sentence you built with <code>+</code> and rebuild it as a template literal using backticks and <code>${"{"}...{"}"}</code>.
+	</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`Now streaming Lost — bring pretzels!`}</pre>
+</HandbookChallenge>
+
+---
+
+## Common gotchas (quick fixes)
+
+* **Missing spaces:** If your sentence looks jammed, add spaces inside your strings: <code>"Hello " + name</code>.
+* **Wrong quotes for interpolation:** Use backticks for <code>${"{"}...{"}"}</code>.
+* **Mismatched quotes:** Start and end with the same kind (we’ll default to double quotes).
+
+---
+
+## Technical Vocabulary
+
+| Term             | Plain-English meaning                                  | Tiny example                              |
+| :--------------- | :----------------------------------------------------- | :---------------------------------------- |
+| string           | Text inside quotes                                     | <code>"Nashville"</code>                  |
+| concatenate      | Glue strings with <code>+</code>                       | <code>"Hi " + "there"</code>              |
+| template literal | Backtick string with <code>${"{"}...{"}"}</code> slots | <code>`Name: ${"{"}firstName{"}"}`</code> |
+| backtick         | Character used for template literals                   | <code>`like this`</code>                  |
+| interpolation    | Inserting values inside a backtick string              | <code>`Hello, ${"{"}name{"}"}`</code>     |
+
+---
+
+## Wrap-up
+
+* Strings are just <strong>text in quotes</strong>.
+* Use <strong>`+`</strong> to glue strings together, but it gets messy—<strong>template literals</strong> (backticks + <code>${"{"}...{"}"}</code>) are cleaner.
+
+<strong>Next up: Numbers.</strong> Operators, math, and the little gotchas when you mix strings with numbers (spoiler: you shouldn’t—yet).
 

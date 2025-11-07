@@ -18,7 +18,7 @@ We build a box with the keyword `let`—a special, reserved word in JavaScript. 
 
 ### Name the box (the label)
 
-After we build the box, we need to create a label for it—the variable’s name. Choose names that **say what’s inside** and still make sense a week from now. Imagine leaving a sticky note for future‑you and your teammates. nickName beats nn; favoriteColor beats c.
+After we build the box, we need to create a label for it—the variable’s name. Choose names that **say what’s inside** and still make sense a week from now. Imagine leaving a sticky note for future‑you and your teammates.
 
 **Bad → Better (and why)**
 
@@ -34,6 +34,8 @@ Use **camelCase** for names:
 * start lowercase: myName
 * New words start uppercase: favoriteColor
 * no spaces; don’t start with a number; avoid reserved words
+
+Let's see an example:
 
 ```js
 let myName;
@@ -111,12 +113,32 @@ answers={ <pre className="m-0 whitespace-pre-wrap">{`let favColor = "pink";\nlet
 
 ## Changing what’s in the box (reassignment)
 
-Why change a value later? Because once a site is live, users change things. They click buttons, type into inputs, and flip settings. Your code needs to respond. Sometimes you keep the same label but replace what’s inside the box—that’s **reassignment**.
+When you reassign a variable, you do not use the `let` keyword again. You’ve already built the box; now you’re just changing what’s inside. Using `let` again would tell JavaScript to try and build a new box with the same label, which usually results in an error.
 
-We use two keywords to declare a variable:
+```js
+// 1. Build the box (declare) and put something in (initialize)
+let currentScore = 100;
+console.log(currentScore); // 100
 
-* **`const`** when you don’t plan to change what’s inside that box
-* **`let`** when the value might change later
+// 2. Change what's in the box (reassign)
+// Notice: NO "let" keyword!
+currentScore = 150;
+console.log(currentScore); // 150
+
+// This would cause an error:
+// let currentScore = 150; // ❌ SyntaxError: 'currentScore' has already been declared
+```
+
+Now, sometimes we don’t want a value to change. Think about a person’s birth date, the number of days in a week, or the name of your website. These things aren’t supposed to be reassigned later in the code.
+
+When that’s true, we use a different keyword when we first declare our variable: `const`.
+
+`const` is short for constant. It’s like you build a box, put something inside, and immediately lock the box and throw away the key. You can peek inside anytime, but you can never change what’s in there.
+
+This gives us two keywords to declare a variable, depending on our intention:
+
+* **`const` (constant):** Use this when you don’t plan to ever change what’s inside that box.
+* **`let`:** Use this when the value might change later (like a `currentScore`).
 
 ```js
 const siteName = "JS Handbook";
