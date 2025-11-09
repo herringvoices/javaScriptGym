@@ -57,6 +57,11 @@ export const handbookStructure = {
         load: () => import('./standards/JS.VDT.PRM/strings-introduction.mdx'),
       },
       {
+        id: 'numbers-introduction',
+        title: 'Number Values',
+        load: () => import('./standards/JS.VDT.PRM/numbers-introduction.mdx'),
+      },
+      {
         id: 'collections-overview',
         title: 'Collections Overview',
         load: () => import('./standards/JS.VDT.PRM/collections-overview.mdx'),

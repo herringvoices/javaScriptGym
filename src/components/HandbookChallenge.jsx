@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 /**
  * HandbookChallenge
@@ -19,9 +19,26 @@ export default function HandbookChallenge({
   hints,
   toggleLabels,
 }) {
-  const mode = useMemo(() => (answers != null ? "answers" : hints != null ? "hints" : null), [answers, hints]);
+  // Build the list of available panels and track which is selected.
+  const availableModes = useMemo(() => {
+    const modes = [];
+    if (hints != null) modes.push("hints");
+    if (answers != null) modes.push("answers");
+    return modes;
+  }, [answers, hints]);
+
+  const [selected, setSelected] = useState(() => availableModes[0] || null);
   const [open, setOpen] = useState(false);
 
+  // When props change, ensure selected stays valid (or resets to the first available).
+  useEffect(() => {
+    if (!availableModes.includes(selected)) {
+      setSelected(availableModes[0] || null);
+      setOpen(false);
+    }
+  }, [availableModes, selected]);
+
+  const mode = selected; // current visible panel type
   const showLabel =
     (toggleLabels && toggleLabels.show) || (mode === "answers" ? "Show Answers" : "Show Hints");
   const hideLabel =
@@ -55,6 +72,22 @@ export default function HandbookChallenge({
           <p className="m-0 font-semibold tracking-wide text-amber-300">{title}</p>
           <div className="mt-2 space-y-3 leading-relaxed">{children}</div>
         </div>
+        {availableModes.length > 1 && (
+          <div className="flex items-center gap-2">
+            {availableModes.map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setSelected(m)}
+                className={`px-2 py-1 text-xs rounded font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 ${
+                  selected === m ? "bg-amber-600 text-white" : "bg-amber-500/10 text-slate-200"
+                }`}
+              >
+                {m === "hints" ? "Hints" : "Answers"}
+              </button>
+            ))}
+          </div>
+        )}
         {mode && (
           <button
             type="button"

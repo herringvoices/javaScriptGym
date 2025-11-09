@@ -1,0 +1,242 @@
+---
+id: JS.VDT.NUM
+title: Numbers · Counting & Simple Math
+short: Make numeric values, add/subtract/multiply/divide, and update totals with compound assignment.
+---
+
+# Data Types → Numbers
+
+Last time, we worked with **strings**—text in quotes—so we could label things and build readable sentences. Strings are great for names, messages, and anything you’d say out loud.
+
+But sentences don’t add up. To do *real math*, we need our second data type: **numbers**. Now, I know some of us hear "math" and run screaming for the hills, but this won't be anything too scary—just the kind of simpe math your apps actually use.
+
+Consider these problems:
+
+* A customer wants to see the **total** for their order.
+* A player **adds points** to their score in a web game.
+* A theater shows how many **seats are left** in a row.
+* A timer **counts down** to the start of class.
+
+That’s numbers territory: counts, totals, and simple scaling. No calculus. No proofs. Just values you can calculate with so your app can answer “how many?” and “what’s the total?” without breaking a sweat.
+
+## 1) Your first numbers
+
+To make a number, you just type a numeral out without quotation marks. For example, `5` instead of `"5"`
+
+Let's take a look at some numbers being assigned to variables:
+
+```js
+const redTeam = 5;
+const blueTeam = 4;
+console.log(redTeam, blueTeam); // 5 4
+```
+
+<HandbookChallenge
+title="Challenge: Tally the total"
+hints={[
+"Make a new variable to hold the total from the previous example.",
+"Use + to add two numbers together on the right of the = sign.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const redTeam = 5;
+const blueTeam = 4;
+let totalPlayers = redTeam + blueTeam;
+console.log(totalPlayers); // 9`}</pre> }
+
+>
+
+	<p className="m-0">
+		Make a new variable that adds the two team counts from the previous example and log the result.
+	</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`9`}</pre>
+</HandbookChallenge>
+
+---
+
+## 2) Addition & subtraction
+
+```js
+let total = 0;      // start at zero
+total = total + 3;  // add three
+total = total - 1;  // subtract one
+console.log(total); // 2
+```
+
+### Compound assignment (operators + the assignment operator)
+
+We already learned that **`=`** is the assignment operator: **evaluate the right, then store in the left** (one box name on the left, a value on the right).
+
+Compound assignment just **combines an operator with `=`** so you can update a variable in place.
+
+**Rule for `=`:**
+**“Evaluate the expression on the right down to _one_ value, then store that value in the variable on the left.”**
+
+**For `+=`:**
+**“Take the value on the right, add it to the value on the left, and store it.”**
+
+```js
+let total = 0;
+
+total += 3;  // add and assign (same as total = total + 3)
+total -= 1;  // subtract and assign
+console.log(total); // 2
+```
+
+**Quick map**
+
+* `x += y` → take left, **add** right, store in left
+* `x -= y` → take left, **subtract** right, store in left
+* `x *= y` → take left, **multiply by** right, store in left
+* `x /= y` → take left, **divide by** right, store in left
+
+> Same rule as before: JavaScript evaluates the **right-hand side first**, then assigns the result to the **single** variable on the left.
+
+<HandbookChallenge
+title="Scoreboard bumps"
+hints={[
+"Start with `let score = 0;`",
+"Use ONLY compound assignment: +=",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`let score = 0;
+score += 3;
+console.log(score); // 3
+score += 2;
+console.log(score); // 5
+score -= 1;
+console.log(score); // 4`}</pre> }
+
+>
+
+	<p className="m-0">
+		Use compound assignment to update a running score and log at each step.
+	</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`3
+5
+4`}</pre>
+</HandbookChallenge>
+
+---
+
+## 2.5) Numbers vs strings: "2" + "2" vs 2 + 2
+
+<Callout type="caution" title="Same plus sign, different meaning">
+If either side is a <strong>string</strong>, JavaScript will treat <code>+</code> as <strong>concatenate</strong> and glue text together. If both sides are <strong>numbers</strong>, <code>+</code> does <strong>addition</strong>.
+</Callout>
+
+```js
+console.log("2" + "2"); // "22" (two strings concatenated)
+console.log(2 + 2);       // 4   (two numbers added)
+console.log("2" + 2);     // "22" (number becomes text, then glued)
+console.log(2 + "2");     // "22"
+```
+
+<HandbookChallenge
+title="Challenge: Try these additions"
+hints={[
+"Run the first example to see how JavaScript treats two strings with +.",
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log("2" + "2"); // try this first`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`console.log("2" + "2"); // "22" (two strings concatenated)
+console.log(2 + 2);       // 4   (two numbers added)
+console.log("2" + 2);     // "22" (number becomes text, then glued)
+console.log(2 + "2");     // "22"`}</pre> }
+>
+
+	<p className="m-0">Console.log each of the following addition problems and observe what prints in the console. Note the difference between string concatenation and numeric addition.</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Problems to console.log:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`"2" + "2"
+2 + 2
+"2" + 2
+2 + "2"`}</pre>
+</HandbookChallenge>
+
+For now, keep it simple: **quotes = text** (glue with `+`), **no quotes = numbers** (add with `+`). We'll explore mixing types and coercion later.
+
+---
+
+## 3) Multiplication & division
+
+```js
+const seatsPerRow = 8;
+const rows = 6;
+const seats = seatsPerRow * rows;
+console.log(seats); // 48
+```
+
+```js
+const cookies = 24;
+const kids = 6;
+const cookiesEach = cookies / kids;
+console.log(cookiesEach); // 4
+```
+
+<HandbookChallenge
+title="T-shirt boxes"
+hints={[
+"Keep constants that don’t change as `const` (e.g., `shirtsPerBox`).",
+"Use a new variable for the computed total.",
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`const shirtsPerBox = 12;
+let boxes = 7;`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const shirtsPerBox = 12;
+let boxes = 7;
+let totalShirts = shirtsPerBox * boxes;
+console.log(totalShirts); // 84
+boxes = 8;
+totalShirts = shirtsPerBox * boxes;
+console.log(totalShirts); // 96`}</pre> }
+
+>
+
+	<p className="m-0">
+		A customer orders 7 boxes of shirts. There are 12 shirts in each box. Create a variable named <code>shirtsPerBox</code> with the value <code>12</code> and a variable named <code>boxes</code> with the value <code>7</code>. Then calculate the total number of shirts, store it in a new variable called <code>totalShirts</code>, and <code>console.log(totalShirts)</code>. After that, the customer updates the order to 8 boxes — reassign <code>boxes</code> to <code>8</code> on the next line, and recompute <code>totalShirts</code>, logging the new total.
+	</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`84
+96`}</pre>
+</HandbookChallenge>
+
+---
+
+## 4) Order of operations (PEMDAS, lightly)
+
+Multiplication and division are performed before addition and subtraction. To change that order, wrap the part you want evaluated first in parentheses—for example, write `(2 + 3) * 4` to do the addition before multiplying.
+
+```js
+console.log(2 + 3 * 4);   // 14
+console.log((2 + 3) * 4); // 20
+```
+
+---
+
+## Common gotchas (quick fixes)
+
+* Don’t mix numbers with text (e.g., `"2" + 2` sticks them together as text).
+* You can use decimals as well, but sometimes JavaScript does weird things with decimal math (e.g., `0.1 + 0.2` results in `0.30000000000000004`).
+* Remember the assignment rule: **evaluate the right, then store in the left**.
+
+---
+
+## Technical Vocabulary
+
+| Term                | Plain-English meaning             | Tiny example   |
+| ------------------- | --------------------------------- | -------------- |
+| number              | A numeric value (no quotes)       | `42`           |
+| operator            | A symbol that transforms values   | `+ - * /`      |
+| expression          | Code that produces a value        | `a + b * 2`    |
+| assignment operator | Puts a value into a variable      | `x = 10`       |
+| compound assignment | Operator + `=` to update in place | `total += 3`   |
+| initialize          | Declare and assign in one step    | `let n = 0`    |
+| precedence          | Order that operations run         | `*` before `+` |
+| parentheses         | Force the order you mean          | `(2 + 3) * 4`  |
+
+---
+
+## Wrap-up
+
+You created and updated numeric values with **`+`**, **`-`**, **`*`**, **`/`**, and learned **compound assignment** (your new best friend for running totals).
+
+**Next up: Booleans.** True/false values that power decisions.
+
+```
