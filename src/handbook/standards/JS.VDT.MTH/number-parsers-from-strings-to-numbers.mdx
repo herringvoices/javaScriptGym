@@ -1,0 +1,186 @@
+---
+
+id: JS.VDT.MTH.NUM_PARSE
+title: Number Parsers · From Strings to Numbers
+short: Turn form strings into numbers with Number, parseInt, and parseFloat—when to use which and why.
+---
+
+# Data Types → Number Parsers
+
+*Last time we* cleaned up text with string methods. *This time we’re* converting **form values** into **numbers** so we can actually do math with them.
+
+A quick truth about the web: when you read values from HTML inputs, they arrive as **strings**, even if they look exactly like numbers—`"2"`, `"19.99"`. Strings can’t do arithmetic; numbers can. So our first move is **parsing**: turning those numeric-looking strings into actual numbers.
+
+We’ll meet three parsers:
+
+* **`Number(value)`** — convert the **entire** string to a number (prefer this first)
+* **`parseInt(text)`** — read an **integer** from the **start** of the string
+* **`parseFloat(text)`** — read a **decimal** from the **start** of the string
+
+> Vocabulary check
+> These are **functions** (not methods). You call them by name: <code>Number("42")</code>, <code>parseFloat("3.14")</code>. No dot before them.
+
+---
+
+## 1) `Number(value)` — your default move
+
+Use `Number(...)` when the whole string is a number (surrounding spaces are fine). If extra characters sneak in—like `"12px"`—`Number(...)` can’t convert it.
+
+<HandbookChallenge
+ title="Convert clean numeric strings"
+ hints={[
+ "Create <code>qtyStr</code> as <code>\"3\"</code> and <code>priceStr</code> as <code>\" 19.99 \"</code>.",
+ "Make <code>qty</code> and <code>price</code> using <code>Number(qtyStr)</code> and <code>Number(priceStr)</code>.",
+ "Log both to see the numeric values.",
+ <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const qtyStr = "3";
+// const priceStr = " 19.99 ";
+// const qty = Number(qtyStr);
+// const price = Number(priceStr);
+// console.log(qty, price);`}</pre>,
+ ]}
+ answers={ <pre className="m-0 whitespace-pre-wrap">{`const qtyStr = "3";
+const priceStr = " 19.99 ";
+
+const qty = Number(qtyStr);
+const price = Number(priceStr);
+
+console.log(qty, price); // 3 19.99`}</pre>
+}
+>
+
+  <p className="m-0">
+    <code>Number(...)</code> is great for clean inputs—especially from forms—because it converts the whole string.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 2) `parseInt(text)` — whole numbers from the front
+
+Use `parseInt(...)` when the number is at the **start** of the string but extra characters follow (like units). It stops reading at the first non-digit and returns the **integer** part.
+
+<HandbookChallenge
+ title="Grab an integer with extra text after it"
+ hints={[
+ "Make <code>sizeStr</code> as <code>\"42px\"</code>.",
+ "Create <code>size</code> using <code>parseInt(sizeStr)</code>.",
+ "Log <code>size</code> to confirm it’s <em>just</em> the number.",
+ "Bonus: try <code>parseInt(\"3.99\")</code> and see what you get.",
+ <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const sizeStr = "42px";
+// const size = parseInt(sizeStr);
+// console.log(size); // 42
+
+// console.log(parseInt("3.99")); // ?`}</pre>,
+ ]}
+ answers={ <pre className="m-0 whitespace-pre-wrap">{`const sizeStr = "42px";
+const size = parseInt(sizeStr);
+console.log(size); // 42
+
+console.log(parseInt("3.99")); // 3`}</pre>
+}
+>
+
+  <p className="m-0">
+    Use this when you want the **integer part** and expect trailing characters after the digits.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) `parseFloat(text)` — decimals from the front
+
+Use `parseFloat(...)` when you want to keep the **decimal** portion and the number sits at the **start** of the string.
+
+<HandbookChallenge
+ title="Keep the decimal, ignore the units"
+ hints={[
+ "Make <code>widthStr</code> as <code>\"12.5px\"</code> and <code>opacityStr</code> as <code>\"0.75rem\"</code>.",
+ "Create <code>width</code> and <code>opacity</code> using <code>parseFloat(...)</code>.",
+ "Log both values.",
+ <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const widthStr = "12.5px";
+// const opacityStr = "0.75rem";
+// const width = parseFloat(widthStr);
+// const opacity = parseFloat(opacityStr);
+// console.log(width, opacity);`}</pre>,
+ ]}
+ answers={ <pre className="m-0 whitespace-pre-wrap">{`const widthStr = "12.5px";
+const opacityStr = "0.75rem";
+
+const width = parseFloat(widthStr);
+const opacity = parseFloat(opacityStr);
+
+console.log(width, opacity); // 12.5 0.75`}</pre>
+}
+>
+
+  <p className="m-0">
+    Same “read from the front” behavior as <code>parseInt</code>, but it preserves the fractional part.
+  </p>
+</HandbookChallenge>
+
+---
+
+> Quick guide for choosing a parser
+> • **Whole string is numeric?** → <strong>Number(...)</strong>
+> • **Number at the start with extra text after?** → <strong>parseInt(...)</strong> or <strong>parseFloat(...)</strong>
+> • **Need decimals?** → <strong>parseFloat(...)</strong> (otherwise <strong>parseInt(...)</strong>)
+
+> Heads-up for later
+> If a conversion can’t happen, JavaScript gives you a special value called <code>NaN</code> (not-a-number). We’ll learn how to check for that soon. For now, focus on picking the right parser.
+
+---
+
+## Put it together: parse like a form
+
+Pretend these came from a form or an API:
+
+```
+qtyStr   = "3"
+priceStr = " 19.99 "
+widthStr = "12.5px"
+```
+
+Pick the **right parser** for each and produce usable numbers.
+
+<HandbookChallenge
+ title="Three inputs, three parsers"
+ hints={[
+ "Use <code>Number(...)</code> for <code>qtyStr</code> and <code>priceStr</code>.",
+ "Use <code>parseFloat(...)</code> for <code>widthStr</code> to keep the decimal.",
+ "Log the resulting numbers so you can see them all together.",
+ <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const qtyStr = "3";
+// const priceStr = " 19.99 ";
+// const widthStr = "12.5px";
+
+// const qty = Number(qtyStr);
+// const price = Number(priceStr);
+// const width = parseFloat(widthStr);
+
+// console.log(qty, price, width);`}</pre>,
+ ]}
+ answers={ <pre className="m-0 whitespace-pre-wrap">{`const qtyStr = "3";
+const priceStr = " 19.99 ";
+const widthStr = "12.5px";
+
+const qty = Number(qtyStr);
+const price = Number(priceStr);
+const width = parseFloat(widthStr);
+
+console.log(qty, price, width); // 3 19.99 12.5`}</pre>
+}
+>
+
+  <p className="m-0">
+    You chose a parser for each situation and produced numbers ready for math. That’s the whole job.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+* **`Number(...)`** for clean numeric strings (your default).
+* **`parseInt(...)`** for whole numbers when extra characters follow.
+* **`parseFloat(...)`** for decimals when extra characters follow.
+
+That’s it—three simple tools in your belt. You don’t need to be an expert today. Seeing them now means you’ll recognize them later when you meet real form data.

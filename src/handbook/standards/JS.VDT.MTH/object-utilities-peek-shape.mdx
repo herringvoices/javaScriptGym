@@ -1,0 +1,223 @@
+---
+
+id: JS.VDT.MTH.OBJ_UTIL
+title: Object Utilities · Peek & Shape
+short: Use Object.keys, Object.values, and Object.entries to list an object’s labels, info, and pairs—and reshape a tiny display.
+---------------------------------------------------------------------------------------------------------------------------------
+
+# Data Types → Object Utilities
+
+*Last time we* turned form strings into real numbers. *This time we’re* going to **peek inside objects** using three tiny helpers. Each one has two questions you should always ask:
+
+> **What does it need? What does it return?**
+> Tools take input (their parameters) and return output (a value you can store).
+> If you remember that, these become easy.
+
+These live on the global `Object` (capital **O**). You call them like `Object.keys(yourThing)`, not `yourThing.keys()`.
+
+* **`Object.keys(obj)`** → needs: an object. returns: an **array of strings** (property names).
+* **`Object.values(obj)`** → needs: an object. returns: an **array of values** (property values).
+* **`Object.entries(obj)`** → needs: an object. returns: an **array of pairs** (each pair is `[key, value]`).
+
+We’ll walk through each, with examples first and a hands-on challenge after.
+
+---
+
+## 1) `Object.keys` — “give me the labels”
+
+Objects (binders) store **properties**. Each property has a **key** (the label) and a **value** (the info).
+`Object.keys(obj)` hands you just the **keys** as an array. Arrays are great because you can index them, count them, and pass them around.
+
+**Example:**
+
+```js
+const book = { title: "Neon Rain", author: "Riza", year: 2024 };
+
+const labels = Object.keys(book);
+console.log(labels);        // ["title", "author", "year"]
+console.log(labels[0]);     // "title"
+console.log(labels.length); // 3
+```
+
+> For everyday objects you write yourself, the keys come back in the same order you defined them. Good enough at this stage.
+
+<HandbookChallenge
+title="List the labels"
+hints={[
+"Make your own <code>book</code> object with at least three properties (e.g., <code>title</code>, <code>author</code>, <code>year</code>).",
+"Create <code>labels</code> with <code>Object.keys(book)</code>.",
+"Log <code>labels</code>, then <code>labels[0]</code>, and <code>labels.length</code>.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const book = { title: "...", author: "...", year: 2024 };
+// const labels = Object.keys(book);
+// console.log(labels);
+// console.log(labels[0]);
+// console.log(labels.length);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const book = { title: "Neon Rain", author: "Riza", year: 2024 };
+const labels = Object.keys(book);
+console.log(labels);        // ["title","author","year"]
+console.log(labels[0]);     // "title"
+console.log(labels.length); // 3`}</pre>
+}
+>
+
+  <p className="m-0">
+    You just turned your binder’s tabs into a plain list of labels.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 2) `Object.values` — “give me the info”
+
+`Object.values(obj)` returns the **values** for those properties—whatever types they are. It’s like ripping the pages out of the binder and stacking them in order.
+
+**Example:**
+
+```js
+const book = { title: "Neon Rain", author: "Riza", year: 2024 };
+
+const info = Object.values(book);
+console.log(info);                 // ["Neon Rain", "Riza", 2024]
+console.log(info[0]);              // "Neon Rain"
+console.log(info[info.length - 1]); // 2024
+```
+
+> Notice types can vary: strings, numbers, booleans—whatever you stored.
+
+<HandbookChallenge
+title="List the info"
+hints={[
+"Use your same <code>book</code>.",
+"Create <code>info</code> with <code>Object.values(book)</code>.",
+"Log the entire array, then log the first value and the last value by index.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const info = Object.values(book);
+// console.log(info);
+// console.log(info[0]);
+// console.log(info[info.length - 1]);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const book = { title: "Neon Rain", author: "Riza", year: 2024 };
+const info = Object.values(book);
+console.log(info);                 // ["Neon Rain","Riza",2024]
+console.log(info[0]);              // "Neon Rain"
+console.log(info[info.length - 1]); // 2024`}</pre>
+}
+>
+
+  <p className="m-0">
+    Now you’re holding the data itself as a simple list—easy to peek and compare.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) `Object.entries` — “give me pairs I can index”
+
+`Object.entries(obj)` gives you an array where **each item is a two-slot array**: `[key, value]`. Slot `0` is the key, slot `1` is the value.
+This is perfect when you want both the label and the info together.
+
+**Example:**
+
+```js
+const book = { title: "Neon Rain", author: "Riza", year: 2024 };
+
+const pairs = Object.entries(book);
+console.log(pairs);
+// [ ["title","Neon Rain"], ["author","Riza"], ["year",2024] ]
+
+const firstPair = pairs[0];
+console.log(firstPair[0]); // "title"
+console.log(firstPair[1]); // "Neon Rain"
+```
+
+> Each pair is just a tiny array of length 2. No new syntax required—plain old indexing works.
+
+<HandbookChallenge
+title="Pull out a pair"
+hints={[
+"Create <code>pairs</code> with <code>Object.entries(book)</code>.",
+"Log <code>pairs</code> so you can see the nested arrays.",
+"Store <code>firstPair</code> as <code>pairs[0]</code>, then log its key (<code>firstPair[0]</code>) and value (<code>firstPair[1]</code>).", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const pairs = Object.entries(book);
+// console.log(pairs);
+// const firstPair = pairs[0];
+// console.log(firstPair[0]);
+// console.log(firstPair[1]);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const book = { title: "Neon Rain", author: "Riza", year: 2024 };
+const pairs = Object.entries(book);
+console.log(pairs);
+const firstPair = pairs[0];
+console.log(firstPair[0]); // "title"
+console.log(firstPair[1]); // "Neon Rain"`}</pre>
+}
+>
+
+  <p className="m-0">
+    Labels and info, bundled together and indexable—nice and tidy.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Shape it: build a tiny display object from what you got back
+
+A common pattern is reshaping data for display. You already have `labels` and `info`. Let’s build a small two-row “display” list that pairs a label with a value.
+
+**Example:**
+
+```js
+// Using the same book from above:
+const labels = Object.keys(book);
+const info   = Object.values(book);
+
+const display = [
+  { label: labels[0], value: info[0] },
+  { label: labels[1], value: info[1] }
+];
+console.log(display);
+// [ { label: "title", value: "Neon Rain" },
+//   { label: "author", value: "Riza" } ]
+```
+
+> What it needs & returns: you fed arrays **in** and created a new array of tiny objects **out**—all with indexing and literals you already know.
+
+<HandbookChallenge
+title="Make a two-row display"
+hints={[
+"Re-use your <code>book</code>.",
+"Create <code>labels</code> and <code>info</code> using <code>Object.keys</code> and <code>Object.values</code>.",
+"Build <code>display</code> as an array with two objects: <code>{ label: labels[0], value: info[0] }</code> and <code>{ label: labels[1], value: info[1] }</code>.",
+"Log <code>display</code>.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const labels = Object.keys(book);
+// const info = Object.values(book);
+// const display = [
+//   { label: labels[0], value: info[0] },
+//   { label: labels[1], value: info[1] }
+// ];
+// console.log(display);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const book = { title: "Neon Rain", author: "Riza", year: 2024 };
+const labels = Object.keys(book);
+const info = Object.values(book);
+const display = [
+  { label: labels[0], value: info[0] },
+  { label: labels[1], value: info[1] }
+];
+console.log(display);
+// [ { label: "title", value: "Neon Rain" },
+//   { label: "author", value: "Riza" } ]`}</pre>
+}
+>
+
+  <p className="m-0">
+    That’s a small “label/value” list—perfect for quick readouts without any new concepts.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+* **`Object.keys(obj)`** → array of **names** you can index and count.
+* **`Object.values(obj)`** → array of **values** (mixed types are fine).
+* **`Object.entries(obj)`** → array of **[key, value]** pairs (each pair is a two-item array).
+
+Ask the two questions every time: **What does it need? What does it return?**
+If you can answer those, you’ll know exactly how to hold the result and what you can do with it next.

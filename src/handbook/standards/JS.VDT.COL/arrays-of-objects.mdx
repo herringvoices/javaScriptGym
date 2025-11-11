@@ -1,0 +1,198 @@
+---
+
+id: JS.VDT.COL.ARR_OBJ
+title: Arrays of Objects · Playlists of Records
+short: Store rows of related fields as objects inside an ordered array; access fields by index and dot paths, update them, and add a new record at the end by index.
+---
+
+# Data Types → Arrays of Objects
+
+*Last time we* used  **objects (binders)** to group labeled fields and **arrays (playlists)** to keep values in order. *This time we’re* combining those ideas: an **array of objects**—an ordered list where **each item is a small object** that keeps its fields together. It reads like real data: a playlist where every track carries both a `title` and an `artist` in one piece.
+
+---
+
+## When you need more than a title
+
+Suppose you want to represent both the **title** and the **artist** for each song. A first thought might be two arrays—one for titles and one for artists—then read them at the same index.
+
+```js
+const titles  = ["Sunset Drive", "Neon Rain", "Echoes & Honey", "Midnight Paper Planes"];
+const artists = ["Axton",        "Riza",       "Palmer",        "Paper Planes Collective"];
+
+console.log(titles[2], "by", artists[2]); // "Echoes & Honey by Palmer"
+```
+
+This only works if both arrays stay perfectly aligned. Insert, remove, or reorder in one array and the pairing breaks. You’re left babysitting two lists that want to wander off in different directions.
+
+---
+
+## The better fit: one ordered list of full records
+
+Arrays can hold **any** data type, including objects. So make **one array** where **each item is an object** with the fields that belong together.
+
+```js
+const songs = [
+  { title: "Sunset Drive",          artist: "Axton" },
+  { title: "Neon Rain",             artist: "Riza" },
+  { title: "Echoes & Honey",        artist: "Palmer" },
+  { title: "Midnight Paper Planes", artist: "Paper Planes Collective" }
+];
+console.log(songs);
+```
+
+Each object is a single record; the array keeps their order.
+
+<HandbookChallenge
+title="Create an array of objects and log some records"
+hints={[
+  "Make a const songs = [ { title: \"...\", artist: \"...\" }, ... ] with four items.",
+  "Log the whole array, then log the first and third objects directly (e.g., songs[0]).",
+]}
+answers={`const songs = [\n  { title: "Sunset Drive",          artist: "Axton" },\n  { title: "Neon Rain",             artist: "Riza" },\n  { title: "Echoes & Honey",        artist: "Palmer" },\n  { title: "Midnight Paper Planes", artist: "Paper Planes Collective" }\n];\nconsole.log(songs);     // [ { title: "...", artist: "..." }, ... ]\nconsole.log(songs[0]);  // { title: "Sunset Drive", artist: "Axton" }\nconsole.log(songs[2]);  // { title: "Echoes & Honey", artist: "Palmer" }`}
+>
+
+  <p className="m-0">
+    Build one array where each item is an object with <code>title</code> and <code>artist</code>. Log the whole array, then log a couple of individual objects by index.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (shape):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`[ { title: "...", artist: "..." }, { ... }, { ... }, { ... } ]
+{ title: "...", artist: "..." }
+{ title: "...", artist: "..." }`}</pre>
+</HandbookChallenge>
+
+---
+
+## Access: pick a record by index, then a field by dot path
+
+Use the array **index** to select a record, then **dot notation** to read a specific field. Arrays are **zero-based**: the first item is at index `0`, and the last is at `songs.length - 1`. Past the edge, JavaScript returns `undefined`.
+
+```js
+console.log(songs[0].title);                // "Sunset Drive"
+console.log(songs[2].artist);               // "Palmer"
+console.log(songs[songs.length - 1].title); // "Midnight Paper Planes"
+console.log(songs[99]);                     // undefined
+```
+
+<HandbookChallenge
+title="Pick fields from specific records"
+hints={[
+  "First record → index 0; last record → songs.length - 1.",
+  "Use dot notation for fields, e.g., songs[0].artist.",
+]}
+answers={`console.log(songs[0].title);                // "Sunset Drive"\nconsole.log(songs[2].artist);               // "Palmer"\nconsole.log(songs[songs.length - 1].title); // "Midnight Paper Planes"`}
+>
+
+  <p className="m-0">
+    Log the first title, the third artist, and the last title using index + dot notation.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Sunset Drive
+Palmer
+Midnight Paper Planes`}</pre>
+</HandbookChallenge>
+
+> If an index is out of range or a key is misspelled, you’ll see <code>undefined</code>. Keep indexes and field names precise.
+
+---
+
+## Update: fix a field on one record
+
+### Debug drill: zoom in, then zoom out
+
+Reading nested data is a muscle. Build it slowly: log → add an index → add a field, then peel those pieces back off. Each step narrows the shape of what you get back.
+
+1) Whole array: <code>console.log(songs)</code> → you’ll see square brackets with multiple objects.
+2) One record: <code>console.log(songs[2])</code> → just the object at index 2.
+3) One field: <code>console.log(songs[2].artist)</code> → a plain string value.
+4) Reverse it: remove <code>.artist</code> (back to an object), then remove <code>[2]</code> (back to the array).
+
+Mental map:
+
+<pre className="m-0 whitespace-pre-wrap">{`songs (array)
+  ├─ [0] → { title: "Sunset Drive", … }
+  ├─ [1] → { title: "Neon Rain", … }
+  └─ [2] → { title: "Echoes & Honey", artist: "Palmer" }
+           └─ .artist → "Palmer" (string)`}</pre>
+
+<HandbookChallenge
+title="Zoom in / zoom out drill"
+hints={[
+  "Start: console.log(songs)",
+  "Then add [2] to focus a single record",
+  "Then add .artist to read one field",
+  "Reverse those steps to widen the shape again"
+]}
+answers={`console.log(songs);\nconsole.log(songs[2]);\nconsole.log(songs[2].artist);\n// reverse\nconsole.log(songs[2]);\nconsole.log(songs);`}
+>
+  <p className="m-0">Practice shrinking (array → object → value) and expanding (value → object → array) so your brain links syntax to data shape.</p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Progression (shape):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`[ { … }, { … }, { … } ]  // array
+{ title: "Echoes & Honey", artist: "Palmer" }  // object
+Palmer  // value
+{ title: "Echoes & Honey", artist: "Palmer" }  // object again
+[ { … }, { … }, { … } ]  // array again`}</pre>
+</HandbookChallenge>
+
+---
+
+You can rewrite a single field on the object at a particular index. You’re not replacing the whole array; you’re editing one record inside it.
+
+```js
+console.log(songs[1].title); // "Neon Rain"
+songs[1].title = "Neon Rain (Remix)";
+console.log(songs[1].title); // "Neon Rain (Remix)"
+```
+
+<HandbookChallenge
+title="Update a field at a specific index"
+hints={[
+  "Log the current value, assign the corrected value, then log again.",
+  "Use index + dot notation: songs[1].title = \"...\".",
+]}
+answers={`console.log(songs[1].title); // "Neon Rain"\nsongs[1].title = "Neon Rain (Remix)";\nconsole.log(songs[1].title); // "Neon Rain (Remix)"`}
+>
+
+  <p className="m-0">
+    Choose a record by index and correct one field. Logging before and after makes the change obvious.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Neon Rain
+Neon Rain (Remix)`}</pre>
+</HandbookChallenge>
+
+> <code>const songs = [ ... ]</code> keeps the variable’s link to the array stable. Editing a field inside a record is normal and allowed.
+
+---
+
+## Add: place a new record at the end by index
+
+Without introducing new methods yet, you can add an object at the next open index—the current **length** of the array.
+
+```js
+songs[songs.length] = { title: "Paper Planes (Live)", artist: "Paper Planes Collective" };
+console.log(songs[songs.length - 1]); // the new record
+```
+
+<HandbookChallenge
+title="Add one more record at the end"
+hints={[
+  "Create a new object with title and artist fields.",
+  "Assign it to songs[songs.length] to place it at the end.",
+]}
+answers={`songs[songs.length] = { title: "Paper Planes (Live)", artist: "Paper Planes Collective" };\nconsole.log(songs[songs.length - 1]);\n// { title: "Paper Planes (Live)", artist: "Paper Planes Collective" }`}
+>
+
+  <p className="m-0">
+    Add a new record at the end by assigning to the index equal to the array’s current length, then log the last item to verify.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (shape):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`{ title: "...", artist: "..." }`}</pre>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+* An **array of objects** stores an ordered list of **records**, where each record is an object that keeps its fields together.
+* You can **access** a specific record by index and a specific field with dot notation, **update** a field in place, and **add** a new record at the end by assigning to the next index.
+* Choose this shape when items have multiple fields that must stay together while you also care about the order of the list.

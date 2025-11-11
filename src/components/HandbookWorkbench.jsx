@@ -11,6 +11,7 @@ import {
   useSandpack,
 } from "@codesandbox/sandpack-react";
 import { getDefaultEditorExtensions } from "../lib/editorExtensions";
+import CompactConsole from "./CompactConsole";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
 import { getBundlerURL } from "../lib/getBundlerURL";
 
@@ -32,6 +33,7 @@ import { getBundlerURL } from "../lib/getBundlerURL";
 export default function HandbookWorkbench({ entry }) {
   const [showFiles, setShowFiles] = useState(true);
   const [bottomPanel, setBottomPanel] = useState("console"); // "console" | "preview"
+  const [compactConsole, setCompactConsole] = useState(true);
   const storageKey = entry ? `handbook:${entry.standard}:${entry.id}` : null;
 
   // Load any saved edits for this entry from localStorage
@@ -148,6 +150,18 @@ export default function HandbookWorkbench({ entry }) {
           >
             Console
           </button>
+          <button
+            type="button"
+            onClick={() => setCompactConsole((v) => !v)}
+            className={`rounded-full border px-3 py-1 transition ${
+              compactConsole
+                ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+            }`}
+            title="Toggle compact (stackless) console"
+          >
+            {compactConsole ? "Compact" : "Full"}
+          </button>
         </div>
       </div>
 
@@ -166,13 +180,13 @@ export default function HandbookWorkbench({ entry }) {
           recompileDelay: 600,
         }}
       >
-        <WorkbenchLayout showFiles={showFiles} bottomPanel={bottomPanel} storageKey={storageKey} />
+        <WorkbenchLayout showFiles={showFiles} bottomPanel={bottomPanel} storageKey={storageKey} compactConsole={compactConsole} />
       </SandpackProvider>
     </div>
   );
 }
 
-function WorkbenchLayout({ showFiles, bottomPanel, storageKey }) {
+function WorkbenchLayout({ showFiles, bottomPanel, storageKey, compactConsole }) {
   const { listen, sandpack } = useSandpack();
   const [consoleKey, setConsoleKey] = useState(0);
   const saveTimerRef = useRef(null);
@@ -232,13 +246,17 @@ function WorkbenchLayout({ showFiles, bottomPanel, storageKey }) {
           <SandpackPreview showOpenInCodeSandbox={false} showRefreshButton style={{ height: "100%" }} />
         </div>
         <div className={bottomPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
-          <SandpackConsole
-            key={consoleKey}
-            showHeader
-            showSyntaxError
-            resetOnPreviewRestart
-            style={{ height: "100%", fontSize: "1.25rem" }}
-          />
+          {compactConsole ? (
+            <CompactConsole />
+          ) : (
+            <SandpackConsole
+              key={consoleKey}
+              showHeader
+              showSyntaxError
+              resetOnPreviewRestart
+              style={{ height: "100%", fontSize: "1.25rem" }}
+            />
+          )}
         </div>
       </div>
     </SandpackLayout>

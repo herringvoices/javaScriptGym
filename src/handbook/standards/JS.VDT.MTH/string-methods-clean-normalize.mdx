@@ -1,0 +1,220 @@
+---
+
+id: JS.VDT.MTH.STR
+title: String Methods · Clean & Normalize Text
+short: Use .length, .trim(), .toLowerCase(), .split(), and .replace() to inspect and transform text.
+---
+
+# Data Types → String Methods
+
+*Last time we* worked with **arrays** and their end-controls (`push`, `pop`, `unshift`, `shift`). Those are **methods**—functions attached to a value. *This time we’re* giving **strings** their own little toolbox. Arrays aren’t the only data type with useful methods and properties.
+
+Two quick reminders before we start:
+
+* A **property** is information **on** a value (no parentheses). Example: <code>.length</code>.
+* A **method** is a function **attached to** a value (uses parentheses). Example: <code>text.trim()</code>. Most string methods **return a new string**—store it if you want to keep the change.
+
+---
+
+## 1) `.length` — how many characters?
+
+`.length` tells you the number of characters in a string. It’s a **property**, so there are **no parentheses**.
+
+<HandbookChallenge
+  title="Count and peek"
+  hints={[
+    "Make a variable <code>username</code> with any name you like.",
+    "Log <code>username.length</code>.",
+    "Log the <em>last character</em> with <code>username[username.length - 1]</code>.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const username = "Nick";
+// console.log(username.length);
+// console.log(username[username.length - 1]);`}</pre>,
+  ]}
+  answers={ <pre className="m-0 whitespace-pre-wrap">{`const username = "Nick";
+console.log(username.length);           // 4
+console.log(username[username.length-1]); // "k"`}</pre>
+}
+>
+
+  <p className="m-0">
+    <code>.length</code> is perfect for quick checks and for grabbing the last character using <code>length - 1</code>.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 2) `.trim()` — remove extra spaces at the ends
+
+User input often comes with leading or trailing spaces. `.trim()` cleans both ends. (There are also one-sided versions, but both-ends is the common win.)
+
+<HandbookChallenge
+  title="Clean the edges"
+  hints={[
+    "Make <code>rawName</code> like <code>\"   Nick  \"</code>.",
+    "Create <code>cleanName</code> by calling <code>rawName.trim()</code>.",
+    "Log before and after so you can see the difference.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const rawName = "   Nick  ";
+// const cleanName = rawName.trim();
+// console.log(rawName);
+// console.log(cleanName);`}</pre>,
+  ]}
+  answers={ <pre className="m-0 whitespace-pre-wrap">{`const rawName = "   Nick  ";
+const cleanName = rawName.trim();
+console.log(rawName);    // "   Nick  "
+console.log(cleanName);  // "Nick"`}</pre>
+}
+>
+
+  <p className="m-0">
+    Remember: strings don’t change themselves. <code>trim()</code> returns a new string.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) `.toLowerCase()` — normalize case
+
+When you compare or store text, it helps to normalize the casing. `.toLowerCase()` returns a new, all-lowercase version.
+
+<HandbookChallenge
+  title="Normalize an email"
+  hints={[
+    "Make <code>emailInput</code> like <code>\"  NICK@example.com \"</code>.",
+    "First <em>trim</em> it, then make it all lowercase.",
+    "Store the final result in <code>email</code> and log it.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const emailInput = "  NICK@example.com ";
+// const email = emailInput.trim().toLowerCase();
+// console.log(email);`}</pre>,
+  ]}
+  answers={ <pre className="m-0 whitespace-pre-wrap">{`const emailInput = "  NICK@example.com ";
+const email = emailInput.trim().toLowerCase();
+console.log(email); // "nick@example.com"`}</pre>
+}
+>
+
+  <p className="m-0">
+    Chaining lets you apply multiple steps in order: first trim, then lower.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) `.split(delimiter)` — cut a string into parts (array out)
+
+`.split()` takes a delimiter (like a space or comma) and returns an **array** of pieces.
+
+<HandbookChallenge
+  title="Split a full name"
+  hints={[
+    "Make <code>fullName</code> like <code>\"Nick Homoelle\"</code> (or your own).",
+    "Create <code>parts</code> by splitting on a single space: <code>fullName.split(\" \")</code>.",
+    "Log <code>parts[0]</code> and <code>parts[1]</code>.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const fullName = "Nick Homoelle";
+// const parts = fullName.split(" ");
+// console.log(parts[0]); // first name
+// console.log(parts[1]); // last name`}</pre>,
+  ]}
+  answers={ <pre className="m-0 whitespace-pre-wrap">{`const fullName = "Nick Homoelle";
+const parts = fullName.split(" ");
+console.log(parts[0]); // "Nick"
+console.log(parts[1]); // "Homoelle"`}</pre>
+}
+>
+
+  <p className="m-0">
+    The result is an array. Use indexes to read the pieces you need.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 5) `.replace(searchValue, replaceValue)` — swap the first match
+
+`.replace()` finds the **first** occurrence of a substring and swaps it.
+
+<HandbookChallenge
+  title="Tidy a phone number"
+  hints={[
+    "Make <code>phone</code> like <code>\"615-504-5797\"</code>.",
+    "Create <code>tidy</code> by replacing the <em>first</em> dash with a space: <code>phone.replace(\"-\", \" \")</code>.",
+    "Log both so you can compare.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const phone = "615-504-5797";
+// const tidy = phone.replace("-", " ");
+// console.log(phone);
+// console.log(tidy);`}</pre>,
+  ]}
+  answers={ <pre className="m-0 whitespace-pre-wrap">{`const phone = "615-504-5797";
+const tidy = phone.replace("-", " ");
+console.log(phone); // "615-504-5797"
+console.log(tidy);  // "615 504-5797"`}</pre>
+}
+>
+
+  <p className="m-0">
+    This replaces the first match. If there are multiple matches, only the first one changes here.
+  </p>
+</HandbookChallenge>
+
+---
+
+> **What does a method “give back”?**
+> Just like <code>const removed = songs.pop()</code> returns the item it removed, most string methods return a **new string**. They don’t change the original; they hand you a transformed copy. Store it if you need it.
+
+---
+
+## Put it together: Clean a tiny profile
+
+You’ll receive three raw strings. Your job: clean and normalize them using only the tools above.
+
+<HandbookChallenge
+  title="Profile cleanup"
+  hints={[
+    "Create variables: <code>nameRaw</code>, <code>emailRaw</code>, <code>taglineRaw</code> with any values you like (include extra spaces and mixed case).",
+    "Make <code>name</code> by trimming <code>nameRaw</code>. (Keep it simple: we’ll just trim for now.)",
+    "Make <code>email</code> by trimming and lowercasing <code>emailRaw</code>.",
+    "Make <code>tags</code> by splitting <code>taglineRaw</code> on <code>\"-\"</code>.",
+    "Make <code>taglinePretty</code> by replacing the first <code>\"-\"</code> with <code>\" · \"</code>.",
+    "Log a quick summary showing <code>name</code>, <code>email</code>, the <code>tags</code> array, and <code>taglinePretty</code>.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const nameRaw = "   nICK  ";
+// const emailRaw = "  NICK@example.com ";
+// const taglineRaw = "plants-bots-rocks";
+
+// const name = nameRaw.trim();
+// const email = emailRaw.trim().toLowerCase();
+// const tags = taglineRaw.split("-");
+// const taglinePretty = taglineRaw.replace("-", " · ");
+
+// console.log(name);
+// console.log(email);
+// console.log(tags);
+// console.log(taglinePretty);`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const nameRaw = "   nICK  ";
+const emailRaw = "  NICK@example.com ";
+const taglineRaw = "plants-bots-rocks";
+
+const name = nameRaw.trim();
+const email = emailRaw.trim().toLowerCase();
+const tags = taglineRaw.split("-");
+const taglinePretty = taglineRaw.replace("-", " · ");
+
+console.log(name);          // "nICK"
+console.log(email);         // "nick@example.com"
+console.log(tags);          // ["plants","bots","rocks"]
+console.log(taglinePretty); // "plants · bots-rocks"`}</pre>
+}
+>
+
+  <p className="m-0">
+    You just combined a property and four methods to turn messy strings into tidy data.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+* **Property:** <code>.length</code> (no parentheses) tells you how many characters you have.
+* **Methods:** <code>.trim()</code>, <code>.toLowerCase()</code>, <code>.split()</code>, <code>.replace()</code> return **new strings** (or, for <code>split</code>, a new array).
+* Chain steps in a sensible order (e.g., trim before lowercasing) and store results you want to keep.

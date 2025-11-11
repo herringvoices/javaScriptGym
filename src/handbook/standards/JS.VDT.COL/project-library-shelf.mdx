@@ -1,0 +1,171 @@
+---
+
+id: JS.VDT.COL.PROJ.LIB
+title: Mini Project · Library Shelf (IDs + End Controls)
+short: Build a library object that owns a books array; assign incremental IDs with nextBookId; practice access, updates, and end-controls.
+---
+
+# Mini Project → Library Shelf
+
+*Last time we* grouped information with **objects**, kept order with **arrays**, combined both in **arrays of objects**, and used the end controls: `push`, `pop`, `unshift`, `shift`. *This time we’re* putting that all together—plus one new idea you’ll see everywhere in apps: **IDs**.
+
+You’ll model a `library`:
+
+* **Shape**: a single **object** named `library` with three properties
+  • `name` → string
+  • `librarian` → string
+  • `books` → **array** (starts empty)
+* **Each book**: an **object** with `id`, `title`, and `author`.
+* **ID tracker**: a variable named `nextBookId` you’ll increment (add `1` to) as you add books.
+
+---
+
+<Callout type="note" title="Where do IDs usually come from?">
+  <p className="m-0">
+    In real apps, a database gives every record a unique <strong>id</strong> so you can refer to it precisely later (update one book, remove one book, etc.).
+  </p>
+  <p className="m-0">
+    We’ll <strong>simulate</strong> that by keeping a counter called <code>nextBookId</code> in our code. When you create a book, you assign the current <code>nextBookId</code> as its <code>id</code>, then bump <code>nextBookId</code> up by 1 so the next book gets a fresh number.
+  </p>
+
+</Callout>
+
+---
+
+## 1) Create the container (and the ID counter)
+
+Describe the library in an object so it can own a `books` array and a little metadata. Then set up your counter for IDs.
+
+<HandbookChallenge
+title="Build the library object + start the ID counter"
+answers={`const library = {\n  name: "East Nashville Free Library",\n  librarian: "Nick",\n  books: []\n};\nlet nextBookId = 1;`}
+>
+
+  <p className="m-0">
+    Describe the shape of <code>library</code> and the data types of its properties. The answer shows what it looks like in code.
+  </p>
+  <ul className="mt-2 mb-0 space-y-1">
+    <li><code>name</code>: string</li>
+    <li><code>librarian</code>: string</li>
+    <li><code>books</code>: array (starts empty)</li>
+  </ul>
+  <p className="m-0">Also create a variable <code>nextBookId</code> (number) to track the next unique id you’ll assign.</p>
+</HandbookChallenge>
+
+---
+
+## 2) Add three books (arrays of objects + incremental IDs)
+
+Each book is a tiny object with an `id`, a `title`, and an `author`. Put three of them into the `books` array **in order**, assigning an `id` from `nextBookId` and then incrementing the counter.
+
+<HandbookChallenge
+title="Stock the shelf with IDs"
+hints={[
+"Make three book variables. Each should be an object with <code>{ id, title, author }</code>.",
+"Set <code>id</code> to the current <code>nextBookId</code>, then bump it with <code>nextBookId += 1</code> (shorthand for adding 1).",
+"Use <code>library.books.push(book)</code> to add each new book to the array in order.",
+`// Example flow for one book (fill in your own title/author):\n// const b1 = { id: nextBookId, title: "…", author: "…" };\n// nextBookId += 1; // bump the counter\n// library.books.push(b1);`,
+]}
+answers={`const b1 = { id: nextBookId, title: "Sunset Drive",   author: "Axton"  }; nextBookId += 1;\nconst b2 = { id: nextBookId, title: "Neon Rain",      author: "Riza"   }; nextBookId += 1;\nconst b3 = { id: nextBookId, title: "Echoes & Honey", author: "Palmer" }; nextBookId += 1;\n\nlibrary.books.push(b1);\nlibrary.books.push(b2);\nlibrary.books.push(b3);\n\nconsole.log(library.books);\n// [ { id: 1, title: "Sunset Drive", author: "Axton" }, ... ]`}
+>
+
+  <p className="m-0">Create three book objects, assign each an <code>id</code> from the current <code>nextBookId</code>, then increment (add one to it) with <code>nextBookId += 1</code> (compound assignment adds 1). Add each book to <code>library.books</code> using <code>.push()</code>.</p>
+  <p className="m-0 mt-2">You should see three book objects with distinct <code>id</code> values in <code>library.books</code>. The <code>+=</code> operator is shorthand for <code>nextBookId = nextBookId + 1</code>.</p>
+</HandbookChallenge>
+
+---
+
+## 3) Access specific items and fields
+
+Choose a record by **index**, then choose a field with **dot notation**.
+
+<HandbookChallenge
+title="Spot-check the shelf"
+hints={[
+"Log the <em>first</em> book’s <code>title</code> with index <code>0</code>.",
+"Log the <em>last</em> book’s <code>author</code> using <code>library.books.length - 1</code>.",
+"Optionally, also log the <code>id</code> of the last book.",
+`// console.log(library.books[0].title);\n// const lastIndex = library.books.length - 1;\n// console.log(library.books[lastIndex].author);\n// console.log(library.books[lastIndex].id);`,
+]}
+answers={`console.log(library.books[0].title); // "Sunset Drive"\nconst lastIndex = library.books.length - 1;\nconsole.log(library.books[lastIndex].author); // "Palmer"\nconsole.log(library.books[lastIndex].id);     // 3 (example)`}
+>
+
+  <p className="m-0">
+    Index picks the record; dot notation picks the field. IDs give each record its own handle.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) Update one field in place
+
+Edit a single property on a specific book—no rebuilding required.
+
+<HandbookChallenge
+title="Fix a typo (second book’s title)"
+hints={[
+"Target the <em>second</em> book (index <code>1</code>).",
+"Change that book’s <code>title</code> to <code>\"Neon Rain (Remix)\"</code>.",
+"Log before and after so the change is obvious.",
+`// console.log(library.books[1].title);\n// library.books[1].title = "Neon Rain (Remix)";\n// console.log(library.books[1].title);`,
+]}
+answers={`console.log(library.books[1].title); // "Neon Rain"\nlibrary.books[1].title = "Neon Rain (Remix)";\nconsole.log(library.books[1].title); // "Neon Rain (Remix)"`}
+>
+
+  <p className="m-0">
+    That’s an in-place update to a field on a record inside your array.
+  </p>
+</HandbookChallenge>
+
+---
+
+<Callout type="note" title=".pop() returns the removed item">
+  <p className="m-0">
+    <em>const removed = library.books.pop()</em> breaks down like this:
+  </p>
+  <ul className="mt-2 mb-0 space-y-1">
+    <li><code>const removed</code> — you name a new variable.</li>
+    <li><code>=</code> — the assignment operator: “store what’s on the right into this variable.”</li>
+    <li><code>library.books.pop()</code> — removes the <strong>last</strong> book and <strong>returns the book it removed</strong>.</li>
+  </ul>
+  <p className="m-0">JavaScript evaluates the right side first, then stores that returned book in <code>removed</code>. Now you can reuse it.</p>
+</Callout>
+
+<Callout type="tip" title="Curiosity check">
+  <p className="m-0">
+    Do <code>.shift()</code> and <code>.pop()</code> return anything? (Hint: they do.) Try capturing their return values in variables and log them to see.
+  </p>
+</Callout>
+
+---
+
+## 5) Practice: add → pop → unshift (with IDs, too)
+
+Create your favorite book as an object **with an `id`**, add it to the end, take it off the end (pretend you “checked it out”), then put it at the beginning so it’s first in line.
+
+<HandbookChallenge
+title="Add, remove, reorder (end controls with IDs)"
+hints={[
+"Make a <code>fave</code> book object with <code>{ id, title, author }</code>.",
+"Set <code>id</code> to the current <code>nextBookId</code>, then increase <code>nextBookId</code> by 1.",
+"Add it to <code>library.books</code> using <code>push</code>.",
+"Remove the last item with <code>pop</code> and store it in <code>nowReading</code>.",
+"Place <code>nowReading</code> at the start with <code>unshift</code>.",
+"Verify it worked by logging the first book’s <code>id</code> and <code>title</code>.",
+`// const fave = { id: nextBookId, title: "Your Fave", author: "Author Name" };\n// nextBookId = nextBookId + 1;\n// library.books.push(fave);\n// const nowReading = library.books.pop();\n// library.books.unshift(nowReading);\n// console.log(library.books[0].id, library.books[0].title);`,
+]}
+answers={`const fave = { id: nextBookId, title: "Midnight Paper Planes", author: "Paper Planes Collective" };\nnextBookId = nextBookId + 1;\n\nlibrary.books.push(fave);\nconst nowReading = library.books.pop();\nlibrary.books.unshift(nowReading);\n\nconsole.log(library.books[0].id, library.books[0].title);\n// e.g., 4 "Midnight Paper Planes"`}
+>
+
+  <p className="m-0">
+    IDs move with the record wherever it goes. That’s the whole point—you always know exactly which book you’re talking about.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+* The right **shape** here is one object that owns an **array of objects**.
+* You assigned unique **IDs** with <code>nextBookId</code>, practiced precise **access** (index → field), **updates** in place, and the four **end controls** to adjust order.
+* This mirrors how real apps model data coming from a database: every record carries an <code>id</code> so you can target it confidently later.

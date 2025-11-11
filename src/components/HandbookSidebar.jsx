@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -89,7 +90,10 @@ export default function HandbookSidebar({ currentStandardId, currentChapterId })
     if (currentStandardId) set.add(`s:${currentStandardId}`);
     return set;
   };
-  const [open, setOpen] = useState(defaultOpen);
+  // NOTE: useState was previously passed the function reference (defaultOpen) instead of its result.
+  // Calling defaultOpen() ensures initial expansion reflects current route context.
+  const [open, setOpen] = useState(defaultOpen());
+  const navigate = useNavigate();
 
   function toggle(id) {
     setOpen((prev) => {
@@ -166,8 +170,45 @@ export default function HandbookSidebar({ currentStandardId, currentChapterId })
             const isGroupActive = group.substandards.some((s) => s.id === currentStandardId);
             return (
               <li key={group.id} className="rounded-md">
-                <div className={`flex items-center justify-between ${isGroupActive ? "bg-slate-800 text-white" : "text-slate-200"} rounded-md px-3 py-2`}>
-                  <div className="min-w-0 flex-1">
+                <div
+                  className={`flex cursor-pointer items-center justify-between ${isGroupActive ? "bg-slate-800 text-white" : "text-slate-200 hover:bg-slate-800 hover:text-white"} rounded-md px-3 py-2`}
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => {
+                    // Navigate to first substandard and expand group (and that substandard if it has chapters)
+                    const first = group.substandards[0];
+                    if (first) {
+                      setOpen((prev) => {
+                        const next = new Set(prev);
+                        next.add(groupKey);
+                        next.add(`s:${first.id}`);
+                        return next;
+                      });
+                      navigate(`/handbook/${first.id}`);
+                    } else {
+                      // Fallback: just toggle group if no substandards
+                      toggle(groupKey);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      const first = group.substandards[0];
+                      if (first) {
+                        setOpen((prev) => {
+                          const next = new Set(prev);
+                          next.add(groupKey);
+                          next.add(`s:${first.id}`);
+                          return next;
+                        });
+                        navigate(`/handbook/${first.id}`);
+                      } else {
+                        toggle(groupKey);
+                      }
+                    }
+                  }}
+                >
+                  <div className="min-w-0 flex-1" aria-label={`${group.title} group`}>
                     <span className="block truncate font-semibold">{group.title}</span>
                   </div>
                   <button
@@ -175,7 +216,10 @@ export default function HandbookSidebar({ currentStandardId, currentChapterId })
                     aria-expanded={groupExpanded}
                     aria-controls={`group-${group.id}`}
                     className="ml-2 inline-flex h-6 w-6 items-center justify-center rounded text-xs text-slate-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
-                    onClick={() => toggle(groupKey)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggle(groupKey);
+                    }}
                     title={groupExpanded ? "Collapse" : "Expand"}
                   >
                     <FontAwesomeIcon icon={groupExpanded ? faChevronDown : faChevronRight} className="text-sm" />

@@ -8,6 +8,7 @@ import {
   SandpackProvider,
   useSandpack,
 } from "@codesandbox/sandpack-react";
+import CompactConsole from "../components/CompactConsole";
 import { dracula } from "@codesandbox/sandpack-themes";
 import { useNavigate, useParams } from "react-router-dom";
 import Markdown from "../components/Markdown";
@@ -260,6 +261,7 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
   const [rightPanel, setRightPanel] = useState(
     challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : "preview"
   );
+  const [compactConsole, setCompactConsole] = useState(true);
   // identify value mode removed
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const liveRef = useRef(null); // kept for future announcements
@@ -514,6 +516,18 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
               >
                 Console
               </button>
+              <button
+                type="button"
+                onClick={() => setCompactConsole((v) => !v)}
+                className={`rounded-full border px-3 py-1 transition ${
+                  compactConsole
+                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                }`}
+                title="Toggle compact (stackless) console"
+              >
+                {compactConsole ? "Compact" : "Full"}
+              </button>
             </div>
           </div>
 
@@ -579,13 +593,17 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
                     : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
                 }
               >
-                <SandpackConsole
-                  key={consoleKey}
-                  showHeader
-                  showSyntaxError
-                  resetOnPreviewRestart
-                  style={{ height: "100%" }}
-                />
+                {compactConsole ? (
+                  <CompactConsole />
+                ) : (
+                  <SandpackConsole
+                    key={consoleKey}
+                    showHeader
+                    showSyntaxError
+                    resetOnPreviewRestart
+                    style={{ height: "100%" }}
+                  />
+                )}
               </div>
             </div>
           </SandpackLayout>

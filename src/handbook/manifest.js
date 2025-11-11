@@ -83,8 +83,43 @@ export const handbookStructure = {
         title: 'Arrays',
         load: () => import('./standards/JS.VDT.COL/arrays-introduction.mdx'),
       },
+      {
+        id: 'JS.VDT.COL.ARR_OBJ',
+        title: 'Arrays of Objects',
+        load: () => import('./standards/JS.VDT.COL/arrays-of-objects.mdx'),
+      },
+      {
+        id: 'JS.VDT.COL.ARR_ENDS',
+        title: 'Arrays: End Controls',
+        load: () => import('./standards/JS.VDT.COL/arrays-end-controls.mdx'),
+      },
+      {
+        id: 'JS.VDT.COL.PROJ.LIB',
+        title: 'Mini Project: Library Shelf',
+        load: () => import('./standards/JS.VDT.COL/project-library-shelf.mdx'),
+      },
     ],
     loadIntro: () => import('./JS.VDT.COL.mdx'),
+  },
+  'JS.VDT.MTH': {
+    chapters: [
+      {
+        id: 'JS.VDT.MTH.STR',
+        title: 'String Methods · Clean & Normalize Text',
+        load: () => import('./standards/JS.VDT.MTH/string-methods-clean-normalize.mdx'),
+      },
+      {
+        id: 'JS.VDT.MTH.NUM_PARSE',
+        title: 'Number Parsers · From Strings to Numbers',
+        load: () => import('./standards/JS.VDT.MTH/number-parsers-from-strings-to-numbers.mdx'),
+      },
+      {
+        id: 'JS.VDT.MTH.OBJ_UTIL',
+        title: 'Object Utilities · Peek & Shape',
+        load: () => import('./standards/JS.VDT.MTH/object-utilities-peek-shape.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.VDT.MTH.mdx'),
   },
   // Add more standards here as their chapters are authored
 };
