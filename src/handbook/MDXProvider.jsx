@@ -3,8 +3,7 @@ import React from "react";
 import Callout from "../components/Callout";
 import PracticeCard from "../components/PracticeCard";
 import HandbookChallenge from "../components/HandbookChallenge";
-import MiniSandpack from "../components/MiniSandpack";
-import Playground from "../components/Playground";
+// Removed MiniSandpack and Playground (deprecated)
 
 function Note(props) {
   return (
@@ -28,8 +27,6 @@ const components = {
   Callout,
   PracticeCard,
   HandbookChallenge,
-  MiniSandpack,
-  Playground,
   Note,
   Tip,
   h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,

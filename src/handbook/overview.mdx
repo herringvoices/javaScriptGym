@@ -17,3 +17,126 @@ Each challenge tags the standards it reinforces. Skim the summaries in this hand
 <Note>Bookmark sections you lean on often, and jot down your own notes right below the handbook content in a personal doc.</Note>
 
 <Tip>MDX lets you embed interactive or styled components like this without leaving the content file.</Tip>
+
+## What JavaScript is (and isn’t)
+
+JavaScript isn’t magic. It can feel that way at first, but it’s really a toolbox for manipulating data.
+
+- Posting on Instagram → Create data
+- Scrolling your feed → Read data
+- Changing your username → Update data
+- Deleting a post → Delete data
+
+That’s CRUD, and it’s most of what we do. Our goal here isn’t to teach you every tool in the JavaScript toolbox. It’s to teach you the basic tools you’ll actually use—and when to use them.
+
+## Your first tool: <code>console.log</code>
+
+Think of <code>console.log</code> as your stethoscope—it lets you hear what your code is doing.
+
+```js
+console.log("Hello, handbook!");
+```
+
+You’ll use it constantly to check values, confirm what ran, and debug surprises.
+
+<HandbookChallenge title="Console warm‑up" hints={[
+	"Quotes mark text so JavaScript doesn’t think it’s a variable name.",
+	"Reordering lines changes the order of output.",
+	"A ReferenceError means a variable name wasn’t found (e.g., missing quotes)."
+]}
+	answers={[
+		"console.log(\"first\");\nconsole.log(\"second\");\nconsole.log(\"third\");",
+	]}
+>
+	<ol>
+		<li>Log three words on three lines: <code>"first"</code>, <code>"second"</code>, <code>"third"</code>.</li>
+		<li>Run and check the Console.</li>
+		<li>Reorder the lines and run again. What changed?</li>
+		<li>Remove the quotes from one line (e.g., <code>console.log(first)</code>). What error do you see, and why?</li>
+	</ol>
+
+	<p><strong>Expected console output (step 1):</strong></p>
+	<pre>
+first
+second
+third
+	</pre>
+</HandbookChallenge>
+
+---
+
+## How JavaScript runs (top → bottom)
+
+JavaScript reads your file top to bottom, one line at a time. If line 3 uses something that isn’t defined until line 20, you’ll get an error.
+
+```js
+console.log(greeting); // ❌ ReferenceError: Cannot access 'greeting' before initialization
+const greeting = "hi";
+```
+
+We’ll learn patterns that run code later (events, functions), but for now think of your file like a book: top → bottom.
+
+<HandbookChallenge title="Order matters" hints={[
+	"Define a value before you use it.",
+	"Move the line that declares \"greeting\" above the line that logs it."
+]}
+	answers={[
+		"const greeting = \"hi\";\nconsole.log(greeting); // hi",
+	]}
+>
+	<ol>
+		<li>Paste this code into the editor and run it.</li>
+	</ol>
+
+```js
+console.log(greeting);
+const greeting = "hi";
+```
+
+	<ol start={2}>
+		<li>Now move the second line above the first so the value is defined before it’s used.</li>
+		<li>Run again.</li>
+	</ol>
+
+	<p><strong>Expected console output (after step 2):</strong></p>
+	<pre>
+hi
+	</pre>
+</HandbookChallenge>
+
+---
+
+## Comments: notes for humans (and how to toggle them)
+
+Programs are for computers and for people. Comments are short notes the computer ignores but teammates (and future‑you) will appreciate.
+
+- Line comment: anything after <code>//</code> on a line is ignored
+- Toggle quickly: press <strong>Ctrl+/</strong> (Windows/Linux) or <strong>Cmd+/</strong> (Mac) to comment/uncomment selected lines
+
+```js
+console.log("Visible");
+// console.log("Hidden for now"); // toggled off with Ctrl+/ (Cmd+/ on Mac)
+console.log("Still visible"); // end-of-line comment is fine, too
+```
+
+<HandbookChallenge title="Comment it out" hints={[
+	"Use Ctrl+/ (or Cmd+/) to toggle the selected line.",
+	"If something errors, comment it out and iterate."
+]}
+	answers={[
+		"// console.log(first)",
+	]}
+>
+	<ol>
+		<li>Reproduce the earlier error by removing quotes: <code>console.log(first)</code>.</li>
+		<li>Use <strong>Ctrl+/</strong> (or <strong>Cmd+/</strong>) to comment out that broken line.</li>
+		<li>Run again — you should only see the lines that are still active.</li>
+		<li>Toggle again to bring the line back.</li>
+	</ol>
+
+	<p><strong>Expected console output (after step 2):</strong></p>
+	<pre>
+first
+third
+	</pre>
+</HandbookChallenge>
