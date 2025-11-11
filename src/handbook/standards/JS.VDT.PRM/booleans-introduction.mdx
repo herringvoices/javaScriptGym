@@ -1,0 +1,313 @@
+---
+id: JS.VDT.PRM.BOOL
+title: Booleans · True/False & Empty Values
+short: Ask clear yes/no questions with comparisons; use null/undefined to represent empty states on purpose vs by accident.
+---
+
+
+
+# Data Types → Booleans (plus null and undefined)
+
+We used **strings** to *say things* and **numbers** to *count things*. Now we need a way to **decide things**. Booleans are the simplest decision-maker in JavaScript: like a light switch—**on** or **off**, **true** or **false**. No dimmers here.
+
+Think about the questions apps answer all day:
+
+* Is the user **logged in**?
+* Do we **have seats left**?
+* Can this person **vote**?
+* Should we **show a warning**?
+
+Those are yes/no questions. Booleans are how JavaScript stores the answers.
+
+---
+
+## 1) Literal booleans & clear names
+
+Start simple: store the answers directly.
+
+```js
+const isHungry = true;
+const isSleepy = false;
+console.log(isHungry, isSleepy); // true false
+```
+
+Why name them this way? Because future-you (and teammates) can *read the code out loud*: "**is hungry** is true." Avoid confusing names and double negatives like `isNotReady` if you can—"not not ready" is how headaches are born.
+
+<HandbookChallenge
+  title="Flip the switches"
+  hints={[
+    "Make three booleans: isOnline, hasTicket, shouldNotify.",
+    "Log them once, change one value, then log them again.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let isOnline = true;
+let hasTicket = false;
+let shouldNotify = false;
+console.log(isOnline, hasTicket, shouldNotify);
+hasTicket = true;
+console.log(isOnline, hasTicket, shouldNotify);`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`let isOnline = true;
+let hasTicket = false;
+let shouldNotify = false;
+console.log(isOnline, hasTicket, shouldNotify); // true false false
+hasTicket = true;
+console.log(isOnline, hasTicket, shouldNotify); // true true false`}</pre>
+  }
+>
+  <p className="m-0">
+    Create three boolean variables (<code>isOnline</code>, <code>hasTicket</code>, <code>shouldNotify</code>) with different values. Log them all, then change one and log them again.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`true false false
+true true false`}</pre>
+</HandbookChallenge>
+
+---
+
+## 2) Comparisons: asking questions that return booleans
+
+We don't want to hand-type `true` or `false` all day. Instead, we can **create** booleans with a **comparison**. A comparison is just a question you ask on the **right-hand side** of `=`:
+
+```js
+const age = 17;
+const canVote = age >= 18;
+```
+
+Read that aloud: "**Is age greater than or equal to 18?**"
+If the answer is **yes**, `canVote` becomes `true`. If **no**, it becomes `false`.
+
+Common comparison operators:
+
+* `>` "greater than"
+* `>=` "greater than or equal to"
+* `<` "less than"
+* `<=` "less than or equal to"
+* `===` "strictly equal to (same value **and** same type)"
+* `!==` "strictly not equal to (different in value **or** type)"
+
+### `=` vs `===` vs `!==` (don't mix these up)
+
+* **`=`** is the **assignment operator**: **evaluate the right, then store the result in the single variable on the left.**
+* **`===`** is a **question**: are the two sides **exactly the same**, including type?
+* **`!==`** is the opposite question: are they **different**?
+
+```js
+console.log(2 === 2);   // true
+console.log("2" === 2); // false (string vs number)
+console.log(3 !== 4);   // true
+```
+
+> We are not using the loose equality operator here. Keeping it strict keeps it clear.
+
+<HandbookChallenge
+  title="Gate check"
+  hints={[
+    "Start with `let seatsTaken = 7; const seatsTotal = 10;`",
+    "Create `const isFull = seatsTaken === seatsTotal`.",
+    "Change `seatsTaken` to 10 and recompute isFull.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let seatsTaken = 7;
+const seatsTotal = 10;
+let isFull = seatsTaken === seatsTotal;
+console.log(isFull); // false
+seatsTaken = 10;
+isFull = seatsTaken === seatsTotal;
+console.log(isFull); // true`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`let seatsTaken = 7;
+const seatsTotal = 10;
+let isFull = seatsTaken === seatsTotal;
+console.log(isFull); // false
+seatsTaken = 10;
+isFull = seatsTaken === seatsTotal;
+console.log(isFull); // true`}</pre>
+  }
+>
+  <p className="m-0">
+    Create <code>seatsTaken</code> (7) and <code>seatsTotal</code> (10). Use <code>===</code> to check if they're equal and store in <code>isFull</code>. Log it, then change <code>seatsTaken</code> to 10, recompute <code>isFull</code>, and log again.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`false
+true`}</pre>
+</HandbookChallenge>
+
+---
+
+## 3) Negation: the "not" operator `!`
+
+Sometimes your app needs to flip a switch—**edit ↔ view**, **open ↔ closed**, **dark mode ↔ light mode**. In JavaScript, the exclamation mark **`!`** means **"not."** You've already seen it inside `!==` (not equal). On its own, `!` is most useful in two ways:
+
+1. **Toggle a boolean variable** (when the user is turning something on/off).
+2. **Negate a whole condition** (when the opposite rule reads more clearly).
+
+### 3.1 Toggle a boolean (UI switches)
+
+Use `!` to flip state that naturally **toggles**.
+
+```js
+let isOpen = false;            // drawer starts closed
+isOpen = !isOpen;              // user clicks "Open" → true
+console.log(isOpen);           // true
+isOpen = !isOpen;              // user clicks "Close" → false
+console.log(isOpen);           // false
+```
+
+**Read it aloud:** "**not** isOpen." If it was `true`, it becomes `false`, and vice‑versa.
+
+**Common toggles you'll see:** `isEditing`, `isOpen`, `isDarkMode`, `isCollapsed`, `isMuted`.
+
+### 3.2 Negate a condition (the opposite rule)
+
+Sometimes the **opposite** rule is clearer to read. You can negate an existing boolean, or negate an entire comparison (wrap it in parentheses for readability).
+
+```js
+const seatsTaken = 9;
+const seatsTotal = 10;
+const isFull = seatsTaken === seatsTotal; // false
+const hasSpace = !isFull;                  // true (not full)
+
+// Or inline: negate the comparison you already have
+const shouldShowJoinButton = !(seatsTaken === seatsTotal); // not full → show
+```
+
+<HandbookChallenge
+  title="Toggle vs explicit"
+  hints={[
+    "Use ! to flip a UI switch (e.g., isEditing).",
+    "Use explicit true/false for process state (e.g., isLoading).",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let isEditing = false;
+console.log(isEditing);   // false
+isEditing = !isEditing;    // user clicks Edit
+console.log(isEditing);   // true
+
+let isLoading = false;     // start a fake request
+isLoading = true;
+// ... do work ...
+isLoading = false;         // finished
+console.log(isLoading);   // false`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`let isEditing = false;
+console.log(isEditing);   // false
+isEditing = !isEditing;
+console.log(isEditing);   // true
+isEditing = !isEditing;
+console.log(isEditing);   // false
+
+let isLoading = false;
+isLoading = true;         // start
+// ...
+isLoading = false;        // end
+console.log(isLoading);   // false`}</pre>
+  }
+>
+  <p className="m-0">
+    Create <code>isEditing</code> (false). Log it, toggle it twice with <code>!</code>, logging after each toggle. Then create <code>isLoading</code> (false), set it to <code>true</code>, then back to <code>false</code>, and log the final value.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`false
+true
+false
+false`}</pre>
+</HandbookChallenge>
+
+---
+
+## 4) `null` vs `undefined`: empty on purpose vs empty by accident
+
+Apps need an "empty" value. But sometimes that emptiness is **intentional**, and sometimes it's a **whoops**. JavaScript has two different values to show that:
+
+* **`null`** → *empty on purpose.*
+  You're saying: "This variable exists, but it doesn't have a value yet."
+
+  ```js
+  let selectedItem = null; // no selection yet
+  console.log(selectedItem); // null
+  ```
+
+* **`undefined`** → *empty by accident / not set / not found.*
+  JavaScript looked for a value…and didn't find one.
+
+  ```js
+  let example;                 // declared but never assigned
+  console.log(example);        // undefined
+
+  const user = { name: "Riley" };
+  console.log(user.email);     // undefined (missing property)
+  ```
+
+Why bother with two? Because they answer different questions:
+
+* `null` says, "We **meant** for this to be empty right now."
+* `undefined` says, "We **never set** this (or we looked in the wrong place)."
+
+<HandbookChallenge
+  title="Waiting room"
+  hints={[
+    "Start `let selectedItem = null;` and log it.",
+    "Make a small object without an email, then log `obj.email`.",
+    "Assign a real value to `selectedItem` and log both again.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let selectedItem = null;
+console.log(selectedItem); // null
+const person = { name: "Riley" };
+console.log(person.email); // undefined
+selectedItem = "Headphones";
+console.log(selectedItem);   // Headphones
+console.log(person.email);   // undefined`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`let selectedItem = null;
+console.log(selectedItem); // null
+const person = { name: "Riley" };
+console.log(person.email); // undefined
+selectedItem = "Headphones";
+console.log(selectedItem);   // Headphones
+console.log(person.email);   // undefined`}</pre>
+  }
+>
+  <p className="m-0">
+    Create <code>selectedItem = null</code> and log it. Make an object <code>person</code> with just a <code>name</code> property. Log <code>person.email</code> (which doesn't exist). Then assign a string to <code>selectedItem</code> and log both values again.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`null
+undefined
+Headphones
+undefined`}</pre>
+</HandbookChallenge>
+
+---
+
+## Common gotchas (read these like little road signs)
+
+* Don't put booleans in quotes. "true" is a **string**, not a boolean.
+* Don't confuse = with ===.
+
+  * = **assigns** (right → left).
+  * === **compares** (asks a yes/no question).
+* Read comparisons out loud to check your intent:
+  age >= 18 → "Is age greater than or equal to 18?"
+* We're intentionally **not** covering "truthy/falsey" here. Stay with literal booleans and comparisons for now—clean and predictable.
+
+---
+
+## Technical Vocabulary
+
+| Term                | Plain-English meaning                         | Tiny example                       |
+| ------------------- | --------------------------------------------- | ---------------------------------- |
+| boolean             | A value that's either `true` or `false`       | `const isReady = true`             |
+| comparison operator | Asks a yes/no question that returns a boolean | `>`, `>=`, `<`, `<=`, `===`, `!==` |
+| assignment operator | Stores a value in a variable                  | `x = 10`                           |
+| negation operator   | "not" — flips a boolean                       | `!isOnline`                        |
+| null                | Empty **on purpose**                          | `let selected = null`              |
+| undefined           | Empty **by accident** / not set               | `let x; // undefined`              |
+
+---
+
+## Wrap-up
+
+* Booleans store **yes/no** answers.
+* When you write `const canVote = age >= 18`, you're **asking a question on the right**; the variable becomes `true` for "yes," `false` for "no."
+* Use `!` (not) to flip a boolean when you need the opposite.
+* Use `null` for **intentional emptiness**, and expect `undefined` when something wasn't set or can't be found.
+
+**Next up: Conditionals.** We'll plug these booleans into `if` / `else` and start choosing paths.

@@ -1,471 +1,113 @@
 ---
 id: JS.VDT.COL
-title: Collections · Playlists & Contact Cards
-short: Store groups of related values using arrays, objects, and arrays of objects.
+title: Collections · Objects & Arrays (Overview)
+short: Why we bundle values into objects (binders) and arrays (ordered lists), and where each shines.
 ---
 
-Welcome back! In Chapter 1 you learned how to store single values in variables (your data **boxes**). Now we’ll learn how to store **groups** of values using **collections**. There are two main collection types in JavaScript:
 
-* **Arrays** — like a **playlist**: an **ordered list** of items. You look things up by **position** (track 0, track 1, track 2…).
-* **Objects** — like a **contact card**: a **bag of labeled fields** (name, email, address). You look things up by **label** (called a **key**).
 
-You can put almost anything inside them—numbers, strings, booleans, even **other arrays** and **other objects**. In day‑to‑day dev work, the most common shape you’ll see is an **array of objects** (for example, a list of products from an API).
+# Intro to Collections
 
-### In this chapter, you'll learn (JS.VDT.COL)
+So far, you’ve stored values one box at a time—names, ages, flags. Real apps need to move **groups** of related values around together. That’s what **collections** are for.
 
-* **JS.VDT.COL.1** **— Objects (key → value):** How to build an object with labeled fields (keys) and read values using **dot** and **bracket** notation.
-* **JS.VDT.COL.2** **— Arrays (ordered lists):** How to make arrays, access items by **index** (remember index 0!), and understand why **order** matters.
-* **JS.VDT.COL.3** **— Arrays of objects:** How to model real‑world data (like API results) as a list where **each item is an object** with its own fields.
-* **JS.VDT.COL.4** **— Modify collections:** How to **add**, **update**, and **remove** items using the right syntax (objects: `obj.key =`, `delete`; arrays: `.push()`, `.pop()`, `.unshift()`, `.shift()`, `.splice()`).
-* **JS.VDT.COL.5** **— Choose the right shape:** How to pick between an **object**, **array**, **array of objects**, or **object of arrays** based on how you’ll look things up (by **label** or by **order**) and how the data is used.
+* **Objects** bundle related info about **one thing** (a user, a product, a post) into key–value pages—like a **binder**.
+* **Arrays** keep an **ordered list** of things (cart items, search results, leaderboard scores)—like a **numbered shelf**.
 
----
-
-## 1) Arrays — Your Playlist Boxes (VDT.COL.2)
-
-### What is an Array?
-
-An **array** is basically just a **list**. In this list, the **order matters**, so we’ll think of arrays like a **music playlist**. In a music app you see tracks listed 1, 2, 3… In code, we count from **0** instead—the first position is **index 0**.
-
-**Why this helps:**
-
-* Playlist → **array** (the whole list)
-* Song → **element** (one item in the list)
-* Track number → **index** (the position in the list)
-
-### Creating an array
-
-Use **square brackets** `[]` and separate items with commas.
-
-```js
-let colors = ["red", "green", "blue"]; // an array of strings
-let scores = [10, 12, 8];                 // an array of numbers
-// Tip: JavaScript *can* mix types in one array, but beginners should keep items the same kind.
-```
-
-### Accessing items by index (track number)
-
-To access a single item in an array, you use its **index**. Write the array’s name and then the index in **square brackets**: `arrayName[index]`. Arrays use **zero‑based indexing**, so the first item is at index **0**.
-
-* The **first** item is at index **0**
-* The **second** item is at index **1**
-* The **third** item is at index **2**, and so on
-
-Let’s practice with a tiny playlist:
-
-```js
-let playlist = ["Shimmer", "Leaf Dance", "Night Run"];
-playlist[0]; // "Shimmer"  (first track)
-playlist[1]; // "Leaf Dance" (second track)
-playlist[2]; // "Night Run"  (third track)
-```
-
-Change what’s at a position by assigning to that **index**:
-
-```js
-playlist[1] = "Green Sky"; // ["Shimmer", "Green Sky", "Night Run"]
-```
-
-Friendly rule of thumb: If your app shows something as “Track 3,” the code index is `2` (one less than the human number).
-
-**Tiny practice:**
-
-```js
-let steps = ["mix", "bake", "cool", "frost"];
-// 1) What is the first step?           → steps[0]
-// 2) Change the second step to "blend" → steps[1] = "blend"
-// 3) What index holds "frost"?        → 3
-```
-
-### Properties & Methods on Arrays — Read Facts, Do Actions
-
-We’re about to learn some useful tools that come with arrays. Think of them in two groups: **properties** (facts you can read) and **methods** (actions you can do).
-
-* **Array methods are tools you attach to the end of your array to do stuff.** You write the array name, a dot, then the tool’s name with parentheses: `arrayName.method()`. Example: `steps.push("eat")` adds another step to our steps array: the string "eat".
-* **Properties are facts you can read about the array.** They don’t use parentheses: `arrayName.property`.
-
-One of the most useful properties (and one **every** array has) is **`length`** — it tells you how many items are in the list:
-
-```js
-playlist.length; // 3
-```
-
-We use **dot notation** (the `.` between names) to reach both properties and methods: `arrayName.property` or `arrayName.method()`.
-
-#### Example using our playlist
-
-```js
-let playlist = ["Shimmer", "Leaf Dance", "Night Run"];
-```
-
-#### `.length` — How many items (property)
-
-Think: “How many tracks are in this playlist?”
-
-```js
-playlist.length; // 3
-```
-
-* **Type:** property (no `()`)
-* **Does it change the array?** No — just reads a fact
-* **Returns:** a number (the count)
-
-#### `.push()` — Add to the end (method)
-
-Think: “Add a new track to the **end** of the playlist.”
-
-```js
-playlist.push("Green Sky");
-// playlist is now ["Shimmer", "Leaf Dance", "Night Run", "Green Sky"]
-```
-
-* **Type:** method (has `()`)
-* **Does it change the array?** Yes — adds at the end
-* **Returns:** the new length (number of items)
-
-#### `.pop()` — Remove from the end (method)
-
-Think: “Take the last track **off** the playlist.”
-
-```js
-let last = playlist.pop();
-// last -> "Green Sky"
-// playlist -> ["Shimmer", "Leaf Dance", "Night Run"]
-```
-
-* **Changes array?** Yes — removes the last item
-* **Returns:** the item that was removed
-
-#### `.unshift()` — Add to the start (method)
-
-Think: “Put a new track at the **beginning**.”
-
-```js
-playlist.unshift("Intro");
-// ["Intro", "Shimmer", "Leaf Dance", "Night Run"]
-```
-
-* **Changes array?** Yes — adds to the front
-* **Returns:** the new length
-
-#### `.shift()` — Remove from the start (method)
-
-Think: “Take the **first** track off.”
-
-```js
-let first = playlist.shift();
-// first -> "Intro"
-// playlist -> ["Shimmer", "Leaf Dance", "Night Run"]
-```
-
-* **Changes array?** Yes — removes the first item
-* **Returns:** the item that was removed
-
-#### `.splice(start, deleteCount, ...items)` — Edit the middle
-
-Think: “Cut or insert songs **in the middle**.”
-
-```js
-// Remove 1 item at index 1
-playlist.splice(1, 1);
-// playlist -> ["Shimmer", "Night Run"]
-
-// Insert without removing: at index 1, add two tracks
-playlist.splice(1, 0, "Green Sky", "Leaf Dance");
-// playlist -> ["Shimmer", "Green Sky", "Leaf Dance", "Night Run"]
-```
-
-* **`start`** = where to begin (index)
-* **`deleteCount`** = how many to remove
-* **`...items`** = any new items to insert
-* **Changes array?** Yes — it edits in place
-* **Returns:** an array of the items that were removed
-
-**Beginner pattern:**
-
-* **Property** → no parentheses → just **read** a fact (`playlist.length`).
-* **Method** → has parentheses → **do** something (`playlist.push("Intro")`).
-
-### Other data types also have properties & methods
-
-Arrays aren’t special here—**strings** and **numbers** have them too. The dot is the same idea: read a fact or do an action.
-
-**Strings (text)**
-
-```js
-let name = "Ada";
-name.length;        // 3 (property: number of characters)
-name.toUpperCase(); // "ADA" (method: returns a new string)
-```
-
-Many string methods **do not change** the original string; they **return** a new one.
-
-**Numbers (math values)**
-
-```js
-let price = 2.5;
-price.toFixed(2); // "2.50" (method: formats as a string)
-```
-
-### Technical Vocabulary — Properties & Methods
-
-| Term | Beginner‑friendly definition | Quick example |
-| :---- | :---- | :---- |
-| Property | A fact you can read about a value. No parentheses. | playlist.length |
-| Method | A built‑in action a value can do. Uses parentheses. | playlist.push("Intro") |
-| Dot notation | The . used to reach a property or method on a value. | arrayName.method() |
-| Return value | The result a method gives back after it runs. | let removed = arr.pop() |
-| Mutate | To change the original value/array in place. | arr.push("x") mutates arr |
-
-Practice (quick wins):
-
-1) Start with `let letters = ["a","b","c"];` Use a method to add "d" to the end. What is `letters.length` now?
-2) Remove the last item and store it in a variable named `lastLetter`.
-3) Insert "start" at the beginning. Which method did you use?
-4) Using splice, remove 1 item at index 1.
-
-### Technical Vocabulary — Arrays
-
-| Term | Beginner‑friendly definition | Quick example |
-| :---- | :---- | :---- |
-| Array | An ordered list of values. | ["red", "green"] |
-| Element | One value inside an array. | colors[0] is one element |
-| Index | The position number of an element (starts at 0). | items[0] |
-| Zero‑based indexing | Counting starts at 0 instead of 1. | first → index 0 |
-| Length | How many items are in the array. | items.length |
+> You’ll learn (next sections):
+>
+> * How to **make** objects and arrays.
+> * How to **read** values (dot paths & indexes).
+> * How to **update** them safely (mutation, the `const` lock, adding/removing pages/items).
 
 ---
 
-## 2) Objects — Your Contact Card Boxes (VDT.COL.1)
+## Objects (the binder)
 
-### What is an Object?
-
-An object is like a contact card for one thing. It stores related data as key–value pairs—the key is the label (like name or address), and the value is what’s stored under that label. We build objects with curly braces {}.
-
-Think about your phone’s contacts: to find a friend’s address, you open their contact (that’s the object), then look for the address field (that’s the key) and read the text stored there (that’s the value). In code, you’d do the same lookup with `friend.address` (dot notation) or `friend["address"]` (bracket notation).
-
-* Contact card → object (the one thing you’re describing)
-* Field label → key (like email)
-* Field contents → value (like "hannah@example.com")
-
-### Creating an object
+An object groups properties about a single thing. Keys are your tab labels; values are the info on each page.
 
 ```js
-let contact = {
-  name: "Hannah",
-  email: "hannah@example.com",
-  address: "123 River Rd"
+const user = {
+  name: "Riley",      // key: value
+  age: 19,             // commas separate properties
+  isMember: true       // colon (:) instead of equals (=)
 };
 ```
 
-This object represents one person and gives them labeled fields.
-
-### Looking things up by label (dot vs bracket)
-
-Use the label (key) to read a value. There are two ways:
+Read a value with **dot notation** (think: an **address**):
 
 ```js
-contact.name;       // "Hannah"  ← dot notation (simple key name)
-contact["email"];  // "hannah@example.com" ← bracket notation
+console.log(user.name); // "Riley"
 ```
 
-When to use which?
-
-* Use dot notation when the key is a simple word you know in advance (`user.name`).
-* Use bracket notation when the key has spaces or is stored in a variable:
-
-```js
-let field = "home address";
-let person = { "home address": "200 Ocean Ave" };
-person[field];            // "200 Ocean Ave"
-person["home address"];  // also works
-```
-
-### Adding, updating, removing fields
-
-You can grow or change the card as you go:
-
-```js
-contact.phone = "555-1234";        // add a new field
-contact.address = "200 Ocean Ave"; // update an existing field
-delete contact.phone;               // remove a field
-```
-
-### Objects can hold anything
-
-Values can be strings, numbers, booleans—even arrays or other objects:
-
-```js
-contact.tags = ["friend", "soccer"];
-contact.location = { city: "Nashville", state: "TN" };
-```
-
-Now `contact` has an array under `tags` and a nested object under `location`.
-
-Important: With objects, the order of keys isn’t what you rely on. What matters are the labels (keys) you choose. An object should represent one thing (a person, a product, a post) with its labeled details.
-
-### Technical Vocabulary — Objects
-
-| Term | Beginner‑friendly definition | Quick example |
-| :---- | :---- | :---- |
-| Object | A bag of labeled fields (key–value pairs). | `{ name: "Ari", city: "Nashville" }` |
-| Key / Property | The label inside an object. | name, address |
-| Value | The data stored under a key. | "Ari", 6155045797 |
-| Dot notation | Access with a dot when you know the key name. | user.name |
-| Bracket notation | Access with brackets/quotes (needed for spaces or dynamic keys). | user["home address"], user[key] |
+> When names get weird (spaces/starts-with-number) or your key comes from a variable, use **bracket notation**:
+>
+> ```js
+> const field = "isMember";
+> console.log(user[field]); // true
+> ```
 
 ---
 
-## 3) Arrays of Objects — The Everyday Dev Shape (VDT.COL.3)
+## Arrays (the numbered shelf)
 
-Most APIs send back arrays of objects. Each object represents one item (a product, a song, a user).
-
-```js
-let playlist = [
-  { id: 1, title: "Shimmer", artist: "The Bots" },
-  { id: 2, title: "Leaf Dance", artist: "The Botany" }
-];
-
-// access
-playlist[0].title;        // "Shimmer"
-
-// add a new song
-playlist.push({ id: 3, title: "Night Run", artist: "Dex & Co" });
-
-// update a field on an item
-playlist[1].artist = "Botany Club";
-
-// remove the second item (index 1)
-playlist.splice(1, 1);
-```
-
-Imagine this as a playlist: the array is the list; each object is a single track with labeled details. To grab info from a specific track, chain the array index and the object’s key: `arrayName[index].key`.
+An array keeps items in order. JavaScript counts from **0**.
 
 ```js
-playlist[1].artist; // the artist of the second track
-playlist[0].title;  // the title of the first track
+const cart = ["notebook", "pens", "stickers"];
+console.log(cart[0]); // "notebook"
+console.log(cart.length); // 3
 ```
 
-Rule of thumb: The name on the left (`playlist`) is the whole array (the playlist). The number in brackets (`[1]`) picks one object (a track) from the list. After that, use dot + key (`.artist`) to read a labeled field from that object.
-
-Common mix‑up: Arrays know about positions (`[0]`, `.length`, `.push()`), while objects know about labels (`.title`, `.artist`). So:
-
-* `playlist.length` ✅ (ask the array how many tracks)
-* `playlist.title` ❌ (the array doesn’t have a title)
-* `playlist[0].title` ✅ (ask the first track object for its title)
-
-### Technical Vocabulary — Arrays of Objects
-
-| Term | Beginner‑friendly definition | Quick example |
-| :---- | :---- | :---- |
-| Array of objects | A list where each item is an object with labeled fields. | `[ {id:1, name:"Ada"}, {id:2, name:"Grace"} ]` |
-| Record / Item | One object in the list. | `{ id: 2, name: "Grace" }` |
+You’ll use arrays for lists you loop over later (think: search results, messages, players).
 
 ---
 
-## 4) Add, Update, Remove (VDT.COL.4)
+## Why two kinds?
 
-You’ll often need to modify collections. Here’s the beginner‑friendly toolkit:
+* Use an **object** when you’re describing **one thing** with named fields: `user.name`, `book.title`.
+* Use an **array** when you have **many things** of the same shape and you care about their **order**: `books[0]`, `books[1]`.
 
-Objects
-
-```js
-let user = { name: "Nick" };
-user.age = 30;           // add
-user.name = "Nicholas"; // update
-delete user.age;         // remove
-```
-
-Arrays
-
-```js
-let cart = ["apple", "banana"];
-cart.push("orange");   // add at end
-cart[1] = "pear";      // update by index
-cart.splice(0, 1);      // remove 1 item at index 0
-```
-
-Tip: Use objects when you care about labels; use arrays when you care about order.
-
-### Technical Vocabulary — Mutating Collections
-
-| Term | Beginner‑friendly definition | Quick example |
-| :---- | :---- | :---- |
-| Add | Put a new field/item in. | obj.newKey = 7, arr.push(7) |
-| Update | Change an existing value. | obj.name = "Ada", arr[0] = 99 |
-| Remove | Take a field/item out. | delete obj.key, arr.splice(0,1) |
+They love working together: a `user` object with a `friends` **array**, or a `cart` **array** of `item` **objects**.
 
 ---
 
-## 5) Choosing the Right Collection (VDT.COL.5)
+## Quick warm‑up (primitives checkpoint)
 
-Think about how you’ll look things up and what you care about:
+Before we touch collections, prove your skills with **strings**, **numbers**, and **booleans**.
 
-* Object — When you have one thing with labeled fields (a contact card, a product, a settings object). Order doesn’t matter.
-* Array — When you have a list of items where order matters or you’ll loop through them (a playlist, a to‑do list).
-* Array of Objects — When you have a list of things, and each thing has multiple fields (most API results: products, users, posts).
-* Object of Arrays — When you’re grouping several related lists by label (e.g., `{ todo: [...], doing: [...], done: [...] }`).
-
-### Quick Guide — What would you pick?
-
-| Situation | Best fit | Why |
-| :---- | :---- | :---- |
-| One contact with name, email, address | Object | You’ll look up fields by label. |
-| A playlist of song titles | Array | Order matters; items are similar. |
-| A product catalog from an API | Array of objects | Many items; each has fields (id, name, price). |
-| A kanban board with columns | Object of arrays | Each column label maps to its own list. |
-
----
-
-## Short Story in Code — Building a Mini Address Book
-
-```js
-// One contact (object)
-let contact = {
-  name: "Ada Lovelace",
-  email: "ada@example.com",
-  tags: ["friend", "work"] // an array inside an object
-};
-
-// A list of contacts (array of objects)
-let contacts = [
-  contact,
-  { name: "Grace Hopper", email: "grace@example.com", tags: ["mentor"] }
-];
-
-// Add a new contact
-contacts.push({ name: "Hannah", email: "hannah@example.com", tags: [] });
-
-// Look up the first contact’s email
-let firstEmail = contacts[0].email; // "ada@example.com"
-
-// Update a tag for the second contact
-contacts[1].tags.push("inspo");
-
-// Remove the first contact
-contacts.splice(0, 1);
-```
-
-Read it like a story: objects represent one person, arrays hold many people, and arrays often hold objects.
+<HandbookChallenge
+  title="Warm‑up: say it out loud"
+  hints={[
+    "Make three variables: `name` (string), `age` (number), `isMember` (boolean).",
+    "Log them, then build a single sentence with `+` concatenation.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let name = "Riley";
+let age = 19;
+let isMember = true;
+console.log(name, age, isMember);
+console.log("Member: " + isMember + ", " + name + " is " + age + " years old.");`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`let name = "Riley";
+let age = 19;
+let isMember = true;
+console.log(name, age, isMember); // Riley 19 true
+console.log("Member: " + isMember + ", " + name + " is " + age + " years old.");
+// Member: true, Riley is 19 years old.`}</pre>
+  }
+>
+  <p className="m-0">
+    Create <code>name</code> (string), <code>age</code> (number), and <code>isMember</code> (boolean). <code>console.log</code> each, then build one summary sentence with concatenation.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Riley 19 true
+Member: true, Riley is 19 years old.`}</pre>
+</HandbookChallenge>
 
 ---
 
-## Practice — Which Collection Would You Use?
+## What’s next
 
-* A single user’s settings (theme, fontSize, language)
-* The order of steps in a recipe
-* Search results from an API, where each result has title, url, and snippet
-* A board with columns todo, doing, done, each containing its own list of cards
-* A store’s inventory count for apples, bananas, and pears (look up by fruit name)
+* **Objects**: build the binder, read with dot paths, mutate pages.
+* **Arrays**: index items, append/prepend, and iterate.
 
-Mini‑challenge: Starting with `let books = [];`, add two book objects with fields `title` and `author`. Then change the author of the first book and remove the second book.
-
----
-
-## Quick Review — Collections (VDT.COL)
-
-* COL.1 Objects: Group data with key–value pairs; access with dot/bracket.
-* COL.2 Arrays: Store ordered lists; access by index; know length.
-* COL.3 Arrays of Objects: The most common real‑world shape (e.g., API results).
-* COL.4 Modify Collections: Add, update, remove with the right syntax (obj.key =, delete, push, splice).
-* COL.5 Choose Wisely: Pick object vs array vs array‑of‑objects based on how you’ll look things up and whether order matters.
+Then we’ll combine them: arrays of objects and objects that contain arrays—the bread and butter of real apps.

@@ -1,0 +1,196 @@
+---
+id: JS.VDT.COL.OBJ
+title: Objects · Binders of Related Info
+short: Bundle related variables into key–value pairs, read with dot paths, and update pages safely.
+---
+
+
+# Data Types → Objects
+
+We've been storing information in individual boxes (variables). But often those boxes all describe **one thing**. That's where **objects** shine: they bundle related info together so it travels as a single unit.
+
+---
+
+## 1) Start with separate variables (spot the pattern)
+
+Imagine these three values all describe the same person:
+
+```js
+let name = "Nick";
+let age = 35;
+let isSleepy = true;
+console.log(name, age, isSleepy);
+```
+
+They're clearly about **one thing** (a person), just spread across separate boxes.
+
+<HandbookChallenge
+  title="Make yours"
+  hints={[
+    "Create your own `name`, `age`, and `isSleepy` variables and log them.",
+    "Keep names readable—no `nme` or `nm` shortcuts.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let name = "Alex";
+let age = 28;
+let isSleepy = false;
+console.log(name, age, isSleepy);`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`let name = "Alex";
+let age = 28;
+let isSleepy = false;
+console.log(name, age, isSleepy); // Alex 28 false`}</pre>
+  }
+>
+  <p className="m-0">
+    Create three variables—<code>name</code>, <code>age</code>, and <code>isSleepy</code>—then <code>console.log</code> them.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Alex 28 false`}</pre>
+</HandbookChallenge>
+
+---
+
+## 2) Bundle your variables together
+
+Objects are like a **binder**. They gather information together into pages called **properties**. Each property is a **key–value** pair: the **key** is the colored label on the page; the **value** is the information on that page. Keys help you look things up; values are what you're looking for.
+
+Syntax snapshot (notice the **colons** and **commas**):
+
+```js
+const person = {
+  name: "Nick",      // key: value
+  age: 35,            // commas separate properties
+  isSleepy: true      // colon (:) instead of equals (=)
+};
+```
+
+<HandbookChallenge
+  title="Replace the boxes with one binder"
+  hints={[
+    "Make a `const person = { ... }` with your `name`, `age`, `isSleepy` as properties.",
+    "Use commas between properties and colons between key and value.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const person = {
+  name: "Alex",
+  age: 28,
+  isSleepy: false
+};
+console.log(person);`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const person = { name: "Alex", age: 28, isSleepy: false };
+console.log(person); // { name: "Alex", age: 28, isSleepy: false }`}</pre>
+  }
+>
+  <p className="m-0">
+    Build a <code>person</code> object with <code>name</code>, <code>age</code>, and <code>isSleepy</code>. Replace your separate variables with this single object and log it.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`{ name: "Alex", age: 28, isSleepy: false }`}</pre>
+</HandbookChallenge>
+
+---
+
+## 3) Read values with dot notation (addresses for data)
+
+**Dot notation** is the default way to **read** a property: <code>object.key</code>. Think of each dot as a step in an **address**—start at the binder, then open the tab you want.
+
+```js
+console.log(person.name);     // "Nick"
+console.log(person.age);      // 35
+console.log(person.isSleepy); // true
+```
+
+<HandbookChallenge
+  title="Follow the address"
+  hints={[
+    "Log three values: `person.name`, `person.age`, and `person.isSleepy`.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(person.name);
+console.log(person.age);
+console.log(person.isSleepy);`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(person.name);        // "Nick"
+console.log(person.age);         // 35
+console.log(person.isSleepy);    // true`}</pre>
+  }
+>
+  <p className="m-0">
+    Use dot notation to log the <code>name</code>, <code>age</code>, and <code>isSleepy</code> properties from your <code>person</code> object—one property per log statement.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Nick
+35
+true`}</pre>
+</HandbookChallenge>
+
+---
+
+## 4) Change, add, delete pages (mutating the binder)
+
+> **But wait — doesn't `const` mean "no changes"?**
+> When you define the variable, you create a **box** and put your **binder** inside. With `const`, you're locking the **box→binder link**—you can't replace the binder with a new one later. But you **can** still edit the **pages inside** that binder: update a page, add a page, or remove a page. That's called **mutation**.
+
+### Update (rewrite a page)
+
+```js
+person.age = 36;     // rewrite the age page
+console.log(person.age); // 36
+```
+
+### Add (put in a new page)
+
+```js
+person.hobby = "board games";
+console.log(person.hobby); // "board games"
+```
+
+### Delete (remove a page entirely)
+
+```js
+delete person.isSleepy;
+console.log(person.isSleepy); // undefined
+```
+
+<HandbookChallenge
+  title="Edit the binder"
+  hints={[
+    "Start with your `person` object.",
+    "Log the current age, then update it and log again.",
+    "Add `hobby`, then delete `isSleepy` and log the result.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(person.age);
+person.age = 36;
+console.log(person.age);
+person.hobby = "board games";
+console.log(person.hobby);
+delete person.isSleepy;
+console.log(person.isSleepy);`}</pre>,
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(person.age);    // 35
+person.age = 36;
+console.log(person.age);    // 36
+person.hobby = "board games";
+console.log(person.hobby);  // "board games"
+delete person.isSleepy;
+console.log(person.isSleepy); // undefined`}</pre>
+  }
+>
+  <p className="m-0">
+    Practice updating, adding, and deleting properties. Log after each change so you can see exactly what happened.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`35
+36
+board games
+undefined`}</pre>
+</HandbookChallenge>
+
+> Use <code>null</code> when you want to keep the page but mark it as **empty on purpose**; expect <code>undefined</code> when a page is **missing**.
+
+---
+
+## Wrap-up
+
+* Start with separate variables to notice "this is one thing," then bundle them into an **object** (your binder).
+* Read with **dot notation** like an address; use **bracket notation** only when names get weird or come from a variable.
+* Keep the `const` **box→binder link** stable, and **mutate** the pages inside when data changes in your app.

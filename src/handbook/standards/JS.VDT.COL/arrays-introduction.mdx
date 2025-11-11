@@ -1,0 +1,201 @@
+---
+
+id: JS.VDT.COL.ARR
+title: Arrays · Playlists of Values
+short: Group related items into an ordered list, read by index, update specific spots, and add existing values into a new array.
+--------------------------------------------------------------------------------------------------------------------------------
+
+# Data Types → Arrays
+
+*Last time we* used **variables (boxes)** to store single values and **objects (binders)** to group labeled properties. *This time we’re* building an **array (playlist)**—one variable that holds many related values **in order**. Arrays shine when you care about position and want those values to travel as a single unit.
+
+---
+
+## 1) Related values scattered across separate variables
+
+Using separate variables works, but it’s awkward when the values clearly belong together and the order matters.
+
+```js
+let song1 = "Sunset Drive";
+let song2 = "Neon Rain";
+let song3 = "Echoes & Honey";
+let song4 = "Midnight Paper Planes";
+console.log(song1, song2, song3, song4);
+```
+
+These four titles describe one playlist, but they live in four different boxes. Passing them around and keeping the order straight gets messy fast.
+
+<HandbookChallenge
+title="List four songs with separate variables"
+hints={[
+"Create `song1`–`song4` with titles in quotes, then log them all together.",
+"Readable names help future-you. Avoid cryptic abbreviations.",
+"Four variables, one console.log with all four listed as arguments.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`let song1 = "Sunset Drive";
+let song2 = "Neon Rain";
+let song3 = "Echoes & Honey";
+let song4 = "Midnight Paper Planes";
+console.log(song1, song2, song3, song4); // Sunset Drive Neon Rain Echoes & Honey Midnight Paper Planes`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Make four separate variables for four songs and log them together. Notice how they feel related but aren’t actually stored together.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Sunset Drive Neon Rain Echoes & Honey Midnight Paper Planes`}</pre>
+</HandbookChallenge>
+
+---
+
+## 2) The solution: an array (a playlist in one variable)
+
+An **array** is a single variable that holds many values **in order**. You spot an array by its **square brackets** with values separated by **commas**.
+
+```js
+const songs = ["Sunset Drive", "Neon Rain", "Echoes & Honey", "Midnight Paper Planes"];
+console.log(songs);
+```
+
+When a variable holds many of something, name it in **plural** (`songs`, `flowers`, `numbers`). That tiny habit keeps meaning obvious.
+
+<HandbookChallenge
+title="Build one playlist variable"
+hints={[
+"Create `const songs = [ ... ]` with four titles, then log `songs`.",
+"Use quotes for text, commas between items, and wrap everything in `[` and `]`.",
+"Multi-line formatting is fine; line breaks between items make it easier to read.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const songs = ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"];
+console.log(songs); // ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"]`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Create a single <code>songs</code> array that contains all four titles in order, then log it to see the whole playlist at once.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"]`}</pre>
+</HandbookChallenge>
+
+---
+
+## 3) Access: read by index (positions start at 0)
+
+Each item in an array has a position called an **index**. Arrays are **zero-based**, which means the first item is at index `0`, the second is at index `1`, and the third item is at index `2`.
+You access items using bracket notation: array[index]. For example, `songs[0]` returns the first item. If you reach past the end, JavaScript gives you `undefined`.
+
+```js
+const songs = ["Sunset Drive", "Neon Rain", "Echoes & Honey", "Midnight Paper Planes"];
+console.log(songs[0]); // first → "Sunset Drive"
+console.log(songs[2]); // third → "Echoes & Honey"
+console.log(songs[99]); // out of range → undefined
+```
+
+<HandbookChallenge
+title="Cue up specific tracks"
+hints={[
+"First item is <code>songs[0]</code>.",
+"Third item is <code>songs[2]</code>.",
+"Two separate console.log calls, one for each index.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const songs = ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"];
+console.log(songs[0]); // "Sunset Drive"
+console.log(songs[2]); // "Echoes & Honey"`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Log the first and third track from <code>songs</code> using bracket notation with indexes.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Sunset Drive
+Echoes & Honey`}</pre>
+</HandbookChallenge>
+
+> **Past the edge**
+> If an index doesn’t exist (too big or negative), the result is <code>undefined</code>. That’s JavaScript’s way of saying “no value lives here.”
+
+---
+
+## 3.1) Size: array <code>.length</code> and the last item
+
+Every array knows how many items it has via the <code>.length</code> property. You read it with <em>dot notation</em>—just like <code>user.name</code> from the objects chapter—so “the length of <code>songs</code>” is <code>songs.length</code>. Because indexes start at 0, the last item lives at index <code>array.length - 1</code> (for <code>songs</code>, that’s <code>songs.length - 1</code>).
+
+```js
+const songs = ["Sunset Drive", "Neon Rain", "Echoes & Honey", "Midnight Paper Planes"];
+console.log(songs.length);            // 4 (there are four items)
+console.log(songs[songs.length - 1]); // last → "Midnight Paper Planes"
+```
+
+<HandbookChallenge
+title="How many and what's last?"
+hints={[
+"Use <code>songs.length</code> to get the count.",
+"Use <code>songs[songs.length - 1]</code> to get the last item.",
+"Two logs: one for the number, one for the last track title.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const songs = ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"];
+console.log(songs.length);            // 4
+console.log(songs[songs.length - 1]); // "Midnight Paper Planes"`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Log the total number of items using <code>.length</code>, then use it to access the last track.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`4
+Midnight Paper Planes`}</pre>
+</HandbookChallenge>
+
+---
+
+## 4) Update: change a specific position
+
+You can replace a single item by assigning to that index. The variable still points to the same array—only one slot inside changes.
+
+```js
+const songs = ["Sunset Drive", "Neon Rain", "Echoes & Honey", "Midnight Paper Planes"];
+console.log(songs[1]);   // "Neon Rain"
+songs[1] = "Neon Rain (Remix)";  // update index 1
+console.log(songs[1]);   // "Neon Rain (Remix)"
+```
+
+<HandbookChallenge
+title="Fix one title by index"
+hints={[
+"Log the old value, assign a new title to that index, then log it again.",
+"You're editing the contents of the array, not replacing the whole array.",
+"Pattern: log → assign → log. Pick any index you want to update.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const songs = ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"];
+console.log(songs[1]); // "Neon Rain"
+songs[1] = "Neon Rain (Remix)";
+console.log(songs[1]); // "Neon Rain (Remix)"`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Select an index, log it, update it with a new title, then log again to confirm the change.
+  </p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`Neon Rain
+Neon Rain (Remix)`}</pre>
+</HandbookChallenge>
+
+> **Const + contents** <code>const</code> keeps the variable’s link to the array stable. You can still edit items inside the array—like swapping a track title—without replacing the entire array.
+
+---
+
+## Wrap-up
+
+* Arrays are **ordered collections**—one variable that holds many related values you can reference by **index**.
+* You can **read** specific positions, **update** a single spot by assigning to that index, and **add** existing values into a new array using index assignments.
+* Remember: indexes start at **0**, the last position is <code>length - 1</code>, and reaching past the end gives you <code>undefined</code>.

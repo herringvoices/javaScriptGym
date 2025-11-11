@@ -62,13 +62,29 @@ export const handbookStructure = {
         load: () => import('./standards/JS.VDT.PRM/numbers-introduction.mdx'),
       },
       {
-        id: 'collections-overview',
-        title: 'Collections Overview',
-        load: () => import('./standards/JS.VDT.PRM/collections-overview.mdx'),
+        id: 'booleans-introduction',
+        title: 'Booleans & Empty Values',
+        load: () => import('./standards/JS.VDT.PRM/booleans-introduction.mdx'),
       },
+
     ],
     // Intro loader: reuse the existing top-level chapter as the intro
     loadIntro: () => import('./JS.VDT.PRM.mdx'),
+  },
+  'JS.VDT.COL': {
+    chapters: [
+      {
+        id: 'objects-introduction',
+        title: 'Objects',
+        load: () => import('./standards/JS.VDT.COL/objects-introduction.mdx'),
+      },
+      {
+        id: 'arrays-introduction',
+        title: 'Arrays',
+        load: () => import('./standards/JS.VDT.COL/arrays-introduction.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.VDT.COL.mdx'),
   },
   // Add more standards here as their chapters are authored
 };
