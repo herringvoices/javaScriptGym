@@ -103,7 +103,7 @@ Mastery state persists in `localStorage` under `practiceTool.masteredStandards` 
 	- `primaryStandard` must exist in `src/data/standards.js` and appear in `standards`.
 - Blank preview or console output?
 	- Check `entry` in the challenge points to an existing file and at least one file is `active` and visible.
- 
+
 
 With this skeleton in place, you can focus on authoring challenges and handbook chapters without additional setup.
 
