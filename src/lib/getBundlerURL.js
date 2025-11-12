@@ -4,9 +4,18 @@
 export function getBundlerURL() {
   const cfg = typeof window !== "undefined" ? window.APP_SETTINGS : undefined;
   // If settings.js provides an explicit boolean, honor it; otherwise fall back to dev mode convenience.
-  const useLocal = (cfg && typeof cfg.useLocalBundler === "boolean")
+  let useLocal = (cfg && typeof cfg.useLocalBundler === "boolean")
     ? cfg.useLocalBundler
     : (import.meta?.env?.DEV ?? false);
+
+  // If we're offline (no internet), prefer the local vendored bundler automatically
+  try {
+    if (typeof navigator !== "undefined" && navigator && navigator.onLine === false) {
+      useLocal = true;
+    }
+  } catch {
+    // ignore: conservative default already set
+  }
 
   if (!useLocal) return undefined;
   return cfg?.bundlerURL || "/sandpack/"; // default path inside public/
