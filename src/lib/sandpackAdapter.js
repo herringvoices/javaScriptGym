@@ -68,6 +68,20 @@ export function toSandpackFiles(challenge, saved = {}, opts = {}) {
     files["/__bridge__.js"] = { code: bridge, readOnly: true, hidden: true };
   }
 
+  // 4) ensure a minimal package.json exists so the local bundler initializes without remote lookups
+  const entryPath = challenge.entry || "/src/index.js";
+  if (!files["/package.json"]) {
+    const pkg = {
+      name: "playground",
+      version: "0.0.0",
+      private: true,
+      main: entryPath.replace(/^\//, "./"),
+      module: entryPath.replace(/^\//, "./"),
+      dependencies: {},
+    };
+    files["/package.json"] = { code: JSON.stringify(pkg, null, 2), hidden: true, readOnly: true };
+  }
+
   // Determine active file (first non-hidden or explicit active)
   let activeFile = Object.keys(files).find((p) => files[p].active && !files[p].hidden);
   if (!activeFile) {

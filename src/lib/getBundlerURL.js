@@ -3,10 +3,12 @@
 // or undefined to allow Sandpack to use its default remote bundler.
 export function getBundlerURL() {
   const cfg = typeof window !== "undefined" ? window.APP_SETTINGS : undefined;
-  // If settings.js provides an explicit boolean, honor it; otherwise fall back to dev mode convenience.
+  // If settings.js provides an explicit boolean, honor it; otherwise prefer local by default.
+  // Rationale: local projects and restricted environments benefit from the vendored bundler; hosted prod can
+  // explicitly disable via settings.js.
   let useLocal = (cfg && typeof cfg.useLocalBundler === "boolean")
     ? cfg.useLocalBundler
-    : (import.meta?.env?.DEV ?? false);
+    : true;
 
   // If we're offline (no internet), prefer the local vendored bundler automatically
   try {
