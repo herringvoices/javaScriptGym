@@ -23,8 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# Local TLS certs (mkcert or similar)
+# Local TLS certs (if used)
 *.pem
 *.crt
 *.key
-mkcert-*
+ 

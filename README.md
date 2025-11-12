@@ -6,17 +6,14 @@ This project scaffolds a front-end practice environment with routing, an MDX-pow
 
 Prereqs:
 - Node.js 18+ and npm 9+ recommended
-- The dev server runs over HTTPS using a local certificate (via `vite-plugin-mkcert`). On first run you may be prompted to trust a local CA.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Notes on HTTPS in dev:
-- If your browser shows a certificate warning, complete the trust flow for the local CA and reload.
-- If mkcert cannot install certificates automatically, install mkcert for your OS and re-run the dev server.
- - mkcert is used only in development; production deployments rely on your host/CDN's TLS (e.g., Vercel/Netlify/Cloudflare) or real CA certificates.
+Notes:
+- The dev server runs over HTTP by default. For HTTPS, use a reverse proxy or configure Vite's `server.https` with your own certs.
 
 ## Adding a challenge
 
@@ -93,7 +90,7 @@ Mastery state persists in `localStorage` under `practiceTool.masteredStandards` 
 
 ## Scripts
 
-- `npm run dev` — Start the Vite dev server (HTTPS, trusted locally via mkcert).
+- `npm run dev` — Start the Vite dev server.
 - `npm run build` — Build the production bundle.
 - `npm run preview` — Preview the production build locally.
 - `npm run lint` — Run ESLint on the project.
@@ -106,8 +103,7 @@ Mastery state persists in `localStorage` under `practiceTool.masteredStandards` 
 	- `primaryStandard` must exist in `src/data/standards.js` and appear in `standards`.
 - Blank preview or console output?
 	- Check `entry` in the challenge points to an existing file and at least one file is `active` and visible.
-- HTTPS warnings in dev?
-	- Trust the local CA installed by mkcert, or install mkcert manually and restart the dev server.
+ 
 
 With this skeleton in place, you can focus on authoring challenges and handbook chapters without additional setup.
 

@@ -5,7 +5,6 @@ import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
 import rehypeSlug from "rehype-slug";
 import rehypePrettyCode from "rehype-pretty-code";
-import mkcert from "vite-plugin-mkcert";
 const prettyCodeOptions = {
   theme: "dracula",
   keepBackground: false,
@@ -26,9 +25,8 @@ export default defineConfig(({ command }) => ({
       rehypePlugins: [rehypeSlug, [rehypePrettyCode, prettyCodeOptions]],
       providerImportSource: "@mdx-js/react",
     }),
-    ...(command === "serve" ? [mkcert()] : []),
   ],
-  server: command === "serve" ? { host: true, https: true } : undefined,
+  server: command === "serve" ? { host: true } : undefined,
   build: {
     chunkSizeWarningLimit: 1200,
     rollupOptions: {
