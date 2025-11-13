@@ -1,15 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  SandpackConsole,
-  SandpackCodeEditor,
-  SandpackFileExplorer,
-  SandpackLayout,
-  SandpackPreview,
-  SandpackProvider,
-  useSandpack,
-} from "@codesandbox/sandpack-react";
-import CompactConsole from "../components/CompactConsole";
-import { dracula } from "@codesandbox/sandpack-themes";
+import { useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Markdown from "../components/Markdown";
 import StandardsBadges from "../components/StandardsBadges";
@@ -17,12 +6,12 @@ import challenges from "../data/challenges";
 import standards from "../data/standards";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
-import { getDefaultEditorExtensions } from "../lib/editorExtensions";
 import Modal from "../components/Modal";
 import Callout from "../components/Callout";
 import { loadMastered, saveMastered } from "../lib/mastery";
-import { EditorView } from "@codemirror/view";
-import { getBundlerURL } from "../lib/getBundlerURL";
+import MonacoWorkspace from "../components/MonacoWorkspace";
+import ConsolePanel from "../components/ConsolePanel";
+import { buildSrcDoc } from "../lib/buildSrcDoc";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const difficultyLabel = (value) => {
@@ -116,45 +105,44 @@ function ChallengeWorkspace({ challenge, navigate }) {
   }, [challenge.id, savedFiles]);
 
   // Always use new adapter (other challenge types removed)
-  const sandpackSetup = useMemo(() => {
-    // Build files map via new adapter then normalize into shape SandpackProvider expects
+  const setup = useMemo(() => {
     const savedObj = initialFiles ?? {};
-    const files = toSandpackFiles(challenge, savedObj, {
-      challengeId: challenge.id,
-    });
-    // Pick active file
+    const files = toSandpackFiles(challenge, savedObj, { challengeId: challenge.id });
     const visibleFiles = Object.keys(files).filter((p) => !files[p].hidden);
     const activeFile = visibleFiles.find((p) => files[p].active) || visibleFiles[0];
-    Object.keys(files).forEach((p) => {
-      files[p].active = p === activeFile;
-    });
+    Object.keys(files).forEach((p) => { files[p].active = p === activeFile; });
     return {
       template: challenge.template || "vanilla",
       files,
-      customSetup: { entry: challenge.entry || "/src/index.js" },
-      options: { visibleFiles, activeFile },
+      entry: challenge.entry || "/src/index.js",
+      visibleFiles,
+      activeFile,
     };
   }, [challenge, initialFiles]);
 
-  // Decide at runtime whether to use local vendored bundler or Sandpack's online bundler
-  const bundlerURL = getBundlerURL();
+  const [filesState, setFilesState] = useState(setup.files);
+  const [, setActiveFile] = useState(setup.activeFile);
+  const [srcDoc, setSrcDoc] = useState("");
+  const iframeRef = useRef(null);
 
-  const handleFileChange = useCallback(
-    (path, code) => {
-      if (path.startsWith("/.playground")) return;
-      const original = challenge.files?.[path]?.code;
-      setSavedFiles((prev) => {
-        const next = { ...prev };
-        if (original !== undefined && original === code) {
-          delete next[path];
-        } else {
-          next[path] = { code };
-        }
-        return next;
-      });
-    },
-    [challenge.files, setSavedFiles]
-  );
+  useEffect(() => {
+    setFilesState(setup.files);
+    setActiveFile(setup.activeFile);
+    // Do not auto-run on challenge change; keep preview idle until user clicks Run
+    setSrcDoc("");
+  }, [setup.files, setup.activeFile]);
+
+  const handleFileChange = useCallback((path, code) => {
+    if (path.startsWith("/.playground")) return;
+    const original = challenge.files?.[path]?.code;
+    setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
+    setSavedFiles((prev) => {
+      const next = { ...prev };
+      if (original !== undefined && original === code) delete next[path];
+      else next[path] = { code };
+      return next;
+    });
+  }, [challenge.files, setSavedFiles]);
 
   const handleResetStorage = useCallback(() => {
     // Clear mock API DB for this challenge if available
@@ -168,10 +156,11 @@ function ChallengeWorkspace({ challenge, navigate }) {
     }
     resetSavedFiles();
     setInitialFiles({});
-  }, [resetSavedFiles]);
+    setFilesState(challenge.files);
+  }, [resetSavedFiles, challenge.files]);
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 flex flex-col flex-1 min-h-0">
       {masteryToast ? (
         <Callout type="tip" title="Saved">
           <p>{masteryToast.message}</p>
@@ -211,157 +200,97 @@ function ChallengeWorkspace({ challenge, navigate }) {
         <StandardsBadges standards={challenge.standards} /> */}
       </header>
 
-      <SandpackProvider
-        template={sandpackSetup.template}
-        files={sandpackSetup.files}
-        customSetup={sandpackSetup.customSetup}
-        theme={dracula}
-        bundlerURL={bundlerURL}
-        options={{
-          ...sandpackSetup.options,
-          showLineNumbers: true,
-          wrapContent: true,
-          editorHeight: 540,
-          recompileMode: "delayed",
-          recompileDelay: 1000,
-        }}
-      >
-        <ChallengeSandboxUI
-          challenge={challenge}
-          entryPath={sandpackSetup.options.activeFile}
-          onFileChange={handleFileChange}
-          onResetStorage={handleResetStorage}
-          setSavedFiles={setSavedFiles}
-          isCompleted={isCompleted}
-          markComplete={markComplete}
-          markIncomplete={markIncomplete}
-          primaryStandard={primaryStandard}
-          isMastered={isMastered}
-          toggleMastered={toggleMastered}
-        />
-      </SandpackProvider>
+      <ChallengeSandboxUI
+        challenge={challenge}
+        files={filesState}
+        entry={setup.entry}
+  setActiveFile={setActiveFile}
+        onFileChange={handleFileChange}
+        onResetStorage={handleResetStorage}
+        isCompleted={isCompleted}
+        markComplete={markComplete}
+        markIncomplete={markIncomplete}
+        primaryStandard={primaryStandard}
+        isMastered={isMastered}
+        toggleMastered={toggleMastered}
+        srcDoc={srcDoc}
+        setSrcDoc={setSrcDoc}
+        iframeRef={iframeRef}
+      />
+
     </section>
   );
 }
 
-function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedFiles, isCompleted, markComplete, markIncomplete, primaryStandard, isMastered, toggleMastered }) {
-  const { sandpack, listen } = useSandpack();
-  // Removed unused clientId state
-  const [isCompiling, setIsCompiling] = useState(false);
-  // Remount key to force-clear SandpackConsole between runs
-  const [consoleKey, setConsoleKey] = useState(0);
-  // Removed unused isRunning state
-  const [showExplorer, setShowExplorer] = useState(
-    challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
-  );
-  // Controls visibility of the entire right panel (preview/console)
-  const [showRightPanel, setShowRightPanel] = useState(
-    challenge.sandbox?.showRightPanel !== undefined ? challenge.sandbox.showRightPanel : true
-  );
-  const [rightPanel, setRightPanel] = useState(
-    challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : "preview"
-  );
-  const [compactConsole, setCompactConsole] = useState(true);
-  // identify value mode removed
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const liveRef = useRef(null); // kept for future announcements
-
-  useEffect(() => {
-    if (!listen) return undefined;
-
-    const unsubscribe = listen((message) => {
-      // NOTE: We only rely on this for compile status now; file change events may differ across Sandpack versions.
-      if (message.type === "sandpack/client-connected") {
-        // Removed unused clientId assignment
-      }
-
-      if (message.type === "sandpack/status") {
-        const compiling = message.status === "running";
-        setIsCompiling(compiling);
-        // Clear console at the very start of a new run
-        if (compiling) {
-          setConsoleKey((k) => k + 1);
-        }
-      }
-    });
-
-    return () => unsubscribe?.();
-  }, [listen, onFileChange]);
-
-  // Robust diff-based persistence: whenever sandpack.files changes, compute deltas vs original challenge files.
-  useEffect(() => {
-    if (!sandpack?.files) return;
-    if (!setSavedFiles) return;
-    const originals = challenge.files || {};
-    const diff = {};
-    // Compare original challenge files.
-    Object.entries(originals).forEach(([path, spec]) => {
-      const current = sandpack.files[path];
-      if (current && typeof current.code === "string" && current.code !== spec.code) {
-        diff[path] = { code: current.code };
-      }
-    });
-    // Include any user-added non-playground files that aren't part of the seed.
-    Object.entries(sandpack.files).forEach(([path, spec]) => {
-      if (path.startsWith("/.playground")) return;
-      if (!originals[path]) {
-        diff[path] = { code: spec.code };
-      }
-    });
-    // Only write if something actually changed (shallow compare by keys + codes length)
-    setSavedFiles((prev) => {
-      const prevKeys = Object.keys(prev || {});
-      const nextKeys = Object.keys(diff);
-      if (prevKeys.length === nextKeys.length && prevKeys.every((k) => prev[k]?.code === diff[k]?.code)) {
-        return prev; // no change
-      }
-      return diff; // may be empty object (means fully reverted)
-    });
-  }, [sandpack?.files, challenge.id, setSavedFiles, challenge.files]);
-
-  // When challenge changes, reset sandbox UI state to its declared defaults
-  useEffect(() => {
-    setShowExplorer(
+function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChange, onResetStorage, isCompleted, markComplete, markIncomplete, primaryStandard, isMastered, toggleMastered, srcDoc, setSrcDoc, iframeRef }) {
+    const [showExplorer, setShowExplorer] = useState(
       challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
     );
-    setShowRightPanel(
+    const [showRightPanel, setShowRightPanel] = useState(
       challenge.sandbox?.showRightPanel !== undefined ? challenge.sandbox.showRightPanel : true
     );
-    setRightPanel(
+    const [rightPanel, setRightPanel] = useState(
       challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : "preview"
     );
-  }, [
-    challenge.id,
-    challenge.sandbox?.showExplorer,
-    challenge.sandbox?.showRightPanel,
-    challenge.sandbox?.defaultPanel,
-  ]);
+  // Removed compact/pretty toggle for console in Challenge view; default to compact formatting
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
+    const liveRef = useRef(null);
+    const [consoleKey, setConsoleKey] = useState(0);
+  const editorRef = useRef(null);
+  const cardRef = useRef(null);
+  const [cardHeight, setCardHeight] = useState(0);
 
-  // Test & completion messaging removed
-
-
-
-
-
-  const handleReset = () => {
-    if (!sandpack) return;
-    Object.entries(challenge.files ?? {}).forEach(([path, spec]) => {
-      if (typeof spec.code === "string") {
-        sandpack.updateFile(path, spec.code);
+    const handleRun = () => {
+      try {
+        // Clear console by remounting it
+        setConsoleKey((k) => k + 1);
+        const html = buildSrcDoc({ files, entry });
+        setSrcDoc(html);
+      } catch (e) {
+        console.error("Preview build failed", e);
       }
-    });
-    onResetStorage?.();
-    // identify value state removed
-  };
+    };
 
+    const handleReset = () => {
+      onResetStorage?.();
+    };
 
+    // Force Monaco to relayout when columns show/hide
+    useLayoutEffect(() => {
+      // ensure DOM has applied final sizes before relayout
+      let raf1 = 0, raf2 = 0;
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
+          try { editorRef.current && editorRef.current.layout(); } catch (e) { void e; }
+          try { window.dispatchEvent(new Event('resize')); } catch (e) { void e; }
+        });
+      });
+      return () => {
+        if (raf1) cancelAnimationFrame(raf1);
+        if (raf2) cancelAnimationFrame(raf2);
+      };
+    }, [showRightPanel, showExplorer]);
 
-
-
-
+    // Compute remaining viewport height for the workspace card and set explicit height
+    useLayoutEffect(() => {
+      function measure() {
+        const el = cardRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const top = rect.top;
+        const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        const next = Math.max(0, Math.floor(vh - top));
+        setCardHeight(next);
+      }
+      measure();
+      let raf = 0;
+      const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(measure); };
+      window.addEventListener('resize', onResize);
+      return () => { window.removeEventListener('resize', onResize); cancelAnimationFrame(raf); };
+    }, []);
 
   return (
-    <div className="space-y-6">
+  <div className="flex min-h-0 flex-1 flex-col space-y-6">
       <Modal
         isOpen={isInfoOpen}
         onClose={() => setIsInfoOpen(false)}
@@ -408,7 +337,7 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
           ) : null}
         </div>
       </Modal>
-      <div className="flex flex-wrap items-center gap-3">
+  <div className="flex flex-wrap items-center gap-3 shrink-0">
         <button
           type="button"
           onClick={() => setIsInfoOpen(true)}
@@ -457,18 +386,16 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
         </button>
         {/* Test / completion buttons removed */}
         <span className="text-xs text-slate-400">
-          {isCompiling ? "Compiling latest changes…" : "Edits auto-save to your browser."}
+          Edits auto-save to your browser.
         </span>
       </div>
 
-      {/* Identify Value challenge type removed */}
-
-      {/* Sandpack area */}
-      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
-        <div className="rounded-3xl border w-full border-slate-800 bg-slate-950/70 [--sp-font-size:1rem]">
+      {/* Workspace area */}
+      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] flex-1 min-h-0">
+        <div ref={cardRef} style={{ height: cardHeight ? `${cardHeight}px` : undefined }} className="rounded-3xl border w-full border-slate-800 bg-slate-950/70 [--sp-font-size:1rem] flex flex-col overflow-hidden">
           {/* Live region for accessibility */}
           <div aria-live="polite" ref={liveRef} className="sr-only" />
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 shrink-0">
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <button
                 type="button"
@@ -491,6 +418,14 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
                 }`}
               >
                 {showRightPanel ? "Hide" : "Show"} {rightPanel === "console" ? "console" : "preview"}
+              </button>
+              <button
+                type="button"
+                onClick={handleRun}
+                className="rounded-full border px-3 py-1 transition border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"
+                title="Build and run the preview"
+              >
+                Run
               </button>
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -516,98 +451,42 @@ function ChallengeSandboxUI({ challenge, onFileChange, onResetStorage, setSavedF
               >
                 Console
               </button>
-              <button
-                type="button"
-                onClick={() => setCompactConsole((v) => !v)}
-                className={`rounded-full border px-3 py-1 transition ${
-                  compactConsole
-                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-                }`}
-                title="Toggle compact (stackless) console"
-              >
-                {compactConsole ? "Compact" : "Full"}
-              </button>
+              {/* Compact toggle removed in Challenge view */}
             </div>
           </div>
+          <div className="flex flex-col gap-0 lg:flex-row min-h-0 grow">
+            <MonacoWorkspace
+              files={files}
+              onChange={onFileChange}
+              onActiveChange={setActiveFile}
+              showExplorer={showExplorer}
+              className={`min-w-0 flex-1 ${showRightPanel ? 'lg:border-r lg:border-slate-800' : ''}`}
+              onEditorMount={(ed) => { editorRef.current = ed; try { ed.layout(); } catch (e) { void e; } }}
+            />
 
-          <SandpackLayout className="flex flex-col gap-0 lg:flex-row">
-            {showExplorer ? (
-              <div className="hidden min-w-[200px] max-w-[240px]   border-b border-slate-800 bg-slate-950/80 lg:block lg:border-b-0 lg:border-r">
-                <SandpackFileExplorer autoHiddenFiles style={{ height: "100%" }} />
+            {showRightPanel ? (
+              <div className="min-h-0 min-w-0 flex-1 bg-slate-950/80 relative">
+                <div className={rightPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+                  {srcDoc ? (
+                    <iframe
+                      ref={iframeRef}
+                      title="preview"
+                      className="h-full w-full bg-white"
+                      sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
+                      srcDoc={srcDoc}
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-slate-400 text-sm">
+                      Click Run to build and load the preview…
+                    </div>
+                  )}
+                </div>
+                <div className={rightPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+                  <ConsolePanel key={consoleKey} />
+                </div>
               </div>
             ) : null}
-            <SandpackCodeEditor
-              showTabs
-              showLineNumbers
-              showInlineErrors
-              wrapContent
-              extensions={[
-                ...getDefaultEditorExtensions(),
-                EditorView.theme(
-                  {
-                    "&": { fontSize: "1rem", lineHeight: "1.5" },      // editor surface
-                    // Ensure long lines wrap even in read-only files
-                    ".cm-content": {
-                      fontSize: "1rem",
-                      whiteSpace: "pre-wrap",
-                      overflowWrap: "anywhere",
-                    },
-                    ".cm-line": { wordBreak: "break-word" },
-                    ".cm-gutters": { fontSize: "1rem" },                // line numbers
-                  },
-                  { dark: true }
-                )
-              ]}
-              style={{ height: "100%" }}
-              className={`flex-1 border-b border-slate-800 lg:border-b-0 ${showRightPanel ? "lg:border-r" : ""}`}
-            />
-            {/* Always keep the SandpackPreview mounted so the sandbox client (runtime) stays alive.
-                We toggle visibility instead of conditionally rendering; otherwise the console
-                would have no connected client and user logs would never appear. */}
-            <div
-              className={
-                showRightPanel
-                  ? "min-h-[320px] flex-1 bg-slate-950/80 relative"
-                  : "min-h-[0] flex-1 bg-slate-950/80 relative hidden lg:block" // hide from flex layout when not shown (still mounted if needed)
-              }
-              style={showRightPanel ? {} : { display: "none" }}
-            >
-              <div
-                className={
-                  rightPanel === "preview"
-                    ? "h-full"
-                    : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
-                }
-              >
-                <SandpackPreview
-                  showOpenInCodeSandbox={false}
-                  showRefreshButton
-                  style={{ height: "100%" }}
-                />
-              </div>
-              <div
-                className={
-                  rightPanel === "console"
-                    ? "h-full"
-                    : "pointer-events-none absolute inset-0 h-0 overflow-hidden"
-                }
-              >
-                {compactConsole ? (
-                  <CompactConsole />
-                ) : (
-                  <SandpackConsole
-                    key={consoleKey}
-                    showHeader
-                    showSyntaxError
-                    resetOnPreviewRestart
-                    style={{ height: "100%" }}
-                  />
-                )}
-              </div>
-            </div>
-          </SandpackLayout>
-          {/* Test results & completion panels removed */}
+          </div>
         </div>
       </div>
     </div>

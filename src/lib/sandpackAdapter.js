@@ -30,8 +30,10 @@ export function toSandpackFiles(challenge, saved = {}, opts = {}) {
     }
   }
 
-  // 2) inject fetch mock if challenge opts in (tag or flag)
-  const needsMock = challenge.tags?.includes("mock-fetch");
+  // 2) inject fetch mock if challenge opts in (tag or explicit mock config)
+  const needsMock = Boolean(
+    (challenge.tags && challenge.tags.includes("mock-fetch")) || challenge.mock
+  );
   if (needsMock) {
     files["/__mocks__/fetch.js"] = { code: mockSrc, readOnly: true, hidden: true };
 

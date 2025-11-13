@@ -23,11 +23,32 @@
   const chaos = _mockNet || { failOnFirst: false, everyN: null, n: 0 };
   let first = chaos.failOnFirst;
 
+  function parseUrl(inputUrl) {
+    try {
+      if (typeof inputUrl !== "string") return { path: "", q: new URLSearchParams("") };
+      if (inputUrl.startsWith("/")) {
+        const [p, search = ""] = inputUrl.split("?");
+        return { path: p, q: new URLSearchParams(search) };
+      }
+      const base = (window.parent && window.parent.location && window.parent.location.origin) || "http://localhost";
+      const u = new URL(inputUrl, base);
+      return { path: u.pathname, q: u.searchParams };
+    } catch (e) {
+      void e; // suppress unused var lint
+      // Fallback: naive parse
+      try {
+        const [p, search = ""] = String(inputUrl || "").split("?");
+        return { path: p || "", q: new URLSearchParams(search) };
+      } catch {
+        return { path: "", q: new URLSearchParams("") };
+      }
+    }
+  }
+
   function handle(url, init = {}) {
-    const u = new URL(url, location.origin);
-    const path = u.pathname;
-    const q = u.searchParams;
-    const { method = "GET", body } = init;
+    const { path, q } = parseUrl(url);
+    const method = (init && init.method) || "GET";
+    const body = init ? init.body : undefined;
 
     // /api/products
     if (path === "/api/products") {
@@ -80,8 +101,9 @@
 
   const realFetch = window.fetch.bind(window);
   window.fetch = async (input, init) => {
-    const url = typeof input === "string" ? input : input.url;
-    if (!url.startsWith("/api/")) return realFetch(input, init);
+    const url = typeof input === "string" ? input : (input && input.url);
+    const { path } = parseUrl(url || "");
+    if (!path.startsWith("/api/")) return realFetch(input, init);
 
     await delay(LATENCY_MS);
     if (first) {
@@ -98,7 +120,7 @@
       db = window.__MOCK_SEED__;
       save(db);
     }
-    return handle(url, init);
+    return handle(url, init || (typeof input === 'object' ? { method: input.method, body: input.body } : {}));
   };
 
   // Expose a small control surface for host app to reset the mock DB

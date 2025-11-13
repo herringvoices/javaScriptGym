@@ -33,7 +33,6 @@ export default defineConfig(({ command }) => ({
       output: {
         manualChunks: {
           react: ["react", "react-dom", "react-router-dom"],
-          sandpack: ["@codesandbox/sandpack-react", "@codesandbox/sandpack-themes"],
           markdown: ["react-markdown", "remark-gfm", "rehype-slug"],
         },
       },

@@ -1,19 +1,8 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
-import { EditorView } from "@codemirror/view";
-import { dracula } from "@codesandbox/sandpack-themes";
-import {
-  SandpackProvider,
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackPreview,
-  SandpackConsole,
-  SandpackFileExplorer,
-  useSandpack,
-} from "@codesandbox/sandpack-react";
-import { getDefaultEditorExtensions } from "../lib/editorExtensions";
-import CompactConsole from "./CompactConsole";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import MonacoWorkspace from "./MonacoWorkspace";
+import ConsolePanel from "./ConsolePanel";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
-import { getBundlerURL } from "../lib/getBundlerURL";
+import { buildSrcDoc } from "../lib/buildSrcDoc";
 
 /**
  * HandbookWorkbench
@@ -32,17 +21,16 @@ import { getBundlerURL } from "../lib/getBundlerURL";
  */
 export default function HandbookWorkbench({ entry }) {
   const [showFiles, setShowFiles] = useState(true);
-  const [bottomPanel, setBottomPanel] = useState("console"); // "console" | "preview"
+  const [bottomPanel, setBottomPanel] = useState("console");
   const [compactConsole, setCompactConsole] = useState(true);
   const storageKey = entry ? `handbook:${entry.standard}:${entry.id}` : null;
 
-  // Load any saved edits for this entry from localStorage
-  const savedFilesForEntry = React.useMemo(() => {
+  const savedFilesForEntry = useMemo(() => {
     if (!storageKey) return {};
     try {
       const raw = localStorage.getItem(storageKey);
       if (!raw) return {};
-      const parsed = JSON.parse(raw); // { "/path": "code", ... }
+      const parsed = JSON.parse(raw);
       const mapped = {};
       Object.entries(parsed).forEach(([path, code]) => {
         mapped[path] = { code: String(code ?? "") };
@@ -53,8 +41,7 @@ export default function HandbookWorkbench({ entry }) {
     }
   }, [storageKey]);
 
-  // Build a pseudo-challenge to leverage the Sandpack adapter (fetch mock, bridge, etc)
-  const challengeLike = React.useMemo(() => {
+  const model = useMemo(() => {
     if (!entry) return null;
     const fileMap = {};
     for (const f of entry.files || []) {
@@ -65,53 +52,68 @@ export default function HandbookWorkbench({ entry }) {
         active: Boolean(f.active),
       };
     }
-
-    const template = "vanilla"; // DOM/vanilla default for handbook entries
-    const tagList = entry.mock ? ["mock-fetch"] : [];
-
-    return {
+    const challengeLike = {
       id: `handbook:${entry.standard}:${entry.id}`,
-      template,
+      template: "vanilla",
       files: fileMap,
       entry: entry.entry || "/index.html",
       mock: entry.mock,
-      tags: tagList,
-      sandbox: {},
+      tags: entry.mock ? ["mock-fetch"] : [],
     };
-  }, [entry]);
-
-  const sandpackSetup = React.useMemo(() => {
-    if (!challengeLike) return null;
     const files = toSandpackFiles(challengeLike, savedFilesForEntry, {
       challengeId: challengeLike.id,
       apiSeed: challengeLike.mock?.apiSeed,
       mockNet: challengeLike.mock?.mockNet,
     });
-
     const visibleFiles = Object.keys(files).filter((p) => !files[p].hidden);
     const activeFile = visibleFiles.find((p) => files[p].active) || visibleFiles[0];
-    Object.keys(files).forEach((p) => {
-      files[p].active = p === activeFile;
-    });
+    Object.keys(files).forEach((p) => { files[p].active = p === activeFile; });
+    return { files, entry: challengeLike.entry, activeFile };
+  }, [entry, savedFilesForEntry]);
 
-    return {
-      template: challengeLike.template,
-      files,
-      customSetup: { entry: challengeLike.entry },
-      options: { visibleFiles, activeFile },
-    };
-  }, [challengeLike, savedFilesForEntry]);
+  const [filesState, setFilesState] = useState(model?.files || {});
+  const [, setActiveFile] = useState(model?.activeFile || null);
+  const [srcDoc, setSrcDoc] = useState("");
+  const iframeRef = useRef(null);
+  const [consoleKey, setConsoleKey] = useState(0);
 
-  const bundlerURL = getBundlerURL();
+  useEffect(() => {
+    if (!model) return;
+    setFilesState(model.files);
+    setActiveFile(model.activeFile);
+    setSrcDoc(""); // don't auto-run when switching entries
+  }, [model]);
 
-  if (!entry || !sandpackSetup) {
+  const handleRun = useCallback(() => {
+    if (!model) return;
+    try {
+      setConsoleKey((k) => k + 1); // clear console on run
+      const html = buildSrcDoc({ files: filesState, entry: model.entry });
+      setSrcDoc(html);
+    } catch (e) {
+      console.error("Preview build failed", e);
+    }
+  }, [filesState, model]);
+
+  const onChange = useCallback((path, code) => {
+    setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
+    if (!storageKey) return;
+    try {
+      const snapshot = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      snapshot[path] = code;
+      localStorage.setItem(storageKey, JSON.stringify(snapshot));
+    } catch {
+      // ignore storage errors
+    }
+  }, [storageKey]);
+
+  if (!entry || !model) {
     return (
       <div className="rounded border border-slate-800 p-3 text-sm text-slate-300">Select a standard to load its editor.</div>
     );
   }
 
   return (
-    // Increase base font size for all Sandpack panes (explicit values to avoid theme overrides)
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
         <div className="flex items-center gap-2">
@@ -125,6 +127,14 @@ export default function HandbookWorkbench({ entry }) {
             }`}
           >
             {showFiles ? "Hide" : "Show"} files
+          </button>
+          <button
+            type="button"
+            onClick={handleRun}
+            className="rounded-full border px-3 py-1 transition border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"
+            title="Build and run the preview"
+          >
+            Run
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -165,130 +175,38 @@ export default function HandbookWorkbench({ entry }) {
         </div>
       </div>
 
-      <SandpackProvider
-        template={sandpackSetup.template}
-        files={sandpackSetup.files}
-        customSetup={sandpackSetup.customSetup}
-        theme={dracula}
-        bundlerURL={bundlerURL}
-        options={{
-          ...sandpackSetup.options,
-          showLineNumbers: true,
-          wrapContent: true,
-          editorHeight: 360,
-          recompileMode: "delayed",
-          recompileDelay: 600,
-        }}
-      >
-        <WorkbenchLayout showFiles={showFiles} bottomPanel={bottomPanel} storageKey={storageKey} compactConsole={compactConsole} />
-      </SandpackProvider>
-    </div>
-  );
-}
+      <div className="flex flex-col gap-0">
+        <div className="flex min-h-[280px] w-full border-b border-slate-800">
+          <MonacoWorkspace
+            files={filesState}
+            onChange={onChange}
+            onActiveChange={(p) => setActiveFile(p)}
+            showExplorer={showFiles}
+            className="flex-1"
+          />
+        </div>
 
-function WorkbenchLayout({ showFiles, bottomPanel, storageKey, compactConsole }) {
-  const { listen, sandpack } = useSandpack();
-  const [consoleKey, setConsoleKey] = useState(0);
-  const saveTimerRef = useRef(null);
-
-  useEffect(() => {
-    if (!listen) return undefined;
-    const unsub = listen((message) => {
-      if (message.type === "sandpack/status" && message.status === "running") {
-        // Clear console whenever a fresh run starts
-        setConsoleKey((k) => k + 1);
-      }
-    });
-    return () => unsub?.();
-  }, [listen]);
-
-  // Persist current editor files (debounced) to localStorage
-  useEffect(() => {
-    if (!storageKey) return;
-    const files = sandpack?.files || {};
-    // Debounce to avoid excessive writes while typing
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(() => {
-      try {
-        const snapshot = {};
-        Object.entries(files).forEach(([path, spec]) => {
-          // Skip injected bridge/mocks and internal files
-          if (path.startsWith("/__")) return;
-          if (spec && typeof spec.code === "string") {
-            snapshot[path] = spec.code;
-          }
-        });
-        localStorage.setItem(storageKey, JSON.stringify(snapshot));
-      } catch {
-        // ignore quota/privacy errors
-      }
-    }, 300);
-    return () => {
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    };
-  }, [sandpack?.files, storageKey]);
-
-  return (
-    <SandpackLayout className="flex flex-col gap-0">
-      {/* Row 1: files + editor */}
-      <div className="flex min-h-[280px] w-full border-b border-slate-800">
-        {showFiles ? (
-          <div className="hidden min-w-[200px] max-w-[240px] border-r border-slate-800 bg-slate-950/80 lg:block">
-            <SandpackFileExplorer autoHiddenFiles style={{ height: "100%", fontSize: "var(--sp-font-size)" }} />
+        <div className="relative min-h-[220px] w-full">
+          <div className={bottomPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+            {srcDoc ? (
+              <iframe
+                ref={iframeRef}
+                title="preview"
+                className="h-full w-full bg-white"
+                sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
+                srcDoc={srcDoc}
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-slate-400 text-sm">
+                Click Run to build and load the preview…
+              </div>
+            )}
           </div>
-        ) : null}
-        <WorkbenchEditor />
-      </div>
-
-      {/* Row 2: preview OR console (keep both mounted, toggle visibility) */}
-      <div className="relative min-h-[220px] w-full">
-        <div className={bottomPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
-          <SandpackPreview showOpenInCodeSandbox={false} showRefreshButton style={{ height: "100%" }} />
-        </div>
-        <div className={bottomPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
-          {compactConsole ? (
-            <CompactConsole />
-          ) : (
-            <SandpackConsole
-              key={consoleKey}
-              showHeader
-              showSyntaxError
-              resetOnPreviewRestart
-              style={{ height: "100%", fontSize: "1.25rem" }}
-            />
-          )}
+          <div className={bottomPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+            <ConsolePanel key={consoleKey} compact={compactConsole} />
+          </div>
         </div>
       </div>
-    </SandpackLayout>
-  );
-}
-
-function WorkbenchEditor() {
-  // Build a stable extensions array to avoid frequent reconfiguration causing ChangeSet position mismatches
-  const baseExtensions = useMemo(() => getDefaultEditorExtensions(), []);
-  const fontSizeTheme = useMemo(
-    () =>
-      EditorView.theme(
-        {
-          "&": { fontSize: "1.25rem", lineHeight: "1.6" },
-          ".cm-content": { fontSize: "1.25rem" },
-          ".cm-line": { wordBreak: "break-word" },
-          ".cm-gutters": { fontSize: "1.25rem" },
-        },
-        { dark: true }
-      ),
-    []
-  );
-  const extensions = useMemo(() => [...baseExtensions, fontSizeTheme], [baseExtensions, fontSizeTheme]);
-  return (
-    <SandpackCodeEditor
-      showTabs
-      showLineNumbers
-      showInlineErrors
-      wrapContent
-      extensions={extensions}
-      style={{ height: "100%" }}
-      className="flex-1"
-    />
+    </div>
   );
 }
