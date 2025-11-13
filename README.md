@@ -1,6 +1,6 @@
 # Front-End Practice Playground
 
-This project scaffolds a front-end practice environment with routing, an MDX-powered handbook, and Sandpack playgrounds ready for future challenges.
+This project scaffolds a front-end practice environment with routing, an MDX-powered handbook, and a Monaco-powered playground (editor + preview + console) for challenges.
 
 ## Getting started
 
@@ -20,10 +20,10 @@ Notes:
 Challenges are auto‑discovered from files under `src/data/challenges/**`.
 
 1. Create a file at `src/data/challenges/<PRIMARY_STANDARD>/<ID>.js` (e.g., `src/data/challenges/JS.PF.CON/JS.PF.CON-001.js`). Name with zero‑padded numbers so sorting is stable (`-001`, `-010`, `-101`).
-2. Export a default `challenge` object with `id`, `title`, `description`, `standards`, `primaryStandard`, and Sandpack `files`. Ensure `challenge.id` matches the filename.
+2. Export a default `challenge` object with `id`, `title`, `description`, `standards`, `primaryStandard`, and `files`. Ensure `challenge.id` matches the filename.
 3. Set `difficulty` to a single integer `1`–`5` (see the Difficulty Matrix in `Reference Docs/Challenge Difficulties.md`).
 4. Include valid standard codes from `src/data/standards.js` (see also `Reference Docs/Standards.md`). Put the primary first in the `standards` array.
-5. (Optional) Add Sandpack metadata such as `template`, `entry`, `tags`, `hints`, and `mock`.
+5. (Optional) Add metadata such as `template`, `entry`, `tags`, `hints`, and `mock`.
 6. (Optional) Provide a `sandbox` config to influence initial UI layout:
 	 ```js
 	 sandbox: {
@@ -32,7 +32,7 @@ Challenges are auto‑discovered from files under `src/data/challenges/**`.
 		 showExplorer: true            // show file tree initially (default true)
 	 }
 	 ```
-7. Visit `/challenge/<id>` to load the challenge with the Sandpack workspace.
+7. Visit `/challenge/<id>` to load the challenge with the Monaco workspace.
 
 For full authoring guidance (IDs, folder layout, beginner‑friendly prompt tips, and fetch mocking), see `Reference Docs/Challenge Writing Guide.md`.
 
@@ -68,8 +68,8 @@ You can use the shared shortcodes/components provided by the MDX provider (see `
 - `src/routes/router.jsx` wires up the main routes.
 - `src/pages` contains the list and detail views for challenges and the handbook page.
 - `src/handbook` handles MDX rendering and standard metadata.
-- `src/components` provides reusable UI primitives, including Sandpack wrappers.
-- `src/lib` contains adapters/utilities (Sandpack adapter, storage, mastery, etc.).
+- `src/components` provides reusable UI primitives, including the Monaco editor workspace and console.
+- `src/lib` contains adapters/utilities (playground adapter for bridge/mock injection, storage, mastery, etc.).
 - `src/data` contains standards metadata and per‑challenge files under `src/data/challenges/**`.
 
 ## Mastery & unlocking
@@ -107,54 +107,15 @@ Mastery state persists in `localStorage` under `practiceTool.masteredStandards` 
 
 With this skeleton in place, you can focus on authoring challenges and handbook chapters without additional setup.
 
-## Offline Sandpack bundler (local vs remote)
+## Playground architecture (Monaco + iframe)
 
-We vendor a built copy of Sandpack's bundler under `public/sandpack/` (it must contain `frame.html`, worker chunks, and related assets). A small runtime settings file toggles whether the app uses those local assets or Sandpack's default remote bundler.
+The challenge workspace uses:
 
-### Runtime settings
+- Monaco editor via `@monaco-editor/react`
+- An iframe preview built from in-memory files using `src/lib/buildSrcDoc.js`
+- A console bridge that forwards `console.*` and runtime errors to the host UI (`src/components/ConsolePanel.jsx`)
 
-`public/settings.js` (loaded before the app) defines:
-
-```js
-window.APP_SETTINGS = {
-  useLocalBundler: false, // hosted/prod default: rely on Sandpack's remote bundler
-  bundlerURL: "/sandpack/" // absolute path to vendored bundler when enabled
-};
-```
-
-Flip to offline mode (e.g. classroom machines without internet) by overwriting the file:
-
-```bash
-cat > public/settings.js <<'EOF'
-window.APP_SETTINGS = { useLocalBundler: true, bundlerURL: "/sandpack/" };
-EOF
-```
-
-Because `public/sandpack/` is committed, students only need `npm install && npm run dev`.
-
-### Refreshing vendored assets
-
-1. Clone and build the bundler:
-	```bash
-	git clone https://github.com/codesandbox/sandpack-bundler.git tools/sandpack-bundler
-	cd tools/sandpack-bundler
-	yarn && yarn build
-	```
-2. Copy the build output (adjust if build folder differs):
-	```bash
-	rsync -a --delete dist/ ../../public/sandpack/
-	```
-3. Commit updated `public/sandpack/` contents.
-
-### Verification
-
-Run `npm run dev` and open a sandbox page. In DevTools → Network you should see requests to `/sandpack/frame.html` when `useLocalBundler: true`. Hosted builds (with `useLocalBundler: false`) will omit those and talk to the remote bundler.
-
-### Notes
-
-* Keep `bundlerURL` absolute (`/sandpack/`) so route changes don't break asset paths.
-* If repository size becomes large, consider Git LFS or a separate package for the bundler assets; the runtime toggle still works.
-* In development (`vite`), if `settings.js` is missing we default to using the local bundler for convenience.
+Run is manual: click the Run button to rebuild and load the preview. The console clears on each run and the active panel (Preview or Console) is preserved.
 
 ## Automated completion tests (removed)
 
@@ -212,20 +173,7 @@ User edits persist per challenge in `localStorage` under `playground:<challengeI
 
 * Add new endpoints: expand `src/runner/fetchMock.js`.
 * Add global seeds/chaos options when calling the adapter (`toSandpackFiles`).
-# Editor upgrades (Sandpack)
+## Editor theme
 
-We’ve upgraded Sandpack’s editor to feel closer to VS Code while keeping things light:
-
-- VS Code-like theme via `@uiw/codemirror-theme-vscode`
-- Smart editing: auto-close brackets and HTML tags, bracket matching, active-line highlight
-- Basic autocomplete plus optional custom completions for common snippets
-
-Where it’s wired:
-
-- `src/lib/editorExtensions.js` exports `getDefaultEditorExtensions()` which bundles theme + extensions
-- Used in both `ChallengePage.jsx` and `MiniSandpack.jsx` via the `extensions` prop on `SandpackCodeEditor`
-
-Notes:
-
-- This is still CodeMirror in Sandpack, not Monaco, so language-server IntelliSense is out of scope. If you need full VS Code features, consider replacing the editor with Monaco and bridging Sandpack files/state.
+The editor uses a Dracula-like theme configured in `src/components/MonacoWorkspace.jsx`.
 # javaScriptGym
