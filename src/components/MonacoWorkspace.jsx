@@ -64,9 +64,9 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 	};
 
 	return (
-		<div className={`flex h-full w-full ${className}`}>
+		<div className={`flex w-full min-h-0 grow ${className}`}>
 			{showExplorer ? (
-				<div className="hidden lg:block w-56 shrink-0 border-r border-slate-800 bg-slate-950/80">
+				<div className="hidden lg:block h-full w-56 shrink-0 border-r border-slate-800 bg-slate-950/80">
 					<div className="px-3 py-2 text-xs text-slate-400 border-b border-slate-800">Files</div>
 					<ul className="max-h-[calc(100%-36px)] overflow-auto p-2 text-sm">
 						{visibleFiles.map((p) => (
@@ -86,7 +86,7 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 				</div>
 			) : null}
 
-			<div className="flex min-w-0 grow flex-col">
+			<div className="flex min-w-0 min-h-0 grow flex-col">
 				<div className="flex items-center gap-1 border-b border-slate-800 bg-slate-950/70 px-2 py-1">
 					{visibleFiles.map((p) => (
 						<button
@@ -100,7 +100,7 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 						</button>
 					))}
 				</div>
-				<div className="min-h-[300px] grow">
+				<div className="min-h-0 grow">
 					{spec ? (
 						<Editor
 							key={activePath}

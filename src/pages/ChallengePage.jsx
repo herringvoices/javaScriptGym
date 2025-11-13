@@ -160,7 +160,7 @@ function ChallengeWorkspace({ challenge, navigate }) {
   }, [resetSavedFiles, challenge.files]);
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 flex flex-col flex-1 min-h-0">
       {masteryToast ? (
         <Callout type="tip" title="Saved">
           <p>{masteryToast.message}</p>
@@ -237,6 +237,8 @@ function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChan
     const liveRef = useRef(null);
     const [consoleKey, setConsoleKey] = useState(0);
   const editorRef = useRef(null);
+  const cardRef = useRef(null);
+  const [cardHeight, setCardHeight] = useState(0);
 
     const handleRun = () => {
       try {
@@ -269,8 +271,26 @@ function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChan
       };
     }, [showRightPanel, showExplorer]);
 
-    return (
-    <div className="space-y-6">
+    // Compute remaining viewport height for the workspace card and set explicit height
+    useLayoutEffect(() => {
+      function measure() {
+        const el = cardRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const top = rect.top;
+        const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        const next = Math.max(0, Math.floor(vh - top));
+        setCardHeight(next);
+      }
+      measure();
+      let raf = 0;
+      const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(measure); };
+      window.addEventListener('resize', onResize);
+      return () => { window.removeEventListener('resize', onResize); cancelAnimationFrame(raf); };
+    }, []);
+
+  return (
+  <div className="flex min-h-0 flex-1 flex-col space-y-6">
       <Modal
         isOpen={isInfoOpen}
         onClose={() => setIsInfoOpen(false)}
@@ -317,7 +337,7 @@ function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChan
           ) : null}
         </div>
       </Modal>
-      <div className="flex flex-wrap items-center gap-3">
+  <div className="flex flex-wrap items-center gap-3 shrink-0">
         <button
           type="button"
           onClick={() => setIsInfoOpen(true)}
@@ -371,11 +391,11 @@ function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChan
       </div>
 
       {/* Workspace area */}
-      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
-        <div className="rounded-3xl border w-full border-slate-800 bg-slate-950/70 [--sp-font-size:1rem]">
+      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] flex-1 min-h-0">
+        <div ref={cardRef} style={{ height: cardHeight ? `${cardHeight}px` : undefined }} className="rounded-3xl border w-full border-slate-800 bg-slate-950/70 [--sp-font-size:1rem] flex flex-col overflow-hidden">
           {/* Live region for accessibility */}
           <div aria-live="polite" ref={liveRef} className="sr-only" />
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 shrink-0">
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <button
                 type="button"
@@ -434,7 +454,7 @@ function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChan
               {/* Compact toggle removed in Challenge view */}
             </div>
           </div>
-          <div className="flex flex-col gap-0 lg:flex-row">
+          <div className="flex flex-col gap-0 lg:flex-row min-h-0 grow">
             <MonacoWorkspace
               files={files}
               onChange={onFileChange}
@@ -445,7 +465,7 @@ function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChan
             />
 
             {showRightPanel ? (
-              <div className="min-h-[320px] min-w-0 flex-1 bg-slate-950/80 relative">
+              <div className="min-h-0 min-w-0 flex-1 bg-slate-950/80 relative">
                 <div className={rightPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
                   {srcDoc ? (
                     <iframe

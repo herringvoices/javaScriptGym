@@ -10,7 +10,7 @@ const navLinkClass = ({ isActive }) =>
 
 export default function AppLayout() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <header className="bg-slate-900 border-b border-slate-800">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
           <NavLink
@@ -29,7 +29,7 @@ export default function AppLayout() {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="mx-auto max-w-7xl px-6 py-8 flex-1 flex flex-col min-h-0">
         <Outlet />
       </main>
     </div>
