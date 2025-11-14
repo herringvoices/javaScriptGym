@@ -219,7 +219,7 @@ const getLargestHabitatSize = (habitats) => {
 };
 
 // Header
-console.log("\n\t\tL A N D E R ' S   Z O O\n\t\t***********************************************************\n");
+console.log(\`\\n\\t\\tL A N D E R ' S   Z O O\\n\\t\\t***********************************************************\\n\`);
 
 // Values you will use to build a single multi-line summary string.
 const totalArea = totalHabitatArea(habitats);      // expected: 11500
