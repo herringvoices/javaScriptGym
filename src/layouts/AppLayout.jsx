@@ -26,6 +26,9 @@ export default function AppLayout() {
             <NavLink to="/handbook/overview" className={navLinkClass}>
               Handbook
             </NavLink>
+            <NavLink to="/projects" className={navLinkClass}>
+              Projects
+            </NavLink>
           </nav>
         </div>
       </header>

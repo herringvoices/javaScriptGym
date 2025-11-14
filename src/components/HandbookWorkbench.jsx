@@ -19,11 +19,12 @@ import { buildSrcDoc } from "../lib/buildSrcDoc";
  *      mock?: { apiSeed?: any, mockNet?: { slowMs?: number, failOnFirst?: boolean } }
  *    } | null
  */
-export default function HandbookWorkbench({ entry }) {
-  const [showFiles, setShowFiles] = useState(true);
+export default function HandbookWorkbench({ entry, showConsole = true }) {
+  const [showFiles, setShowFiles] = useState(false);
   const [bottomPanel, setBottomPanel] = useState("console");
   const [compactConsole, setCompactConsole] = useState(true);
-  const storageKey = entry ? `handbook:${entry.standard}:${entry.id}` : null;
+  // Storage scope: default to handbook when a standard is provided, otherwise project scope
+  const storageKey = entry ? (entry.standard ? `handbook:${entry.standard}:${entry.id}` : `project:${entry.id}`) : null;
 
   const savedFilesForEntry = useMemo(() => {
     if (!storageKey) return {};
@@ -113,6 +114,9 @@ export default function HandbookWorkbench({ entry }) {
     );
   }
 
+  // We keep a single fixed-height container and adjust the console area's height
+  // so the editor grows/shrinks instead of reflowing the console to the end.
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
@@ -175,35 +179,40 @@ export default function HandbookWorkbench({ entry }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-0">
-        <div className="flex min-h-[280px] w-full border-b border-slate-800">
-          <MonacoWorkspace
-            files={filesState}
-            onChange={onChange}
-            onActiveChange={(p) => setActiveFile(p)}
-            showExplorer={showFiles}
-            className="flex-1"
-          />
-        </div>
-
-        <div className="relative min-h-[220px] w-full">
-          <div className={bottomPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
-            {srcDoc ? (
-              <iframe
-                ref={iframeRef}
-                title="preview"
-                className="h-full w-full bg-white"
-                sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
-                srcDoc={srcDoc}
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-slate-400 text-sm">
-                Click Run to build and load the preview…
-              </div>
-            )}
+      {/* Fixed-height bordered container that contains editor (flex-1) and console (fixed height) */}
+      <div className="rounded-lg border border-slate-800 overflow-hidden">
+        <div className="flex h-[540px] min-h-0 flex-col">
+          <div className="flex min-h-0 w-full flex-1 border-b border-slate-800">
+            <MonacoWorkspace
+              files={filesState}
+              onChange={onChange}
+              onActiveChange={(p) => setActiveFile(p)}
+              showExplorer={showFiles}
+              className="flex-1"
+            />
           </div>
-          <div className={bottomPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
-            <ConsolePanel key={consoleKey} compact={compactConsole} />
+          <div
+            className={`${showConsole ? "h-[220px]" : "h-0"} relative w-full transition-[height] duration-200 ease-in-out`}
+            aria-hidden={!showConsole}
+          >
+            <div className={bottomPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+              {srcDoc ? (
+                <iframe
+                  ref={iframeRef}
+                  title="preview"
+                  className="h-full w-full bg-white"
+                  sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
+                  srcDoc={srcDoc}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-slate-400 text-sm">
+                  Click Run to build and load the preview…
+                </div>
+              )}
+            </div>
+            <div className={bottomPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+              <ConsolePanel key={consoleKey} compact={compactConsole} />
+            </div>
           </div>
         </div>
       </div>

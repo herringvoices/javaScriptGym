@@ -8,6 +8,7 @@ import { handbookChapters, loadHandbookEntry, getChapterLoader, getChaptersForSt
 import HandbookMDXProvider from "../handbook/MDXProvider";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import HandbookSidebar from "../components/HandbookSidebar";
+import StickyToggleBar from "../components/StickyToggleBar";
 
 // Removed page-level heading TOC ("On this page"); keep file lean.
 
@@ -21,6 +22,7 @@ export default function HandbookPage() {
   const [showTOC, setShowTOC] = useState(true);
   const [showHandbook, setShowHandbook] = useState(true);
   const [showEditor, setShowEditor] = useState(true);
+  const [showConsole, setShowConsole] = useState(true);
 
   // New-style entry loader (preferred)
   const [entry, setEntry] = useState(null);
@@ -134,13 +136,7 @@ export default function HandbookPage() {
 
   // Legacy standardNav retained for potential future use (e.g., breadcrumbs). Removed from rendering.
 
-  // NEW: unified toggle button styles consistent with brand
-  const toggleBtnClass = (isOn) =>
-    `inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm transition-colors
-     focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70
-     ${isOn
-       ? "bg-brand-600 text-white border-brand-600 hover:bg-brand-500"
-       : "bg-slate-900/60 text-slate-200 border-slate-700 hover:bg-slate-800"}`;
+  // Button class logic moved into StickyToggleBar for reuse
 
   if (!meta) {
     return (
@@ -164,37 +160,24 @@ export default function HandbookPage() {
         </div>
 
         {/* Sticky toggle controls bar */}
-        <div className="sticky top-0 z-30 -mx-1 rounded-md bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-slate-900/50 border border-slate-700 px-2 py-2">
-          <div className="grid grid-cols-3 items-center gap-2 text-xs sm:text-sm">
-            <div className="justify-self-start">
-              <button
-                className={toggleBtnClass(showTOC)}
-                aria-pressed={showTOC}
-                onClick={() => setShowTOC((v) => !v)}
-              >
-                {showTOC ? "Hide Table of Contents" : "Show Table of Contents"}
-              </button>
-            </div>
-            <div className="justify-self-center">
-              <button
-                className={toggleBtnClass(showHandbook)}
-                aria-pressed={showHandbook}
-                onClick={() => setShowHandbook((v) => !v)}
-              >
-                {showHandbook ? "Hide handbook" : "Show handbook"}
-              </button>
-            </div>
-            <div className="justify-self-end">
-              <button
-                className={toggleBtnClass(showEditor)}
-                aria-pressed={showEditor}
-                onClick={() => setShowEditor((v) => !v)}
-              >
-                {showEditor ? "Hide editor" : "Show editor"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <StickyToggleBar
+          showTOC={showTOC}
+          showHandbook={showHandbook}
+          showEditor={showEditor}
+          showConsole={showConsole}
+          onToggleTOC={() => setShowTOC((v) => !v)}
+          onToggleHandbook={() => setShowHandbook((v) => !v)}
+          onToggleEditor={() => setShowEditor((v) => !v)}
+          onToggleConsole={() => setShowConsole((v) => !v)}
+          tocOnLabel="Hide Table of Contents"
+          tocOffLabel="Show Table of Contents"
+          handbookOnLabel="Hide handbook"
+          handbookOffLabel="Show handbook"
+          editorOnLabel="Hide editor"
+          editorOffLabel="Show editor"
+          consoleOnLabel="Hide console"
+          consoleOffLabel="Show console"
+        />
 
         {/* Body with three columns: 1:2:2 when all three visible; 1:1 when two visible; 1 when one visible */}
         {(() => {
@@ -207,11 +190,11 @@ export default function HandbookPage() {
               : "lg:grid-cols-1";
           return (
             <div className={`grid gap-8 ${gridColsLg}`}>
-              <aside className={showTOC ? "space-y-6 sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto" : "hidden"}>
+              <aside className={showTOC ? "space-y-6 sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto animate-fade-in" : "hidden"}>
                 <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
               </aside>
 
-              <article className={`prose prose-invert max-w-none ${showHandbook ? "block" : "hidden"}`}>
+              <article className={`prose prose-invert max-w-none ${showHandbook ? "block animate-fade-in" : "hidden"}`}>
                 {chapterId && chapterModule ? (
                   <div>
                     {loadingChapter && (
@@ -365,7 +348,7 @@ export default function HandbookPage() {
               <section
                 className={
                   showEditor
-                    ? "sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto"
+                    ? "sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto animate-fade-in"
                     : "hidden"
                 }
               >
@@ -376,7 +359,7 @@ export default function HandbookPage() {
                 ) : loadingEntry && !entry ? (
                   <div className="rounded border border-slate-800 p-3 text-sm text-slate-300">Loading editor…</div>
                 ) : (
-                  <HandbookWorkbench entry={entry} />
+                  <HandbookWorkbench entry={entry} showConsole={showConsole} />
                 )}
               </section>
             </div>

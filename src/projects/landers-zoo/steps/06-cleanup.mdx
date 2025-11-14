@@ -1,0 +1,20 @@
+## Cleanup & Modularization
+
+Great work building the dashboard features! Before you present to Miranda, clean up the code by splitting it into modules.
+
+In the editor, you’ll now see two new files (unhidden for this step):
+
+- data.js — just the arrays for `habitats` and `animals`
+- functions.js — reusable helpers (e.g., total area, smallest/largest, filters)
+- main.js — your orchestrator that prints the output by importing from data.js and functions.js
+
+Your task:
+
+1) Move the raw data structures from `main.js` into `data.js` and export them.
+2) Move calculation and formatting helpers from `main.js` into `functions.js` and export them.
+3) In `main.js`, import the data and functions, then print the same output you’ve been building.
+
+Tip: start by listing the responsibilities in `zoo.js`. Anything that isn’t printing or orchestration likely belongs in `functions.js`.
+
+That’s it! Skip the sequence diagram chapter for this project.
+

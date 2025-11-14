@@ -21,7 +21,21 @@ export default {
           800: "#13479d",
           900: "#123d7e",
         },
-      },
+        },
+        keyframes: {
+          fadeIn: {
+            '0%': { opacity: '0', transform: 'translateY(4px)' },
+            '100%': { opacity: '1', transform: 'translateY(0)' },
+          },
+          fadeOut: {
+            '0%': { opacity: '1', transform: 'translateY(0)' },
+            '100%': { opacity: '0', transform: 'translateY(4px)' },
+          },
+        },
+        animation: {
+          'fade-in': 'fadeIn 200ms ease-out',
+          'fade-out': 'fadeOut 200ms ease-in',
+        },
       boxShadow: {
         card: "0 10px 25px -10px rgba(15, 23, 42, 0.3)",
       },
