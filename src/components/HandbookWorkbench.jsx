@@ -25,22 +25,32 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
   const [compactConsole, setCompactConsole] = useState(true);
   // Storage scope: default to handbook when a standard is provided, otherwise project scope
   const storageKey = entry ? (entry.standard ? `handbook:${entry.standard}:${entry.id}` : `project:${entry.id}`) : null;
-
-  const savedFilesForEntry = useMemo(() => {
-    if (!storageKey) return {};
+  // Live snapshot of saved edits for this storageKey. This ensures step changes (same key) pick up latest edits.
+  const [savedSnapshot, setSavedSnapshot] = useState({}); // Record<string,string>
+  useEffect(() => {
+    if (!storageKey) {
+      setSavedSnapshot({});
+      return;
+    }
     try {
       const raw = localStorage.getItem(storageKey);
-      if (!raw) return {};
-      const parsed = JSON.parse(raw);
-      const mapped = {};
-      Object.entries(parsed).forEach(([path, code]) => {
-        mapped[path] = { code: String(code ?? "") };
-      });
-      return mapped;
+      const parsed = raw ? JSON.parse(raw) : {};
+      // Ensure it's a plain object of path->string
+      const obj = {};
+      Object.entries(parsed || {}).forEach(([p, v]) => { obj[p] = String(v ?? ""); });
+      setSavedSnapshot(obj);
     } catch {
-      return {};
+      setSavedSnapshot({});
     }
   }, [storageKey]);
+
+  const savedFilesForEntry = useMemo(() => {
+    const mapped = {};
+    Object.entries(savedSnapshot).forEach(([path, code]) => {
+      mapped[path] = { code: String(code ?? "") };
+    });
+    return mapped;
+  }, [savedSnapshot]);
 
   const model = useMemo(() => {
     if (!entry) return null;
@@ -103,6 +113,8 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
       const snapshot = JSON.parse(localStorage.getItem(storageKey) || "{}");
       snapshot[path] = code;
       localStorage.setItem(storageKey, JSON.stringify(snapshot));
+      // Keep local in-sync so subsequent step changes pick up latest edits
+      setSavedSnapshot((prev) => ({ ...prev, [path]: code }));
     } catch {
       // ignore storage errors
     }

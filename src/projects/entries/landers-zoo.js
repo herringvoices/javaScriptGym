@@ -218,24 +218,16 @@ const getLargestHabitatSize = (habitats) => {
     return largest;
 };
 
-// Header
-console.log(\`\\n\\t\\tL A N D E R ' S   Z O O\\n\\t\\t***********************************************************\\n\`);
-
 // Values you will use to build a single multi-line summary string.
 const totalArea = totalHabitatArea(habitats);      // expected: 11500
 const smallest = getSmallestHabitatSize(habitats); // expected: 800
 const largest = getLargestHabitatSize(habitats);   // expected: 4000
 
-// TODO: Create a multi-line summary string using the values above.
-// Suggested format (you can adjust wording):
-// We maintain 11500 square meters of animal habitats across the zoo.
-// Smallest habitat size: 800 sq meters.
-// Largest habitat size: 4000 sq meters.
-// 1) Use either string concatenation or template literals.
-// 2) Store it in a variable named habitatSummary.
-// 3) Log it once: console.log(habitatSummary)
+// Header
+console.log(\`\\n\\t\\tL A N D E R ' S   Z O O\\n\\t\\t***********************************************************\\n\`);
 
-// console.log(habitatSummary) // <- implement this
+
+
 `;
 
 // Empty on purpose for students to practice modularization later

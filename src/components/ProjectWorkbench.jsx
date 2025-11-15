@@ -5,21 +5,31 @@ import MonacoWorkspace from "./MonacoWorkspace";
 export default function ProjectWorkbench({ projectId, entry, stepId }) {
 	const storageKey = entry ? `project:${projectId}:files` : null;
 
-	const savedFiles = useMemo(() => {
-		if (!storageKey) return {};
+	// Live snapshot of saved edits for this project to avoid stale reads on step changes
+	const [savedSnapshot, setSavedSnapshot] = useState({}); // Record<string,string>
+	useEffect(() => {
+		if (!storageKey) {
+			setSavedSnapshot({});
+			return;
+		}
 		try {
 			const raw = localStorage.getItem(storageKey);
-			if (!raw) return {};
-			const parsed = JSON.parse(raw);
-			const map = {};
-			Object.entries(parsed).forEach(([path, code]) => {
-				map[path] = { code: String(code ?? "") };
-			});
-			return map;
+			const parsed = raw ? JSON.parse(raw) : {};
+			const obj = {};
+			Object.entries(parsed || {}).forEach(([p, v]) => { obj[p] = String(v ?? ""); });
+			setSavedSnapshot(obj);
 		} catch {
-			return {};
+			setSavedSnapshot({});
 		}
 	}, [storageKey]);
+
+	const savedFiles = useMemo(() => {
+		const map = {};
+		Object.entries(savedSnapshot).forEach(([path, code]) => {
+			map[path] = { code: String(code ?? "") };
+		});
+		return map;
+	}, [savedSnapshot]);
 
 	const model = useMemo(() => {
 		if (!entry) return null;
@@ -63,6 +73,7 @@ export default function ProjectWorkbench({ projectId, entry, stepId }) {
 			const snapshot = JSON.parse(localStorage.getItem(storageKey) || "{}");
 			snapshot[path] = code;
 			localStorage.setItem(storageKey, JSON.stringify(snapshot));
+			setSavedSnapshot((prev) => ({ ...prev, [path]: code }));
 		} catch {
 			// ignore
 		}
