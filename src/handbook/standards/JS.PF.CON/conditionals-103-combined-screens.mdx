@@ -1,0 +1,520 @@
+---
+id: JS.PF.CON.COMBO
+title: Conditionals 103 · Combined Screens (AND, OR & Short-Circuiting)
+short: Combine conditions with && and || so your code can care about more than one thing at a time.
+---
+
+# Program Flow → Combined Conditions (AND & OR)
+
+So far, your conditionals have checked **one thing at a time**:
+
+* “Is this seed big enough?”
+* “Is the barrel full?”
+* “Is this number at least 10?”
+
+That’s already powerful. But real apps care about **more than one detail** at once:
+
+* “Is the seed big enough **and** dry enough?”
+* “Is the user logged in **and** has a ticket?”
+* “Is this either a tiny seed **or** a sesame seed?”
+
+In this chapter, you’ll combine conditions with:
+
+* **`&&`** (“and”) — both checks must pass.
+* **`||`** (“or”) — at least one check must pass.
+
+You’ll also see how JavaScript is smart about **stopping early** when it already knows the answer. That’s called **short-circuiting**.
+
+---
+
+## 1) Two checks in a row: `&&` (AND)
+
+Back to the seed factory.
+
+We don’t want to shuck **every** medium-sized seed. Some seeds arrive **too wet**; those need to dry first. So to shuck, a seed must be:
+
+* big enough (size ≥ 3)
+  **and**
+* dry enough (moisture < 0.15)
+
+Here’s one seed:
+
+```js
+const seed = {
+  name: "sunflower",
+  size: 3,
+  moisture: 0.12
+};
+```
+
+We could write:
+
+```js
+if (seed.size >= 3) {
+  if (seed.moisture < 0.15) {
+    console.log("Shuck the sunflower seeds.");
+  }
+}
+```
+
+That works, but it’s a bit nested.
+
+The **`&&` operator** lets you connect both checks into **one condition**:
+
+```js
+if (seed.size >= 3 && seed.moisture < 0.15) {
+  console.log("Shuck the sunflower seeds.");
+}
+```
+
+Read it aloud:
+
+> “If the seed’s size is at least 3 **and** its moisture is less than 0.15, then shuck it.”
+
+### Mesh screen picture
+
+Think of `&&` as **two screens in a row** on the same chute:
+
+1. First screen: `seed.size >= 3`
+2. Second screen: `seed.moisture < 0.15`
+
+To reach the chute (the code inside `{}`), the seed must **pass both screens**. If it fails the first screen, it never even reaches the second.
+
+<HandbookChallenge
+title="Big and dry enough"
+hints={[
+"Start with this seed:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const seed = {
+  name: "sunflower",
+  size: 3,
+  moisture: 0.12
+};`}</pre>,
+"Write an <code>if</code> that shucks only when:",
+"• <code>seed.size >= 3</code> AND",
+"• <code>seed.moisture < 0.15</code>",
+"Use <code>&&</code> to combine the two checks.",
+"Change <code>moisture</code> to 0.20 and confirm the message no longer logs."
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const seed = {
+name: "sunflower",
+size: 3,
+moisture: 0.12
+};
+
+if (seed.size >= 3 && seed.moisture < 0.15) {
+console.log("Shuck the sunflower seeds.");
+}
+
+// Try updating moisture:
+// seed.moisture = 0.20;  // condition becomes false; nothing logs`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    <code>&amp;&amp;</code> is “both conditions must be true.” If either check fails, the whole condition fails.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 2) Either-or rules: `||` (OR)
+
+Some rules don’t need **both** checks to pass. Sometimes **either** condition is good enough.
+
+Example: pressing seeds into oil.
+
+You might decide:
+
+* Press seeds that are **literally sesame**,
+  **or**
+* Press seeds that are **tiny**, no matter their name.
+
+```js
+const seed = {
+  name: "sesame",
+  size: 1
+};
+```
+
+We can write:
+
+```js
+if (seed.name === "sesame" || seed.size <= 1) {
+  console.log("Press into oil.");
+}
+```
+
+Read it aloud:
+
+> “If the seed’s name is ‘sesame’ **or** its size is less than or equal to 1, press it into oil.”
+
+### Mesh screen picture
+
+Think of `||` as **two screens that feed the same chute**:
+
+* Screen A catches name `"sesame"`.
+* Screen B catches size `<= 1`.
+
+If the seed fits **either** screen, it slides into the **same** chute.
+
+<HandbookChallenge
+title="Name OR size"
+hints={[
+"Use this starting seed:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const seed = {
+  name: "sesame",
+  size: 2
+};`}</pre>,
+"Write an <code>if</code> that logs <code>\"Press into oil.\"</code> when:",
+"• <code>seed.name === \"sesame\"</code> OR",
+"• <code>seed.size <= 1</code>",
+"Test three cases:",
+"• name = \"sesame\", size = 2",
+"• name = \"poppy\", size = 1",
+"• name = \"poppy\", size = 3"
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const seed = {
+name: "sesame",
+size: 2
+};
+
+if (seed.name === "sesame" || seed.size <= 1) {
+console.log("Press into oil.");
+}
+
+// Tests:
+// { name: "sesame", size: 2 }  // Press (name match)
+// { name: "poppy", size: 1 }   // Press (size match)
+// { name: "poppy", size: 3 }   // no log (neither condition is true)`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    <code>||</code> is “at least one condition must be true.” If both are false, the whole condition is false.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) Short-circuiting: stopping early on AND and OR
+
+JavaScript doesn’t do extra work if it doesn’t have to. When it sees `&&` or `||`, it evaluates from **left to right** and stops as soon as the answer is clear.
+
+### 3.1 Short-circuit with `&&` (AND)
+
+For `A && B`:
+
+* If `A` is **false**, the whole thing must be false.
+  No need to even look at `B`.
+* Only if `A` is **true** does JavaScript bother checking `B`.
+
+```js
+const seed = {
+  size: 2,
+  moisture: 0.10
+};
+
+if (seed.size >= 3 && seed.moisture < 0.15) {
+  console.log("Shuck");
+}
+```
+
+Step-by-step:
+
+1. Check `seed.size >= 3` → `2 >= 3` is **false**.
+2. JavaScript now knows the whole **AND** is false.
+3. It **does not** check `seed.moisture < 0.15` at all.
+
+The seed fails the first screen, so it never reaches the second.
+
+### 3.2 Short-circuit with `||` (OR)
+
+For `A || B`:
+
+* If `A` is **true**, the whole thing must be true.
+  No need to check `B`.
+* Only if `A` is **false** does JavaScript look at `B`.
+
+```js
+const seed = {
+  name: "sesame",
+  size: 5
+};
+
+if (seed.name === "sesame" || seed.size <= 1) {
+  console.log("Press into oil.");
+}
+```
+
+Step-by-step:
+
+1. Check `seed.name === "sesame"` → true.
+2. JavaScript now knows the whole **OR** is true.
+3. It **does not** check `seed.size <= 1`.
+
+The seed fits the first screen feeding that chute, so there’s no reason to test the second.
+
+> For now, think of short-circuiting as **“skip extra checks when you already know the answer.”**
+> We’ll talk more about other patterns later; right now, we’re sticking with simple comparisons.
+
+<HandbookChallenge
+title="Which checks run?"
+hints={[
+"Use this helper to see checks in order:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const logCheck = (label, result) => {
+  console.log("Checking:", label, "→", result);
+  return result;
+};`}</pre>,
+"Then plug it into an AND:", <pre key="peek2" className="m-0 whitespace-pre-wrap">{`const seed = { size: 2, moisture: 0.10 };
+
+if (
+logCheck("size >= 3", seed.size >= 3) &&
+logCheck("moisture < 0.15", seed.moisture < 0.15)
+) {
+console.log("Shuck");
+}`}</pre>,
+    "Watch which <code>Checking:</code> lines actually print.",
+    "Try again with <code>size: 4</code> and see how the behavior changes."
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const logCheck = (label, result) => {
+console.log("Checking:", label, "→", result);
+return result;
+};
+
+let seed = { size: 2, moisture: 0.10 };
+
+if (
+logCheck("size >= 3", seed.size >= 3) &&
+logCheck("moisture < 0.15", seed.moisture < 0.15)
+) {
+console.log("Shuck");
+}
+
+// Output:
+// Checking: size >= 3 → false
+// (second check never runs)
+
+seed = { size: 4, moisture: 0.10 };
+
+if (
+logCheck("size >= 3", seed.size >= 3) &&
+logCheck("moisture < 0.15", seed.moisture < 0.15)
+) {
+console.log("Shuck");
+}
+
+// Output:
+// Checking: size >= 3 → true
+// Checking: moisture < 0.15 → true
+// Shuck`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Short-circuiting is JavaScript being lazy in a good way: it avoids extra checks when the first screen already decided the outcome.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) Grouping with parentheses (make your intent obvious)
+
+When you mix `&&` and `||` in the same condition, things can get hard to read fast. Parentheses let you **group** checks so both you and JavaScript agree on what should happen.
+
+Say you want to roast:
+
+* Seeds that are **pumpkin and dry enough**,
+  **or**
+* **Any** seed that is **very large**.
+
+```js
+const seed = {
+  name: "pumpkin",
+  size: 9,
+  moisture: 0.10
+};
+```
+
+You can express that rule like this:
+
+```js
+if (
+  (seed.name === "pumpkin" && seed.moisture < 0.15) ||
+  seed.size >= 10
+) {
+  console.log("Roast");
+}
+```
+
+Read the grouped version out loud:
+
+> “If (pumpkin AND dry) OR huge, then roast.”
+
+The parentheses do two things:
+
+* They show the **bundle** that belongs together (`pumpkin && dry`).
+* They make your intent much clearer to humans reading the code.
+
+<HandbookChallenge
+title="Pumpkin AND dry OR huge"
+hints={[
+"Start with:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const seed = {
+  name: "pumpkin",
+  size: 9,
+  moisture: 0.10
+};`}</pre>,
+"Write an <code>if</code> that logs <code>\"Roast\"</code> when:",
+"• the seed is pumpkin AND moisture < 0.15, OR",
+"• size >= 10, regardless of name.",
+"Use parentheses to group the AND part together.",
+"Test with:",
+"• pumpkin, size 9, moisture 0.10 (roast)",
+"• pumpkin, size 9, moisture 0.30 (don’t roast)",
+"• sunflower, size 12, moisture 0.20 (roast, because huge)"
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const seed = {
+name: "pumpkin",
+size: 9,
+moisture: 0.10
+};
+
+if (
+(seed.name === "pumpkin" && seed.moisture < 0.15) ||
+seed.size >= 10
+) {
+console.log("Roast");
+}
+
+// Examples:
+// { name: "pumpkin", size: 9, moisture: 0.10 }  // Roast (pumpkin AND dry)
+// { name: "pumpkin", size: 9, moisture: 0.30 }  // no log (pumpkin but too wet)
+// { name: "sunflower", size: 12, moisture: 0.20 } // Roast (huge)`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Parentheses are your way of saying, “These checks belong together; treat them as one screen before combining with the next.”
+  </p>
+</HandbookChallenge>
+
+---
+
+## 5) Tiny practical patterns with && and ||
+
+You’ll see logical operators all over real code. Here are two simple patterns you can recognize and use without going deep into any new topics.
+
+### 5.1 Guarding work with `&&`
+
+Sometimes you only want to run a line when some condition is true. Developers often use `&&` like a little gate:
+
+```js
+const isDry = true;
+
+isDry && console.log("Dry enough to process.");
+```
+
+How this reads:
+
+* If `isDry` is `true`, the second part gets evaluated → the log runs.
+* If `isDry` is `false`, JavaScript short-circuits and never even looks at the log.
+
+For now, prefer the more explicit `if` version in your own code:
+
+```js
+if (isDry) {
+  console.log("Dry enough to process.");
+}
+```
+
+…but don’t be surprised when you see `condition && doThing()` in other people’s code.
+
+### 5.2 Clear checks, not clever ones
+
+It’s tempting to cram everything into one giant condition. Resist that urge. A few readable lines beat one clever puzzle every time.
+
+Compare:
+
+```js
+// Harder to read:
+if ((seed.size >= 3 && seed.moisture < 0.15) || seed.name === "sesame") {
+  console.log("Special handling");
+}
+```
+
+vs:
+
+```js
+const isBigAndDry = seed.size >= 3 && seed.moisture < 0.15;
+const isSesame = seed.name === "sesame";
+
+if (isBigAndDry || isSesame) {
+  console.log("Special handling");
+}
+```
+
+Same logic, easier story.
+
+<HandbookChallenge
+title="Name your conditions"
+hints={[
+"Start with:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const seed = {
+  name: "sunflower",
+  size: 4,
+  moisture: 0.12
+};`}</pre>,
+"Create two booleans:",
+"• <code>const isBigAndDry = seed.size >= 3 && seed.moisture < 0.15;</code>",
+"• <code>const isTiny = seed.size <= 1;</code>",
+"Then write an <code>if</code> that logs <code>\"Special handling\"</code> when either:",
+"• <code>isBigAndDry</code> is true OR",
+"• <code>isTiny</code> is true."
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const seed = {
+name: "sunflower",
+size: 4,
+moisture: 0.12
+};
+
+const isBigAndDry = seed.size >= 3 && seed.moisture < 0.15;
+const isTiny = seed.size <= 1;
+
+if (isBigAndDry || isTiny) {
+console.log("Special handling");
+}`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Giving a name to a combined condition often makes your <code>if</code> easier to read than cramming everything into one line.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Technical Vocabulary
+
+| Term               | Plain-English meaning                                       | Tiny example                                    |
+| ------------------ | ----------------------------------------------------------- | ----------------------------------------------- |
+| logical AND (`&&`) | Both conditions must be true for the whole thing to be true | `size >= 3 && moisture < 0.15`                  |
+| logical OR (`||`)  | At least one condition must be true for the whole thing     | `name === "sesame" \|\| size <= 1`               |
+| short-circuit      | Stopping early once the result is known                     | `false && secondCheck` (secondCheck never runs) |
+| combined condition | A single condition built from smaller ones using && or ||   | `(isPumpkin && isDry) || isHuge`               |
+| grouping           | Using parentheses to bundle checks together                 | `(A && B) || C`                                 |
+| guard check        | A quick condition that prevents work when the rule fails    | `if (!seed) return;`                            |
+| threshold          | A comparison boundary used in a condition                   | `qualityScore >= 90`                            |
+
+---
+
+## Wrap-up
+
+In this chapter, you:
+
+* Used **`&&`** to require **two screens in a row**—both checks must pass.
+* Used **`||`** to connect **two screens to the same chute**—either check can pass.
+* Saw **short-circuiting**: JavaScript skips extra checks once the outcome is clear.
+* Used **parentheses** to group conditions so your intent is easy to read.
+* Named combined conditions to keep `if` statements understandable.
+
+Next up, you’ll meet **`switch`**: a different way to branch when you’re matching a **single value** against several exact options, like seed names instead of size ranges.

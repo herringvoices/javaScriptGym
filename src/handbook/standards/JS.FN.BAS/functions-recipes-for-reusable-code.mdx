@@ -1,0 +1,293 @@
+---
+
+id: JS.FN.BAS.INTRO
+title: Functions · Recipes for Reusable Code
+short: Write a recipe once with function, then call it by name whenever you need the JavaScript chef to run it.
+---
+
+# Functions → Recipes for Reusable Code
+
+Imagine you’re working on a little app and you want the same welcome message in a few places:
+
+```js
+console.log("=== Welcome to the App ===");
+console.log("Pick a character to begin.");
+console.log("Have fun!");
+```
+
+You put that at the top of your file.
+
+Then you copy-paste it somewhere else when a new level starts.
+
+Then you copy-paste it again when the user comes back from a settings page.
+
+Now you have the same three lines in three places. If you ever want to change the wording, you have to find every copy and update each one by hand. Miss one, and your app feels inconsistent.
+
+That’s one pain.
+
+Another pain: sometimes you don’t even know when your code should run. Maybe you only want to show that message when the user clicks a “Start” button. You can’t predict the exact moment; you just know “when they click, do these steps.”
+
+Copy-paste is fragile. Guessing the timing is impossible.
+You need a way to write the steps once, hand them to someone trustworthy, and then be able to say:
+
+> “Hey chef, run that recipe now.”
+
+That “recipe” is a function.
+
+---
+
+## 1) What is a function? (The chef and the recipe card)
+
+Think of the JavaScript engine as your chef.
+
+* When you declare a function, you’re writing a recipe on an index card and handing it to the chef. The chef files it away by name. No cooking happens yet.
+* When you invoke (call) the function, you shout the recipe’s name with `()`. The chef hears the name, looks up the card, and follows the instructions step by step.
+
+First, let’s see it without the metaphor:
+
+```js
+// Declare (write the recipe, no cooking yet)
+function showWelcome() {
+  console.log("=== Welcome to the App ===");
+  console.log("Pick a character to begin.");
+  console.log("Have fun!");
+}
+```
+
+This `function` keyword tells JavaScript:
+
+* “Here’s a new recipe card named `showWelcome`.”
+* “The steps live between the `{` and `}`.”
+
+Nothing runs yet. You just handed the card to the chef.
+
+To run the recipe, you call it:
+
+```js
+// Invoke (call the recipe by name)
+showWelcome();
+```
+
+The chef hears “showWelcome!”, finds that card, and runs each line inside in order.
+
+> What this function needs & what it returns
+>
+> * Needs: nothing. The parentheses are empty.
+> * Returns: nothing useful (technically `undefined`). Its job is the side effect: logging those three lines.
+
+<HandbookChallenge
+title="Extract the repeated welcome into a function"
+hints={[
+"Start with three <code>console.log</code> lines you copy-paste two or three times.",
+"Wrap those three lines in a function declared with the <code>function</code> keyword (name it <code>showWelcome</code>).",
+"Replace your copy-pasted blocks with calls to <code>showWelcome()</code> instead.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// Before:
+// console.log("=== Welcome to the App ===");
+// console.log("Pick a character to begin.");
+// console.log("Have fun!");
+// ... (later) same three lines again ...
+
+// After:
+function showWelcome() {
+console.log("=== Welcome to the App ===");
+console.log("Pick a character to begin.");
+console.log("Have fun!");
+}
+
+showWelcome();
+// ... (later)
+showWelcome();`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`function showWelcome() {
+console.log("=== Welcome to the App ===");
+console.log("Pick a character to begin.");
+console.log("Have fun!");
+}
+
+showWelcome();
+showWelcome();`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    You just removed duplicate work. Update the recipe once, and every call gets the new version.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 2) Anatomy of a function (what the chef needs on the card)
+
+Let’s look closely at the syntax:
+
+```js
+function showWelcome() {
+  console.log("=== Welcome to the App ===");
+  console.log("Pick a character to begin.");
+  console.log("Have fun!");
+}
+```
+
+The pieces:
+
+* `function` — keyword that says “I’m writing a recipe card.”
+* `showWelcome` — the name of the recipe. This is what you’ll shout later.
+* `()` — parentheses where future parameters will go (blanks you can fill in). For now, they’re empty.
+* `{ ... }` — the body of the function: the step-by-step instructions.
+
+Later, when you write:
+
+```js
+showWelcome();
+```
+
+you’re calling out the name with `()`. The chef looks it up and runs everything between the braces.
+
+<HandbookChallenge
+title="Practice declaring and invoking"
+hints={[
+"Declare a function named <code>ping</code> that logs <code>\"pong\"</code>.",
+"On the next line, invoke it with <code>ping()</code>.",
+"Add one more invocation to prove it runs each time you call it.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// function ping() {
+//   console.log("pong");
+// }
+// ping();
+// ping();`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`function ping() {
+  console.log("pong");
+}
+ping();
+ping();`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Declare once, call as many times as you like.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) Why functions are great for “later” actions
+
+Some work happens right away when your file runs. Other work should wait for later:
+
+* When the user clicks a button.
+* When they submit a form.
+* When a timer finishes.
+* When something loads from the network.
+
+You don’t know when these things will happen. You just know what should happen when they do.
+
+Functions are perfect for this: you write the recipe now, hand it to the chef, and later you or the browser can say the name when the right moment comes.
+
+```js
+function showClickMessage() {
+  console.log("You clicked the button!");
+}
+
+// Later in your code, something can call:
+showClickMessage(); // chef runs the “click” recipe
+```
+
+Right now, we’re just focusing on the function itself. In future chapters, you’ll connect recipes like this to real user actions.
+
+<HandbookChallenge
+title="Write a “later” recipe"
+hints={[
+"Declare a function called <code>logSave</code> that logs a message like <code>\"Saving your progress...\"</code>.",
+"Don’t call it immediately. Pretend this is something you’ll only want to call <em>after</em> the user clicks a Save button.",
+"When you’re ready to test, add one line at the bottom: <code>logSave();</code> and run your file.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// function logSave() {
+//   console.log("Saving your progress...");
+// }
+
+// ...later...
+// logSave();`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`function logSave() {
+console.log("Saving your progress...");
+}
+
+// Later, when you're ready:
+logSave();`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    The recipe sits there, ready. It only runs when someone calls its name with <code>()</code>.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) A tiny taste of customization (one blank on the card)
+
+We’ll go deeper on this next chapter, but it’s helpful to see how a recipe can have a blank to fill in.
+
+```js
+function greet(name) {
+  console.log("Hello, " + name + "!");
+}
+
+greet("Nick");
+greet("Herbleeon");
+```
+
+Here:
+
+* `name` is a parameter: a labeled blank on the recipe card.
+* `"Nick"` and `"Herbleeon"` are arguments: the actual fillings you shout when you call the recipe.
+
+The chef hears:
+
+* “greet with name = 'Nick'” → runs the steps once with that value.
+* “greet with name = 'Herbleeon'” → same steps, different name.
+
+> What this function needs & what it returns
+>
+> * Needs: one string (`name`).
+> * Returns: nothing useful (`undefined`); the job is logging.
+
+<HandbookChallenge
+title="A reusable announcement"
+hints={[
+"Declare <code>announceLevel</code> that takes one parameter, <code>levelName</code>.",
+"Inside, log something like <code>\"Loading level: \" + levelName</code>.",
+"Call it at least twice with different level names.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// function announceLevel(levelName) {
+//   console.log("Loading level: " + levelName);
+// }
+
+// announceLevel("Tutorial");
+// announceLevel("Boss Fight");`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`function announceLevel(levelName) {
+console.log("Loading level: " + levelName);
+}
+
+announceLevel("Tutorial");
+announceLevel("Boss Fight");`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Same recipe, different ingredients. That’s the real power of functions.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+* A function is a recipe card you hand to the JavaScript chef.
+* When you declare a function with the <code>function</code> keyword, you save the steps under a name. No code runs yet.
+* When you invoke a function with <code>()</code>, the chef hears the name, finds the card, and runs the body line by line.
+* Functions help you:
+
+  * Avoid copy-paste by putting repeated work in one place.
+  * Write code now that you can run later, exactly when you need it.
+
+Next up, we’ll make our recipes smarter by adding more blanks (parameters) and learning how to have the chef hand results back to us (return values).

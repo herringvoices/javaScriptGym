@@ -1,0 +1,456 @@
+---
+
+id: JS.FN.BAS.COMPOSE
+title: Functions · Composing Helpers (Small Pieces Working Together)
+short: Build bigger behavior by having small, single-purpose functions call each other.
+---
+
+# Functions → Composing Helpers (Small Pieces Working Together)
+
+In the last chapters, you learned how to:
+
+* Declare functions.
+* Give them **parameters** (options).
+* Use **`return`** to hand values back.
+
+So now you can write small helpers that do one thing well.
+
+In this chapter, you’ll learn how to **combine** those helpers—so one function can call another. This is called **composition**: building something bigger from simple, reusable pieces.
+
+---
+
+## 1) The problem: one giant “doEverything” function
+
+Imagine you write a single function like this:
+
+```js
+const makeNameBadge = (first, last) => {
+  const full = first + " " + last;
+  const tag = first[0] + last[0];
+  const badge = full + " (" + tag + ")";
+  return badge;
+};
+```
+
+It works, but it’s doing **all the jobs**:
+
+* Building the full name.
+* Building the initials.
+* Combining them into a badge.
+
+Now, what if you want to use just:
+
+* The full name somewhere else?
+* The initials somewhere else?
+
+You’d either:
+
+* Copy-paste parts of this logic into new functions, or
+* Try to slice this one function apart later.
+
+Instead, you can break this into **small helpers** and let them call each other.
+
+---
+
+## 2) Step 1 — Write tiny helpers
+
+Start with very focused functions that each do one thing.
+
+```js
+const fullName = (first, last) => {
+  return first + " " + last;
+};
+
+const initials = (first, last) => {
+  return first[0] + last[0];
+};
+```
+
+> **What these need & what they return**
+>
+> • `fullName` needs: two strings → returns one combined string
+> • `initials` needs: two strings → returns a short string like `"AL"`
+
+These helpers don’t know anything about badges or UI. They just handle names.
+
+<HandbookChallenge
+title="Write the tiny name helpers"
+hints={[
+"Create <code>fullName</code> that takes <code>first</code> and <code>last</code> and <code>return</code>s <code>first + \" \" + last</code>.",
+"Create <code>initials</code> that takes the same parameters and returns the first character of each, stuck together.",
+"Test both with at least two different names.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const fullName = (first, last) => {
+//   return first + " " + last;
+// };
+//
+// const initials = (first, last) => {
+//   return first[0] + first[0]; // fix this!
+// };
+//
+// console.log(fullName("Ada", "Lovelace"));
+// console.log(initials("Ada", "Lovelace"));`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const fullName = (first, last) => {
+return first + " " + last;
+};
+
+const initials = (first, last) => {
+return first[0] + last[0];
+};
+
+console.log(fullName("Ada", "Lovelace"));   // Ada Lovelace
+console.log(initials("Ada", "Lovelace"));   // AL
+console.log(fullName("Alan", "Turing"));    // Alan Turing
+console.log(initials("Alan", "Turing"));    // AT`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Each helper has one job. That makes them easy to test, reuse, and reason about.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) Step 2 — Combine helpers into a bigger helper
+
+Now you can build a **name badge** function that **uses** those helpers.
+
+```js
+const nameBadge = (first, last) => {
+  const name = fullName(first, last);
+  const tag = initials(first, last);
+  const badge = name + " (" + tag + ")";
+  return badge;
+};
+
+const badge = nameBadge("Ada", "Lovelace");
+console.log(badge); // Ada Lovelace (AL)
+```
+
+Inside `nameBadge`, you’re just **calling** the smaller helpers like you would anywhere else.
+
+> **What this needs & what it returns**
+>
+> • Needs: two strings (`first`, `last`)
+> • Returns: one string like `"Ada Lovelace (AL)"`
+
+<HandbookChallenge
+title="Build on top of your helpers"
+hints={[
+"Re-use your <code>fullName</code> and <code>initials</code> from above.",
+"Write <code>nameBadge</code> that calls both helpers and returns <code>\"Full Name (IN)\"</code>.",
+"Test it with at least two names.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const nameBadge = (first, last) => {
+//   const name = fullName(first, last);
+//   const tag = initials(first, last);
+//   return name + " (" + tag + ")";
+// };
+//
+// console.log(nameBadge("Ada", "Lovelace"));
+// console.log(nameBadge("Alan", "Turing"));`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const fullName = (first, last) => {
+return first + " " + last;
+};
+
+const initials = (first, last) => {
+return first[0] + last[0];
+};
+
+const nameBadge = (first, last) => {
+const name = fullName(first, last);
+const tag = initials(first, last);
+return name + " (" + tag + ")";
+};
+
+console.log(nameBadge("Ada", "Lovelace"));  // Ada Lovelace (AL)
+console.log(nameBadge("Alan", "Turing"));   // Alan Turing (AT)`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    One helper builds on two smaller ones. If you change how names work, you only update the smaller helpers.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) Composition with objects: book helpers
+
+We can do the same thing with **objects**, not just separate parameters. This is especially common in web development, where data comes in as objects from APIs.
+
+Start with a small object:
+
+```js
+const book = {
+  title: "Wind and Truth",
+  author: "Brandon Sanderson",
+};
+```
+
+Write a couple of helpers that accept the whole `book`:
+
+```js
+const bookLine = (book) => {
+  return book.title + " — " + book.author;
+};
+
+const bookTag = (book) => {
+  const firstLetterTitle = book.title[0];
+  const firstLetterAuthor = book.author[0];
+  return firstLetterTitle + firstLetterAuthor;
+};
+```
+
+> **What these need & what they return**
+>
+> • `bookLine` needs: a book object → returns a string like `"Title — Author"`
+> • `bookTag` needs: a book object → returns a short tag like `"WA"`
+
+Now compose them:
+
+```js
+const describeBook = (book) => {
+  const line = bookLine(book);
+  const tag = bookTag(book);
+  return line + " [" + tag + "]";
+};
+
+console.log(describeBook(book));
+// Wind and Truth — Brandon Sanderson [WB]
+```
+
+<HandbookChallenge
+title="Describe your favorite book"
+hints={[
+"Create a <code>book</code> object with at least <code>title</code> and <code>author</code> properties.",
+"Write <code>bookLine(book)</code> that returns <code>\"Title — Author\"</code>.",
+"Write <code>bookTag(book)</code> that returns the first letter of the title + first letter of the author.",
+"Write <code>describeBook(book)</code> that uses both helpers and returns something like <code>\"Title — Author [TA]\"</code>.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const book = {
+//   title: "Your Favorite",
+//   author: "Some Author",
+// };
+//
+// const bookLine = (book) => { ... };
+// const bookTag = (book) => { ... };
+// const describeBook = (book) => {
+//   const line = bookLine(book);
+//   const tag = bookTag(book);
+//   return line + " [" + tag + "]";
+// };`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const book = {
+title: "Mother of Learning",
+author: "Domagoj Kurmaic",
+};
+
+const bookLine = (book) => {
+return book.title + " — " + book.author;
+};
+
+const bookTag = (book) => {
+const firstTitle = book.title[0];
+const firstAuthor = book.author[0];
+return firstTitle + firstAuthor;
+};
+
+const describeBook = (book) => {
+const line = bookLine(book);
+const tag = bookTag(book);
+return line + " [" + tag + "]";
+};
+
+console.log(describeBook(book));
+// Mother of Learning — Domagoj Kurmaic [MD]`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Each helper handles one layer of detail. The composed function assembles the final description.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 5) Composition with formatting and math
+
+Helper functions really shine when you separate **math** from **formatting**.
+
+Start with a helper that does the math:
+
+```js
+const priceWithTax = (price, taxRate) => {
+  const taxAmount = price * taxRate;
+  const total = price + taxAmount;
+  return total;
+};
+```
+
+Then a helper that just formats a number as a price string (we’ll keep it simple):
+
+```js
+const formatPrice = (amount) => {
+  return "$" + amount;
+};
+```
+
+Now you can combine them in a higher-level helper:
+
+```js
+const lineItem = (label, price, taxRate) => {
+  const total = priceWithTax(price, taxRate);
+  const display = formatPrice(total);
+  return label + ": " + display;
+};
+
+const item = lineItem("Total", 50, 0.1);
+console.log(item); // Total: $55
+```
+
+> **What these need & what they return**
+>
+> • `priceWithTax` needs: a price and taxRate → returns a number
+> • `formatPrice` needs: a number → returns a string
+> • `lineItem` needs: label, price, taxRate → returns a formatted string like `"Total: $55"`
+
+<HandbookChallenge
+title="Build a simple receipt line"
+hints={[
+"Re-use (or recreate) <code>priceWithTax(price, taxRate)</code> that returns the numeric total.",
+"Write <code>formatPrice(amount)</code> that returns <code>\"$\" + amount</code>.",
+"Write <code>lineItem(label, price, taxRate)</code> that uses both helpers and returns something like <code>\"Total: $55\"</code>.",
+"Call <code>lineItem</code> a few times with different prices and tax rates.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const priceWithTax = (price, taxRate) => { ... };
+// const formatPrice = (amount) => { ... };
+// const lineItem = (label, price, taxRate) => {
+//   const total = priceWithTax(price, taxRate);
+//   const display = formatPrice(total);
+//   return label + ": " + display;
+// };`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const priceWithTax = (price, taxRate) => {
+const taxAmount = price * taxRate;
+const total = price + taxAmount;
+return total;
+};
+
+const formatPrice = (amount) => {
+return "$" + amount;
+};
+
+const lineItem = (label, price, taxRate) => {
+const total = priceWithTax(price, taxRate);
+const display = formatPrice(total);
+return label + ": " + display;
+};
+
+console.log(lineItem("Total", 50, 0.1));   // Total: $55
+console.log(lineItem("Subtotal", 80, 0.05)); // Subtotal: $84`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Math in one place, formatting in another, and a third function that pulls it all together.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 6) Mini practice: build a tiny “card” out of helpers
+
+Put it all together by composing a little “profile card” string from smaller helpers.
+
+Write these functions:
+
+1. `fullName(first, last)` → returns `"First Last"`.
+2. `initials(first, last)` → returns the first letters stuck together.
+3. `userTag(first, last, city)` →
+
+   * Uses `fullName` and `initials`
+   * Returns something like `"Ada Lovelace (AL) — Nashville"`.
+4. `profileLine(user)` where `user` is an object like:
+
+```js
+const user = {
+  first: "Ada",
+  last: "Lovelace",
+  city: "Nashville",
+};
+```
+
+`profileLine(user)` should use `userTag` and return a final string like:
+`"User: Ada Lovelace (AL) — Nashville"`.
+
+<HandbookChallenge
+title="Compose a profile line"
+hints={[
+"Start by writing or reusing <code>fullName</code> and <code>initials</code>.",
+"Write <code>userTag(first, last, city)</code> that calls both helpers and returns a tag like <code>\"Ada Lovelace (AL) — Nashville\"</code>.",
+"Write <code>profileLine(user)</code> that pulls <code>first</code>, <code>last</code>, and <code>city</code> off the object and passes them into <code>userTag</code>.",
+"Test with at least two different user objects.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const fullName = (first, last) => { ... };
+// const initials = (first, last) => { ... };
+// const userTag = (first, last, city) => {
+//   const name = fullName(first, last);
+//   const tag = initials(first, last);
+//   return name + " (" + tag + ") — " + city;
+// };
+//
+// const profileLine = (user) => {
+//   return "User: " + userTag(user.first, user.last, user.city);
+// };
+`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const fullName = (first, last) => {
+return first + " " + last;
+};
+
+const initials = (first, last) => {
+return first[0] + last[0];
+};
+
+const userTag = (first, last, city) => {
+const name = fullName(first, last);
+const tag = initials(first, last);
+return name + " (" + tag + ") — " + city;
+};
+
+const profileLine = (user) => {
+return "User: " + userTag(user.first, user.last, user.city);
+};
+
+const userA = { first: "Ada", last: "Lovelace", city: "Nashville" };
+const userB = { first: "Alan", last: "Turing", city: "London" };
+
+console.log(profileLine(userA));
+// User: Ada Lovelace (AL) — Nashville
+
+console.log(profileLine(userB));
+// User: Alan Turing (AT) — London`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Each function does one small job. Together, they build a string that feels like something you’d actually show in a UI.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+In this chapter, you:
+
+* Took small helpers you already know how to write and had them **call each other**.
+* Used composition with:
+
+  * Simple values (first/last names)
+  * Objects (books, users)
+  * Math + formatting (prices and labels)
+* Kept each function focused on **one job**, then combined them into a slightly larger job.
+
+Composition is how you avoid “doEverything” functions. You write tiny, testable pieces and let them work together—like stations in a kitchen passing along parts of a dish until it’s ready to serve.
+
+

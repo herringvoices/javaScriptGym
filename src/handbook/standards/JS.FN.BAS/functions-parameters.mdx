@@ -1,0 +1,383 @@
+---
+
+id: JS.FN.BAS.PARAMS
+title: Functions · Parameters (Make One Recipe Do More)
+short: Add parameters so one function can handle many situations—one recipe, different options.
+---
+
+# Functions → Parameters (Options for Your Recipe)
+
+In the last chapter, you wrote basic functions and called them by name. You had **one recipe** for your code, and it always did the **same thing**.
+
+In this chapter, you’ll give those recipes **options** using **parameters**, so the **same function** can handle slightly different situations **without** copy-paste. One recipe, many versions.
+
+---
+
+## 1) One pasta, many proteins (why parameters exist)
+
+Imagine you’re writing recipes for a restaurant. You’ve got a pasta dish that can be served with **chicken**, **beef**, or **tofu**.
+
+You could write **three separate recipes**:
+
+* Pasta with chicken
+* Pasta with beef
+* Pasta with tofu
+
+But every other step is the same. That means a lot of duplicated instructions to keep updated.
+
+With **parameters**, you keep **one** recipe and only swap the part that varies.
+
+**Pseudo-code (idea, not real JS):**
+
+```text
+recipe makePasta(proteinOption):
+  boil water
+  cook pasta
+  sauté proteinOption
+  toss with sauce
+  plate and serve
+```
+
+When you “place the order,” you fill in the blank:
+
+```text
+makePasta(chicken)
+makePasta(beef)
+makePasta(tofu)
+```
+
+Same recipe; different detail dropped in.
+
+That’s exactly what parameters do in JavaScript: they give your function **labeled blanks** you can fill with different values when you call it.
+
+---
+
+## 2) Where parameters show up in web development
+
+In web development, we do “same action, different details” constantly. A few examples:
+
+* **Personalized text:** greet a specific **name** on a page or in a tooltip.
+* **Page sections:** announce a specific **section id** when navigating (`"Opening: Settings"`).
+* **Search & filters:** log the **query** or **category** a user typed/selected.
+* **Routing:** build a path with a **slug** like `/profile/nick` vs `/profile/hannah`.
+* **UI labels:** format a **label + value** line (`"Price — $19.99"`, `"City — Nashville"`).
+* **Feature toggles:** log messages with a **tag** so you know which part of the app spoke (`[Cart]`, `[Auth]`).
+
+All of these are the same little action over and over, with just one or two details changing. That’s the sweet spot for parameters.
+
+Next, let’s look at the syntax you’ll use for the rest of this course.
+
+---
+
+> **Arrow function quick-syntax (what you’ll write from now on)**
+>
+> Instead of the older `function` keyword, we’ll mostly use **arrow functions**.
+> You:
+>
+> * **Declare a variable** and
+> * **Store a function** inside it.
+>
+> **Parameters** go in the parentheses. The **arrow** (`=>`) points to **what happens**.
+> The **curly braces** hold the steps.
+>
+> ```js
+> const doThing = (param1, param2) => {
+>   // steps that use param1 and param2
+> };
+>
+> // call (invoke):
+> doThing("value1", "value2");
+> ```
+>
+> Read it like:
+> **“Take `param1` and `param2` and then => do these steps.”**
+
+Now let’s plug some real parameters into real arrow functions.
+
+---
+
+## 3) One parameter: personalize a message
+
+A **parameter** is a **labeled blank** in your function’s parentheses.
+
+When you **define** the function:
+
+* You name the parameter → `name` is the blank.
+
+When you **call** the function:
+
+* You pass in an **argument** → `"Ada"` or `"Grace"` fills that blank.
+
+```js
+const greet = (name) => {
+  console.log("Hello, " + name + "!");
+};
+
+greet("Ada");    // Hello, Ada!
+greet("Grace");  // Hello, Grace!
+```
+
+Here:
+
+* `name` is the **parameter** (the label in the function definition).
+* `"Ada"` and `"Grace"` are **arguments** (the actual values you pass in).
+
+> **What this needs & what it returns**
+> • Needs: one string (`name`)
+> • Returns: nothing useful (`undefined`) — this function’s job is to log a message
+
+<HandbookChallenge
+title="Your first parameter"
+hints={[
+"Create <code>announceSection</code> with one parameter called <code>section</code>.",
+"Inside, log <code>\"Opening: \" + section</code>.",
+"Call it twice with different strings, like <code>\"Settings\"</code> and <code>\"Profile\"</code>.",
+
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`// const announceSection = (section) => {
+//   console.log("Opening: " + section);
+// };
+// announceSection("Settings");
+// announceSection("Profile");`}</pre>,
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{`const announceSection = (section) => {
+  console.log("Opening: " + section);
+};
+
+announceSection("Settings");
+announceSection("Profile");`}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    One recipe, many uses. Swap the detail, keep the steps.
+  </p>
+</HandbookChallenge>
+
+You’ve now seen a function that can speak to different sections, just by changing the argument.
+
+---
+
+## 4) Two parameters: combine details cleanly
+
+Many real tasks need more than one piece of information. To handle that, you just add more parameters, separated by commas.
+
+```js
+const bookLine = (title, author) => {
+  console.log(title + " — " + author);
+};
+
+bookLine("Wind and Truth", "Brandon Sanderson");
+bookLine("Mother of Learning", "Domagoj Kurmaic");
+```
+
+Here, both `title` and `author` are labeled blanks. Each call fills them with different arguments.
+
+> **What this needs & what it returns**
+> • Needs: two strings (`title`, `author`)
+> • Returns: nothing useful — it logs a composed message
+
+<HandbookChallenge
+title="Two inputs, one line"
+hints={[
+"Write <code>labelValue</code> that takes two parameters: <code>label</code> and <code>value</code>.",
+"Inside, log a string like <code>label + \" — \" + value</code>.",
+"Call it with pairs like (<code>\"Price\"</code>, <code>\"$19.99\"</code>) and (<code>\"City\"</code>, <code>\"Nashville\"</code>).",
+
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`// const labelValue = (label, value) => {
+//   console.log(label + " — " + value);
+// };
+// labelValue("Price", "$19.99");
+// labelValue("City", "Nashville");`}</pre>,
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{`const labelValue = (label, value) => {
+  console.log(label + " — " + value);
+};
+
+labelValue("Price", "$19.99");
+labelValue("City", "Nashville");`}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    Parameters define the template; arguments fill in the specifics.
+  </p>
+</HandbookChallenge>
+
+Now let’s use two parameters in a pattern you’ll actually lean on while debugging.
+
+---
+
+## 5) Useful dev pattern: tagged logs
+
+When your app gets bigger, your console fills up fast. A simple trick is to “tag” log messages so you know **which feature** they came from.
+
+```js
+const logWith = (tag, message) => {
+  console.log("[" + tag + "] " + message);
+};
+
+logWith("Cart", "Item added.");
+logWith("Auth", "User signed in.");
+```
+
+Now your console shows:
+
+```text
+[Cart] Item added.
+[Auth] User signed in.
+```
+
+Much easier to scan.
+
+> **What this needs & what it returns**
+> • Needs: two strings (`tag`, `message`)
+> • Returns: nothing useful — it just produces a nicely formatted log line
+
+<HandbookChallenge
+title="Tag your logs"
+hints={[
+"Recreate <code>logWith</code> using two parameters: <code>tag</code> and <code>message</code>.",
+"Call it three times with different tags and messages (for example, <code>\"UI\"</code>, <code>\"Network\"</code>, <code>\"Settings\"</code>).",
+"Keep the tag in square brackets at the start of the log.",
+
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`// const logWith = (tag, message) => {
+//   console.log("[" + tag + "] " + message);
+// };
+// logWith("UI", "Opened modal");
+// logWith("Network", "Retrying request");
+// logWith("Settings", "Theme changed");`}</pre>,
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{`const logWith = (tag, message) => {
+  console.log("[" + tag + "] " + message);
+};
+
+logWith("UI", "Opened modal");
+logWith("Network", "Retrying request");
+logWith("Settings", "Theme changed");`}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    A tiny helper with parameters can make your logs way easier to read.
+  </p>
+</HandbookChallenge>
+
+You’ve now seen parameters used for greetings, labels, and tagged logs. Let’s string that all together in a quick practice set.
+
+---
+
+## 6) Mini practice: parameter parade
+
+Write these arrow functions and call each at least twice with different arguments:
+
+1. `greet(name)` → logs `"Hello, <name>!"`
+2. `announceSection(section)` → logs `"Opening: <section>"`
+3. `bookLine(title, author)` → logs `"<title> — <author>"`
+4. `logWith(tag, message)` → logs `"[<tag>] <message>"`
+5. `routeTo(slug)` → logs `"Navigating to /profile/<slug>"`
+
+<HandbookChallenge
+title="Same recipe, different details"
+hints={[
+"Write each helper as an arrow function with parameters in the parentheses.",
+"Keep all of them as loggers for now — don’t worry about <code>return</code> yet.",
+"Use your own argument values so you see different outputs in the console.",
+
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`// const greet = (name) => { ... }
+// const announceSection = (section) => { ... }
+// const bookLine = (title, author) => { ... }
+// const logWith = (tag, message) => { ... }
+// const routeTo = (slug) => { ... }
+
+// greet("Nick"); greet("Herbleeon");
+// announceSection("Settings"); announceSection("Profile");
+// bookLine("Wind and Truth","Brandon Sanderson");
+// logWith("Cart","Added item");
+// routeTo("nick"); routeTo("hannah");`}</pre>,
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{`const greet = (name) => {
+  console.log("Hello, " + name + "!");
+};
+
+const announceSection = (section) => {
+  console.log("Opening: " + section);
+};
+
+const bookLine = (title, author) => {
+  console.log(title + " — " + author);
+};
+
+const logWith = (tag, message) => {
+  console.log("[" + tag + "] " + message);
+};
+
+const routeTo = (slug) => {
+  console.log("Navigating to /profile/" + slug);
+};
+
+greet("Nick");
+greet("Herbleeon");
+
+announceSection("Settings");
+announceSection("Profile");
+
+bookLine("Wind and Truth", "Brandon Sanderson");
+
+logWith("Cart", "Added item");
+
+routeTo("nick");
+routeTo("hannah");`}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    You’ve turned five tiny templates into reusable tools by giving them parameters.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+In this chapter, you:
+
+* Saw how a single “recipe” can work for many situations by changing just the details.
+* Used **parameters** as labeled blanks in your function definitions.
+* Passed **arguments** as the actual values to fill those blanks.
+* Practiced arrow functions that:
+
+  * Greet users
+  * Announce sections
+  * Print book lines
+  * Tag log messages
+  * Build simple routes
+
+Remember the core pattern:
+
+```js
+const fnName = (param1, param2) => {
+  // steps that use the parameters
+};
+```
+
+Next up, you’ll learn how a function can **hand a value back** with `return` — so your functions can compute results, not just log messages.

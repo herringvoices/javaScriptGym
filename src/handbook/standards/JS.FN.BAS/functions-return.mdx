@@ -1,0 +1,371 @@
+---
+
+id: JS.FN.BAS.RETURN
+title: Functions · Return Values (Getting Results Back)
+short: Use return to hand values back from functions so you can store and reuse results.
+---
+
+# Functions → Return Values (Getting Results Back)
+
+So far, your functions have mostly **logged** things.
+
+* `greet(name)` logs a greeting.
+* `announceSection(section)` logs a message.
+* `logWith(tag, message)` logs a tagged line.
+
+That’s great for humans reading the console, but sometimes your code doesn’t just want to **see** a value — it wants to **use** it.
+
+You don’t just want the chef to yell, “Food is ready!”.
+You want them to **hand you the plate**.
+
+That’s what **`return`** is for.
+
+---
+
+## 1) The problem: logging isn’t enough
+
+Imagine you want to show a customer’s full name in a couple of different places:
+
+```js
+const fullName = (first, last) => {
+  console.log(first + " " + last);
+};
+
+fullName("Ada", "Lovelace");
+// Later...
+const label = "Customer: " + ???;
+```
+
+You can log the name, sure, but when you go to build `label`, there’s nothing to plug in. The function shouted the answer into the console and then it vanished.
+
+Your code wants:
+
+```js
+const label = "Customer: " + (the full name);
+```
+
+It needs the **value**, not just a log.
+
+That’s where `return` comes in: it lets your function **hand a value back** to whoever called it.
+
+---
+
+## 2) What is a return? (Chef hands you the plate)
+
+Calling a function is like shouting an order to the kitchen:
+
+```js
+const result = makeDish();
+```
+
+* The function runs its steps.
+* At some point, it hits a **`return`**.
+* Whatever you `return` becomes the **result** of the function call — the plate the chef hands back.
+
+In JavaScript:
+
+```js
+const fullName = (first, last) => {
+  const combined = first + " " + last;
+  return combined; // hand this value back
+};
+
+const name = fullName("Ada", "Lovelace");
+console.log(name); // "Ada Lovelace"
+```
+
+> **What this function needs & what it returns**
+>
+> • Needs: two strings (`first`, `last`)
+> • Returns: one string (`"First Last"`)
+
+<HandbookChallenge
+title="From logging to returning"
+hints={[
+"Start with a version of <code>fullName</code> that only logs the name.",
+"Change it so it builds the full name in a variable and <code>return</code>s it instead of logging.",
+"Store the result in <code>name</code>, then log <code>\"Customer: \" + name</code>.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const fullName = (first, last) => {
+//   const combined = first + " " + last;
+//   return combined;
+// };
+// const name = fullName("Ada", "Lovelace");
+// console.log("Customer: " + name);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const fullName = (first, last) => {
+const combined = first + " " + last;
+return combined;
+};
+
+const name = fullName("Ada", "Lovelace");
+console.log("Customer: " + name); // Customer: Ada Lovelace`}</pre> }
+
+>
+
+  <p className="m-0">
+    Now your function doesn’t just talk about the value—it hands it back so other code can use it.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) The call site: result takes the function’s place
+
+A nice mental model:
+
+> “Whatever a function <code>return</code>s takes the place of the function call.”
+
+Look at this line:
+
+```js
+const label = "Customer: " + fullName("Ada", "Lovelace");
+```
+
+You can read it as:
+
+1. Call `fullName("Ada", "Lovelace")`.
+2. That call evaluates to `"Ada Lovelace"`.
+3. So the line becomes:
+
+   ```js
+   const label = "Customer: " + "Ada Lovelace";
+   ```
+
+The function runs, produces a value, and that value slides right into the expression.
+
+<HandbookChallenge
+title="Use the return directly"
+hints={[
+"Re-use your <code>fullName</code> from above.",
+"Make a variable <code>badge</code> that equals <code>\"Name: \" + fullName(\"Ada\", \"Lovelace\")</code>.",
+"Log <code>badge</code> and confirm it shows the full string.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const badge = "Name: " + fullName("Ada", "Lovelace");
+// console.log(badge);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const fullName = (first, last) => {
+const combined = first + " " + last;
+return combined;
+};
+
+const badge = "Name: " + fullName("Ada", "Lovelace");
+console.log(badge); // Name: Ada Lovelace`}</pre> }
+
+>
+
+  <p className="m-0">
+    The function call fits anywhere a regular value can go—because it becomes a value.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) Return with numbers: computing instead of just printing
+
+Return is especially helpful with numbers. Instead of logging a result and losing it, you can **hand it back**, then use it in more math or display.
+
+```js
+const double = (n) => {
+  const result = n * 2;
+  return result;
+};
+
+const score = double(10);
+console.log(score); // 20
+```
+
+> **What this function needs & what it returns**
+>
+> • Needs: one number (`n`)
+> • Returns: one number (`n * 2`)
+
+Let’s use that to build something a bit closer to web dev: calculating a price with tax.
+
+```js
+const priceWithTax = (price, taxRate) => {
+  const taxAmount = price * taxRate;
+  const total = price + taxAmount;
+  return total;
+};
+
+const total = priceWithTax(50, 0.1); // 10% tax
+console.log(total); // 55
+```
+
+<HandbookChallenge
+title="Calculate and keep the total"
+hints={[
+"Write <code>priceWithTax</code> as shown, with parameters <code>price</code> and <code>taxRate</code>.",
+"Have it <code>return</code> the final total.",
+"Call it with a few different values and log the returned totals.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const priceWithTax = (price, taxRate) => {
+//   const taxAmount = price * taxRate;
+//   const total = price + taxAmount;
+//   return total;
+// };
+// const totalA = priceWithTax(50, 0.1);
+// const totalB = priceWithTax(80, 0.2);
+// console.log(totalA, totalB);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const priceWithTax = (price, taxRate) => {
+const taxAmount = price * taxRate;
+const total = price + taxAmount;
+return total;
+};
+
+const totalA = priceWithTax(50, 0.1);
+const totalB = priceWithTax(80, 0.2);
+console.log(totalA, totalB); // 55 96`}</pre> }
+
+>
+
+  <p className="m-0">
+    Now your pricing logic lives in one place, and the returned totals can go wherever you need them.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 5) Return ends the function
+
+When a function hits `return`, it:
+
+1. Decides what value to hand back.
+2. **Stops**. Anything after `return` will not run.
+
+```js
+const debugAndDouble = (n) => {
+  console.log("About to double:", n);
+  const result = n * 2;
+  return result;
+  console.log("This will never run"); // unreachable
+};
+```
+
+Only the log before `return` runs. The line after is ignored.
+
+Sometimes you want a function that both logs **and** returns; that’s fine, as long as the log comes **before** the return.
+
+```js
+const doubleAndLog = (n) => {
+  const result = n * 2;
+  console.log("Result is", result);
+  return result;
+};
+```
+
+<HandbookChallenge
+title="Spot the unreachable line"
+hints={[
+"Write <code>triple</code> that multiplies a number by 3, logs the result, and <code>return</code>s it.",
+"Add a second <code>console.log</code> after the <code>return</code> to prove to yourself it never runs.",
+"Call <code>triple(5)</code> and check what you see.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const triple = (n) => {
+//   const result = n * 3;
+//   console.log("Tripled:", result);
+//   return result;
+//   console.log("This won't show.");
+// };
+// triple(5);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const triple = (n) => {
+const result = n * 3;
+console.log("Tripled:", result);
+return result;
+console.log("This won't show.");
+};
+
+triple(5); // logs: Tripled: 15`}</pre> }
+
+>
+
+  <p className="m-0">
+    Once the chef hands you the plate, they don’t keep cooking the same dish.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 6) Small practice set: functions that *give* you values
+
+Write these arrow functions, making sure each one uses `return`:
+
+1. `fullName(first, last)` → returns `"First Last"`.
+2. `initials(first, last)` → returns the first letters stuck together (e.g., `"AL"`).
+3. `labelValue(label, value)` → returns `"<label>: <value>"`.
+4. `priceWithTax(price, taxRate)` → returns the total (reuse your earlier version if you like).
+5. `routeToProfile(slug)` → returns the string `"/profile/" + slug`.
+
+Then:
+
+* Call each function at least twice with different arguments.
+* Store the result in a variable **or** use it directly in a larger string.
+
+<HandbookChallenge
+title="Return parade"
+hints={[
+"Define each function with an arrow and <code>return</code> a value instead of logging it.",
+"After you have the value, log it at the call site so you can see it.",
+"Mix storing in variables and using the function call directly inside strings.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const fullName = (first, last) => { ... };
+// const initials = (first, last) => { ... };
+// const labelValue = (label, value) => { ... };
+// const priceWithTax = (price, taxRate) => { ... };
+// const routeToProfile = (slug) => { ... };
+
+// const name = fullName("Ada", "Lovelace");
+// console.log(name);
+// console.log(labelValue("Customer", name));
+// console.log(routeToProfile("nick"));`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const fullName = (first, last) => {
+return first + " " + last;
+};
+
+const initials = (first, last) => {
+return first[0] + last[0];
+};
+
+const labelValue = (label, value) => {
+return label + ": " + value;
+};
+
+const priceWithTax = (price, taxRate) => {
+const taxAmount = price * taxRate;
+const total = price + taxAmount;
+return total;
+};
+
+const routeToProfile = (slug) => {
+return "/profile/" + slug;
+};
+
+const nameA = fullName("Ada", "Lovelace");
+const nameB = fullName("Alan", "Turing");
+console.log(nameA);
+console.log(nameB);
+
+console.log(initials("Ada", "Lovelace"));  // AL
+console.log(initials("Alan", "Turing"));   // AT
+
+console.log(labelValue("Customer", nameA));
+console.log(labelValue("City", "Nashville"));
+
+const totalC = priceWithTax(100, 0.15);
+console.log(totalC);
+
+console.log(routeToProfile("nick"));
+console.log(routeToProfile("hannah-42"));`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    These helpers don’t just talk—they hand you values you can plug into other places in your app.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Wrap-up
+
+* **`return`** is how a function hands a value back to whoever called it.
+* Whatever you return **takes the place of the function call** in the code.
+* You can store that result in a variable, or use it directly inside bigger expressions.
+* Once a function hits `return`, it stops running anything after that line.
+
+Next up, you’ll see how to make small functions that **call each other**, so you can build bigger behavior out of tiny, focused helpers.

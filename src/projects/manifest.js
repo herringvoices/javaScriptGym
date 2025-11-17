@@ -18,6 +18,20 @@ export const projects = [
 			// Note: 07 (Sequence Diagram) intentionally omitted
 		],
 	},
+    {
+        id: "love-on-the-lawn",
+        title: "Love on the Lawn",
+        summary: "Build a small storefront that turns two data lists (lawn decorations and romance novels) into HTML and injects them into the page.",
+        standards: ["JS.FN.BAS", "JS.VDT.COL", "JS.VDT.PRM"],
+        steps: [
+            { id: "01-seed-data", title: "Seed the Data (database.js)" },
+            { id: "02-generators", title: "HTML Generators (lawnDecorations & romanceNovels)" },
+            { id: "03-target-dom", title: "Target the DOM (main.js)" },
+            { id: "04-compose-html", title: "Compose the Final HTML String (main.js)" },
+            { id: "05-inject", title: "Inject into the Page (main.js)" },
+            { id: "06-stretch", title: "Stretch Goals & Extras" },
+        ],
+    },
 ];
 
 export function getProject(projectId) {
@@ -38,6 +52,14 @@ export const projectStepLoaders = {
 		"05-details": () => import("./landers-zoo/steps/05-details.mdx"),
 		"06-cleanup": () => import("./landers-zoo/steps/06-cleanup.mdx"),
 	},
+	"love-on-the-lawn": {
+		"01-seed-data": () => import("./love-on-the-lawn/steps/01-seed-data.mdx"),
+		"02-generators": () => import("./love-on-the-lawn/steps/02-generators.mdx"),
+		"03-target-dom": () => import("./love-on-the-lawn/steps/03-target-dom.mdx"),
+		"04-compose-html": () => import("./love-on-the-lawn/steps/04-compose-html.mdx"),
+		"05-inject": () => import("./love-on-the-lawn/steps/05-inject.mdx"),
+		"06-stretch": () => import("./love-on-the-lawn/steps/06-stretch.mdx"),
+	},
 };
 
 export function getStepLoader(projectId, stepId) {
@@ -49,6 +71,7 @@ export function getStepLoader(projectId, stepId) {
 
 export const projectEntries = {
 	"landers-zoo": () => import("./entries/landers-zoo.js").then((m) => m.default),
+    "love-on-the-lawn": () => import("./entries/love-on-the-lawn.js").then((m) => m.default),
 };
 
 export async function loadProjectEntry(projectId) {

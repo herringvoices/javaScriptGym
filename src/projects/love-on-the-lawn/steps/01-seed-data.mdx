@@ -1,0 +1,44 @@
+---
+id: 01-seed-data
+title: Seed the Data (database.js)
+---
+
+# Chapter 1 — Seed the Data
+
+Working title: Inventory of Hearts & Hedges
+
+Create a `database.js` module that holds the store's data. The file should export two getter functions so other modules can read copies of the arrays.
+
+Goals
+
+1. Create a `database` object with two arrays: `lawnDecorations` and `romanceNovels`.
+2. Populate each array with at least 3–4 sample objects.
+3. Export `getLawnDecorations()` and `getRomanceNovels()` that return copies of the data (`.map(item => ({ ...item }))`).
+
+Example shape (lawnDecorations):
+
+```js
+{
+  id: 1,
+  name: "Solar-Powered Flamingo",
+  vibe: "Cheerfully chaotic",
+  priceInCents: 2499
+}
+```
+
+Example shape (romanceNovels):
+
+```js
+{
+  id: 1,
+  title: "Love in the Lawn & Garden Aisle",
+  trope: "Workplace romance",
+  priceInCents: 999
+}
+```
+
+End-of-chapter checklist
+
+* `database` object created
+* Arrays: `lawnDecorations`, `romanceNovels`
+* Exported getters: `getLawnDecorations`, `getRomanceNovels`

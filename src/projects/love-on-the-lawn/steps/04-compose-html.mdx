@@ -1,0 +1,34 @@
+---
+id: 04-compose-html
+title: Compose the Final HTML String (main.js)
+---
+
+# Chapter 4 — Compose the Final HTML String
+
+Working title: Two Aisles, One Storefront
+
+Goals
+
+* Call `LawnDecorationsList()` and `RomanceNovelsList()` from `main.js`.
+* Store their return values in variables (e.g., `lawnHTML`, `romanceHTML`).
+* Build a single `storeHTML` string that contains a title, tagline, and both sections.
+
+Example
+
+```js
+const lawnHTML = LawnDecorationsList();
+const romanceHTML = RomanceNovelsList();
+
+const storeHTML = `
+  <h1>Love on the Lawn</h1>
+  <p class="tagline">Your one-stop shop for bold decor and even bolder plot twists.</p>
+
+  ${lawnHTML}
+  ${romanceHTML}
+`;
+```
+
+End-of-chapter checklist
+
+* `lawnHTML` and `romanceHTML` hold generated strings.
+* `storeHTML` composes everything into a single string.

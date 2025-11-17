@@ -218,10 +218,6 @@ const getLargestHabitatSize = (habitats) => {
     return largest;
 };
 
-// Values you will use to build a single multi-line summary string.
-const totalArea = totalHabitatArea(habitats);      // expected: 11500
-const smallest = getSmallestHabitatSize(habitats); // expected: 800
-const largest = getLargestHabitatSize(habitats);   // expected: 4000
 
 // Header
 console.log(\`\\n\\t\\tL A N D E R ' S   Z O O\\n\\t\\t***********************************************************\\n\`);

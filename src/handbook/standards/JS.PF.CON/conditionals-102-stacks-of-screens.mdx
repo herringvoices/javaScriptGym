@@ -1,0 +1,501 @@
+---
+id: JS.PF.CON.LADDER
+title: Conditionals 102 · Stacks of Screens (Else If & Ordering)
+short: Build if / else if / else ladders and order your checks from most specific to most general.
+---
+
+# Program Flow → Conditionals (Stacks of Screens)
+
+Last time, you built your **first mesh screen** with `if` and `if / else`:
+
+* A **condition** (true/false question) goes in the parentheses.
+* An **action** (the chute) lives in the curly braces.
+* Each seed either **gets caught** by the screen or **falls through**.
+
+This time, we’re going to **stack** those screens so you can handle **several different cases** in one pass.
+
+Instead of “roast or store,” you’ll be able to say:
+
+* Roast **big** seeds,
+* Shuck **medium** seeds,
+* Press **small** seeds into oil,
+* Inspect anything unexpected.
+
+One conveyor belt, many possible chutes.
+
+---
+
+## 1) From one decision to many (why ladders exist)
+
+Here’s our familiar seed:
+
+```js
+const seed = { name: "pumpkin", size: 10 };
+```
+
+In the last chapter, you might have written:
+
+```js
+if (seed.size >= 10) {
+  console.log("Roast the pumpkin seeds.");
+} else {
+  console.log("Send this seed down the line.");
+}
+```
+
+That works **as long as** there are only two options.
+
+But suppose the factory grows up a bit and now you want:
+
+* Size **≥ 10** → roast
+* Size **≥ 3** → shuck
+* Size **≥ 1** → press into oil
+* Anything else → inspect
+
+Two paths are no longer enough. You need a **chain** of screens, each one checking a different size range.
+
+That’s what an `if / else if / else` ladder gives you.
+
+---
+
+## 2) The `if / else if / else` ladder (one seed, one chute)
+
+A ladder is just multiple checks in a row:
+
+* Start with `if` for the first screen.
+* Add as many `else if` screens as you need.
+* End with `else` for the catch-all chute.
+
+```js
+const seed = { name: "pumpkin", size: 10 };
+
+if (seed.size >= 10) {
+  console.log("Roast the pumpkin seeds.");
+} else if (seed.size >= 3) {
+  console.log("Shuck the sunflower seeds.");
+} else if (seed.size >= 1) {
+  console.log("Press the sesame seeds into oil.");
+} else {
+  console.log("Inspect anything unexpected.");
+}
+```
+
+Read it as:
+
+* “If size is at least 10, roast.”
+* “Else, if size is at least 3, shuck.”
+* “Else, if size is at least 1, press.”
+* “Else, inspect.”
+
+**Key idea:**
+As soon as one condition is `true`, its body runs and the **rest are skipped**. One seed, one chute.
+
+> Think of the seed rolling down a stack of screens. The first screen it fits drops it into a chute. Once that happens, it never reaches the lower screens.
+
+<HandbookChallenge
+title="Sort by size"
+hints={[
+"Start with <code>const seed = { name: \"mystery\", size: 4 };</code>",
+"Write a ladder that logs:",
+"<code>\"Roast\"</code> for size ≥ 10,",
+"<code>\"Shuck\"</code> for size ≥ 3,",
+"<code>\"Press\"</code> for size ≥ 1,",
+"and <code>\"Inspect\"</code> for anything smaller.",
+"Change <code>seed.size</code> to 10, 3, 1, and 0 and see which message you get each time.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: \"mystery\", size: 4 };
+
+if (seed.size >= 10) {
+console.log(\"Roast\");
+} else if (seed.size >= 3) {
+console.log(\"Shuck\");
+} else if (seed.size >= 1) {
+console.log(\"Press\");
+} else {
+console.log(\"Inspect\");
+}`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: \"mystery\", size: 4 };
+
+if (seed.size >= 10) {
+console.log(\"Roast\");
+} else if (seed.size >= 3) {
+console.log(\"Shuck\");
+} else if (seed.size >= 1) {
+console.log(\"Press\");
+} else {
+console.log(\"Inspect\");
+}
+
+// Try different sizes:
+seed.size = 10; // Roast
+// seed.size = 3; // Shuck
+// seed.size = 1; // Press
+// seed.size = 0; // Inspect`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    You now have a chain of screens: each size lands in exactly one category.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) Specific vs broad screens (why order matters)
+
+The ladder you just wrote works because of the **order**:
+
+```js
+if (seed.size >= 10) { ... }  // most specific
+else if (seed.size >= 3) { ... }
+else if (seed.size >= 1) { ... }  // broadest before else
+else { ... }                      // catch-all
+```
+
+Each condition is a **screen**:
+
+* `size >= 10` — catches only the very large seeds.
+* `size >= 3` — catches medium and large.
+* `size >= 1` — catches almost everything that isn’t tiny.
+
+The rule of thumb:
+
+> Put your **most specific** screens first, and your **broadest** screens last.
+
+If you flip the order, you can accidentally build a screen that catches **everything** before the smaller screens ever get a chance.
+
+For example:
+
+```js
+const seed = { name: "pumpkin", size: 10 };
+
+if (seed.size >= 1) {
+  console.log("Press"); // too broad
+} else if (seed.size >= 3) {
+  console.log("Shuck");
+} else if (seed.size >= 10) {
+  console.log("Roast");
+}
+```
+
+What happens?
+
+* `seed.size >= 1` is `true` for size 10.
+* The first branch runs (`"Press"`), and the rest are skipped.
+* The “Roast” branch is **never reachable** for this seed.
+
+That top screen is like putting the tiny-gap mesh at the very top of the stack: it catches **everything**, and your more specific screens are just decorative.
+
+<HandbookChallenge
+title="Fix the bad ladder"
+hints={[
+"Start from this code:", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: \"pumpkin\", size: 10 };
+
+if (seed.size >= 1) {
+console.log(\"Press\");
+} else if (seed.size >= 3) {
+console.log(\"Shuck\");
+} else if (seed.size >= 10) {
+console.log(\"Roast\");
+}`}</pre>,
+    "For a seed with size 10, which message logs? Why?",
+    "Reorder the conditions so that <code>size &gt;= 10</code> is checked first, then <code>size &gt;= 3</code>, then <code>size &gt;= 1</code>.",
+    "Test with sizes 10, 3, 1, and 0.",
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: \"pumpkin\", size: 10 };
+
+// Corrected ladder:
+if (seed.size >= 10) {
+console.log(\"Roast\");
+} else if (seed.size >= 3) {
+console.log(\"Shuck\");
+} else if (seed.size >= 1) {
+console.log(\"Press\");
+} else {
+console.log(\"Inspect\");
+}
+
+// Try:
+// seed.size = 10; // Roast
+// seed.size = 3;  // Shuck
+// seed.size = 1;  // Press
+// seed.size = 0;  // Inspect`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    Most specific screens first, broad screens later, <code>else</code> last. That way, each seed lands in the right chute.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) Designing thresholds (your own factory rules)
+
+The numbers `10`, `3`, and `1` weren’t magic. They were **thresholds**—the cut-off points you chose for each screen.
+
+You can design your own thresholds for any situation:
+
+* Game scores
+* Shipping prices
+* Membership levels
+* Warning levels
+
+Example: grading seeds by quality score:
+
+```js
+const seed = { name: "pumpkin", qualityScore: 82 };
+
+if (seed.qualityScore >= 90) {
+  console.log("Grade A");
+} else if (seed.qualityScore >= 75) {
+  console.log("Grade B");
+} else if (seed.qualityScore >= 60) {
+  console.log("Grade C");
+} else {
+  console.log("Rejected");
+}
+```
+
+Again, order matters:
+
+* `>= 90` first (only the top seeds),
+* then `>= 75`,
+* then `>= 60`,
+* then everything else.
+
+You’re building a **priority list** from top to bottom.
+
+<HandbookChallenge
+title="Quality ladder"
+hints={[
+"Create <code>const seed = { name: \"mystery\", qualityScore: 72 };</code>",
+"Write a ladder that logs:",
+"<code>\"Premium\"</code> for score ≥ 90,",
+"<code>\"Standard\"</code> for score ≥ 70,",
+"<code>\"Basic\"</code> for score ≥ 50,",
+"and <code>\"Reject\"</code> for anything below 50.",
+"Try a few different <code>qualityScore</code> values and confirm only one label shows for each.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: \"mystery\", qualityScore: 72 };
+
+if (seed.qualityScore >= 90) {
+console.log(\"Premium\");
+} else if (seed.qualityScore >= 70) {
+console.log(\"Standard\");
+} else if (seed.qualityScore >= 50) {
+console.log(\"Basic\");
+} else {
+console.log(\"Reject\");
+}`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: \"mystery\", qualityScore: 72 };
+
+if (seed.qualityScore >= 90) {
+console.log(\"Premium\");
+} else if (seed.qualityScore >= 70) {
+console.log(\"Standard\");
+} else if (seed.qualityScore >= 50) {
+console.log(\"Basic\");
+} else {
+console.log(\"Reject\");
+}
+
+// Try:
+// seed.qualityScore = 95; // Premium
+// seed.qualityScore = 72; // Standard
+// seed.qualityScore = 55; // Basic
+// seed.qualityScore = 20; // Reject`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    You just designed your own stack of screens. The thresholds you choose define how seeds move through your factory.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 5) Putting it in a function (building a reusable sorter)
+
+So far, we’ve been writing ladders that log directly. In real apps, it’s often useful to wrap a ladder in a **function** so other parts of your code can ask:
+
+> “Given this seed, what should we do with it?”
+
+Let’s write a helper that returns a **string** instead of logging:
+
+```js
+const classifySeed = (seed) => {
+  if (seed.size >= 10) {
+    return "Roast";
+  } else if (seed.size >= 3) {
+    return "Shuck";
+  } else if (seed.size >= 1) {
+    return "Press";
+  } else {
+    return "Inspect";
+  }
+};
+
+const seedA = { name: "pumpkin", size: 10 };
+const seedB = { name: "sunflower", size: 3 };
+const seedC = { name: "sesame", size: 1 };
+const seedD = { name: "dust", size: 0 };
+
+console.log(classifySeed(seedA)); // Roast
+console.log(classifySeed(seedB)); // Shuck
+console.log(classifySeed(seedC)); // Press
+console.log(classifySeed(seedD)); // Inspect
+```
+
+A couple of nice things happen when you do this:
+
+* Your ladder gets a **name** (`classifySeed`) that explains its job.
+* You can use the result wherever you want:
+
+  * log it,
+  * send it to the DOM,
+  * store it in an object.
+
+<HandbookChallenge
+title="Build your sorter"
+hints={[
+"Define a function <code>classifySeed</code> that takes a <code>seed</code> object.",
+"Inside, use the size ladder from earlier (Roast / Shuck / Press / Inspect).",
+"Make a few seed objects with different sizes and log <code>classifySeed(seed)</code> for each one.",
+"Remember: every branch should <code>return</code> a string.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const classifySeed = (seed) => {
+if (seed.size >= 10) {
+return "Roast";
+} else if (seed.size >= 3) {
+return "Shuck";
+} else if (seed.size >= 1) {
+return "Press";
+} else {
+return "Inspect";
+}
+};
+
+const seedA = { name: "pumpkin", size: 10 };
+console.log(classifySeed(seedA)); // Roast`}</pre>,
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const classifySeed = (seed) => {
+if (seed.size >= 10) {
+return "Roast";
+} else if (seed.size >= 3) {
+return "Shuck";
+} else if (seed.size >= 1) {
+return "Press";
+} else {
+return "Inspect";
+}
+};
+
+const seedA = { name: "pumpkin", size: 10 };
+const seedB = { name: "sunflower", size: 3 };
+const seedC = { name: "sesame", size: 1 };
+const seedD = { name: "dust", size: 0 };
+
+console.log(classifySeed(seedA)); // Roast
+console.log(classifySeed(seedB)); // Shuck
+console.log(classifySeed(seedC)); // Press
+console.log(classifySeed(seedD)); // Inspect`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    You’ve turned your ladder into a reusable tool. Anywhere in your code, you can hand a seed to <code>classifySeed</code> and get back a decision.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 6) Mini practice: ordering and unreachable branches
+
+Let’s solidify the idea that **order matters**.
+
+Here’s a ladder with overlapping screens:
+
+```js
+const seed = { name: "pumpkin", size: 10 };
+
+if (seed.size >= 1) {
+  console.log("Tiny or bigger");
+} else if (seed.size >= 5) {
+  console.log("Medium or bigger");
+} else if (seed.size >= 10) {
+  console.log("Huge");
+} else {
+  console.log("Nothing matched");
+}
+```
+
+Questions to think through:
+
+1. Which message prints for size 10?
+2. Will the `"Huge"` branch ever run for any positive size?
+3. How would you reorder this to make all three labels actually reachable?
+
+<HandbookChallenge
+title="Spot the unreachable branch"
+hints={[
+"For size 10, which condition is checked first? Is it true?",
+"Once a branch runs, the rest are skipped.",
+"Reorder from most specific (biggest threshold) to broadest.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// Fix this:
+if (seed.size >= 10) {
+  console.log("Huge");
+} else if (seed.size >= 5) {
+  console.log("Medium or bigger");
+} else if (seed.size >= 1) {
+  console.log("Tiny or bigger");
+} else {
+  console.log("Nothing matched");
+}`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: "pumpkin", size: 10 };
+
+// Fixed ladder:
+if (seed.size >= 10) {
+console.log("Huge");
+} else if (seed.size >= 5) {
+console.log("Medium or bigger");
+} else if (seed.size >= 1) {
+console.log("Tiny or bigger");
+} else {
+console.log("Nothing matched");
+}`}</pre>
+}
+
+>
+
+  <p className="m-0">
+    If a broad screen goes first, it can catch everything and make later branches unreachable. Order your conditions so each branch has a chance to run.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Technical Vocabulary
+
+| Term               | Plain-English meaning                                            | Tiny example                                  |
+| ------------------ | ---------------------------------------------------------------- | --------------------------------------------- |
+| ladder             | A chain of `if / else if / else` branches             | `if (...) { } else if (...) { }`   |
+| branch             | One possible path in the ladder                                  | The code inside one pair of curly braces      |
+| threshold          | The comparison value that defines a screen boundary              | `seed.size >= 3`                   |
+| specific condition | A narrower check that matches fewer values                       | `size >= 10`                       |
+| broad condition    | A wider check that matches many values                           | `size >= 1`                        |
+| catch-all          | The final `else` branch for anything unmatched        | `else { console.log("Inspect"); }` |
+| unreachable branch | A branch that never runs because earlier checks catch everything | broad checks above narrow ones                |
+
+---
+
+## Wrap-up
+
+In this chapter, you:
+
+* Turned single `if` screens into **ladders** with `if / else if / else`.
+* Used size thresholds to sort seeds into **several categories**.
+* Saw why **order matters**: specific checks go first, broad checks go later, `else` goes last.
+* Wrapped a ladder in a **function** so you can reuse the same decision logic anywhere in your code.
+
+Next up, you’ll combine checks with **multiple conditions at once**—screens that care about size *and* moisture, or name *or* size—using logical operators like `&&` and `||`.

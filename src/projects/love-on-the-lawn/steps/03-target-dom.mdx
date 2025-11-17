@@ -1,0 +1,29 @@
+---
+id: 03-target-dom
+title: Target the DOM (main.js)
+---
+
+# Chapter 3 — Target the DOM
+
+Working title: Where Should All This Love Go?
+
+Goals
+
+* Import both generator functions in `main.js`.
+* Use `document.querySelector` to find the `<main>` element (the platform provides `#store-container`).
+* Store that element in a variable and `console.log` it so you can confirm you found it.
+
+Example
+
+```js
+import { LawnDecorationsList } from './lawnDecorations.js';
+import { RomanceNovelsList } from './romanceNovels.js';
+
+const storeContainer = document.querySelector('#store-container');
+console.log('Store container found:', storeContainer);
+```
+
+End-of-chapter checklist
+
+* `main.js` imports both list functions.
+* `storeContainer` variable holds the container element.

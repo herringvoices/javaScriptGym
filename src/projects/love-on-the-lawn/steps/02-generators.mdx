@@ -1,0 +1,26 @@
+---
+id: 02-generators
+title: HTML Generators (lawnDecorations & romanceNovels)
+---
+
+# Chapter 2 — HTML Generators
+
+Working title: From Data to Display: Gnomes & Paperbacks
+
+In this chapter you'll build two modules that convert the arrays from `database.js` into HTML strings.
+
+Goals
+
+* `lawnDecorations.js` — export `LawnDecorationsList()` which returns a string of HTML for the decorations list.
+* `romanceNovels.js` — export `RomanceNovelsList()` which returns a string of HTML for novels.
+
+Each function should:
+
+* Import the appropriate getter from `database.js`.
+* Build a string that contains a `<section>`, a heading, and a `<ul>` with `<li>`s for each item.
+* Return the composed string (do not touch the DOM here).
+
+End-of-chapter checklist
+
+* Both modules export a function that returns HTML as a string.
+* These functions are pure string builders and do not modify the page.

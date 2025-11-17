@@ -7,6 +7,8 @@ export const handbookChapters = {
   'JS.VDT.COL': () => import('./JS.VDT.COL.mdx'),
   'JS.VDT.MTH': () => import('./JS.VDT.MTH.mdx'),
   'JS.FN.BAS': () => import('./JS.FN.BAS.mdx'),
+  'JS.PF.CON': () => import('./JS.PF.CON.mdx'),
+  'JS.FN.HOF': () => import('./JS.FN.HOF.mdx'),
 };
 
 export const handbookOrder = [
@@ -15,6 +17,8 @@ export const handbookOrder = [
   'JS.VDT.COL',
   'JS.VDT.MTH',
   'JS.FN.BAS',
+  'JS.FN.HOF',
+  'JS.PF.CON',
 ];
 
 // New-style handbook entries with embedded editor workbench
@@ -28,6 +32,7 @@ export const handbookEntries = {
   'JS.VDT.COL': () => import('./entries/JS.VDT.COL.js').then(m => m.default),
   'JS.VDT.MTH': () => import('./entries/JS.VDT.MTH.js').then(m => m.default),
   'JS.FN.BAS': () => import('./entries/JS.FN.BAS.js').then(m => m.default),
+  'JS.PF.CON': () => import('./entries/JS.PF.CON.js').then(m => m.default),
 };
 
 export async function loadHandbookEntry(standardId) {
@@ -120,6 +125,51 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.VDT.MTH.mdx'),
+  },
+  'JS.FN.BAS': {
+    chapters: [
+      {
+        id: 'JS.FN.BAS.INTRO',
+        title: 'Functions · Recipes for Reusable Code',
+        load: () => import('./standards/JS.FN.BAS/functions-recipes-for-reusable-code.mdx'),
+      },
+      {
+        id: 'JS.FN.BAS.PARAMS',
+        title: 'Functions · Parameters (Make One Recipe Do More)',
+        load: () => import('./standards/JS.FN.BAS/functions-parameters.mdx'),
+      },
+      {
+        id: 'JS.FN.BAS.RETURN',
+        title: 'Functions · Return Values (Getting Results Back)',
+        load: () => import('./standards/JS.FN.BAS/functions-return.mdx'),
+      },
+      {
+        id: 'JS.FN.BAS.COMPOSE',
+        title: 'Functions · Composing Helpers (Small Pieces Working Together)',
+        load: () => import('./standards/JS.FN.BAS/functions-composing-helpers.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.FN.BAS.mdx'),
+  },
+  'JS.PF.CON': {
+    chapters: [
+      {
+        id: 'JS.PF.CON.INTRO',
+        title: 'Conditionals 101 · Mesh Screens for Decisions',
+        load: () => import('./standards/JS.PF.CON/conditionals-101-mesh-screens.mdx'),
+      },
+      {
+        id: 'JS.PF.CON.LADDER',
+        title: 'Conditionals 102 · Stacks of Screens (Else If & Ordering)',
+        load: () => import('./standards/JS.PF.CON/conditionals-102-stacks-of-screens.mdx'),
+      },
+      {
+        id: 'JS.PF.CON.COMBO',
+        title: 'Conditionals 103 · Combined Screens (AND, OR & Short-Circuiting)',
+        load: () => import('./standards/JS.PF.CON/conditionals-103-combined-screens.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.PF.CON.mdx'),
   },
   // Add more standards here as their chapters are authored
 };
