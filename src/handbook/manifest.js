@@ -168,6 +168,11 @@ export const handbookStructure = {
         title: 'Conditionals 103 · Combined Screens (AND, OR & Short-Circuiting)',
         load: () => import('./standards/JS.PF.CON/conditionals-103-combined-screens.mdx'),
       },
+      {
+        id: 'JS.PF.CON.SWITCH',
+        title: 'Conditionals 104 · Labeled Gates (switch vs if/else)',
+        load: () => import('./standards/JS.PF.CON/conditionals-104-labeled-gates.mdx'),
+      },
     ],
     loadIntro: () => import('./JS.PF.CON.mdx'),
   },

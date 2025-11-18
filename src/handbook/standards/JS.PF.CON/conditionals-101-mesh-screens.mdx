@@ -1,7 +1,9 @@
+---
+
 id: JS.PF.CON.INTRO
 title: Conditionals 101 · Mesh Screens for Decisions
 short: Use if and else to choose different actions based on booleans and comparisons.
----
+-------------------------------------------------------------------------------------
 
 # Program Flow → Conditionals (First Mesh Screen)
 
@@ -9,13 +11,12 @@ A while back, you learned about **booleans**: `true` / `false` values and compar
 
 Now it’s time to use those booleans to actually **change what your program does next**.
 
-If booleans are the **answers**, conditionals are the **mesh screens** that decide where things go.
 
 ---
 
 ## 1) Why we need conditionals (the belt with no screens)
 
-Imagine a tiny seed-processing app. You’ve got one seed at a time coming down a conveyor belt:
+Imagine a tiny seed-processing factory. You’ve got one seed at a time coming down a conveyor belt:
 
 ```js
 const seed = {
@@ -63,6 +64,7 @@ if (seed.size >= 10) {
   console.log("Roast the pumpkin seeds!");
 }
 ```
+In the condition above, if the seed is big enough, it's caught by the `if` statement, otherwise it slides through the screen.
 
 Read it aloud:
 
@@ -75,44 +77,42 @@ Under the hood:
 * `seed.size >= 10` → **condition** (returns `true` or `false`)
 * `{ ... }` → **body** (only runs when the condition is `true`)
 
-> Think of the condition as the **mesh**. Any seed that passes the test drops into the curly-brace **chute** and triggers the action.
+Think of the condition as the **mesh**. Any seed that passes the test drops into the curly-brace **chute** and triggers the action.
 
 <HandbookChallenge
-title="One screen: keep only the big seeds"
+title="Screen #1: is this seed roastable?"
 hints={[
-"Start with a seed: <code>const seed = { name: 'sunflower', size: 3 };</code>",
+"Start fresh with a seed: <code>const seed = { name: 'sunflower', size: 3 };</code>",
 "Write an <code>if</code> statement that checks <code>seed.size >= 5</code>.",
-"Inside the braces, <code>console.log</code> something like <code>'Keep this seed for roasting.'</code>.",
-"Try changing <code>seed.size</code> to different numbers and run your code again. When does the message appear?",
-
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
+"Inside the braces, <code>console.log</code> a message like <code>'Roast this seed.'</code>.",
+"Change <code>seed.size</code> to 2, 5, and 9. You should only see the message when the condition is true.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
 
 if (seed.size >= 5) {
-  console.log("Keep this seed for roasting.");
+console.log("Roast this seed.");
 }`}</pre>,
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
 
 if (seed.size >= 5) {
-  console.log("Keep this seed for roasting.");
+console.log("Roast this seed.");
 }
 
-// Try these too:
-const bigSeed = { name: 'pumpkin', size: 12 };
+// Try a few sizes:
+const mediumSeed = { name: 'pumpkin', size: 7 };
+if (mediumSeed.size >= 5) {
+console.log("Roast this seed."); // runs
+}
 
-if (bigSeed.size >= 5) {
-  console.log("Keep this seed for roasting."); // runs here
+const tinySeed = { name: 'chia', size: 1 };
+if (tinySeed.size >= 5) {
+console.log("Roast this seed."); // does NOT run
 }`}</pre>
-
 }
 
 >
 
   <p className="m-0">
-    You just built a single mesh screen: only seeds with size <code>&gt;= 5</code> drop into the roasting chute.
+    You just built your first mesh screen: only seeds with size <code>&gt;= 5</code> drop into the roasting chute. Everything else slides past with no action.
   </p>
 </HandbookChallenge>
 
@@ -154,51 +154,46 @@ It’s easy to mix these up, so let’s separate them clearly:
 * `===` → **comparison**. Ask if two values are exactly the same.
   `myAge === yourAge;`
 
-> Read `===` out loud as “is exactly equal to?”.
+Read `===` out loud as “is exactly equal to?”.
 
 <HandbookChallenge
-title="Choose your threshold"
+title="Screen #2: save the question in a boolean"
 hints={[
-"Start with <code>const seed = { name: 'mystery', size: 4 };</code>",
-"Create a new variable: <code>const isLarge = seed.size >= 5;</code>.",
-"Log <code>isLarge</code> once.",
-"Then write an <code>if</code> that checks <code>isLarge</code> and logs <code>'Large seed'</code> or nothing.",
-"Try changing <code>size</code> and see when the message appears.",
+"Reuse your idea from the last challenge, or start with: <code>const seed = { name: 'mystery', size: 4 };</code>",
+"Create a comparison and store it: <code>const isLarge = seed.size >= 5;</code>.",
+"Log <code>isLarge</code> once so you can see <code>true</code> or <code>false</code>.",
+"Now use that boolean inside an <code>if</code>: <code>if (isLarge) { ... }</code>.",
+"Change <code>seed.size</code> a few times and watch how <code>isLarge</code> and the <code>if</code> both respond.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: 'mystery', size: 4 };
 
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: 'mystery', size: 4 };
 const isLarge = seed.size >= 5;
 console.log(isLarge); // false
 
 if (isLarge) {
-  console.log("Large seed");
+console.log("Large seed.");
 }`}</pre>,
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: 'mystery', size: 4 };
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: 'mystery', size: 4 };
 
 const isLarge = seed.size >= 5;
 console.log(isLarge); // false
 
 if (isLarge) {
-  console.log("Large seed");
+console.log("Large seed.");
 }
 
-const biggerSeed = { name: 'pumpkin', size: 8 };
+const biggerSeed = { name: 'pumpkin', size: 9 };
 const biggerIsLarge = biggerSeed.size >= 5;
 console.log(biggerIsLarge); // true
 
 if (biggerIsLarge) {
-  console.log("Large seed"); // runs here
+console.log("Large seed."); // runs here
 }`}</pre>
-
 }
 
 >
 
   <p className="m-0">
-    You don’t have to write your whole comparison inside <code>if</code>. You can store the answer in a boolean first, then use that boolean as the condition.
+    Now your question lives in a named boolean (<code>isLarge</code>). You can reuse this same mesh screen anywhere you need it, instead of rewriting the comparison each time.
   </p>
 </HandbookChallenge>
 
@@ -234,50 +229,44 @@ Important details:
   * If the condition is `false`, the `if` body is skipped and the `else` body runs.
 * There is **no condition** after `else`. It’s the “everything that fell through” chute.
 
-> The `if` is your screen. The `else` is the chute for anything that **didn’t** get caught.
+The `if` is your screen. The `else` is the chute for anything that **didn’t** get caught.
 
 <HandbookChallenge
-title="Roast or store"
+title="Screen #3: roast vs store"
 hints={[
-"Start with a seed object: <code>const seed = { name: 'sunflower', size: 3 };</code>",
+"Build on your earlier code, or start with: <code>const seed = { name: 'sunflower', size: 3 };</code>",
 "Write an <code>if / else</code> that checks <code>seed.size >= 5</code>.",
 "If it’s big enough, log <code>'Roast this seed.'</code>.",
 "Otherwise, log <code>'Store this seed for later.'</code>.",
-"Test with a few different sizes to be sure only one message appears each time.",
-
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
+"Test with sizes 3, 5, and 12. You should get exactly one message each time.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
 
 if (seed.size >= 5) {
-  console.log("Roast this seed.");
+console.log("Roast this seed.");
 } else {
-  console.log("Store this seed for later.");
+console.log("Store this seed for later.");
 }`}</pre>,
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: 'sunflower', size: 3 };
 
 if (seed.size >= 5) {
-  console.log("Roast this seed.");
+console.log("Roast this seed.");
 } else {
-  console.log("Store this seed for later.");
+console.log("Store this seed for later.");
 }
 
 const bigSeed = { name: 'pumpkin', size: 12 };
 
 if (bigSeed.size >= 5) {
-  console.log("Roast this seed.");
+console.log("Roast this seed.");
 } else {
-  console.log("Store this seed for later.");
+console.log("Store this seed for later.");
 }`}</pre>
-
 }
 
 >
 
   <p className="m-0">
-    One seed, one path: either the <code>if</code> branch runs or the <code>else</code> branch runs—never both.
+    This time, every seed goes down exactly one chute: roast or store. There is no “do nothing” path anymore.
   </p>
 </HandbookChallenge>
 
@@ -322,57 +311,55 @@ if (isFull) {
 }
 ```
 
-> Any expression that ends up as `true` or `false` can be your condition.
+Any expression that ends up as `true` or `false` can be your condition.
 
 <HandbookChallenge
-title="Gatekeeper for a small event"
+title="Screen #4: small-event gatekeeper"
 hints={[
+"Switch scenes: you’re checking seats for a tiny event.",
 "Start with <code>let seatsTaken = 5;</code> and <code>const seatsTotal = 8;</code>.",
-"Create <code>const isFull = seatsTaken === seatsTotal;</code>.",
-"Write an <code>if / else</code> on <code>isFull</code>: if full, log <code>'Event is full.'</code>, otherwise <code>'Spots available.'</code>.",
-"Change <code>seatsTaken</code> to <code>8</code> and run it again.",
-
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`let seatsTaken = 5;
+"Create <code>const isFull = seatsTaken === seatsTotal;</code> and log it once.",
+"Write an <code>if / else</code> that uses <code>isFull</code> — if full, log <code>'Event is full.'</code>, otherwise log <code>'Spots available.'</code>.",
+"Then set <code>seatsTaken = 8;</code>, recompute <code>isFull</code>, and run the same <code>if / else</code> again.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let seatsTaken = 5;
 const seatsTotal = 8;
 
 const isFull = seatsTaken === seatsTotal;
+console.log(isFull); // false
 
 if (isFull) {
-  console.log("Event is full.");
+console.log("Event is full.");
 } else {
-  console.log("Spots available.");
+console.log("Spots available.");
 }`}</pre>,
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`let seatsTaken = 5;
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`let seatsTaken = 5;
 const seatsTotal = 8;
 
 let isFull = seatsTaken === seatsTotal;
+console.log(isFull); // false
 
 if (isFull) {
-  console.log("Event is full.");
+console.log("Event is full.");
 } else {
-  console.log("Spots available.");
+console.log("Spots available.");
 }
 
-// Later: all seats taken
+// Later: more people arrive
 seatsTaken = 8;
 isFull = seatsTaken === seatsTotal;
+console.log(isFull); // true
 
 if (isFull) {
-  console.log("Event is full.");
+console.log("Event is full.");
 } else {
-  console.log("Spots available.");
+console.log("Spots available.");
 }`}</pre>
-
 }
 
 >
 
   <p className="m-0">
-    First you create a boolean with a comparison, then you plug that boolean into an <code>if / else</code> to control what happens.
+    First you create a boolean (<code>isFull</code>) from a comparison, then you plug that boolean into an <code>if / else</code> to control what happens. Same pattern as the seeds, just a different story.
   </p>
 </HandbookChallenge>
 
@@ -413,76 +400,70 @@ if (!isFull) {
 Same idea as before, but we flipped the question: instead of “if full,” we used “if **not** full.”
 
 <HandbookChallenge
-title="Logged in or guest"
+title="Screen #5: logged-in vs guest"
 hints={[
 "Start with <code>let isLoggedIn = false;</code>.",
-"Write an <code>if / else</code> using <code>isLoggedIn</code>: if true, log <code>'Welcome back!'</code>, else log <code>'Please log in.'</code>.",
-"Then change <code>isLoggedIn</code> to <code>true</code> and test again.",
-"Bonus: add a second <code>if</code> that uses <code>!isLoggedIn</code> to log a hint like <code>'Tip: You get more features when logged in.'</code>.",
-
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`let isLoggedIn = false;
+"Write an <code>if / else</code> using <code>isLoggedIn</code>: if true, log <code>'Welcome back!'</code>, otherwise log <code>'Please log in.'</code>.",
+"Run it once with <code>isLoggedIn</code> set to <code>false</code>.",
+"Then flip the variable to <code>true</code>, run the same code again, and confirm the other branch runs.",
+"Add a separate <code>if</code> that uses <code>!isLoggedIn</code> to log a tip like <code>'Tip: Create an account to save your progress.'</code>.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let isLoggedIn = false;
 
 if (isLoggedIn) {
-  console.log("Welcome back!");
+console.log("Welcome back!");
 } else {
-  console.log("Please log in.");
+console.log("Please log in.");
 }
 
 if (!isLoggedIn) {
-  console.log("Tip: You get more features when logged in.");
+console.log("Tip: Create an account to save your progress.");
 }`}</pre>,
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`let isLoggedIn = false;
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`let isLoggedIn = false;
 
 if (isLoggedIn) {
-  console.log("Welcome back!");
+console.log("Welcome back!");
 } else {
-  console.log("Please log in.");
+console.log("Please log in.");
 }
 
 if (!isLoggedIn) {
-  console.log("Tip: You get more features when logged in.");
+console.log("Tip: Create an account to save your progress.");
 }
 
 // Flip the switch
 isLoggedIn = true;
 
 if (isLoggedIn) {
-  console.log("Welcome back!");
+console.log("Welcome back!");
 } else {
-  console.log("Please log in.");
+console.log("Please log in.");
 }
 
 if (!isLoggedIn) {
-  console.log("Tip: You get more features when logged in.");
+console.log("Tip: Create an account to save your progress.");
 }`}</pre>
-
 }
 
 >
 
   <p className="m-0">
-    The <code>!</code> operator flips the boolean. If a condition says “logged in,” <code>!condition</code> means “not logged in.”
+    The <code>!</code> operator flips the boolean. If a condition says “logged in,” <code>!condition</code> means “not logged in.” Same mesh screen, opposite rule.
   </p>
 </HandbookChallenge>
 
 ---
 
 ## Technical Vocabulary
-## Technical Vocabulary
 
-| Term | Plain-English meaning | Tiny example |
-| --- | --- | --- |
-| condition | A true/false test that decides a path | `seed.size >= 10` |
-| comparison operator | Symbol that compares two values and returns a boolean | `===`, `>`, `<` |
-| assignment operator | Stores a value in a variable | `x = 5` |
-| if statement | Runs its body only when the condition is true | `if (isFull) { ... }` |
-| else | The path that runs when the `if` condition is false | `else { ... }` |
-| boolean variable | Variable that holds `true` or `false` | `const isDry = true` |
-| negation operator | “not” — flips a boolean | `!isLoggedIn` |
+| Term                | Plain-English meaning                                 | Tiny example          |
+| ------------------- | ----------------------------------------------------- | --------------------- |
+| condition           | A true/false test that decides a path                 | `seed.size >= 10`     |
+| comparison operator | Symbol that compares two values and returns a boolean | `===`, `>`, `<`       |
+| assignment operator | Stores a value in a variable                          | `x = 5`               |
+| if statement        | Runs its body only when the condition is true         | `if (isFull)` |
+| else                | The path that runs when the `if` condition is false   | `else`        |
+| boolean variable    | Variable that holds `true` or `false`                 | `const isDry = true`  |
+| negation operator   | “not” — flips a boolean                               | `!isLoggedIn`         |
 
 ---
 
@@ -500,5 +481,3 @@ In this chapter, you:
 * Used `!` to flip a boolean condition when you want the **opposite** rule.
 
 Next up, you’ll stack multiple screens together with `else if` and see why the **order** of your conditions matters.
-
-````

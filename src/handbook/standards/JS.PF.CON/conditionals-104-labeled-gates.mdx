@@ -1,0 +1,397 @@
+---
+
+id: JS.PF.CON.SWITCH
+title: Conditionals 104 · Labeled Gates (switch vs if/else)
+short: Use switch when you’re matching one value against many options; choose if/else for ranges and combined checks.
+---------------------------------------------------------------------------------------------------------------------
+
+# Program Flow → `switch` (Labeled Gates for Exact Matches)
+
+Last time, you wired up **combined conditions** with `&&` and `||`—two screens in a row, or two screens feeding the same chute. You used those to care about **more than one thing at a time**: big *and* dry, sesame *or* tiny.
+
+This time, we’re going to look at a different kind of branching: when you’re not checking ranges at all, just **“Which exact label is this?”**
+
+That’s where **`switch`** shines.
+
+---
+
+## 1) When if/else starts to feel clunky
+
+Imagine you’re sorting seeds by **name**, not size. Different seeds get different treatments:
+
+* `"pumpkin"` → roast
+* `"sunflower"` → shuck
+* `"sesame"` → press
+* anything else → inspect
+
+You absolutely *can* write this with `if` / `else if`:
+
+```js
+const seed = { name: "sunflower", size: 3 };
+
+if (seed.name === "pumpkin") {
+  console.log("Roast the pumpkin seeds.");
+} else if (seed.name === "sunflower") {
+  console.log("Shuck the sunflower seeds.");
+} else if (seed.name === "sesame") {
+  console.log("Press the sesame seeds into oil.");
+} else {
+  console.log("Inspect anything unexpected.");
+}
+```
+
+This works. But as you add more kinds, that ladder gets longer and more repetitive:
+
+* Same variable on the left every time: `seed.name === ...`
+* Same pattern of `else if` repeated over and over.
+
+At some point, you’re not asking **“How do these conditions relate?”**
+You’re just asking **“Which one of these labels does it match?”**
+
+That’s when `switch` is usually a better story.
+
+---
+
+## 2) The `switch` statement: a labeled junction
+
+A `switch` statement is like a **junction with labeled gates**. One value comes in, and based on its label, it gets sent down the right chute.
+
+The same seed handling logic in `switch` form:
+
+```js
+const seed = { name: "sunflower", size: 3 };
+
+switch (seed.name) {
+  case "pumpkin":
+    console.log("Roast the pumpkin seeds.");
+    break;
+  case "sunflower":
+    console.log("Shuck the sunflower seeds.");
+    break;
+  case "sesame":
+    console.log("Press the sesame seeds into oil.");
+    break;
+  default:
+    console.log("Inspect anything unexpected.");
+}
+```
+
+Read this from top to bottom:
+
+1. `switch (seed.name)` — “Look at the seed’s name.”
+2. `case "pumpkin":` — “If it’s exactly `"pumpkin"`, run this block.”
+3. `break;` — “Stop here; don’t fall into the next case.”
+4. More `case` labels for other exact matches.
+5. `default:` — “If nothing matched, do this.”
+
+### Mesh picture, but different
+
+With `if` / `else if`, you had a **stack of screens** checking ranges and combined conditions.
+
+With `switch`, you’re not dealing with sizes anymore; you’re handling **tags**. Think:
+
+> “What **label** did this seed arrive with?”
+> “Send it to the matching gate.”
+
+No greater-than, less-than, or `&&` needed—just **exact matches**.
+
+<HandbookChallenge
+title="Rewrite with switch"
+hints={[
+"Start from this if/else ladder:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const seed = { name: "sunflower", size: 3 };
+
+if (seed.name === "pumpkin") {
+console.log("Roast the pumpkin seeds.");
+} else if (seed.name === "sunflower") {
+console.log("Shuck the sunflower seeds.");
+} else if (seed.name === "sesame") {
+console.log("Press the sesame seeds into oil.");
+} else {
+console.log("Inspect anything unexpected.");
+}`}</pre>,
+    "Rewrite it using <code>switch (seed.name)</code> with three <code>case</code> labels and one <code>default</code>.",
+    "Make sure each case ends with <code>break;</code> so only one message logs.",
+  ]}
+  answers={     <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: "sunflower", size: 3 };
+
+switch (seed.name) {
+case "pumpkin":
+console.log("Roast the pumpkin seeds.");
+break;
+case "sunflower":
+console.log("Shuck the sunflower seeds.");
+break;
+case "sesame":
+console.log("Press the sesame seeds into oil.");
+break;
+default:
+console.log("Inspect anything unexpected.");
+}`}</pre>
+}
+/>
+
+---
+
+## 3) The moving parts of `switch` (syntax walkthrough)
+
+Let’s slow down and label each part of a typical `switch`:
+
+```js
+switch (seed.name) {      // (1) expression to examine
+  case "pumpkin":         // (2) case label
+    console.log("Roast"); // (3) code for this case
+    break;                // (4) stop here
+  case "sunflower":
+    console.log("Shuck");
+    break;
+  default:                // (5) catch-all when no case matched
+    console.log("Inspect");
+}
+```
+
+Piece by piece:
+
+1. **`switch (expression)`**
+   The value we’re matching on. Here it’s `seed.name`. Internally, each case is checked with strict equality (`===`).
+
+2. **`case "value":`**
+   A **label** to compare against the switch expression.
+   “If `seed.name === "pumpkin"`, jump into this case.”
+
+3. **Statements under the case**
+   The actions to take when this case matches. This can be one line or many.
+
+4. **`break;`**
+   Tells JavaScript to **stop** after finishing this case. Without `break`, control continues into the next case—this is called **fall-through**.
+
+5. **`default:`**
+   Runs when **none** of the cases match. Think of it as the `else` of a `switch`.
+
+> Quick mental map:
+> `switch` = “Look at this one value.”
+> Each `case` = “If it’s exactly this label, do these steps.”
+> `default` = “If nothing matched, handle the weird stuff.”
+
+---
+
+## 4) Fall-through: when two labels share a chute
+
+Sometimes different labels should be treated **the same way**. For example, maybe you want to press **both** sesame and poppy seeds into oil.
+
+You could copy the code:
+
+```js
+switch (seed.name) {
+  case "sesame":
+    console.log("Press tiny seeds into oil.");
+    break;
+  case "poppy":
+    console.log("Press tiny seeds into oil.");
+    break;
+  default:
+    console.log("Handle other seeds.");
+}
+```
+
+This works, but it duplicates the action.
+
+With `switch`, you can stack cases and let the first one **fall through**:
+
+```js
+switch (seed.name) {
+  case "sesame":
+  case "poppy":
+    console.log("Press tiny seeds into oil.");
+    break;
+  default:
+    console.log("Handle other seeds.");
+}
+```
+
+How this flows:
+
+* If `seed.name` is `"sesame"`, control jumps to that case label, sees no code there, and **falls through** to `"poppy"`’s block.
+* If `seed.name` is `"poppy"`, it jumps straight to that line.
+* In both cases, it hits the same `console.log` and `break`.
+
+One chute, two gates.
+
+<HandbookChallenge
+title="Fall-through grouping"
+hints={[
+    "Start with:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const seed = { name: "poppy", size: 1 };`}</pre>,
+    "Write a <code>switch (seed.name)</code> that:",
+    "• Roasts <code>\"pumpkin\"</code>.",
+    "• Shucks <code>\"sunflower\"</code>.",
+    "• Presses tiny seeds into oil for BOTH <code>\"sesame\"</code> and <code>\"poppy\"</code>.",
+    "Use two stacked <code>case</code> labels for sesame and poppy that share one log.",
+    "End each handled group with <code>break;</code> and add a <code>default</code> that inspects anything else.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const seed = { name: "poppy", size: 1 };
+
+switch (seed.name) {
+case "pumpkin":
+console.log("Roast the pumpkin seeds.");
+break;
+case "sunflower":
+console.log("Shuck the sunflower seeds.");
+break;
+case "sesame":
+case "poppy":
+console.log("Press tiny seeds into oil.");
+break;
+default:
+console.log("Inspect anything unexpected.");
+}`}</pre>
+}
+/>
+
+---
+
+## 5) When to use `switch` vs `if / else`
+
+By now, you’ve got two tools that can both branch your logic:
+
+* **`if` / `else if` / `else`**
+* **`switch`**
+
+They overlap on purpose, but they send different signals about what you’re doing.
+
+### Good uses for `switch`
+
+Reach for `switch` when:
+
+* You’re checking **one variable** against **several exact values**.
+* The order of the checks doesn’t tell a story—it’s just a list of options.
+* You’re effectively building a “menu” of actions based on a label.
+
+Examples:
+
+* Handling a `status` string: `"idle"`, `"loading"`, `"success"`, `"error"`.
+* Choosing an icon based on a `type` value: `"info"`, `"warning"`, `"danger"`.
+* Route modes: `"home"`, `"profile"`, `"settings"`.
+
+### Good uses for `if / else`
+
+Stick with `if / else` when:
+
+* You care about **ranges**: `<`, `>=`, “between 10 and 20.”
+* You’re combining checks with `&&` / `||`.
+* The **order** of your conditions matters (“most specific first, broadest last”).
+* You’re dealing with more complex rules than simple labels.
+
+Examples:
+
+* “Roast if size ≥ 10 **and** moisture < 0.15.”
+* “Show the warning if the barrel is full **or** almost full.”
+* “Pick a different message for scores ≥ 90, ≥ 75, ≥ 60, or else.”
+
+A quick way to decide:
+
+> If you find yourself writing
+> `if (value === "A") … else if (value === "B") …`
+> you’re probably in `switch` territory.
+
+<HandbookChallenge
+title="Tool time: switch vs if/else"
+hints={[
+"Pretend you’re writing a handler for:",
+"• <code>status</code> values: \"idle\", \"loading\", \"success\", \"error\"",
+"• <code>score</code> ranges: A (90+), B (80+), C (70+), D (60+), F (below 60)",
+"Question 1: Which one would you use <code>switch</code> for, and why?",
+"Question 2: Which one fits an <code>if / else if / else</code> ladder better, and why?",
+"Write a short answer in plain English before you try any code.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`// Example reasoning (your wording may differ):
+// 1) status: I'll use switch, because I'm matching one value
+//    against several exact strings ("idle", "loading"...).
+//    Order doesn't matter much; it's just a lookup by label.
+//
+// 2) score: I'll use if / else if / else, because I'm checking
+//    ranges with >= and the order matters: higher thresholds
+//    need to come first so they don't get swallowed by broader ones.`}</pre>
+}
+/>
+
+---
+
+## 6) Quick practice: status handler with `switch`
+
+Let’s put `switch` into a shape you’ll actually see in web apps.
+
+You get a `status` string for a save operation:
+
+* `"idle"` → nothing happening
+* `"saving"` → currently saving
+* `"success"` → save finished
+* `"error"` → something went wrong
+
+Your job is to log a helpful message.
+
+<HandbookChallenge
+title="Status handler with switch"
+hints={[
+"Start with:", <pre key="peek1" className="m-0 whitespace-pre-wrap">{`const status = "saving";`}</pre>,
+"Write a <code>switch (status)</code> that logs:",
+"• \"Nothing to do yet.\" for \"idle\"",
+"• \"Saving...\" for \"saving\"",
+"• \"Saved successfully!\" for \"success\"",
+"• \"Something went wrong.\" for \"error\"",
+"Use <code>default</code> to catch any unknown status with a generic message.",
+"Change the <code>status</code> value a few times to check each branch.",
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const status = "saving";
+
+switch (status) {
+case "idle":
+console.log("Nothing to do yet.");
+break;
+case "saving":
+console.log("Saving...");
+break;
+case "success":
+console.log("Saved successfully!");
+break;
+case "error":
+console.log("Something went wrong.");
+break;
+default:
+console.log("Unknown status.");
+}`}</pre>
+}
+/>
+
+---
+
+## Technical Vocabulary
+
+| Term         | Plain-English meaning                                           | Tiny example                                |
+| ------------ | --------------------------------------------------------------- | ------------------------------------------- |
+| `switch`     | Statement that compares one value against several exact options | <code>switch (status)</code>                |
+| case label   | The exact value to match (uses <code>===</code> under the hood) | <code>case "pumpkin":</code>                |
+| break        | Ends the current case to prevent falling into the next one      | <code>break;</code>                         |
+| fall-through | When control continues into the next case without a break       | stacked <code>case</code> labels            |
+| default case | The catch-all branch when no case matched                       | <code>default: console.log("Other");</code> |
+| labeled gate | Mental model: a named exit for one specific value               | <code>case "sunflower": …</code>            |
+
+---
+
+## Wrap-up
+
+In this chapter, you:
+
+* Saw how long `if / else if` chains can get noisy when you’re just matching **one value** against **many exact labels**.
+* Learned the shape of a `switch` statement:
+
+  * `switch (expression)`, several `case` labels, `break`s, and a `default`.
+* Used **fall-through** to group multiple labels into the same action.
+* Practiced deciding whether a situation wants **`switch`** (exact labels) or **`if / else`** (ranges, combined conditions, order-sensitive logic).
+
+You now have the full core toolkit for conditionals:
+
+* Basic `if / else`
+* Ordered ladders with `else if`
+* Combined screens with `&&` and `||`
+* Labeled gates with `switch`
+
+Next time conditionals show up in your app, you’ll be able to pick the structure that tells the clearest story, not just the first one that works.
