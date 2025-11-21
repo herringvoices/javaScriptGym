@@ -16,7 +16,7 @@ const INDEX_HTML = `<!DOCTYPE html>
 </html>`;
 
 const MAIN_JS = `// Main entry point for Love on the Lawn
-console.log('Welcome to Love on the Lawn!');`;
+`;
 
 const STYLES_CSS = `/* Base styles for Love on the Lawn */
 body {
@@ -34,8 +34,8 @@ body {
     height: 100vh;
 }`;
 
-const DATABASE_JS = `// Placeholder for database logic
-export const data = [];
+const DATABASE_JS = `//Database for Love on the Lawn
+
 `;
 
 const FUNCTIONS_JS = `// Placeholder for utility functions

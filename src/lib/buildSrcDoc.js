@@ -65,17 +65,42 @@ export function buildSrcDoc({ files, entry }) {
 		})();
 	`;
 
-	// Inject console hook, then globals bridge, then fetch mock.
+	// Build import map for ES modules to resolve imports
+	// Maps module paths to data URLs so inline scripts can import them
+	const buildImportMap = () => {
+		const imports = {};
+		Object.keys(files).forEach((path) => {
+			if (path.endsWith('.js') && !path.startsWith('/__')) {
+				const code = files[path]?.code ?? '';
+				// Create data URL for this module
+				const dataUrl = `data:text/javascript;charset=utf-8,${encodeURIComponent(withSourceURL(code, path))}`;
+				// Map absolute path
+				imports[path] = dataUrl;
+				// Map without leading slash for imports like 'database.js'
+				if (path.startsWith('/')) {
+					const bare = path.substring(1);
+					imports[bare] = dataUrl;
+					// Also map with ./ prefix for relative imports
+					imports['./' + bare] = dataUrl;
+				}
+			}
+		});
+		if (Object.keys(imports).length === 0) return '';
+		return `<script type="importmap">\n${JSON.stringify({ imports }, null, 2)}\n</script>`;
+	};
+
+	// Inject console hook, then globals bridge, then fetch mock, then import map.
 	// Use classic scripts for bridge/mock so they execute immediately during parse,
 	// ensuring the mock fetch is active before any classic app scripts run.
 		const headExtras = [
 			getScriptInline(consoleHook, undefined),
 			bridgeCode ? getScriptInline(withSourceURL(bridgeCode, '/__bridge__.js'), undefined) : '',
 			mockFetchCode ? getScriptInline(withSourceURL(mockFetchCode, '/__mocks__/fetch.js'), undefined) : '',
+			buildImportMap(),
 		].filter(Boolean).join('\n');
 
 	const rewriteHtml = (html) => {
-		// Inline known JS files
+		// Inline known JS files (modules will use import map for resolution)
 			html = html.replace(/<script([^>]*?)src=["']([^"']+)["']([^>]*)><\s*\/script>/gi, (m, pre, src, post) => {
 			// normalize to absolute-like path used in challenge files
 			let path = src.startsWith('/') ? src : ('/' + src.replace(/^\.\/?/, ''));
