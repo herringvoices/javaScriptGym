@@ -38,8 +38,9 @@ const DATABASE_JS = `//Database for Love on the Lawn
 
 `;
 
-const FUNCTIONS_JS = `// Placeholder for utility functions
-export const utils = {};
+const LAWN_DECORATIONS_JS = `
+`;
+const ROMANCE_NOVELS_JS = `
 `;
 
 export default {
@@ -50,7 +51,8 @@ export default {
         { path: "/main.js", content: MAIN_JS, active: true },
         { path: "/styles.css", content: STYLES_CSS, readOnly: false, hidden: false },
         { path: "/database.js", content: DATABASE_JS, readOnly: false, hidden: false },
-        { path: "/functions.js", content: FUNCTIONS_JS, readOnly: false, hidden: false },
+        { path: "/lawnDecorations.js", content: LAWN_DECORATIONS_JS, readOnly: false, hidden: false },
+        { path: "/romanceNovels.js", content: ROMANCE_NOVELS_JS, readOnly: false, hidden: false },
     ],
     entry: "/index.html",
 };
