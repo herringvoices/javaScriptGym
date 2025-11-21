@@ -49,8 +49,8 @@ export default {
         { path: "/index.html", content: INDEX_HTML, active: false },
         { path: "/main.js", content: MAIN_JS, active: true },
         { path: "/styles.css", content: STYLES_CSS, readOnly: false, hidden: false },
-        { path: "/database.js", content: DATABASE_JS, readOnly: false, hidden: true },
-        { path: "/functions.js", content: FUNCTIONS_JS, readOnly: false, hidden: true },
+        { path: "/database.js", content: DATABASE_JS, readOnly: false, hidden: false },
+        { path: "/functions.js", content: FUNCTIONS_JS, readOnly: false, hidden: false },
     ],
     entry: "/index.html",
 };

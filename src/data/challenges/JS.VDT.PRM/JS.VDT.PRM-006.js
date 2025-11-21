@@ -1,37 +1,46 @@
 import { ChallengeTemplates, ChallengeTypes } from "../../../types";
 
+/** @type {import("../../../types").Challenge} */
 const challenge = {
-  id: "JS.VDT.PRM-006",
-  title: "DEBUG: Forgot let/const",
+  id: "JS.VDT.PRM-pick-types-001",
+  title: "Pick the Right Types",
   challengeType: ChallengeTypes.CODE_AND_SEE,
   standards: ["JS.VDT.PRM"],
   primaryStandard: "JS.VDT.PRM",
-  difficulty: 1,
+  difficulty: 2,
   description: `
-Code references an identifier before it's declared. Provide a suitable block-scoped declaration.
-Do not rename the variable. Keep logs the same.
+Choose primitive types that match how a cinema app stores its data.
   `.trim(),
   userStories: [
-    "After fix, code runs without ReferenceError (in strict mode).",
-    "Variable is declared with let or const appropriately.",
+    "I fill in variables based on comments that describe the data.",
+    "Each variable uses a primitive type that makes sense."
   ],
   acceptanceCriteria: [
-    "Add a single declaration statement.",
-    "Choose let if the value changes; const if not.",
+    "Use a string for movieTitle.",
+    "Use a number for ticketsSold.",
+    "Use a boolean for isMatinee.",
+    "Use null for specialRequest when there is no note yet."
   ],
   template: ChallengeTemplates.VANILLA,
-  files: { "/main.js": { code: `"use strict"; // Strict mode would throw here.
-count = 1; // ❌ missing let/const
-console.log('count:', count);
-count = count + 1;
-console.log('count:', count);
+  files: {
+    "/main.js": {
+      code: `// TODO: Pick primitive types that fit each description.
+// Fill in values for each variable so the type matches the comment.
 
-// FIX: declare count properly so both logs work.
-` } },
+let movieTitle;     // text for the movie's name
+let ticketsSold;    // how many tickets have been sold (a number)
+let isMatinee;      // true if it's a matinee showing, false otherwise
+let specialRequest; // no special request yet, on purpose
+
+// After assigning values, log them once to check.
+
+`,
+    },
+  },
   entry: "/main.js",
-  hints: ["Declare the variable once before first use.", "Use a block-scoped keyword."],
-  tags: ["debugging", "scope", "console"],
-  sandbox: { showRightPanel: true, defaultPanel: "console" },
+  hints: [],
+  tags: ["primitives", "types", "console"],
+  sandbox: { showExplorer: false, showRightPanel: true, defaultPanel: "console" },
 };
 
 export default challenge;

@@ -1,37 +1,42 @@
 import { ChallengeTemplates, ChallengeTypes } from "../../../types";
 
+/** @type {import("../../../types").Challenge} */
 const challenge = {
-  id: "JS.VDT.PRM-004",
-  title: "DEBUG: '25' Instead of 7",
+  id: "JS.VDT.PRM-book-progress-001",
+  title: "Book Progress",
   challengeType: ChallengeTypes.CODE_AND_SEE,
   standards: ["JS.VDT.PRM"],
   primaryStandard: "JS.VDT.PRM",
-  difficulty: 1,
+  difficulty: 2,
   description: `
-A calculation is producing two digits glued together as text instead of a numeric total.
-Make a minimal change so numeric addition occurs.
+Describe reading progress for a book using numbers and a template literal.
   `.trim(),
   userStories: [
-    "After fixing, output is a proper numeric sum.",
-    "Minimal change—just ensure numeric addition.",
+    "I have variables for a book title and page counts.",
+    "I compute pages left and log one progress message."
   ],
   acceptanceCriteria: [
-    "Operands are numeric when added (no string concatenation).",
-    "Keep structure similar; only adjust what's necessary.",
+    "Use a string for the book title and numbers for page counts.",
+    "Compute pages left with subtraction (total minus read).",
+    "Use a template literal (backticks with ${...}) for the message.",
+    "Log the message once."
   ],
   template: ChallengeTemplates.VANILLA,
-  files: { "/main.js": { code: `// Broken starter:
-let a = "2"; // string form
-let b = 5;    // number
-const result = a + b; // currently concatenates
-console.log(result);
+  files: {
+    "/main.js": {
+      code: `// TODO: Show reading progress for a book.
+// 1. Make variables for a book title, total pages, and pages read so far.
+// 2. Compute how many pages are left.
+// 3. Use a template literal to log ONE line like:
+//    "You have 120 pages left in The Hobbit."
 
-// TODO: Adjust so this becomes numeric addition.
-` } },
+`,
+    },
+  },
   entry: "/main.js",
-  hints: ["Check typeof each operand.", "Both should be numbers before adding."],
-  tags: ["debugging", "parsing", "operators", "console"],
-  sandbox: { showRightPanel: true, defaultPanel: "console" },
+  hints: [],
+  tags: ["primitives", "numbers", "template-literals", "console"],
+  sandbox: { showExplorer: false, showRightPanel: true, defaultPanel: "console" },
 };
 
 export default challenge;

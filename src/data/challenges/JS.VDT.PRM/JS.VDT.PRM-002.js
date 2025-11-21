@@ -1,42 +1,41 @@
 import { ChallengeTemplates, ChallengeTypes } from "../../../types";
 
+/** @type {import("../../../types").Challenge} */
 const challenge = {
-  id: "JS.VDT.PRM-002",
-  title: "Update & Combine: fullName + age + toggle",
+  id: "JS.VDT.PRM-welcome-banner-001",
+  title: "Welcome Banner",
   challengeType: ChallengeTypes.CODE_AND_SEE,
   standards: ["JS.VDT.PRM"],
   primaryStandard: "JS.VDT.PRM",
   difficulty: 1,
   description: `
-Recreate four basic profile primitives here (two strings, a number, a boolean).
-Derive three new values: a combined name string, a number that is one greater than the original number, and the inverted boolean.
-Log only those derived values.
+Use primitives to build a short welcome banner and log it once.
   `.trim(),
   userStories: [
-    "Creates fullName via concatenation or template literal.",
-    "Computes nextAge = age + 1 (does not overwrite age).",
-    "Toggles isHungry using ! once.",
+    "I have variables for a site name, a user name, and an unread count.",
+    "I see one console.log with a short welcome message."
   ],
   acceptanceCriteria: [
-    "Do not mutate age; introduce nextAge (or similar).",
-    "Use !isHungry to invert the boolean.",
-    "Log the three derived results (fullName, nextAge, flipped hunger).",
+    "Use strings for the site and user names, and a number for unread count.",
+    "Use const for values that do not change in this snippet (like the site name).",
+    "Log a single message that includes all three values."
   ],
   template: ChallengeTemplates.VANILLA,
   files: {
     "/main.js": {
-  code: `// TODO:
-// 1. Declare four primitives.
-// 2. Build combinedName.
-// 3. Create incrementedNumber from the original number (do not overwrite original).
-// 4. Flip the boolean into a new variable.
-// 5. Log the three derived values.
+      code: `// TODO: Model a simple welcome banner with primitives.
+// 1. Make variables for a site name, user name, and unread count.
+// 2. Use const for values that won't change in this snippet.
+// 3. Log ONE welcome line that includes all three values.
+//    Example shape (yours can differ):
+//    "Welcome back, Riley! You have 3 unread messages on JS Handbook."
+
 `,
     },
   },
   entry: "/main.js",
-  hints: ["Don't overwrite age unless you really need to—show both states.", "Boolean flip: const flipped = !isHungry;"],
-  tags: ["primitives", "booleans", "operators", "strings"],
+  hints: [],
+  tags: ["primitives", "variables", "console"],
   sandbox: { showExplorer: false, showRightPanel: true, defaultPanel: "console" },
 };
 

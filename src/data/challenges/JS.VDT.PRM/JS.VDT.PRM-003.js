@@ -1,34 +1,40 @@
 import { ChallengeTemplates, ChallengeTypes } from "../../../types";
 
+/** @type {import("../../../types").Challenge} */
 const challenge = {
-  id: "JS.VDT.PRM-003",
-  title: "Quick Math Practice",
+  id: "JS.VDT.PRM-ticket-counter-001",
+  title: "Ticket Counter",
   challengeType: ChallengeTypes.CODE_AND_SEE,
   standards: ["JS.VDT.PRM"],
   primaryStandard: "JS.VDT.PRM",
   difficulty: 1,
   description: `
-Declare two numbers a and b. Compute and log their sum, difference, product, and quotient.
-Use new variables (sum, diff, product, quotient). Keep it simple; console only.
+Track a "now serving" ticket number and update it.
   `.trim(),
   userStories: [
-    "Stores two number primitives.",
-    "Logs results for + - * /.",
+    "I have a variable that holds the current ticket number.",
+    "I log the ticket, update it, and log the new value."
   ],
   acceptanceCriteria: [
-    "Use distinct variables for each result (not inline in log).",
-    "Division result can be a float.",
+    "Use let for the ticket number so it can change.",
+    "Start the ticket as a number (no quotes).",
+    "Log before and after updating the ticket."
   ],
   template: ChallengeTemplates.VANILLA,
-  files: { "/main.js": { code: `// TODO:
-// Pick two number primitives.
-// Create four new variables for the results of + - * /.
-// Log each (any order).
-` } },
+  files: {
+    "/main.js": {
+      code: `// TODO: Track a changing ticket number.
+// 1. Make a let variable for the current ticket number.
+// 2. Log the starting ticket.
+// 3. Change it (for the next person in line) and log again.
+
+`,
+    },
+  },
   entry: "/main.js",
-  hints: ["Set a and b to small integers first.", "You can log all in one line."],
-  tags: ["numbers", "operators", "console"],
-  sandbox: { showRightPanel: true, defaultPanel: "console" },
+  hints: [],
+  tags: ["primitives", "let", "reassignment", "console"],
+  sandbox: { showExplorer: false, showRightPanel: true, defaultPanel: "console" },
 };
 
 export default challenge;
