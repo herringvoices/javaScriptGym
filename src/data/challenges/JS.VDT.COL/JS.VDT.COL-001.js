@@ -20,7 +20,7 @@ Make a simple list of favorite snacks and inspect it.
     "Use an array literal with at least three string values.",
     "Use const for the snacks array.",
     "Log the array once.",
-    "Log one element by index (e.g. snacks[0])."
+    "Log one element by index."
   ],
   template: ChallengeTemplates.VANILLA,
   files: {
@@ -28,7 +28,7 @@ Make a simple list of favorite snacks and inspect it.
       code: `// TODO: Make a list of favorite snacks.
 // 1. Create a const snacks = [...] array with at least three strings.
 // 2. Log the whole snacks array.
-// 3. Log ONE snack by index, like snacks[0].
+// 3. Log ONE snack by index.
 
 `,
     },

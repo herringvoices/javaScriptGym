@@ -18,7 +18,7 @@ Start with a snack list, add one more, and log the result.
   ],
   acceptanceCriteria: [
     "Use a const snacks array with at least two initial items.",
-    "Use snacks.push(...) to add a new snack.",
+    "Use .push() to add a new snack.",
     "Do not reassign snacks; just change its contents.",
     "Log the updated array after pushing."
   ],

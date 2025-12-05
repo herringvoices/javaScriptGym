@@ -28,8 +28,8 @@ Make a small shelf: an array of book objects, then inspect one.
       code: `// TODO: Build a tiny "shelf" of books.
 // 1. Make a const shelf = [ ... ] array of book objects.
 //    Each book should have at least title and author.
-// 2. Log how many books are on the shelf (shelf.length).
-// 3. Log the title of ONE book using shelf[?].title.
+// 2. Log how many books are on the shelf using the .length property.
+// 3. Log the title of ONE book.
 
 `,
     },

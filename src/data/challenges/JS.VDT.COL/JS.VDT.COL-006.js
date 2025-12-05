@@ -25,8 +25,7 @@ const books = [
 ];
 
 // Log the featured book line to the console
-const featuredBook = books[0];
-console.log(\`\${featuredBook.title} by \${featuredBook.author}\`);`,
+`,
     },
   },
   entry: "/main.js",

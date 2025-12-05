@@ -25,7 +25,7 @@ Use an object to represent one book and log a short summary.
   files: {
     "/main.js": {
       code: `// TODO: Represent one book with an object.
-// 1. Make a const book = { ... } with title, author, and pages.
+// 1. Make a variable called book and set it equal to an object with these properties: title, author, and pages.
 // 2. Log ONE summary line using those properties, like:
 //    "The Hobbit by J.R.R. Tolkien (310 pages)"
 

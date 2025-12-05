@@ -13,7 +13,7 @@ Show how many books are on a shelf using the array's length.
   `.trim(),
   acceptanceCriteria: [
     "Use books.length to determine the count.",
-    "Return a string like '3 books on this shelf'.",
+    "Log a string like '3 books on this shelf'.",
     "Do not mutate the books array."
   ],
   files: {
@@ -24,12 +24,7 @@ Show how many books are on a shelf using the array's length.
   { title: "The City of Brass", author: "S.A. Chakraborty" },
 ];
 
-function getShelfCountLabel(books) {
-  return \`\${books.length} books on this shelf\`;
-}
-
-// Log the shelf count to the console
-console.log(getShelfCountLabel(shelf));`,
+`,
     },
   },
   entry: "/main.js",

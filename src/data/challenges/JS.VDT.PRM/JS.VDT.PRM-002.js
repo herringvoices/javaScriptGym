@@ -28,7 +28,7 @@ Use primitives to build a short welcome banner and log it once.
 // 2. Use const for values that won't change in this snippet.
 // 3. Log ONE welcome line that includes all three values.
 //    Example shape (yours can differ):
-//    "Welcome back, Riley! You have 3 unread messages on JS Handbook."
+//    "Welcome back, Riley! You have 3 unread messages."
 
 `,
     },

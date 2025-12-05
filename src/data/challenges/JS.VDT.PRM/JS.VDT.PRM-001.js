@@ -17,8 +17,6 @@ Use primitives to describe a player and log one status line.
     "I see one console.log with a short status message."
   ],
   acceptanceCriteria: [
-    "Use primitives: string for the name, number for the score, boolean for online state.",
-    "Use const for values that do not change in this snippet (like the name).",
     "Log a single status message that includes all three values."
   ],
   template: ChallengeTemplates.VANILLA,
