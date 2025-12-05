@@ -6,7 +6,6 @@ import challenges from "../data/challenges";
 import standards from "../data/standards";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
-import Modal from "../components/Modal";
 import Callout from "../components/Callout";
 import { loadMastered, saveMastered } from "../lib/mastery";
 import MonacoWorkspace from "../components/MonacoWorkspace";
@@ -204,7 +203,7 @@ function ChallengeWorkspace({ challenge, navigate }) {
         challenge={challenge}
         files={filesState}
         entry={setup.entry}
-  setActiveFile={setActiveFile}
+        setActiveFile={setActiveFile}
         onFileChange={handleFileChange}
         onResetStorage={handleResetStorage}
         isCompleted={isCompleted}
@@ -222,251 +221,290 @@ function ChallengeWorkspace({ challenge, navigate }) {
   );
 }
 
-function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChange, onResetStorage, isCompleted, markComplete, markIncomplete, primaryStandard, isMastered, toggleMastered, srcDoc, setSrcDoc, iframeRef }) {
-    const [showExplorer, setShowExplorer] = useState(
-      challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
-    );
-    const [showRightPanel, setShowRightPanel] = useState(
-      challenge.sandbox?.showRightPanel !== undefined ? challenge.sandbox.showRightPanel : true
-    );
-    const [rightPanel, setRightPanel] = useState(
-      challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : "preview"
-    );
-  // Removed compact/pretty toggle for console in Challenge view; default to compact formatting
-    const [isInfoOpen, setIsInfoOpen] = useState(false);
-    const liveRef = useRef(null);
-    const [consoleKey, setConsoleKey] = useState(0);
+function ChallengeSandboxUI({
+  challenge,
+  files,
+  entry,
+  setActiveFile,
+  onFileChange,
+  onResetStorage,
+  isCompleted,
+  markComplete,
+  markIncomplete,
+  primaryStandard,
+  isMastered,
+  toggleMastered,
+  srcDoc,
+  setSrcDoc,
+  iframeRef,
+}) {
+  const [showExplorer, setShowExplorer] = useState(
+    challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
+  );
+  const [rightPanel, setRightPanel] = useState(
+    challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : "preview"
+  );
+  const [showDetailsColumn, setShowDetailsColumn] = useState(true);
+  const [showEditorColumn, setShowEditorColumn] = useState(true);
+  const [showRunnerColumn, setShowRunnerColumn] = useState(
+    challenge.sandbox?.showRightPanel !== undefined ? challenge.sandbox.showRightPanel : true
+  );
+  const [consoleKey, setConsoleKey] = useState(0);
   const editorRef = useRef(null);
-  const cardRef = useRef(null);
-  const [cardHeight, setCardHeight] = useState(0);
+  const descriptionCopy = challenge.description || challenge.summary || "Description coming soon.";
 
-    const handleRun = () => {
-      try {
-        // Clear console by remounting it
-        setConsoleKey((k) => k + 1);
-        const html = buildSrcDoc({ files, entry });
-        setSrcDoc(html);
-      } catch (e) {
-        console.error("Preview build failed", e);
-      }
-    };
+  const handleRun = () => {
+    try {
+      setConsoleKey((k) => k + 1);
+      const html = buildSrcDoc({ files, entry });
+      setSrcDoc(html);
+      setRightPanel("preview");
+      setShowRunnerColumn(true);
+    } catch (e) {
+      console.error("Preview build failed", e);
+    }
+  };
 
-    const handleReset = () => {
-      onResetStorage?.();
-    };
+  const handleReset = () => {
+    onResetStorage?.();
+    setSrcDoc("");
+    setConsoleKey((k) => k + 1);
+  };
 
-    // Force Monaco to relayout when columns show/hide
-    useLayoutEffect(() => {
-      // ensure DOM has applied final sizes before relayout
-      let raf1 = 0, raf2 = 0;
-      raf1 = requestAnimationFrame(() => {
-        raf2 = requestAnimationFrame(() => {
-          try { editorRef.current && editorRef.current.layout(); } catch (e) { void e; }
-          try { window.dispatchEvent(new Event('resize')); } catch (e) { void e; }
-        });
+  useLayoutEffect(() => {
+    let raf1 = 0;
+    let raf2 = 0;
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        try {
+          if (editorRef.current) editorRef.current.layout();
+        } catch (e) {
+          void e;
+        }
+        try {
+          window.dispatchEvent(new Event("resize"));
+        } catch (e) {
+          void e;
+        }
       });
-      return () => {
-        if (raf1) cancelAnimationFrame(raf1);
-        if (raf2) cancelAnimationFrame(raf2);
-      };
-    }, [showRightPanel, showExplorer]);
+    });
+    return () => {
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+    };
+  }, [showExplorer]);
 
-    // Compute remaining viewport height for the workspace card and set explicit height
-    useLayoutEffect(() => {
-      function measure() {
-        const el = cardRef.current;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const top = rect.top;
-        const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-        const next = Math.max(0, Math.floor(vh - top));
-        setCardHeight(next);
-      }
-      measure();
-      let raf = 0;
-      const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(measure); };
-      window.addEventListener('resize', onResize);
-      return () => { window.removeEventListener('resize', onResize); cancelAnimationFrame(raf); };
-    }, []);
+  const visibleColumns = [showDetailsColumn, showEditorColumn, showRunnerColumn].filter(Boolean).length || 1;
+  const gridTemplate =
+    visibleColumns === 3
+      ? "lg:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)_minmax(320px,1.2fr)]"
+      : visibleColumns === 2
+      ? "lg:grid-cols-2"
+      : "lg:grid-cols-1";
+
+  const toggleClass = (active) =>
+    `rounded-full border px-3 py-1 text-xs font-semibold transition ${
+      active
+        ? "border-brand-400 bg-brand-500/20 text-brand-200"
+        : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+    }`;
 
   return (
-  <div className="flex min-h-0 flex-1 flex-col space-y-6">
-      <Modal
-        isOpen={isInfoOpen}
-        onClose={() => setIsInfoOpen(false)}
-        title={`${challenge.id} — ${challenge.title}`}
-      >
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-sm">
-              <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-slate-200">
-                Type: {challenge.challengeType.replaceAll("_", " ")}
-              </span>
-              <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-slate-200">
-                Difficulty {difficultyLabel(challenge.difficulty)}
-              </span>
-            </div>
-            <StandardsBadges standards={challenge.standards} />
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold text-white">Description</h3>
-            <Markdown className="mt-2 text-sm text-slate-300">{challenge.description}</Markdown>
-          </div>
-
-          {Array.isArray(challenge.userStories) && challenge.userStories.length > 0 ? (
-            <div>
-              <h3 className="text-lg font-semibold text-white">User stories</h3>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
-                {challenge.userStories.map((story, idx) => (
-                  <li key={idx}>{story}</li>
-                ))}
-              </ul>
-            </div>
+    <div className="flex min-h-0 flex-1 flex-col space-y-6">
+      <div className="rounded-2xl border border-slate-800 bg-slate-950/70 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {primaryStandard ? (
+            <button
+              type="button"
+              onClick={toggleMastered}
+              className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                isMastered
+                  ? "border-brand-500/40 text-brand-300 hover:bg-brand-500/10"
+                  : "border-slate-700 text-slate-200 hover:border-slate-500 hover:text-white"
+              }`}
+              title={isMastered ? "Unmark standard as mastered" : "Mark standard as mastered"}
+            >
+              {isMastered ? "Unmark mastered" : "Mark standard mastered"}
+            </button>
           ) : null}
 
-          {Array.isArray(challenge.acceptanceCriteria) && challenge.acceptanceCriteria.length > 0 ? (
-            <div>
-              <h3 className="text-lg font-semibold text-white">Acceptance criteria</h3>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
-                {challenge.acceptanceCriteria.map((rule, idx) => (
-                  <li key={idx}>{rule}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
+          {isCompleted ? (
+            <button
+              type="button"
+              onClick={markIncomplete}
+              className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+            >
+              Mark incomplete
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={markComplete}
+              className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+            >
+              Mark complete
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={handleReset}
+            className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
+          >
+            Reset files
+          </button>
+
+          <span className="text-xs text-slate-400">Edits auto-save to your browser.</span>
         </div>
-      </Modal>
-  <div className="flex flex-wrap items-center gap-3 shrink-0">
-        <button
-          type="button"
-          onClick={() => setIsInfoOpen(true)}
-
-          className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-brand-400 disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-400"
-        >
-          View Challenge Info
-        </button>
-        {primaryStandard ? (
-          <button
-            type="button"
-            onClick={toggleMastered}
-            className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition ${
-              isMastered
-                ? "border-brand-500/40 text-brand-300 hover:bg-brand-500/10"
-                : "border-slate-700 text-slate-200 hover:border-slate-500 hover:text-white"
-            }`}
-            title={isMastered ? "Unmark standard as mastered" : "Mark standard as mastered"}
-          >
-            {isMastered ? "Unmark mastered" : "Mark standard mastered"}
-          </button>
-        ) : null}
-        {isCompleted ? (
-          <button
-            type="button"
-            onClick={markIncomplete}
-            className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
-          >
-            Mark incomplete
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={markComplete}
-            className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
-          >
-            Mark complete
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={handleReset}
-          className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
-        >
-          Reset files
-        </button>
-        {/* Test / completion buttons removed */}
-        <span className="text-xs text-slate-400">
-          Edits auto-save to your browser.
-        </span>
       </div>
 
-      {/* Workspace area */}
-      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] flex-1 min-h-0">
-        <div ref={cardRef} style={{ height: cardHeight ? `${cardHeight}px` : undefined }} className="rounded-3xl border w-full border-slate-800 bg-slate-950/70 [--sp-font-size:1rem] flex flex-col overflow-hidden">
-          {/* Live region for accessibility */}
-          <div aria-live="polite" ref={liveRef} className="sr-only" />
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 shrink-0">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <button
-                type="button"
-                onClick={() => setShowExplorer((value) => !value)}
-                className={`rounded-full border px-3 py-1 transition ${
-                  showExplorer
-                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-                }`}
-              >
-                {showExplorer ? "Hide" : "Show"} file tree
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowRightPanel((value) => !value)}
-                className={`rounded-full border px-3 py-1 transition ${
-                  showRightPanel
-                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-                }`}
-              >
-                {showRightPanel ? "Hide" : "Show"} {rightPanel === "console" ? "console" : "preview"}
-              </button>
-              <button
-                type="button"
-                onClick={handleRun}
-                className="rounded-full border px-3 py-1 transition border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"
-                title="Build and run the preview"
-              >
-                Run
-              </button>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <button
-                type="button"
-                onClick={() => setRightPanel("preview")}
-                className={`rounded-full border px-3 py-1 transition ${
-                  rightPanel === "preview"
-                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-                }`}
-              >
-                Preview
-              </button>
-              <button
-                type="button"
-                onClick={() => setRightPanel("console")}
-                className={`rounded-full border px-3 py-1 transition ${
-                  rightPanel === "console"
-                    ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                    : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-                }`}
-              >
-                Console
-              </button>
-              {/* Compact toggle removed in Challenge view */}
-            </div>
-          </div>
-          <div className="flex flex-col gap-0 lg:flex-row min-h-0 grow">
-            <MonacoWorkspace
-              files={files}
-              onChange={onFileChange}
-              onActiveChange={setActiveFile}
-              showExplorer={showExplorer}
-              className={`min-w-0 flex-1 ${showRightPanel ? 'lg:border-r lg:border-slate-800' : ''}`}
-              onEditorMount={(ed) => { editorRef.current = ed; try { ed.layout(); } catch (e) { void e; } }}
-            />
+      <div className="rounded-2xl border border-slate-800 bg-slate-950/60 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-300">
+          <span className="text-brand-300">Workspace layout</span>
+          <button
+            type="button"
+            className={toggleClass(showDetailsColumn)}
+            onClick={() => setShowDetailsColumn((value) => !value)}
+          >
+            {showDetailsColumn ? "Hide details" : "Show details"}
+          </button>
+          <button
+            type="button"
+            className={toggleClass(showEditorColumn)}
+            onClick={() => setShowEditorColumn((value) => !value)}
+          >
+            {showEditorColumn ? "Hide editor" : "Show editor"}
+          </button>
+          <button
+            type="button"
+            className={toggleClass(showRunnerColumn)}
+            onClick={() => setShowRunnerColumn((value) => !value)}
+          >
+            {showRunnerColumn ? "Hide preview" : "Show preview"}
+          </button>
+        </div>
+      </div>
 
-            {showRightPanel ? (
-              <div className="min-h-0 min-w-0 flex-1 bg-slate-950/80 relative">
-                <div className={rightPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
+        <div className={`grid gap-6 px-6 lg:px-8 ${gridTemplate}`}>
+          {showDetailsColumn ? (
+            <aside className="space-y-5 rounded-3xl border border-slate-800 bg-slate-950/80 p-5 text-sm text-slate-300 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-auto">
+              <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
+                <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
+                <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
+                  Difficulty {difficultyLabel(challenge.difficulty)}
+                </span>
+                {challenge.challengeType ? (
+                  <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
+                    {challenge.challengeType.replaceAll("_", " ")}
+                  </span>
+                ) : null}
+              </div>
+
+              <StandardsBadges standards={challenge.standards} size="sm" />
+
+              <div className="space-y-3">
+                <h3 className="text-base font-semibold text-white">What to build</h3>
+                <Markdown className="prose prose-invert max-w-none text-sm text-slate-300">
+                  {descriptionCopy}
+                </Markdown>
+              </div>
+
+              {Array.isArray(challenge.userStories) && challenge.userStories.length > 0 ? (
+                <div>
+                  <h3 className="text-base font-semibold text-white">User stories</h3>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
+                    {challenge.userStories.map((story, idx) => (
+                      <li key={idx}>{story}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {Array.isArray(challenge.acceptanceCriteria) && challenge.acceptanceCriteria.length > 0 ? (
+                <div>
+                  <h3 className="text-base font-semibold text-white">Acceptance criteria</h3>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
+                    {challenge.acceptanceCriteria.map((rule, idx) => (
+                      <li key={idx}>{rule}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </aside>
+          ) : null}
+
+          {showEditorColumn ? (
+            <section className="flex min-h-[480px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
+                  <p className="text-sm text-slate-300">Edit the sandbox files and tests.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowExplorer((value) => !value)}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                    showExplorer
+                      ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                      : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                  }`}
+                >
+                  {showExplorer ? "Hide file tree" : "Show file tree"}
+                </button>
+              </div>
+              <div className="min-h-0 grow">
+                <MonacoWorkspace
+                  files={files}
+                  onChange={onFileChange}
+                  onActiveChange={setActiveFile}
+                  showExplorer={showExplorer}
+                  className="min-h-[420px]"
+                  onEditorMount={(ed) => {
+                    editorRef.current = ed;
+                    try {
+                      ed.layout();
+                    } catch (e) {
+                      void e;
+                    }
+                  }}
+                />
+              </div>
+            </section>
+          ) : null}
+
+          {showRunnerColumn ? (
+            <section className="flex min-h-[480px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleRun}
+                    className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+                    title="Build and load the preview"
+                  >
+                    Run preview
+                  </button>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <button
+                    type="button"
+                    onClick={() => setRightPanel("preview")}
+                    className={toggleClass(rightPanel === "preview")}
+                  >
+                    Preview
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRightPanel("console")}
+                    className={toggleClass(rightPanel === "console")}
+                  >
+                    Console
+                  </button>
+                </div>
+              </div>
+              <div className="min-h-0 grow">
+                <div className={rightPanel === "preview" ? "h-full" : "hidden"}>
                   {srcDoc ? (
                     <iframe
                       ref={iframeRef}
@@ -476,17 +514,17 @@ function ChallengeSandboxUI({ challenge, files, entry, setActiveFile, onFileChan
                       srcDoc={srcDoc}
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-slate-400 text-sm">
-                      Click Run to build and load the preview…
+                    <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-400">
+                      Click “Run preview” to build and load your project.
                     </div>
                   )}
                 </div>
-                <div className={rightPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+                <div className={rightPanel === "console" ? "h-full" : "hidden"}>
                   <ConsolePanel key={consoleKey} />
                 </div>
               </div>
-            ) : null}
-          </div>
+            </section>
+          ) : null}
         </div>
       </div>
     </div>
