@@ -1,0 +1,98 @@
+# Habitat & Animal Details
+
+More feedback is in! And Miranda is PUMPED to respond quickly because happy visitors = more donations = better food for the animals = everyone wins!
+
+The people have spoken, and they want DETAILS. Not just numbers—they want the juicy stuff:
+
+**For Habitats:**
+1. How big is it?
+2. What's the climate?
+
+For animals:
+1. How old is it?
+2. What does it eat?
+3. What's a fun fact?
+
+Based on this feedback, Miranda would like more output under the habitats and animals sections. Here's the example she gave you of how the details should look for every habitat and animal.
+
+Write functions that produce output that looks like the examples below.
+
+### Example Output
+
+Here's what it might look like (remember: sample data, not gospel truth):
+
+```sh
+***************************************************
+*****              H A B I T A T S            *****
+***************************************************
+We maintain 10500 square meters of animal habitats across the zoo
+The smallest habitat is 800 square meters
+The largest habitat is 4000 square meters
+
+The smallest habitats are
+	Reptile House
+	Penguin Cove
+
+The largest habitats are
+	Savanna Exhibit
+
+HABITAT DETAILS:
+---------------------------------
+Savanna Exhibit covers 4000 square meters and has a Hot & Dry climate.
+The highlight animal is Tina the Reticulated Giraffe.
+
+Rainforest Dome covers 2500 square meters and has a Humid & Warm climate.
+The highlight animal is Manny the Manatee.
+
+Penguin Cove covers 1200 square meters and has a Cold & Wet climate.
+The highlight animal is Pingu the Emperor Penguin.
+
+Reptile House covers 800 square meters and has a Hot & Humid climate.
+The highlight animal is Basil the Green Anaconda.
+
+...
+```
+
+Pro tip: Double-check your output against the actual data! Miranda's original code might have some... creative errors.
+
+After you nail the habitat details, do the same thing for animals:
+
+```sh
+***************************************************
+*****              A N I M A L S              *****
+***************************************************
+We currently care for 15 animals at the zoo
+The youngest animal is 2 years old
+The oldest animal is 99 years old
+
+The youngest animals are
+	Hopper the Red-eyed Tree Frog
+	Waddles the Gentoo Penguin
+	Pingu the Emperor Penguin
+
+The oldest animals are
+	Tito the Galápagos Tortoise
+	Yeti the Snow Leopard
+	Tina the Reticulated Giraffe
+
+ANIMAL DETAILS:
+---------------------------------
+Leo the African Lion is 8 years old and eats a Carnivore diet.
+Fun fact: Roars loudest at noon.
+Lives in: Savanna Exhibit.
+
+Tina the Reticulated Giraffe is 12 years old and eats a Herbivore diet.
+Fun fact: Tallest animal in the zoo.
+Lives in: Savanna Exhibit.
+
+Shira the Plains Zebra is 5 years old and eats a Herbivore diet.
+Fun fact: Loves to race visitors along the fence.
+Lives in: Savanna Exhibit.
+
+...
+```
+
+### Navigation
+
+[← Previous: Chapter 4](./04_ZOO_HABITAT_SIZE_RANGES.md) | [Next ➜ Chapter 6: Cleanup](./06_ZOO_CLEANUP.md) | [Home](../README.md)
+

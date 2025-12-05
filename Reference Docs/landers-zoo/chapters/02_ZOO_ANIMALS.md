@@ -1,0 +1,29 @@
+# Expanding to Animals
+
+Alright! Now that the habitat stats are working, Miranda's ready for phase two of her dashboard dreams: animal facts!
+
+She's excited because—plot twist—you already have all the animal data! Each critter in the array has its own fun properties just waiting to be displayed.
+
+Miranda wants you to whip up some functions that show fun stats for her animals, just like you did for the habitats:
+
+1. How many animals live at the zoo?
+2. What's the age of the youngest animal?
+3. What's the age of the oldest animal?
+
+### Example Output
+
+When you're done, it should look something like this (note: these numbers are totally made up for demonstration purposes):
+
+```sh
+***************************************************
+*****              A N I M A L S              *****
+***************************************************
+We currently care for 2 animals at the zoo
+The youngest animal is 28 years old
+The oldest animal is 999 years old
+```
+
+### Navigation
+
+[← Previous: Chapter 1](./01_ZOO_INTRO.md) | [Next ➜ Chapter 3: Animal Age Ranges](./03_ZOO_ANIMAL_AGE_RANGES.md) | [Home](../README.md)
+
