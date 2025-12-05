@@ -414,7 +414,6 @@ function ChallengeSandboxUI({
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
-                  <p className="text-sm text-slate-300">Edit the sandbox files and tests.</p>
                 </div>
                 <button
                   type="button"
