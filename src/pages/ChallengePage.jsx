@@ -48,10 +48,10 @@ export default function ChallengePage() {
     );
   }
 
-  return <ChallengeWorkspace challenge={challenge} navigate={navigate} />;
+  return <ChallengeWorkspace challenge={challenge} />;
 }
 
-function ChallengeWorkspace({ challenge, navigate }) {
+function ChallengeWorkspace({ challenge }) {
   const storageKey = `playground:${challenge.id}:files`;
   const [savedFiles, setSavedFiles, resetSavedFiles] = useLocalStorage(storageKey, {});
   const [initialFiles, setInitialFiles] = useState(savedFiles ?? {});
@@ -159,45 +159,12 @@ function ChallengeWorkspace({ challenge, navigate }) {
   }, [resetSavedFiles, challenge.files]);
 
   return (
-    <section className="space-y-6 flex flex-col flex-1 min-h-0">
+    <section className="space-y-6 flex flex-col flex-1 min-h-0 w-full">
       {masteryToast ? (
         <Callout type="tip" title="Saved">
           <p>{masteryToast.message}</p>
         </Callout>
       ) : null}
-      <header className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => navigate("/")}
-              className="rounded-full border border-slate-700 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-300 transition hover:border-slate-500 hover:text-white"
-            >
-              ← Challenges
-            </button>
-            {isCompleted ? (
-              <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
-                Completed
-              </span>
-            ) : null}
-          </div>
-          <h1 className="text-3xl font-semibold text-white">{challenge.title}</h1>
-          <span className="rounded-full bg-slate-800 px-3 py-1 text-sm text-slate-200">
-            Difficulty {difficultyLabel(challenge.difficulty)}
-          </span>
-        </div>
-
-        {/* <div className="flex flex-wrap items-start justify-between gap-6">
-          <div className="space-y-3">
-
-            <Markdown className="max-w-3xl text-sm text-slate-300">
-              {challenge.description}
-            </Markdown>
-          </div>
-        </div>
-
-        <StandardsBadges standards={challenge.standards} /> */}
-      </header>
 
       <ChallengeSandboxUI
         challenge={challenge}
@@ -310,78 +277,82 @@ function ChallengeSandboxUI({
     }`;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col space-y-6">
-      <div className="rounded-2xl border border-slate-800 bg-slate-950/70 px-4 py-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {primaryStandard ? (
+    <div className="min-h-0 flex-1 flex-col space-y-2 w-full">
+      <div className="flex flex-col gap-4 lg:flex-row w-full justify-between">
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 px-4 py-4">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-300">
+            <span className="text-brand-300">Workspace layout</span>
             <button
               type="button"
-              onClick={toggleMastered}
-              className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                isMastered
-                  ? "border-brand-500/40 text-brand-300 hover:bg-brand-500/10"
-                  : "border-slate-700 text-slate-200 hover:border-slate-500 hover:text-white"
-              }`}
-              title={isMastered ? "Unmark standard as mastered" : "Mark standard as mastered"}
+              className={toggleClass(showDetailsColumn)}
+              onClick={() => setShowDetailsColumn((value) => !value)}
             >
-              {isMastered ? "Unmark mastered" : "Mark standard mastered"}
+              {showDetailsColumn ? "Hide details" : "Show details"}
             </button>
-          ) : null}
-
-          {isCompleted ? (
             <button
               type="button"
-              onClick={markIncomplete}
-              className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+              className={toggleClass(showEditorColumn)}
+              onClick={() => setShowEditorColumn((value) => !value)}
             >
-              Mark incomplete
+              {showEditorColumn ? "Hide editor" : "Show editor"}
             </button>
-          ) : (
             <button
               type="button"
-              onClick={markComplete}
-              className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+              className={toggleClass(showRunnerColumn)}
+              onClick={() => setShowRunnerColumn((value) => !value)}
             >
-              Mark complete
+              {showRunnerColumn ? "Hide preview" : "Show preview"}
             </button>
-          )}
-
-          <button
-            type="button"
-            onClick={handleReset}
-            className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
-          >
-            Reset files
-          </button>
-
-          <span className="text-xs text-slate-400">Edits auto-save to your browser.</span>
+          </div>
         </div>
-      </div>
+        <div className="flex flex-col justify-center">
+          <h2 className="text-2xl font-semibold text-white">{challenge.title}</h2>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 px-4 py-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {primaryStandard ? (
+              <button
+                type="button"
+                onClick={toggleMastered}
+                className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  isMastered
+                    ? "border-brand-500/40 text-brand-300 hover:bg-brand-500/10"
+                    : "border-slate-700 text-slate-200 hover:border-slate-500 hover:text-white"
+                }`}
+                title={isMastered ? "Unmark standard as mastered" : "Mark standard as mastered"}
+              >
+                {isMastered ? "Unmark mastered" : "Mark standard mastered"}
+              </button>
+            ) : null}
 
-      <div className="rounded-2xl border border-slate-800 bg-slate-950/60 px-4 py-3">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-300">
-          <span className="text-brand-300">Workspace layout</span>
-          <button
-            type="button"
-            className={toggleClass(showDetailsColumn)}
-            onClick={() => setShowDetailsColumn((value) => !value)}
-          >
-            {showDetailsColumn ? "Hide details" : "Show details"}
-          </button>
-          <button
-            type="button"
-            className={toggleClass(showEditorColumn)}
-            onClick={() => setShowEditorColumn((value) => !value)}
-          >
-            {showEditorColumn ? "Hide editor" : "Show editor"}
-          </button>
-          <button
-            type="button"
-            className={toggleClass(showRunnerColumn)}
-            onClick={() => setShowRunnerColumn((value) => !value)}
-          >
-            {showRunnerColumn ? "Hide preview" : "Show preview"}
-          </button>
+            {isCompleted ? (
+              <button
+                type="button"
+                onClick={markIncomplete}
+                className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+              >
+                Mark incomplete
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={markComplete}
+                className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+              >
+                Mark complete
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
+            >
+              Reset files
+            </button>
+
+            <span className="text-xs text-slate-400">Edits auto-save to your browser.</span>
+          </div>
         </div>
       </div>
 
@@ -394,17 +365,21 @@ function ChallengeSandboxUI({
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
                   Difficulty {difficultyLabel(challenge.difficulty)}
                 </span>
-                {challenge.challengeType ? (
-                  <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
-                    {challenge.challengeType.replaceAll("_", " ")}
-                  </span>
-                ) : null}
+            {isCompleted ? (
+              <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
+                Completed
+              </span>
+            ) : null}
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs uppercase tracking-widest text-brand-300">Challenge</p>
+                <h2 className="text-2xl font-semibold text-white">{challenge.title}</h2>
               </div>
 
               <StandardsBadges standards={challenge.standards} size="sm" />
 
               <div className="space-y-3">
-                <h3 className="text-base font-semibold text-white">What to build</h3>
                 <Markdown className="prose prose-invert max-w-none text-sm text-slate-300">
                   {descriptionCopy}
                 </Markdown>
@@ -459,7 +434,7 @@ function ChallengeSandboxUI({
                   onChange={onFileChange}
                   onActiveChange={setActiveFile}
                   showExplorer={showExplorer}
-                  className="min-h-[420px]"
+                  className="h-full"
                   onEditorMount={(ed) => {
                     editorRef.current = ed;
                     try {

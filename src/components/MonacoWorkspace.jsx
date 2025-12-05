@@ -118,7 +118,7 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 								wordWrap: 'on',
 							}}
 							onChange={(val) => onChange?.(activePath, val ?? "")}
-							height="100%"
+							height= "100%"
 						/>
 					) : (
 						<div className="p-4 text-slate-400">No file selected.</div>
