@@ -42,157 +42,183 @@ console.log(songs);
 
 Each object is a single record; the array keeps their order.
 
-<HandbookChallenge
-title="Create an array of objects and log some records"
-hints={[
-  "Make a const songs = [ { title: \"...\", artist: \"...\" }, ... ] with four items.",
-  "Log the whole array, then log the first and third objects directly (e.g., songs[0]).",
-]}
-answers={`const songs = [\n  { title: "Sunset Drive",          artist: "Axton" },\n  { title: "Neon Rain",             artist: "Riza" },\n  { title: "Echoes & Honey",        artist: "Palmer" },\n  { title: "Midnight Paper Planes", artist: "Paper Planes Collective" }\n];\nconsole.log(songs);     // [ { title: "...", artist: "..." }, ... ]\nconsole.log(songs[0]);  // { title: "Sunset Drive", artist: "Axton" }\nconsole.log(songs[2]);  // { title: "Echoes & Honey", artist: "Palmer" }`}
->
+---
 
-  <p className="m-0">
-    Build one array where each item is an object with <code>title</code> and <code>artist</code>. Log the whole array, then log a couple of individual objects by index.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (shape):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`[ { title: "...", artist: "..." }, { ... }, { ... }, { ... } ]
-{ title: "...", artist: "..." }
-{ title: "...", artist: "..." }`}</pre>
-</HandbookChallenge>
+id: JS.VDT.COL.ARR_OBJ
+title: Arrays of Objects · Shelves of Books
+short: Store full book records as objects inside an ordered array; access and update them by index and dot path.
+---
+
+# Data Types → Arrays of Objects (Book Records)
+
+You’ve seen **book objects** (one binder per book) and **arrays of primitives** (titles in order). Now we’ll combine those ideas: an **array of book objects**—an ordered shelf where each slot holds a full book record.
 
 ---
 
-## Access: pick a record by index, then a field by dot path
+## Before you start: make sure Checkpoint C is loaded
 
-Use the array **index** to select a record, then **dot notation** to read a specific field. Arrays are **zero-based**: the first item is at index `0`, and the last is at `songs.length - 1`. Past the edge, JavaScript returns `undefined`.
+This chapter assumes you already have <code>book1</code> and <code>book2</code> objects, and probably a <code>titles</code> array. At minimum, you need:
 
 ```js
-console.log(songs[0].title);                // "Sunset Drive"
-console.log(songs[2].artist);               // "Palmer"
-console.log(songs[songs.length - 1].title); // "Midnight Paper Planes"
-console.log(songs[99]);                     // undefined
+const book1 = {
+  title: "The Way of Kings",
+  author: "Brandon Sanderson",
+  pages: 1010,
+  isPaperback: false,
+  genre: "Fantasy",
+};
+
+const book2 = {
+  title: "Words of Radiance",
+  author: "Brandon Sanderson",
+  pages: 1087,
+  isPaperback: false,
+};
+```
+
+If your editor doesn’t have <code>book1</code> and <code>book2</code> objects like this, clear it and paste the **Checkpoint B or C** snippet from the previous chapters.
+
+---
+
+## 1) Add a third book object
+
+First, create a new book: <code>book3</code>.
+
+```js
+const book3 = {
+  title: "Oathbringer",
+  author: "Brandon Sanderson",
+  pages: 1248,
+  isPaperback: false,
+};
 ```
 
 <HandbookChallenge
-title="Pick fields from specific records"
+title="Challenge D1: Create `book3`"
 hints={[
-  "First record → index 0; last record → songs.length - 1.",
-  "Use dot notation for fields, e.g., songs[0].artist.",
-]}
-answers={`console.log(songs[0].title);                // "Sunset Drive"\nconsole.log(songs[2].artist);               // "Palmer"\nconsole.log(songs[songs.length - 1].title); // "Midnight Paper Planes"`}
->
+  "Follow the same shape as book1 and book2.",
+  "Include at least title, author, pages, and isPaperback.",
+  <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book3 = {
+  title: "Oathbringer",
+  author: "Brandon Sanderson",
+  pages: 1248,
+  isPaperback: false,
+};
 
+console.log(book3.title);`}</pre>,
+]}
+answers={<pre className="m-0 whitespace-pre-wrap">{`const book3 = {
+  title: "Oathbringer",
+  author: "Brandon Sanderson",
+  pages: 1248,
+  isPaperback: false,
+};
+
+console.log(book3.title); // Oathbringer`}</pre>}
+>
   <p className="m-0">
-    Log the first title, the third artist, and the last title using index + dot notation.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Sunset Drive
-Palmer
-Midnight Paper Planes`}</pre>
-</HandbookChallenge>
-
-> If an index is out of range or a key is misspelled, you’ll see <code>undefined</code>. Keep indexes and field names precise.
-
----
-
-## Update: fix a field on one record
-
-### Debug drill: zoom in, then zoom out
-
-Reading nested data is a muscle. Build it slowly: log → add an index → add a field, then peel those pieces back off. Each step narrows the shape of what you get back.
-
-1) Whole array: <code>console.log(songs)</code> → you’ll see square brackets with multiple objects.
-2) One record: <code>console.log(songs[2])</code> → just the object at index 2.
-3) One field: <code>console.log(songs[2].artist)</code> → a plain string value.
-4) Reverse it: remove <code>.artist</code> (back to an object), then remove <code>[2]</code> (back to the array).
-
-Mental map:
-
-<pre className="m-0 whitespace-pre-wrap">{`songs (array)
-  ├─ [0] → { title: "Sunset Drive", … }
-  ├─ [1] → { title: "Neon Rain", … }
-  └─ [2] → { title: "Echoes & Honey", artist: "Palmer" }
-           └─ .artist → "Palmer" (string)`}</pre>
-
-<HandbookChallenge
-title="Zoom in / zoom out drill"
-hints={[
-  "Start: console.log(songs)",
-  "Then add [2] to focus a single record",
-  "Then add .artist to read one field",
-  "Reverse those steps to widen the shape again"
-]}
-answers={`console.log(songs);\nconsole.log(songs[2]);\nconsole.log(songs[2].artist);\n// reverse\nconsole.log(songs[2]);\nconsole.log(songs);`}
->
-  <p className="m-0">Practice shrinking (array → object → value) and expanding (value → object → array) so your brain links syntax to data shape.</p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Progression (shape):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`[ { … }, { … }, { … } ]  // array
-{ title: "Echoes & Honey", artist: "Palmer" }  // object
-Palmer  // value
-{ title: "Echoes & Honey", artist: "Palmer" }  // object again
-[ { … }, { … }, { … } ]  // array again`}</pre>
+    Define a <code>book3</code> object with the same fields as your earlier books, then log its title to confirm.
+    </p>
 </HandbookChallenge>
 
 ---
 
-You can rewrite a single field on the object at a particular index. You’re not replacing the whole array; you’re editing one record inside it.
+## 2) Assemble a `books` shelf (array of book objects)
+
+Now combine <code>book1</code>, <code>book2</code>, and <code>book3</code> into a single ordered shelf.
 
 ```js
-console.log(songs[1].title); // "Neon Rain"
-songs[1].title = "Neon Rain (Remix)";
-console.log(songs[1].title); // "Neon Rain (Remix)"
+const books = [book1, book2, book3];
+console.log(books.length);      // 3
+console.log(books[0].title);    // first book’s title
+console.log(books[2].author);   // third book’s author
 ```
 
 <HandbookChallenge
-title="Update a field at a specific index"
+title="Challenge D2: Assemble `books` array"
 hints={[
-  "Log the current value, assign the corrected value, then log again.",
-  "Use index + dot notation: songs[1].title = \"...\".",
+  "Create a constant named books that holds [book1, book2, book3].",
+  "Use books.length to log how many books are on the shelf.",
+  "Use books[0].title and books[2].author to read specific fields.",
 ]}
-answers={`console.log(songs[1].title); // "Neon Rain"\nsongs[1].title = "Neon Rain (Remix)";\nconsole.log(songs[1].title); // "Neon Rain (Remix)"`}
->
+answers={<pre className="m-0 whitespace-pre-wrap">{`const books = [book1, book2, book3];
 
+console.log(books.length);    // 3
+console.log(books[0].title);  // The Way of Kings
+console.log(books[2].author); // Brandon Sanderson`}</pre>}
+>
   <p className="m-0">
-    Choose a record by index and correct one field. Logging before and after makes the change obvious.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Neon Rain
-Neon Rain (Remix)`}</pre>
+    Build a <code>books</code> array containing your three book objects, then practice reading its length and a couple of fields using index + dot notation.
+    </p>
 </HandbookChallenge>
 
-> <code>const songs = [ ... ]</code> keeps the variable’s link to the array stable. Editing a field inside a record is normal and allowed.
+> If an index is out of range, <code>books[index]</code> is <code>undefined</code>. If a key is misspelled, <code>books[1].pagse</code> also gives <code>undefined</code>. Keep both indexes and property names precise.
 
 ---
 
-## Add: place a new record at the end by index
+## 3) Update one record via the array
 
-Without introducing new methods yet, you can add an object at the next open index—the current **length** of the array.
+You don’t have to reach for the original variable name (<code>book2</code>) to update a book—you can go through the array.
 
 ```js
-songs[songs.length] = { title: "Paper Planes (Live)", artist: "Paper Planes Collective" };
-console.log(songs[songs.length - 1]); // the new record
+console.log(books[1].pages); // original pages
+books[1].pages = 1100;       // updated edition
+console.log(books[1]);       // shows updated pages
 ```
 
 <HandbookChallenge
-title="Add one more record at the end"
+title="Challenge D3: Update one record through `books`"
 hints={[
-  "Create a new object with title and artist fields.",
-  "Assign it to songs[songs.length] to place it at the end.",
+  "Start by logging books[1].pages to see the current count.",
+  "Assign a new number to books[1].pages to simulate an updated edition.",
+  "Log books[1] again to see the full updated object.",
 ]}
-answers={`songs[songs.length] = { title: "Paper Planes (Live)", artist: "Paper Planes Collective" };\nconsole.log(songs[songs.length - 1]);\n// { title: "Paper Planes (Live)", artist: "Paper Planes Collective" }`}
+answers={<pre className="m-0 whitespace-pre-wrap">{`console.log(books[1].pages);
+books[1].pages = 1100;
+console.log(books[1]);
+// { title: "Words of Radiance", author: "Brandon Sanderson", pages: 1100, isPaperback: false }`}</pre>}
 >
-
   <p className="m-0">
-    Add a new record at the end by assigning to the index equal to the array’s current length, then log the last item to verify.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (shape):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`{ title: "...", artist: "..." }`}</pre>
+    Use the <code>books</code> array plus dot notation to fix the page count for the second book. Logging before and after makes the change obvious.
+    </p>
 </HandbookChallenge>
+
+> <code>const books = [book1, book2, book3]</code> keeps the variable’s link to the array stable. Editing a field inside one of the objects is normal and allowed.
 
 ---
 
-## Wrap-up
+## Checkpoint D · Three book objects on a shelf
 
-* An **array of objects** stores an ordered list of **records**, where each record is an object that keeps its fields together.
-* You can **access** a specific record by index and a specific field with dot notation, **update** a field in place, and **add** a new record at the end by assigning to the next index.
-* Choose this shape when items have multiple fields that must stay together while you also care about the order of the list.
+By the end of this chapter, your editor should look roughly like this (values can vary slightly, but keep the structure):
+
+```js
+const book1 = {
+  title: "The Way of Kings",
+  author: "Brandon Sanderson",
+  pages: 1010,
+  isPaperback: false,
+  genre: "Fantasy",
+};
+
+const book2 = {
+  title: "Words of Radiance",
+  author: "Brandon Sanderson",
+  pages: 1100,
+  isPaperback: false,
+};
+
+const book3 = {
+  title: "Oathbringer",
+  author: "Brandon Sanderson",
+  pages: 1248,
+  isPaperback: false,
+};
+
+const books = [book1, book2, book3];
+
+console.log(books.length);
+console.log(books[0].title);
+console.log(books[2].author);
+```
+
+You’ll use this <code>books</code> array to practice adding and removing books from the ends of the shelf in the next chapter.

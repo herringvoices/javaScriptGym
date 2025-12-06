@@ -5,191 +5,193 @@ title: Arrays · Add & Remove at the Ends
 short: Use push, pop, unshift, and shift to append, prepend, and remove items from an array without manual index math.
 ---
 
-# Data Types → Arrays (End Controls)
+# Data Types → Arrays (End Controls for Books)
 
-*Last time we* created **arrays of objects (playlists of songs)** so related fields travel together in order. *This time we’re* making that playlist behave like a real queue: add a song to the end, bump one to the front, or take something off—cleanly, without rebuilding the whole array by hand.
+You now have a <code>books</code> array of book objects. Real shelves change: you acquire new books, loan some out, and sometimes feature one at the very front.
 
-Up until now, we’ve changed array **values** in place (fixing a title at a specific index). But what about **changing the lineup**? Imagine tapping an “Add to queue” button, or moving a new favorite to the very start so it plays next.
+Arrays give you built-in **methods** for these “end of the shelf” moves:
 
-Arrays give you built-in **methods** for these exact moves. A **method** is a function attached to a value, called with a **dot** and **parentheses**. You’ve used one already with `console.log(...)`. For arrays, the four end controls you’ll press most are:
-
-* `push` — add to the **end**
-* `pop` — remove from the **end**
-* `unshift` — add to the **start**
-* `shift` — remove from the **start**
-
-We’ll try them one at a time.
+* <code>push</code> — add to the **end**
+* <code>pop</code> — remove from the **end**
+* <code>unshift</code> — add to the **start**
+* <code>shift</code> — remove from the **start**
 
 ---
 
-## Add to the end with `push` (append)
+## Before you start: make sure Checkpoint D is loaded
 
-`push` places one or more items at the **end** of the array.
+This chapter assumes your editor already has <code>book1</code>, <code>book2</code>, <code>book3</code>, and a <code>books</code> array, like this:
 
 ```js
-const songs = ["Sunset Drive", "Neon Rain", "Echoes & Honey"];
-songs.push("Midnight Paper Planes");
-console.log(songs);
-// ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"]
+const book1 = {
+  title: "The Way of Kings",
+  author: "Brandon Sanderson",
+  pages: 1010,
+  isPaperback: false,
+  genre: "Fantasy",
+};
+
+const book2 = {
+  title: "Words of Radiance",
+  author: "Brandon Sanderson",
+  pages: 1100,
+  isPaperback: false,
+};
+
+const book3 = {
+  title: "Oathbringer",
+  author: "Brandon Sanderson",
+  pages: 1248,
+  isPaperback: false,
+};
+
+const books = [book1, book2, book3];
+```
+
+If your editor doesn’t have a <code>books</code> array like this, clear it and paste the **Checkpoint D** snippet from the Arrays-of-Objects chapter.
+
+---
+
+## 1) Push and pop on `books`
+
+<code>push</code> places one or more items at the **end** of the array. <code>pop</code> removes the **last** item and returns it.
+
+```js
+console.log(books.length);
+books.push({
+  title: "Rhythm of War",
+  author: "Brandon Sanderson",
+  pages: 1232,
+  isPaperback: true,
+});
+console.log(books.length);
+
+const removedBook = books.pop();
+console.log(removedBook.title);
 ```
 
 <HandbookChallenge
-title="Append (add to the end)"
+title="Challenge E1: `push` and `pop`"
 hints={[
-  "Start with a songs array of 3 titles.",
-  "Call songs.push(\"Your New Track\") and log the updated array.",
+  "Log books.length before and after pushing a new book object.",
+  "Use books.pop() to remove the last book and store it in removedBook.",
+  "Log removedBook.title to see which book left the shelf.",
 ]}
-answers={`const songs = ["Sunset Drive","Neon Rain","Echoes & Honey"];\nsongs.push("Midnight Paper Planes");\nconsole.log(songs); // ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"]`}
->
+answers={<pre className="m-0 whitespace-pre-wrap">{`console.log(books.length);
 
+books.push({
+  title: "Rhythm of War",
+  author: "Brandon Sanderson",
+  pages: 1232,
+  isPaperback: true,
+});
+
+console.log(books.length);
+
+const removedBook = books.pop();
+console.log(removedBook.title);`}</pre>}
+>
   <p className="m-0">
-    Add a new song to the end of the playlist and log the result.
+    Add a new book to the end of <code>books</code>, watch the length grow, then pop it off and log its title as it leaves the shelf.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"]`}</pre>
 </HandbookChallenge>
 
 ---
 
-> <strong>Question for you</strong><br />
-> Do <code>.shift()</code> and <code>.pop()</code> return anything? (Here’s a hint: they do.) See if you can figure out what they hand back when you call them.
+## 2) Shift and unshift at the front
 
-## Remove from the end with `pop` (take the last off)
-
-`pop` removes the **last** item and gives you something back.
+<code>shift</code> removes the **first** item and returns it. <code>unshift</code> adds items to the **start**.
 
 ```js
-const songs = ["Sunset Drive", "Neon Rain", "Echoes & Honey", "Midnight Paper Planes"];
-const removed = songs.pop();
-console.log(removed); // "Midnight Paper Planes"
-console.log(songs);   // ["Sunset Drive","Neon Rain","Echoes & Honey"]
+const firstBook = books.shift();
+console.log(firstBook.title); // the book that left the very front
+
+books.unshift(firstBook);
+console.log(books[0].title);  // same title, now back at the front
 ```
 
-> <strong>Anatomy of</strong> <code>const removed = songs.pop()</code><br />
-> • <code>const removed</code> — you create a new variable named <em>removed</em>.<br />
-> • <code>=</code> — the assignment operator says, “store the value on the right into that variable.”<br />
-> • <code>songs.pop()</code> — you call the <em>pop</em> method on <em>songs</em>. It removes the last item, and the <strong>value it returns</strong> is the item it just removed.<br />
-> • JavaScript evaluates the right side first, gets that removed item, and then <strong>stores that value</strong> in <code>removed</code>.
-
 <HandbookChallenge
-title="Take one off the end"
+title="Challenge E2: `shift` and `unshift`"
 hints={[
-  "Call pop() with no arguments.",
-  "Store the returned value and log it to see what was removed.",
+  "Use const firstBook = books.shift(); to remove the first book.",
+  "Log firstBook.title, then put it back with books.unshift(firstBook).",
+  "After unshifting, log books[0].title to confirm it’s back at the front.",
 ]}
-answers={`const songs = ["Sunset Drive","Neon Rain","Echoes & Honey","Midnight Paper Planes"];\nconst removed = songs.pop();\nconsole.log(removed); // "Midnight Paper Planes"\nconsole.log(songs);   // ["Sunset Drive","Neon Rain","Echoes & Honey"]`}
->
+answers={<pre className="m-0 whitespace-pre-wrap">{`const firstBook = books.shift();
+console.log(firstBook.title);
 
+books.unshift(firstBook);
+console.log(books[0].title);`}</pre>}
+>
   <p className="m-0">
-    Remove the last track, save it in a variable, then log the removed track and the updated playlist.
+    Temporarily remove the front book, log which one it was, then restore it to the front using <code>unshift</code>.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Midnight Paper Planes
-["Sunset Drive","Neon Rain","Echoes & Honey"]`}</pre>
 </HandbookChallenge>
 
 ---
 
-## Add to the start with `unshift` (prepend)
+## 3) Combine end controls to feature a book
 
-`unshift` places one or more items at the **start** of the array. Everything else slides right.
+You can mix these moves to reorder the shelf. For example, treat the last book as “now reading” and move it to the very front.
 
 ```js
-const songs = ["Sunset Drive", "Neon Rain", "Echoes & Honey"];
-songs.unshift("Intro (Live)");
-console.log(songs);
-// ["Intro (Live)","Sunset Drive","Neon Rain","Echoes & Honey"]
+const nowReading = books.pop();
+books.unshift(nowReading);
+
+console.log(books[0].title);
+console.log(books.length);
 ```
 
 <HandbookChallenge
-title="Prepend (add to the beginning)"
+title="Challenge E3: Feature the last book"
 hints={[
-  "Use unshift(\"Intro (Live)\") to add to the beginning.",
-  "Check the first item afterwards with songs[0].",
+  "Use const nowReading = books.pop(); to take the last book off the shelf.",
+  "Immediately put nowReading at the front with books.unshift(nowReading).",
+  "Log books[0].title and books.length to confirm the new order and size.",
 ]}
-answers={`const songs = ["Sunset Drive","Neon Rain","Echoes & Honey"];\nsongs.unshift("Intro (Live)");\nconsole.log(songs[0]); // "Intro (Live)"\nconsole.log(songs);    // ["Intro (Live)","Sunset Drive","Neon Rain","Echoes & Honey"]`}
->
+answers={<pre className="m-0 whitespace-pre-wrap">{`const nowReading = books.pop();
+books.unshift(nowReading);
 
+console.log(books[0].title);
+console.log(books.length);`}</pre>}
+>
   <p className="m-0">
-    Add a new opener to the beginning, then verify the first track and the updated array.
+    Treat the last book as your current read: pop it off the end, move it to the very front, and log its title and the total number of books.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Intro (Live)
-["Intro (Live)","Sunset Drive","Neon Rain","Echoes & Honey"]`}</pre>
 </HandbookChallenge>
 
 ---
 
-## Remove from the start with `shift` (cut the opener)
+## Checkpoint E · Books after end controls
 
-`shift` removes the **first** item. Everything else slides left, so indexes change.
-
-```js
-const songs = ["Intro (Live)", "Sunset Drive", "Neon Rain", "Echoes & Honey"];
-const firstOut = songs.shift();
-console.log(firstOut); // "Intro (Live)"
-console.log(songs);    // ["Sunset Drive","Neon Rain","Echoes & Honey"]
-```
-
-<HandbookChallenge
-title="Cut the opener"
-hints={[
-  "Call shift() and store what it gives you.",
-  "After removing the first item, songs[0] is the new first track.",
-]}
-answers={`const songs = ["Intro (Live)","Sunset Drive","Neon Rain","Echoes & Honey"];\nconst removedFirst = songs.shift();\nconsole.log(removedFirst); // "Intro (Live)"\nconsole.log(songs[0]);     // "Sunset Drive"`}
->
-
-  <p className="m-0">
-    Remove the first track, log what you removed, and confirm the new first track.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Intro (Live)
-Sunset Drive`}</pre>
-</HandbookChallenge>
-
----
-
-## Practice: put it all together (with objects)
-
-Same moves, now with records. Create your favorite song as an **object**, add it to the end, then pretend you clicked “Play”: take it off the end and place it at the beginning.
+By the end of this chapter, your exact <code>books</code> order may vary based on the titles you chose, but your code should look roughly like this:
 
 ```js
-const songs = [
-  { title: "Sunset Drive", artist: "Axton" },
-  { title: "Neon Rain",    artist: "Riza"  },
-  { title: "Echoes & Honey", artist: "Palmer" }
-];
+const book1 = {
+  title: "The Way of Kings",
+  author: "Brandon Sanderson",
+  pages: 1010,
+  isPaperback: false,
+  genre: "Fantasy",
+};
 
-// your favorite:
-const fave = { title: "Midnight Paper Planes", artist: "Paper Planes Collective" };
+const book2 = {
+  title: "Words of Radiance",
+  author: "Brandon Sanderson",
+  pages: 1100,
+  isPaperback: false,
+};
+
+const book3 = {
+  title: "Oathbringer",
+  author: "Brandon Sanderson",
+  pages: 1248,
+  isPaperback: false,
+};
+
+const books = [book1, book2, book3];
+
+// plus your push/pop/shift/unshift experiments above
 ```
 
-<HandbookChallenge
-title="Add, play, and reorder a record"
-hints={[
-  "Add your fave to the end with push.",
-  "Remove the last item with pop and store it in a variable.",
-  "Put that removed item at the start with unshift.",
-]}
-answers={`const songs = [\n{ title: "Sunset Drive", artist: "Axton" },\n{ title: "Neon Rain",    artist: "Riza"  },\n{ title: "Echoes & Honey", artist: "Palmer" }\n];\n\nconst fave = { title: "Midnight Paper Planes", artist: "Paper Planes Collective" };\n\nsongs.push(fave);                      // add to end\nconst nowPlaying = songs.pop();        // take off end\nsongs.unshift(nowPlaying);             // put at beginning\n\nconsole.log(songs[0]);\n// { title: "Midnight Paper Planes", artist: "Paper Planes Collective" }`}
->
-
-  <p className="m-0">
-    Add your favorite to the end, remove it to “play” it, and move it to the front so it’s first in line.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected shape (first item):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`{ title: "...", artist: "..." }`}</pre>
-</HandbookChallenge>
-
----
-
-> <strong>Pop quiz (pun intended)</strong><br />
-> Earlier we asked whether <code>.shift()</code> and <code>.pop()</code> return anything. By now you’ve seen it: they hand you the item they removed. Stash it in a variable if you need to use it.
-
-## Wrap-up
-
-* Four end controls keep your playlist tidy:
-  **`push`** (add to end), **`pop`** (remove last), **`unshift`** (add to start), **`shift`** (remove first).
-* Methods are just functions attached to values, called with dot + parentheses (e.g., <code>songs.pop()</code>).
-* These moves work the same whether your items are strings or full objects.
+The upcoming project will start from a fresh script, but this chapter’s practice should make those end controls feel natural.

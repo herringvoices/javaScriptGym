@@ -1,196 +1,210 @@
 ---
 id: JS.VDT.COL.OBJ
-title: Objects · Binders of Related Info
-short: Bundle related variables into key–value pairs, read with dot paths, and update pages safely.
+title: Objects · One Book in One Binder
+short: Bundle separate book variables into book objects, read with dot paths, and update fields safely.
 ---
 
 
-# Data Types → Objects
+# Data Types → Objects (Books as Binders)
 
-We've been storing information in individual boxes (variables). But often those boxes all describe **one thing**. That's where **objects** shine: they bundle related info together so it travels as a single unit.
+In the overview, you described books with separate variables like <code>book1Title</code> and <code>book1Pages</code>. That works for a tiny library, but it scatters information about **one book** across many boxes.
+
+**Objects** are our upgrade: they bundle related info together so it travels as a single unit—perfect for representing one book.
 
 ---
 
-## 1) Start with separate variables (spot the pattern)
+## Before you start: make sure Checkpoint A is loaded
 
-Imagine these three values all describe the same person:
+This chapter assumes your editor already has separate variables for two books, like this:
 
 ```js
-let name = "Nick";
-let age = 35;
-let isSleepy = true;
-console.log(name, age, isSleepy);
+const book1Title = "The Way of Kings";
+const book1Author = "Brandon Sanderson";
+const book1Pages = 1007;
+const book1IsPaperback = false;
+
+const book2Title = "Words of Radiance";
+const book2Author = "Brandon Sanderson";
+const book2Pages = 1087;
+const book2IsPaperback = false;
 ```
 
-They're clearly about **one thing** (a person), just spread across separate boxes.
-
-<HandbookChallenge
-  title="Make yours"
-  hints={[
-    "Create your own `name`, `age`, and `isSleepy` variables and log them.",
-    "Keep names readable—no `nme` or `nm` shortcuts.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let name = "Alex";
-let age = 28;
-let isSleepy = false;
-console.log(name, age, isSleepy);`}</pre>,
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`let name = "Alex";
-let age = 28;
-let isSleepy = false;
-console.log(name, age, isSleepy); // Alex 28 false`}</pre>
-  }
->
-  <p className="m-0">
-    Create three variables—<code>name</code>, <code>age</code>, and <code>isSleepy</code>—then <code>console.log</code> them.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Alex 28 false`}</pre>
-</HandbookChallenge>
+If your editor does not look roughly like this, clear it and paste the **Checkpoint A** snippet from the Collections overview chapter.
 
 ---
 
-## 2) Bundle your variables together
+## 1) From scattered fields to one book object
 
-Objects are like a **binder**. They gather information together into pages called **properties**. Each property is a **key–value** pair: the **key** is the colored label on the page; the **value** is the information on that page. Keys help you look things up; values are what you're looking for.
-
-Syntax snapshot (notice the **colons** and **commas**):
+Objects are like a **binder** for one book. Each **property** is a labeled page:
 
 ```js
-const person = {
-  name: "Nick",      // key: value
-  age: 35,            // commas separate properties
-  isSleepy: true      // colon (:) instead of equals (=)
+const book1 = {
+  title: book1Title,
+  author: book1Author,
+  pages: book1Pages,
+  isPaperback: book1IsPaperback
 };
 ```
 
 <HandbookChallenge
-  title="Replace the boxes with one binder"
+  title="Challenge B1: Build `book1` from primitives"
   hints={[
-    "Make a `const person = { ... }` with your `name`, `age`, `isSleepy` as properties.",
-    "Use commas between properties and colons between key and value.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const person = {
-  name: "Alex",
-  age: 28,
-  isSleepy: false
+    "Create a new constant named `book1` and assign an object literal `{ ... }` to it.",
+    "Use your existing `book1Title`, `book1Author`, `book1Pages`, and `book1IsPaperback` variables as the values.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book1 = {
+  title: book1Title,
+  author: book1Author,
+  pages: book1Pages,
+  isPaperback: book1IsPaperback
 };
-console.log(person);`}</pre>,
+
+console.log(book1);`}</pre>,
   ]}
   answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const person = { name: "Alex", age: 28, isSleepy: false };
-console.log(person); // { name: "Alex", age: 28, isSleepy: false }`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`const book1 = {
+  title: book1Title,
+  author: book1Author,
+  pages: book1Pages,
+  isPaperback: book1IsPaperback
+};
+
+console.log(book1);
+// { title: "The Way of Kings", author: "Brandon Sanderson", pages: 1007, isPaperback: false }`}</pre>
   }
 >
   <p className="m-0">
-    Build a <code>person</code> object with <code>name</code>, <code>age</code>, and <code>isSleepy</code>. Replace your separate variables with this single object and log it.
+    Use your existing <code>book1...</code> variables to construct a single <code>book1</code> object and log it. Dont delete the old variables yetwe still need them for the next challenge.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`{ name: "Alex", age: 28, isSleepy: false }`}</pre>
 </HandbookChallenge>
+
+> Once <code>book1</code> logs correctly and you’re comfortable, you may delete the <code>book1Title</code>, <code>book1Author</code>, <code>book1Pages</code>, and <code>book1IsPaperback</code> lines to reduce clutter, or keep them if you want to compare. The checkpoint at the end will show the canonical “objects only” version.
 
 ---
 
-## 3) Read values with dot notation (addresses for data)
+## 2) A second binder for the second book
 
-**Dot notation** is the default way to **read** a property: <code>object.key</code>. Think of each dot as a step in an **address**—start at the binder, then open the tab you want.
+Repeat the pattern for your second book.
 
 ```js
-console.log(person.name);     // "Nick"
-console.log(person.age);      // 35
-console.log(person.isSleepy); // true
+const book2 = {
+  title: book2Title,
+  author: book2Author,
+  pages: book2Pages,
+  isPaperback: book2IsPaperback
+};
 ```
 
 <HandbookChallenge
-  title="Follow the address"
+  title="Challenge B2: Build `book2` from primitives"
   hints={[
-    "Log three values: `person.name`, `person.age`, and `person.isSleepy`.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(person.name);
-console.log(person.age);
-console.log(person.isSleepy);`}</pre>,
+    "Create a `book2` object that mirrors `book1` but uses the `book2...` variables.",
+    "After creating `book2`, log `book2.title` and `book2.pages`.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book2 = {
+  title: book2Title,
+  author: book2Author,
+  pages: book2Pages,
+  isPaperback: book2IsPaperback
+};
+
+console.log(book2.title);
+console.log(book2.pages);`}</pre>,
   ]}
   answers={
-    <pre className="m-0 whitespace-pre-wrap">{`console.log(person.name);        // "Nick"
-console.log(person.age);         // 35
-console.log(person.isSleepy);    // true`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`const book2 = {
+  title: book2Title,
+  author: book2Author,
+  pages: book2Pages,
+  isPaperback: book2IsPaperback
+};
+
+console.log(book2.title); // Words of Radiance
+console.log(book2.pages); // 1087`}</pre>
   }
 >
   <p className="m-0">
-    Use dot notation to log the <code>name</code>, <code>age</code>, and <code>isSleepy</code> properties from your <code>person</code> object—one property per log statement.
+    Build a <code>book2</code> object from your <code>book2...</code> primitives and log just its title and page count.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Nick
-35
-true`}</pre>
 </HandbookChallenge>
+
+> Just like with <code>book1</code>, you may delete the <code>book2Title</code>, <code>book2Author</code>, <code>book2Pages</code>, and <code>book2IsPaperback</code> variables once you’re confident in the objects. The upcoming checkpoint will assume you’re keeping only the objects.
 
 ---
 
-## 4) Change, add, delete pages (mutating the binder)
+## 3) Read and update fields on a book
 
-> **But wait — doesn't `const` mean "no changes"?**
-> When you define the variable, you create a **box** and put your **binder** inside. With `const`, you're locking the **box→binder link**—you can't replace the binder with a new one later. But you **can** still edit the **pages inside** that binder: update a page, add a page, or remove a page. That's called **mutation**.
-
-### Update (rewrite a page)
+With the objects in place, use **dot notation** to read and update properties.
 
 ```js
-person.age = 36;     // rewrite the age page
-console.log(person.age); // 36
+console.log(book1.title);  // "The Way of Kings"
+console.log(book1.author); // "Brandon Sanderson"
 ```
 
-### Add (put in a new page)
+You can also update fields or add new ones:
 
 ```js
-person.hobby = "board games";
-console.log(person.hobby); // "board games"
-```
-
-### Delete (remove a page entirely)
-
-```js
-delete person.isSleepy;
-console.log(person.isSleepy); // undefined
+book1.pages = 1010;         // updated edition
+book1.genre = "Fantasy";   // new field
 ```
 
 <HandbookChallenge
-  title="Edit the binder"
+  title="Challenge B3: Access and update properties"
   hints={[
-    "Start with your `person` object.",
-    "Log the current age, then update it and log again.",
-    "Add `hobby`, then delete `isSleepy` and log the result.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(person.age);
-person.age = 36;
-console.log(person.age);
-person.hobby = "board games";
-console.log(person.hobby);
-delete person.isSleepy;
-console.log(person.isSleepy);`}</pre>,
+    "Start by logging `book1.title` and `book1.author`.",
+    "Change `book1.pages` to a slightly different number, then log `book1.pages` again.",
+    "Add a new property like book1.genre = \"Fantasy\"; and log the whole book1 object.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(book1.title);
+console.log(book1.author);
+
+book1.pages = 1010;
+console.log(book1.pages);
+
+book1.genre = "Fantasy";
+console.log(book1);`}</pre>,
   ]}
   answers={
-    <pre className="m-0 whitespace-pre-wrap">{`console.log(person.age);    // 35
-person.age = 36;
-console.log(person.age);    // 36
-person.hobby = "board games";
-console.log(person.hobby);  // "board games"
-delete person.isSleepy;
-console.log(person.isSleepy); // undefined`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(book1.title);   // The Way of Kings
+console.log(book1.author);  // Brandon Sanderson
+
+book1.pages = 1010;
+console.log(book1.pages);   // 1010
+
+book1.genre = "Fantasy";
+console.log(book1);
+// { title: "The Way of Kings", author: "Brandon Sanderson", pages: 1010, isPaperback: false, genre: "Fantasy" }`}</pre>
   }
 >
   <p className="m-0">
-    Practice updating, adding, and deleting properties. Log after each change so you can see exactly what happened.
+    Practice reading fields with dot notation, tweaking one field, and adding a new one. Watch how the object changes in the console.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`35
-36
-board games
-undefined`}</pre>
 </HandbookChallenge>
 
-> Use <code>null</code> when you want to keep the page but mark it as **empty on purpose**; expect <code>undefined</code> when a page is **missing**.
+> <strong>Const vs. mutation</strong><br />
+> <code>const book1 = {'{'}{'}'}</code> locks the variable-to-object link, not the pages inside. You can still update or add properties; you just cant reassign <code>book1</code> to a completely different object.
 
 ---
 
-## Wrap-up
+## Checkpoint B · Two book objects
 
-* Start with separate variables to notice "this is one thing," then bundle them into an **object** (your binder).
-* Read with **dot notation** like an address; use **bracket notation** only when names get weird or come from a variable.
-* Keep the `const` **box→binder link** stable, and **mutate** the pages inside when data changes in your app.
+By the end of this chapter, your editor should look roughly like this (details like <code>pages</code> or <code>genre</code> may vary, but keep the structure):
+
+```js
+const book1 = {
+  title: "The Way of Kings",
+  author: "Brandon Sanderson",
+  pages: 1010,
+  isPaperback: false,
+  genre: "Fantasy",
+};
+
+const book2 = {
+  title: "Words of Radiance",
+  author: "Brandon Sanderson",
+  pages: 1087,
+  isPaperback: false,
+};
+
+console.log(book1.title, "by", book1.author);
+console.log(book2.title, "by", book2.author);
+```
+
+You’ll use these <code>book1</code> and <code>book2</code> objects to build arrays of titles in the next chapter.
