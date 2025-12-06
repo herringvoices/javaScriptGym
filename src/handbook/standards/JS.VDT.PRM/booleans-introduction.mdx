@@ -4,207 +4,192 @@ title: Booleans · True/False & Empty Values
 short: Ask clear yes/no questions with comparisons; use null/undefined to represent empty states on purpose vs by accident.
 ---
 
-
-
 # Data Types → Booleans (plus null and undefined)
 
-We used **strings** to *say things* and **numbers** to *count things*. Now we need a way to **decide things**. Booleans are the simplest decision-maker in JavaScript: like a light switch—**on** or **off**, **true** or **false**. No dimmers here.
+Strings let us **describe** the Movie Night Planner. Numbers let us **count** guests, snacks, and bowls. Now we need a way to **decide** whether things are ready. That job belongs to the **boolean** type: a light switch that’s either **on (`true`)** or **off (`false`)**—no dimmers, no maybes.
 
-Think about the questions apps answer all day:
+<Callout type="note" title="Numbers checkpoint">
+  <p className="m-0">Your code should look something like this by the end of the Numbers chapter (customize the values, but keep the structure):</p>
+  <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let currentMood = "excited";
+const location = "living room";
+const streamingService = "CouchFlix";
+const favoriteShow = "Mystery Manor";
+let snack = "kettle corn";
 
-* Is the user **logged in**?
-* Do we **have seats left**?
-* Can this person **vote**?
-* Should we **show a warning**?
+const inviteLine = "Join " + viewerName + " in the " + location +
+  " to stream " + favoriteShow + " with " + snack + ".";
+const inviteMessage = \`Tonight, \$\{viewerName\} is streaming \$\{favoriteShow\}
+  in the \$\{location\} with \$\{snack\} ready on \$\{streamingService\}.\`;
 
-Those are yes/no questions. Booleans are how JavaScript stores the answers.
+let numGuests = 3;
+const snacksPerGuest = 2;
+const drinksPerGuest = 1;
+let totalSnacksNeeded = numGuests * snacksPerGuest;
+let totalDrinksNeeded = numGuests * drinksPerGuest;
+let snacksOnHand = 10;
+const snacksPerBowl = 4;
+let bowlsNeeded = totalSnacksNeeded / snacksPerBowl;`}</pre>
+  <p className="m-0">We’ll layer booleans on top of these numbers to see whether the plan is actually ready.</p>
+</Callout>
 
 ---
 
-## 1) Literal booleans & clear names
+## 1) Status lights for the plan (literal booleans)
 
-Start simple: store the answers directly.
+Sometimes you already know the answer to a yes/no question. Store it directly as <code>true</code> or <code>false</code>.
 
 ```js
-const isHungry = true;
-const isSleepy = false;
-console.log(isHungry, isSleepy); // true false
+let hasSentInvites = false;
+const captionsEnabled = true;
+console.log(hasSentInvites, captionsEnabled); // false true
 ```
 
-Why name them this way? Because future-you (and teammates) can *read the code out loud*: "**is hungry** is true." Avoid confusing names and double negatives like `isNotReady` if you can—"not not ready" is how headaches are born.
+Name booleans so you can read them out loud: “<em>has sent invites</em> is false” makes sense. Avoid double negatives like <code>isNotReady</code>—your future self will thank you.
 
 <HandbookChallenge
-  title="Flip the switches"
+  title="Set the status lights"
   hints={[
-    "Make three booleans: isOnline, hasTicket, shouldNotify.",
-    "Log them once, change one value, then log them again.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let isOnline = true;
-let hasTicket = false;
-let shouldNotify = false;
-console.log(isOnline, hasTicket, shouldNotify);
-hasTicket = true;
-console.log(isOnline, hasTicket, shouldNotify);`}</pre>,
+    "Keep your strings and numbers above this new section so every chapter shares the same script.",
+    "Use <code>true</code>/<code>false</code> directly—no quotes.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let hasSentInvites = false;
+let isProjectorOn = false;
+const captionsEnabled = true;
+console.log(hasSentInvites, isProjectorOn, captionsEnabled);
+hasSentInvites = true;
+console.log(hasSentInvites, isProjectorOn, captionsEnabled);`}</pre>,
   ]}
   answers={
-    <pre className="m-0 whitespace-pre-wrap">{`let isOnline = true;
-let hasTicket = false;
-let shouldNotify = false;
-console.log(isOnline, hasTicket, shouldNotify); // true false false
-hasTicket = true;
-console.log(isOnline, hasTicket, shouldNotify); // true true false`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`let hasSentInvites = false;
+let isProjectorOn = false;
+const captionsEnabled = true;
+console.log(hasSentInvites, isProjectorOn, captionsEnabled); // false false true
+hasSentInvites = true;
+console.log(hasSentInvites, isProjectorOn, captionsEnabled); // true false true`}</pre>
   }
 >
   <p className="m-0">
-    Create three boolean variables (<code>isOnline</code>, <code>hasTicket</code>, <code>shouldNotify</code>) with different values. Log them all, then change one and log them again.
+    Add three booleans to your planner (<code>hasSentInvites</code>, <code>isProjectorOn</code>, <code>captionsEnabled</code>). Log them once, flip <code>hasSentInvites</code> to <code>true</code> to simulate blasting the invites, then log again.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`true false false
-true true false`}</pre>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`false false true
+true false true`}</pre>
 </HandbookChallenge>
 
 ---
 
-## 2) Comparisons: asking questions that return booleans
+## 2) Comparisons: ask the numbers yes/no questions
 
-We don't want to hand-type `true` or `false` all day. Instead, we can **create** booleans with a **comparison**. A comparison is just a question you ask on the **right-hand side** of `=`:
-
-```js
-const age = 17;
-const canVote = age >= 18;
-```
-
-Read that aloud: "**Is age greater than or equal to 18?**"
-If the answer is **yes**, `canVote` becomes `true`. If **no**, it becomes `false`.
-
-Common comparison operators:
-
-* `>` "greater than"
-* `>=` "greater than or equal to"
-* `<` "less than"
-* `<=` "less than or equal to"
-* `===` "strictly equal to (same value **and** same type)"
-* `!==` "strictly not equal to (different in value **or** type)"
-
-### `=` vs `===` vs `!==` (don't mix these up)
-
-* **`=`** is the **assignment operator**: **evaluate the right, then store the result in the single variable on the left.**
-* **`===`** is a **question**: are the two sides **exactly the same**, including type?
-* **`!==`** is the opposite question: are they **different**?
+We don’t want to hand-type <code>true</code> and <code>false</code> for every scenario. Instead, we <strong>derive booleans</strong> by asking the numbers questions with comparison operators.
 
 ```js
-console.log(2 === 2);   // true
-console.log("2" === 2); // false (string vs number)
-console.log(3 !== 4);   // true
+const maxGuests = 6;
+const isOverCapacity = numGuests > maxGuests;
+const hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
 ```
 
-> We are not using the loose equality operator here. Keeping it strict keeps it clear.
+Read the comparison aloud: “Is <em>numGuests greater than maxGuests?</em>” → the result becomes the boolean.
+
+Common operators you’ll use here:
+
+| Symbol | Reads like                         | Example                              |
+| ------ | ---------------------------------- | ------------------------------------ |
+| `>`    | greater than                       | `numGuests > maxGuests`              |
+| `>=`   | greater than or equal to           | `snacksOnHand >= totalSnacksNeeded`  |
+| `<`    | less than                          | `bowlsNeeded < 4`                    |
+| `<=`   | less than or equal to              | `numGuests <= 10`                    |
+| `===`  | strictly equal (same value & type) | `location === "living room"`        |
+| `!==`  | strictly not equal                 | `snack !== "kettle corn"`           |
+
+<Callout type="tip" title="Remember the assignment rule">
+  <p className="m-0"><strong>`=`</strong> still means “evaluate the entire right-hand side first, then store the single resulting value in the variable on the left.” Comparisons live on the right-hand side.</p>
+</Callout>
 
 <HandbookChallenge
-  title="Gate check"
+  title="Capacity alarms"
   hints={[
-    "Start with `let seatsTaken = 7; const seatsTotal = 10;`",
-    "Create `const isFull = seatsTaken === seatsTotal`.",
-    "Change `seatsTaken` to 10 and recompute isFull.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let seatsTaken = 7;
-const seatsTotal = 10;
-let isFull = seatsTaken === seatsTotal;
-console.log(isFull); // false
-seatsTaken = 10;
-isFull = seatsTaken === seatsTotal;
-console.log(isFull); // true`}</pre>,
+    "Re-use <code>numGuests</code>, <code>totalSnacksNeeded</code>, and <code>snacksOnHand</code> from Numbers.",
+    "Introduce <code>const maxGuests = 6;</code> near your other numbers.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const maxGuests = 6;
+let isOverCapacity = numGuests > maxGuests;
+let hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
+console.log(isOverCapacity, hasEnoughSnacks);
+
+numGuests += 2; // two more RSVPs
+isOverCapacity = numGuests > maxGuests;
+console.log(isOverCapacity);
+
+snacksOnHand -= 3; // someone ate a bag early
+hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
+console.log(hasEnoughSnacks);`}</pre>,
   ]}
   answers={
-    <pre className="m-0 whitespace-pre-wrap">{`let seatsTaken = 7;
-const seatsTotal = 10;
-let isFull = seatsTaken === seatsTotal;
-console.log(isFull); // false
-seatsTaken = 10;
-isFull = seatsTaken === seatsTotal;
-console.log(isFull); // true`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`const maxGuests = 6;
+let isOverCapacity = numGuests > maxGuests;
+let hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
+console.log(isOverCapacity, hasEnoughSnacks);
+
+numGuests += 2;
+isOverCapacity = numGuests > maxGuests;
+console.log(isOverCapacity);
+
+snacksOnHand -= 3;
+hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
+console.log(hasEnoughSnacks);`}</pre>
   }
 >
   <p className="m-0">
-    Create <code>seatsTaken</code> (7) and <code>seatsTotal</code> (10). Use <code>===</code> to check if they're equal and store in <code>isFull</code>. Log it, then change <code>seatsTaken</code> to 10, recompute <code>isFull</code>, and log again.
+    Add <code>maxGuests</code> to your planner. Compute <code>isOverCapacity</code> and <code>hasEnoughSnacks</code>, log them, then change the numbers (simulate new RSVPs or lost snacks) and recompute so the booleans stay accurate.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`false
-true`}</pre>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+  <pre className="m-0 whitespace-pre-wrap">{`false true
+true
+false`}</pre>
 </HandbookChallenge>
 
 ---
 
-## 3) Negation: the "not" operator `!`
+## 3) Negation (`!`) turns one rule into its opposite
 
-Sometimes your app needs to flip a switch—**edit ↔ view**, **open ↔ closed**, **dark mode ↔ light mode**. In JavaScript, the exclamation mark **`!`** means **"not."** You've already seen it inside `!==` (not equal). On its own, `!` is most useful in two ways:
-
-1. **Toggle a boolean variable** (when the user is turning something on/off).
-2. **Negate a whole condition** (when the opposite rule reads more clearly).
-
-### 3.1 Toggle a boolean (UI switches)
-
-Use `!` to flip state that naturally **toggles**.
+The exclamation mark means “not.” Use it to flip a boolean or to invert a whole condition.
 
 ```js
-let isOpen = false;            // drawer starts closed
-isOpen = !isOpen;              // user clicks "Open" → true
-console.log(isOpen);           // true
-isOpen = !isOpen;              // user clicks "Close" → false
-console.log(isOpen);           // false
+let isLightsDimmed = false;
+isLightsDimmed = !isLightsDimmed; // true
+const shouldSendReminder = !hasSentInvites; // true if invites aren’t sent yet
 ```
 
-**Read it aloud:** "**not** isOpen." If it was `true`, it becomes `false`, and vice‑versa.
-
-**Common toggles you'll see:** `isEditing`, `isOpen`, `isDarkMode`, `isCollapsed`, `isMuted`.
-
-### 3.2 Negate a condition (the opposite rule)
-
-Sometimes the **opposite** rule is clearer to read. You can negate an existing boolean, or negate an entire comparison (wrap it in parentheses for readability).
-
-```js
-const seatsTaken = 9;
-const seatsTotal = 10;
-const isFull = seatsTaken === seatsTotal; // false
-const hasSpace = !isFull;                  // true (not full)
-
-// Or inline: negate the comparison you already have
-const shouldShowJoinButton = !(seatsTaken === seatsTotal); // not full → show
-```
+Every UI toggle you’ve ever built uses this pattern somewhere: <code>isOpen</code>, <code>isEditing</code>, <code>isMuted</code>, <code>isDarkMode</code>—they all flip with <code>!</code>.
 
 <HandbookChallenge
-  title="Toggle vs explicit"
+  title="Lights & reminders"
   hints={[
-    "Use ! to flip a UI switch (e.g., isEditing).",
-    "Use explicit true/false for process state (e.g., isLoading).",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let isEditing = false;
-console.log(isEditing);   // false
-isEditing = !isEditing;    // user clicks Edit
-console.log(isEditing);   // true
+    "Start with <code>let isLightsDimmed = false;</code> near your other booleans.",
+    "Use <code>!variable</code> instead of manually writing true/false each time.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let isLightsDimmed = false;
+console.log(isLightsDimmed); // false
+isLightsDimmed = !isLightsDimmed;
+console.log(isLightsDimmed); // true
 
-let isLoading = false;     // start a fake request
-isLoading = true;
-// ... do work ...
-isLoading = false;         // finished
-console.log(isLoading);   // false`}</pre>,
+const shouldSendReminder = !hasSentInvites;
+console.log(shouldSendReminder);`}</pre>,
   ]}
   answers={
-    <pre className="m-0 whitespace-pre-wrap">{`let isEditing = false;
-console.log(isEditing);   // false
-isEditing = !isEditing;
-console.log(isEditing);   // true
-isEditing = !isEditing;
-console.log(isEditing);   // false
+    <pre className="m-0 whitespace-pre-wrap">{`let isLightsDimmed = false;
+console.log(isLightsDimmed);
+isLightsDimmed = !isLightsDimmed;
+console.log(isLightsDimmed);
+isLightsDimmed = !isLightsDimmed;
+console.log(isLightsDimmed);
 
-let isLoading = false;
-isLoading = true;         // start
-// ...
-isLoading = false;        // end
-console.log(isLoading);   // false`}</pre>
+const shouldSendReminder = !hasSentInvites;
+console.log(shouldSendReminder);`}</pre>
   }
 >
   <p className="m-0">
-    Create <code>isEditing</code> (false). Log it, toggle it twice with <code>!</code>, logging after each toggle. Then create <code>isLoading</code> (false), set it to <code>true</code>, then back to <code>false</code>, and log the final value.
+    Toggle <code>isLightsDimmed</code> twice with <code>!</code> to simulate testing the room ambiance, logging after each flip. Then create <code>shouldSendReminder</code> that’s <code>true</code> only when invites haven’t gone out yet (<code>!hasSentInvites</code>).
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
   <pre className="m-0 whitespace-pre-wrap">{`false
 true
 false
@@ -215,99 +200,123 @@ false`}</pre>
 
 ## 4) `null` vs `undefined`: empty on purpose vs empty by accident
 
-Apps need an "empty" value. But sometimes that emptiness is **intentional**, and sometimes it's a **whoops**. JavaScript has two different values to show that:
+Movie Night will eventually highlight a VIP friend or a featured snack, but maybe you haven’t chosen them yet. That’s where <code>null</code> comes in—it says “we meant for this to be empty right now.” <code>undefined</code> usually means “we never set this (or we looked in the wrong place).”
 
-* **`null`** → *empty on purpose.*
-  You're saying: "This variable exists, but it doesn't have a value yet."
+```js
+let vipGuest = null;          // placeholder on purpose
+let backupSnack;              // undefined because we never assigned
+const snackPlan = { main: snack };
+console.log(snackPlan.bonusDessert); // undefined (property missing)
 
-  ```js
-  let selectedItem = null; // no selection yet
-  console.log(selectedItem); // null
-  ```
+vipGuest = "Aunt Jo";        // later we fill it in
+console.log(vipGuest);        // "Aunt Jo"
+```
 
-* **`undefined`** → *empty by accident / not set / not found.*
-  JavaScript looked for a value…and didn't find one.
-
-  ```js
-  let example;                 // declared but never assigned
-  console.log(example);        // undefined
-
-  const user = { name: "Riley" };
-  console.log(user.email);     // undefined (missing property)
-  ```
-
-Why bother with two? Because they answer different questions:
-
-* `null` says, "We **meant** for this to be empty right now."
-* `undefined` says, "We **never set** this (or we looked in the wrong place)."
+<Callout type="tip" title="When to use which">
+  <p className="m-0"><strong>Use <code>null</code></strong> when you want to signal “this will have a value later.” Expect <strong><code>undefined</code></strong> from JavaScript when you forget to assign or you ask for something that doesn’t exist.</p>
+</Callout>
 
 <HandbookChallenge
-  title="Waiting room"
+  title="Hold the VIP seat"
   hints={[
-    "Start `let selectedItem = null;` and log it.",
-    "Make a small object without an email, then log `obj.email`.",
-    "Assign a real value to `selectedItem` and log both again.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let selectedItem = null;
-console.log(selectedItem); // null
-const person = { name: "Riley" };
-console.log(person.email); // undefined
-selectedItem = "Headphones";
-console.log(selectedItem);   // Headphones
-console.log(person.email);   // undefined`}</pre>,
+    "Set <code>let vipGuest = null;</code> near your booleans.",
+    "Create an object like <code>const extras = { specialSnack: snack };</code> but skip another property.",
+    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let vipGuest = null;
+console.log(vipGuest); // null
+const extras = { specialSnack: snack };
+console.log(extras.bonusDrink); // undefined
+vipGuest = "Aunt Jo";
+console.log(vipGuest);         // "Aunt Jo"
+console.log(extras.bonusDrink); // still undefined`}</pre>,
   ]}
   answers={
-    <pre className="m-0 whitespace-pre-wrap">{`let selectedItem = null;
-console.log(selectedItem); // null
-const person = { name: "Riley" };
-console.log(person.email); // undefined
-selectedItem = "Headphones";
-console.log(selectedItem);   // Headphones
-console.log(person.email);   // undefined`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`let vipGuest = null;
+console.log(vipGuest);
+const extras = { specialSnack: snack };
+console.log(extras.bonusDrink);
+vipGuest = "Aunt Jo";
+console.log(vipGuest);
+console.log(extras.bonusDrink);`}</pre>
   }
 >
   <p className="m-0">
-    Create <code>selectedItem = null</code> and log it. Make an object <code>person</code> with just a <code>name</code> property. Log <code>person.email</code> (which doesn't exist). Then assign a string to <code>selectedItem</code> and log both values again.
+    Initialize <code>vipGuest</code> to <code>null</code>, log it, then create a small <code>extras</code> object with one defined property and log a missing one to see <code>undefined</code>. Finally assign a real name to <code>vipGuest</code> and print both values again.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
+  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
   <pre className="m-0 whitespace-pre-wrap">{`null
 undefined
-Headphones
+Aunt Jo
 undefined`}</pre>
 </HandbookChallenge>
 
 ---
 
-## Common gotchas (read these like little road signs)
+## Booleans checkpoint
 
-* Don't put booleans in quotes. "true" is a **string**, not a boolean.
-* Don't confuse = with ===.
+<Callout type="tip" title="Full planner snapshot">
+  <p className="m-0">By now, your script should include strings, numbers, and booleans working together. It might look like this (customize the values, but keep the structure so later chapters can build on it):</p>
+  <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let currentMood = "excited";
+const location = "living room";
+const streamingService = "CouchFlix";
+const favoriteShow = "Mystery Manor";
+let snack = "kettle corn";
 
-  * = **assigns** (right → left).
-  * === **compares** (asks a yes/no question).
-* Read comparisons out loud to check your intent:
-  age >= 18 → "Is age greater than or equal to 18?"
-* We're intentionally **not** covering "truthy/falsey" here. Stay with literal booleans and comparisons for now—clean and predictable.
+const inviteLine = "Join " + viewerName + " in the " + location +
+  " to stream " + favoriteShow + " with " + snack + ".";
+const inviteMessage = \`Tonight, \${"{"}viewerName\} is streaming \${"{"}favoriteShow\}
+  in the \${"{"}location\} with \${"{"}snack\} ready on \${"{"}streamingService\}.\`;
+
+let numGuests = 3;
+const maxGuests = 6;
+const snacksPerGuest = 2;
+const drinksPerGuest = 1;
+let totalSnacksNeeded = numGuests * snacksPerGuest;
+let totalDrinksNeeded = numGuests * drinksPerGuest;
+let snacksOnHand = 10;
+const snacksPerBowl = 4;
+let bowlsNeeded = totalSnacksNeeded / snacksPerBowl;
+
+let hasSentInvites = true;
+let isProjectorOn = false;
+const captionsEnabled = true;
+let isLightsDimmed = false;
+const isOverCapacity = numGuests > maxGuests;
+const hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
+const shouldSendReminder = !hasSentInvites;
+let vipGuest = "Aunt Jo";`}</pre>
+  <p className="m-0">Use this as your reset point before diving into conditionals.</p>
+</Callout>
+
+---
+
+## Common gotchas (mini road signs)
+
+* Don’t put booleans in quotes—<code>"true"</code> is a string, not a boolean.
+* <code>=</code> assigns, <code>===</code> compares, <code>!==</code> compares the opposite.
+* Wrap the part you’re negating in parentheses when it improves readability: <code>const hasSpace = !(numGuests > maxGuests);</code>
+* Use <code>null</code> to mark “waiting for real data later,” expect <code>undefined</code> when you forgot to assign or the property doesn’t exist.
 
 ---
 
 ## Technical Vocabulary
 
-| Term                | Plain-English meaning                         | Tiny example                       |
-| ------------------- | --------------------------------------------- | ---------------------------------- |
-| boolean             | A value that's either `true` or `false`       | `const isReady = true`             |
-| comparison operator | Asks a yes/no question that returns a boolean | `>`, `>=`, `<`, `<=`, `===`, `!==` |
-| assignment operator | Stores a value in a variable                  | `x = 10`                           |
-| negation operator   | "not" — flips a boolean                       | `!isOnline`                        |
-| null                | Empty **on purpose**                          | `let selected = null`              |
-| undefined           | Empty **by accident** / not set               | `let x; // undefined`              |
+| Term                | Plain-English meaning                         | Tiny example                               |
+| ------------------- | --------------------------------------------- | ------------------------------------------ |
+| boolean             | A yes/no value                                | `const isReady = true`                     |
+| comparison operator | Symbol that asks a question about numbers     | `numGuests > maxGuests`                    |
+| assignment operator | Stores the result of an expression            | `isFull = seatsTaken === seatsTotal`       |
+| negation operator   | Flips a boolean                               | `isLightsDimmed = !isLightsDimmed`         |
+| null                | Empty on purpose (placeholder)                | `let vipGuest = null`                      |
+| undefined           | Empty by accident / not set / missing property| `extras.bonusDrink // undefined`           |
 
 ---
 
 ## Wrap-up
 
-* Booleans store **yes/no** answers.
-* When you write `const canVote = age >= 18`, you're **asking a question on the right**; the variable becomes `true` for "yes," `false` for "no."
-* Use `!` (not) to flip a boolean when you need the opposite.
-* Use `null` for **intentional emptiness**, and expect `undefined` when something wasn't set or can't be found.
+* Booleans store the answers to the yes/no questions your app keeps asking.
+* Derived booleans come from comparisons—ask the question on the right side of <code>=</code>.
+* Use <code>!</code> to flip a value or invert a rule without rewriting the logic.
+* Reach for <code>null</code> when you deliberately leave a slot empty, and expect <code>undefined</code> when something was never filled in.
 
-**Next up: Conditionals.** We'll plug these booleans into `if` / `else` and start choosing paths.
+**Next up: Conditionals.** We’ll feed these booleans into <code>if</code> / <code>else</code> statements so the planner can actually branch. The light switches you built here will finally control the flow.

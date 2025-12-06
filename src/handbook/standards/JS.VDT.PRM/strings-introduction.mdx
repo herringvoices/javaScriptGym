@@ -15,6 +15,15 @@ In this chapter we’re starting with **strings**—just text.
 <Callout type="note" title="Strings, in one breath">
 A <strong>string</strong> is text. Write it in quotes, like <code>"Hello world"</code>. For consistency, we’ll use <strong>double quotes</strong> in this course. Later you’ll also see single quotes and backticks.
 </Callout>
+<br/>
+<Callout type="note" title="Movie Night Planner checkpoint">
+  <p className="m-0">Bring the variables you created in the Variables chapter with you. Your editor should already contain the core Movie Night Planner setup:</p>
+  <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let currentMood = "excited";
+const location = "living room";
+const streamingService = "CouchFlix";`}</pre>
+  <p className="m-0">If not, clear your file and paste this snippet (swap in your own values). Every string challenge below assumes this baseline.</p>
+</Callout>
 
 ## 1) Your first strings
 
@@ -29,25 +38,29 @@ console.log(firstName, hometown); // Riley Nashville
 ```
 
 <HandbookChallenge
-title="Make some strings"
+title="Add the show & snack"
 hints={[
-	"Separate multiple items in your console.log with commas to log them all at once.",
-"Keep your comma-separated values inside the parentheses console.log(like, this)"
+"Leave <code>viewerName</code>, <code>currentMood</code>, <code>location</code>, and <code>streamingService</code> in place.",
+"Strings are text in quotes—stick with double quotes for now.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const favoriteShow = "Mystery Manor";
+let snack = "kettle corn";
+console.log(favoriteShow, snack);`}</pre>,
 ]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const favoriteCity = "Savannah";
-const petName = "Dexter";
-console.log(favoriteCity, petName);`}</pre>
-}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let currentMood = "excited";
+const location = "living room";
+const streamingService = "CouchFlix";
 
+const favoriteShow = "Mystery Manor";
+let snack = "kettle corn";
+console.log(favoriteShow, snack);`}</pre>
+}
 >
-	<Callout type="note" title="Before you begin">
-You can delete the text in your editor to start with a clean slate.
-</Callout>
+
 	<p className="m-0">
-		Create two variables with text values (your choice, e.g., <code>favoriteCity</code>, <code>petName</code>) and log them on one line.
+		Add two more strings to the Movie Night Planner: <code>favoriteShow</code> (use <code>const</code>) and <code>snack</code> (use <code>let</code> so you can change it later). Log both values on one line to confirm they’re ready for later chapters.
 	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`Savannah Dexter`}</pre>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`Mystery Manor kettle corn`}</pre>
 </HandbookChallenge>
 
 ---
@@ -67,44 +80,46 @@ const sentence = "The " + animal + " looks " + mood + ".";
 console.log(sentence); // "The otter looks sleepy."
 ```
 
-<Callout type="warn" title="But… this gets old fast">
-With a few pieces, <code>+</code> is fine. With four or five, it turns into quotes‑and‑pluses spaghetti. Miss one space and you get <code>"HelloRiley"</code>. Wouldn’t it be nice if there were an easier way? Maybe one with an even more obnoxious name??
-</Callout>
-
 
 <HandbookChallenge
-title="Glue a sentence with +"
+title="Glue the invite with +"
 hints={[
-"Remember to add spaces yourself: e.g., 'I enjoy ' + hobby + ' at ' + place + '.'",
-"Store your result in a new variable, then log it.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const hobby = "hiking";
-const place = "Radnor Lake";
-const about = "I enjoy " + hobby + " at " + place + ".";
-console.log(about);`}</pre>,
+"Reuse <code>viewerName</code>, <code>favoriteShow</code>, <code>location</code>, and <code>snack</code> from earlier.",
+"Add any needed spaces or punctuation inside the quoted chunks.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const inviteLine = "Join " + viewerName + " in the " + location +
+  " to stream " + favoriteShow + " with " + snack + ".";
+console.log(inviteLine);`}</pre>,
 ]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const hobby = "hiking";
-const place = "Radnor Lake";
-const about = "I enjoy " + hobby + " at " + place + ".";
-console.log(about);`}</pre>
+answers={ <pre className="m-0 whitespace-pre-wrap">{`const inviteLine = "Join " + viewerName + " in the " + location +
+  " to stream " + favoriteShow + " with " + snack + ".";
+console.log(inviteLine);`}</pre>
 }
-
 >
 
+	<Callout type="note" title="Starting point">
+		<p className="m-0">Keep <code>viewerName</code>, <code>favoriteShow</code>, <code>snack</code>, and <code>location</code> in your editor.</p>
+	</Callout>
 	<p className="m-0">
-		Make two short strings (like a <code>hobby</code> and a <code>place</code>). Concatenate them with <code>+</code> into one sentence and log it.
+		Create a new variable named <code>inviteLine</code>. Concatenate the existing strings with <code>+</code> to write a one-line invite, then log it.
 	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`I enjoy hiking at Radnor Lake.`}</pre>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`Join Milo in the living room to stream Mystery Manor with kettle corn.`}</pre>
 </HandbookChallenge>
+
+<br/>
+
+<Callout type="danger" title="But… this gets old fast">
+With a few pieces, <code>+</code> is fine. With four or five, it turns into quotes‑and‑pluses spaghetti. Miss one space and you get <code>"HelloRiley"</code>. Wouldn’t it be nice if there were an easier way? Maybe one with an even more obnoxious name than "concatenation"??
+</Callout>
 
 ---
 
 ## 3) Interpolation (insert values into a string)
 
 <Callout type="tip" title="Problem this solves">
-Concatenation works, but it’s fragile and hard to read with many parts. We want a cleaner way to write sentences without babysitting spaces. Enter <strong>template literals</strong>—yes, that gloriously obnoxious name.
+Concatenation works, but it’s fragile and hard to read with many parts. We want a cleaner way to write sentences without babysitting spaces. Enter <strong>string interpolation</strong>—yes, that gloriously obnoxious name.
 </Callout>
 
-Template literals use <strong>backticks</strong> (the key under ESC) and let you embed variables with <code>${"{"}...{"}"}</code>.
+In JavaScript, to do string interpolation, we use <strong>backticks</strong> (the key under ESC) to let us embed variables with <code>$\{...\}</code>. You'll also hear these called <strong>template literals</strong>.
 
 ```js
 const drink = "chai latte";
@@ -113,40 +128,56 @@ const line = `Order ready: ${drink} at ${cafe}.`;
 console.log(line); // "Order ready: chai latte at River & Rye."
 ```
 
-<Callout type="warn" title="Backticks, not quotes">
-Interpolation only works inside <strong>backticks</strong> ( <code>`</code> ). <code>"Hi ${"{"}name{"}"}"</code> won’t interpolate; you’ll just see the symbols.
+<Callout type="danger" title="Backticks, not quotes">
+Interpolation only works inside <strong>backticks</strong> ( <code>`</code> ). <code>"Hi $\{name\}"</code> won’t interpolate; you’ll just see the symbols.
 </Callout>
-
+<br/>
 <HandbookChallenge
 title="Rewrite with interpolation"
 hints={[
-"Use backticks around the whole string.",
-"Insert variables with ${...}.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const snack = "pretzels";
-const show = "Lost";
-const msg = \`Now streaming ${"{"}show{"}"} — bring ${"{"}snack{"}"}!\`;
-console.log(msg);`}</pre>,
+"Switch to backticks so interpolation works.",
+"Reuse your <code>inviteLine</code> idea but store it in a new variable.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const inviteMessage = \`Tonight, $\{viewerName\} is streaming $\{favoriteShow\}
+  in the $\{location\} with $\{snack\} ready on $\{streamingService\}.\`;
+console.log(inviteMessage);`}</pre>,
 	]}
-	answers={     <pre className="m-0 whitespace-pre-wrap">{`const snack = "pretzels";
-const show = "Lost";
-const msg = \`Now streaming ${"{"}show{"}"} — bring ${"{"}snack{"}"}!\`;
-console.log(msg);`}</pre>
+	answers={     <pre className="m-0 whitespace-pre-wrap">{`const inviteMessage = \`Tonight, $\{viewerName\} is streaming $\{favoriteShow\} in the $\{location\}
+  with $\{snack\} ready on $\{streamingService\}.\`;
+console.log(inviteMessage);`}</pre>
 }
-
 >
 
 	<p className="m-0">
-		Take the sentence you built with <code>+</code> and rebuild it as a template literal using backticks and <code>${"{"}...{"}"}</code>.
+		Take the sentence you just made with <code>+</code> and rebuild it as a template literal. Store it in <code>inviteMessage</code>, log it, and keep both versions for reference—the planner will reuse this text later.
 	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`Now streaming Lost — bring pretzels!`}</pre>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`Tonight, Milo is streaming Mystery Manor in the living room with kettle corn ready on CouchFlix.`}</pre>
 </HandbookChallenge>
+<br/>
+
+<Callout type="tip" title="Strings checkpoint">
+  <p className="m-0">Before heading to numbers, keep this snapshot (customize values) so the next chapter starts from the same place:</p>
+  <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let currentMood = "excited";
+const location = "living room";
+const streamingService = "CouchFlix";
+const favoriteShow = "Mystery Manor";
+let snack = "kettle corn";
+
+const inviteLine = "Join " + viewerName + " in the " + location +
+  " to stream " + favoriteShow + " with " + snack + ".";
+const inviteMessage = \`Tonight, $\{viewerName\} is streaming $\{favoriteShow\}
+  in the $\{location\} with $\{snack\} ready on $\{streamingService\}.\`;
+
+console.log(inviteMessage);`}</pre>
+  <p className="m-0">If things feel off, paste this snippet into your editor before moving on.</p>
+</Callout>
 
 ---
 
 ## Common gotchas (quick fixes)
 
 * **Missing spaces:** If your sentence looks jammed, add spaces inside your strings: <code>"Hello " + name</code>.
-* **Wrong quotes for interpolation:** Use backticks for <code>${"{"}...{"}"}</code>.
+* **Wrong quotes for interpolation:** Use backticks for <code>$\{...\}</code>.
 * **Mismatched quotes:** Start and end with the same kind (we’ll default to double quotes).
 
 ---
@@ -157,16 +188,15 @@ console.log(msg);`}</pre>
 | :--------------- | :----------------------------------------------------- | :---------------------------------------- |
 | string           | Text inside quotes                                     | <code>"Nashville"</code>                  |
 | concatenate      | Glue strings with <code>+</code>                       | <code>"Hi " + "there"</code>              |
-| template literal | Backtick string with <code>${"{"}...{"}"}</code> slots | <code>`Name: ${"{"}firstName{"}"}`</code> |
+| template literal | Backtick string with <code>$\{...\}</code> slots | <code>`Name: ${firstName}`</code> |
 | backtick         | Character used for template literals                   | <code>`like this`</code>                  |
-| interpolation    | Inserting values inside a backtick string              | <code>`Hello, ${"{"}name{"}"}`</code>     |
+| interpolation    | Inserting values inside a backtick string              | <code>`Hello, ${name}`</code>     |
 
 ---
 
 ## Wrap-up
 
 * Strings are just <strong>text in quotes</strong>.
-* Use <strong>`+`</strong> to glue strings together, but it gets messy—<strong>template literals</strong> (backticks + <code>${"{"}...{"}"}</code>) are cleaner.
+* Use <strong>`+`</strong> to glue strings together, but it gets messy—<strong>template literals</strong> (backticks + <code>$\{...\}</code>) are cleaner.
 
 <strong>Next up: Numbers.</strong> Operators, math, and the little gotchas when you mix strings with numbers (spoiler: you shouldn’t—yet).
-

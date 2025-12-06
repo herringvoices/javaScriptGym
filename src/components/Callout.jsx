@@ -19,6 +19,12 @@ const typeStyles = {
     label: "text-brand-300",
     title: "Note",
   },
+  danger: {
+    border: "border-red-500/40",
+    bg: "bg-red-500/10",
+    label: "text-red-300",
+    title: "Danger",
+  },
 };
 
 export default function Callout({ type = "note", title, children }) {

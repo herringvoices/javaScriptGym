@@ -8,7 +8,7 @@ short: Make numeric values, add/subtract/multiply/divide, and update totals with
 
 Last time, we worked with **strings**—text in quotes—so we could label things and build readable sentences. Strings are great for names, messages, and anything you’d say out loud.
 
-But sentences don’t add up. To do *real math*, we need our second data type: **numbers**. Now, I know some of us hear "math" and run screaming for the hills, but this won't be anything too scary—just the kind of simpe math your apps actually use.
+But sentences don’t add up. To do *real math*, we need our second data type: **numbers**. Now, I know some of us hear "math" and run screaming for the hills, but this won't be anything too scary—just the kind of simple math your apps actually use.
 
 Consider these problems:
 
@@ -19,9 +19,25 @@ Consider these problems:
 
 That’s numbers territory: counts, totals, and simple scaling. No calculus. No proofs. Just values you can calculate with so your app can answer “how many?” and “what’s the total?” without breaking a sweat.
 
+<Callout type="note" title="Movie Night Planner checkpoint">
+  <p className="m-0">Keep the script you built in Strings. You’ll need these variables before writing any numbers:</p>
+  <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let currentMood = "excited";
+const location = "living room";
+const streamingService = "CouchFlix";
+const favoriteShow = "Mystery Manor";
+let snack = "kettle corn";
+
+const inviteLine = "Join " + viewerName + " in the " + location +
+  " to stream " + favoriteShow + " with " + snack + ".";
+const inviteMessage = \`Tonight, \$\{viewerName\} is streaming \$\{favoriteShow\}
+  in the \$\{location\} with \$\{snack\} ready on \$\{streamingService\}.`}</pre>
+  <p className="m-0">If your file looks different, reset it to this baseline (customize the values) before adding the next lines.</p>
+</Callout>
+
 ## 1) Your first numbers
 
-To make a number, you just type a numeral out without quotation marks. For example, `5` instead of `"5"`
+To make a number, you just type a numeral without quotation marks. For example, `5` instead of `"5"`.
 
 Let's take a look at some numbers being assigned to variables:
 
@@ -32,23 +48,31 @@ console.log(redTeam, blueTeam); // 5 4
 ```
 
 <HandbookChallenge
-title="Challenge: Tally the total"
+title="Count the guest list"
 hints={[
-"Make a new variable to hold the total from the previous example.",
-"Use + to add two numbers together on the right of the = sign.",
+"Keep your string variables above this section and add numbers underneath them.",
+"Use multiplication to calculate totals instead of doing the math in your head.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let numGuests = 3;
+const snacksPerGuest = 2;
+const drinksPerGuest = 1;
+let totalSnacksNeeded = numGuests * snacksPerGuest;
+let totalDrinksNeeded = numGuests * drinksPerGuest;
+console.log(totalSnacksNeeded, totalDrinksNeeded);`}</pre>,
 ]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const redTeam = 5;
-const blueTeam = 4;
-let totalPlayers = redTeam + blueTeam;
-console.log(totalPlayers); // 9`}</pre> }
+answers={ <pre className="m-0 whitespace-pre-wrap">{`let numGuests = 3;
+const snacksPerGuest = 2;
+const drinksPerGuest = 1;
 
+let totalSnacksNeeded = numGuests * snacksPerGuest;
+let totalDrinksNeeded = numGuests * drinksPerGuest;
+console.log(totalSnacksNeeded, totalDrinksNeeded); // 6 3`}</pre>
+}
 >
 
 	<p className="m-0">
-		Make a new variable that adds the two team counts from the previous example and log the result.
-	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`9`}</pre>
+		Extend the Movie Night Planner by storing how many guests are coming plus how many snacks and drinks each person needs. Multiply to compute <code>totalSnacksNeeded</code> and <code>totalDrinksNeeded</code>, then log both numbers.
+		</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`6 3`}</pre>
 </HandbookChallenge>
 
 ---
@@ -92,33 +116,45 @@ console.log(total); // 2
 > Same rule as before: JavaScript evaluates the **right-hand side first**, then assigns the result to the **single** variable on the left.
 
 <HandbookChallenge
-title="Scoreboard bumps"
+title="RSVP ripple"
 hints={[
-"Start with `let score = 0;`",
-"Use ONLY compound assignment: +=",
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`let score = 0;
-score += 3;
-console.log(score); // 3
-score += 2;
-console.log(score); // 5
-score -= 1;
-console.log(score); // 4`}</pre> }
+"Re-use <code>numGuests</code>, <code>snacksPerGuest</code>, and <code>drinksPerGuest</code> from the previous challenge.",
+"Every time the guest count changes, recompute the totals so the planner doesn’t drift.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`numGuests += 1;
+totalSnacksNeeded = numGuests * snacksPerGuest;
+totalDrinksNeeded = numGuests * drinksPerGuest;
+console.log(numGuests, totalSnacksNeeded);
 
+numGuests -= 2;
+totalSnacksNeeded = numGuests * snacksPerGuest;
+totalDrinksNeeded = numGuests * drinksPerGuest;
+console.log(numGuests, totalSnacksNeeded);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`numGuests += 1; // a friend brings a plus-one
+totalSnacksNeeded = numGuests * snacksPerGuest;
+totalDrinksNeeded = numGuests * drinksPerGuest;
+console.log(numGuests, totalSnacksNeeded, totalDrinksNeeded);
+
+numGuests -= 2; // two people drop out
+totalSnacksNeeded = numGuests * snacksPerGuest;
+totalDrinksNeeded = numGuests * drinksPerGuest;
+console.log(numGuests, totalSnacksNeeded, totalDrinksNeeded);`}</pre>
+}
 >
 
+	<Callout type="note" title="Starting point">
+		<p className="m-0">Your editor should already contain <code>numGuests</code>, <code>snacksPerGuest</code>, <code>drinksPerGuest</code>, and the running totals.</p>
+	</Callout>
 	<p className="m-0">
-		Use compound assignment to update a running score and log at each step.
-	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`3
-5
-4`}</pre>
+		Use <code>+=</code> and <code>-=</code> to react when guests RSVP yes/no. After each change, recompute <code>totalSnacksNeeded</code> and <code>totalDrinksNeeded</code>, then log the new counts.
+		</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`4 8 4
+2 4 2`}</pre>
 </HandbookChallenge>
 
 ---
 
-## 2.5) Numbers vs strings: "2" + "2" vs 2 + 2
+## 2.5) Numbers vs strings: 2 vs "2"
 
 <Callout type="caution" title="Same plus sign, different meaning">
 If either side is a <strong>string</strong>, JavaScript will treat <code>+</code> as <strong>concatenate</strong> and glue text together. If both sides are <strong>numbers</strong>, <code>+</code> does <strong>addition</strong>.
@@ -127,28 +163,29 @@ If either side is a <strong>string</strong>, JavaScript will treat <code>+</code
 ```js
 console.log("2" + "2"); // "22" (two strings concatenated)
 console.log(2 + 2);       // 4   (two numbers added)
-console.log("2" + 2);     // "22" (number becomes text, then glued)
-console.log(2 + "2");     // "22"
 ```
 
 <HandbookChallenge
-title="Challenge: Try these additions"
+title="Label or add?"
 hints={[
-"Run the first example to see how JavaScript treats two strings with +.",
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log("2" + "2"); // try this first`}</pre>,
+"Log both the numeric math and the string version so you can see the difference.",
+"You already have <code>numGuests</code> and <code>totalSnacksNeeded</code> from earlier.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(numGuests + 2); // numeric addition
+console.log(numGuests + " guests confirmed"); // string concatenation
+console.log("Snacks: " + totalSnacksNeeded);`}</pre>,
 ]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`console.log("2" + "2"); // "22" (two strings concatenated)
-console.log(2 + 2);       // 4   (two numbers added)
-console.log("2" + 2);     // "22" (number becomes text, then glued)
-console.log(2 + "2");     // "22"`}</pre> }
+answers={ <pre className="m-0 whitespace-pre-wrap">{`console.log(numGuests + 2); // adds 2 more guests numerically
+console.log(numGuests + " guests confirmed"); // turns the number into text
+console.log("Snacks: " + totalSnacksNeeded);`}</pre>
+}
 >
 
-	<p className="m-0">Console.log each of the following addition problems and observe what prints in the console. Note the difference between string concatenation and numeric addition.</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Problems to console.log:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`"2" + "2"
-2 + 2
-"2" + 2
-2 + "2"`}</pre>
+	<p className="m-0">
+		Log three lines: the numeric total if two more people show up, a string label like <code>"4 guests confirmed"</code>, and another label for snacks. Notice how the same <code>+</code> either adds or concatenates depending on whether you involve a string.
+		</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`5
+3 guests confirmed
+Snacks: 6`}</pre>
 </HandbookChallenge>
 
 For now, keep it simple: **quotes = text** (glue with `+`), **no quotes = numbers** (add with `+`). We'll explore mixing types and coercion later.
@@ -172,30 +209,62 @@ console.log(cookiesEach); // 4
 ```
 
 <HandbookChallenge
-title="T-shirt boxes"
+title="Snack stock math"
 hints={[
-"Keep constants that don’t change as `const` (e.g., `shirtsPerBox`).",
-"Use a new variable for the computed total.",
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`const shirtsPerBox = 12;
-let boxes = 7;`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const shirtsPerBox = 12;
-let boxes = 7;
-let totalShirts = shirtsPerBox * boxes;
-console.log(totalShirts); // 84
-boxes = 8;
-totalShirts = shirtsPerBox * boxes;
-console.log(totalShirts); // 96`}</pre> }
+"Introduce <code>snacksOnHand</code> so you can compare inventory to the total needed.",
+"Use division to estimate how many bowls you’ll fill (e.g., 4 snacks fit in one bowl).", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let snacksOnHand = 10;
+const snacksPerBowl = 4;
+let bowlsNeeded = totalSnacksNeeded / snacksPerBowl;
+console.log(bowlsNeeded);
 
+snacksOnHand += 2; // grabbed another bag
+const snacksRemaining = snacksOnHand - totalSnacksNeeded;
+console.log(snacksRemaining);`}</pre>,
+]}
+answers={ <pre className="m-0 whitespace-pre-wrap">{`let snacksOnHand = 10;
+const snacksPerBowl = 4;
+let bowlsNeeded = totalSnacksNeeded / snacksPerBowl;
+console.log(bowlsNeeded); // 1.5 if you need 6 snacks
+
+snacksOnHand += 2;
+const snacksRemaining = snacksOnHand - totalSnacksNeeded;
+console.log(snacksRemaining);`}</pre>
+}
 >
 
 	<p className="m-0">
-		A customer orders 7 boxes of shirts. There are 12 shirts in each box. Create a variable named <code>shirtsPerBox</code> with the value <code>12</code> and a variable named <code>boxes</code> with the value <code>7</code>. Then calculate the total number of shirts, store it in a new variable called <code>totalShirts</code>, and <code>console.log(totalShirts)</code>. After that, the customer updates the order to 8 boxes — reassign <code>boxes</code> to <code>8</code> on the next line, and recompute <code>totalShirts</code>, logging the new total.
-	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`84
-96`}</pre>
+		Track how many snacks you already have (<code>snacksOnHand</code>), calculate how many bowls you need with division, then update <code>snacksOnHand</code> if you buy more. Finally, subtract to see how many snacks remain after covering guests.
+		</p>
+	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
+	<pre className="m-0 whitespace-pre-wrap">{`1.5
+6`}</pre>
 </HandbookChallenge>
+<br/>
+
+<Callout type="tip" title="Numbers checkpoint">
+  <p className="m-0">Before moving to booleans, your script should now look something like this (customize the values):</p>
+  <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let currentMood = "excited";
+const location = "living room";
+const streamingService = "CouchFlix";
+const favoriteShow = "Mystery Manor";
+let snack = "kettle corn";
+
+const inviteLine = "Join " + viewerName + " in the " + location +
+  " to stream " + favoriteShow + " with " + snack + ".";
+const inviteMessage = \`Tonight, \$\{viewerName\} is streaming \$\{favoriteShow\}
+  in the \$\{location\} with \$\{snack\} ready on \$\{streamingService\}.\`;
+
+let numGuests = 3;
+const snacksPerGuest = 2;
+const drinksPerGuest = 1;
+let totalSnacksNeeded = numGuests * snacksPerGuest;
+let totalDrinksNeeded = numGuests * drinksPerGuest;
+let snacksOnHand = 10;
+const snacksPerBowl = 4;
+let bowlsNeeded = totalSnacksNeeded / snacksPerBowl;`}</pre>
+  <p className="m-0">If anything is missing, reset your editor to this snapshot before starting the booleans chapter.</p>
+</Callout>
 
 ---
 
@@ -238,5 +307,3 @@ console.log((2 + 3) * 4); // 20
 You created and updated numeric values with **`+`**, **`-`**, **`*`**, **`/`**, and learned **compound assignment** (your new best friend for running totals).
 
 **Next up: Booleans.** True/false values that power decisions.
-
-```
