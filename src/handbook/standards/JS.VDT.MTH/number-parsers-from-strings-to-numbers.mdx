@@ -1,5 +1,4 @@
 ---
-
 id: JS.VDT.MTH.NUM_PARSE
 title: Number Parsers · From Strings to Numbers
 short: Turn form strings into numbers with Number, parseInt, and parseFloat—when to use which and why.
@@ -20,38 +19,26 @@ We’ll meet three parsers:
 > Vocabulary check
 > These are **functions** (not methods). You call them by name: <code>Number("42")</code>, <code>parseFloat("3.14")</code>. No dot before them.
 
+We’ll use these tools in a single flow in a moment, but first, a quick tour of each one.
+
 ---
 
 ## 1) `Number(value)` — your default move
 
 Use `Number(...)` when the whole string is a number (surrounding spaces are fine). If extra characters sneak in—like `"12px"`—`Number(...)` can’t convert it.
 
-<HandbookChallenge
- title="Convert clean numeric strings"
- hints={[
- "Create <code>qtyStr</code> as <code>\"3\"</code> and <code>priceStr</code> as <code>\" 19.99 \"</code>.",
- "Make <code>qty</code> and <code>price</code> using <code>Number(qtyStr)</code> and <code>Number(priceStr)</code>.",
- "Log both to see the numeric values.",
- <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const qtyStr = "3";
-// const priceStr = " 19.99 ";
-// const qty = Number(qtyStr);
-// const price = Number(priceStr);
-// console.log(qty, price);`}</pre>,
- ]}
- answers={ <pre className="m-0 whitespace-pre-wrap">{`const qtyStr = "3";
+**Example:**
+
+```js
+const qtyStr = "3";
 const priceStr = " 19.99 ";
 
 const qty = Number(qtyStr);
 const price = Number(priceStr);
 
-console.log(qty, price); // 3 19.99`}</pre>
-}
->
-
-  <p className="m-0">
-    <code>Number(...)</code> is great for clean inputs—especially from forms—because it converts the whole string.
-  </p>
-</HandbookChallenge>
+console.log(qty, price); // 3 19.99
+console.log(typeof qty, typeof price); // "number" "number"
+```
 
 ---
 
@@ -59,31 +46,15 @@ console.log(qty, price); // 3 19.99`}</pre>
 
 Use `parseInt(...)` when the number is at the **start** of the string but extra characters follow (like units). It stops reading at the first non-digit and returns the **integer** part.
 
-<HandbookChallenge
- title="Grab an integer with extra text after it"
- hints={[
- "Make <code>sizeStr</code> as <code>\"42px\"</code>.",
- "Create <code>size</code> using <code>parseInt(sizeStr)</code>.",
- "Log <code>size</code> to confirm it’s <em>just</em> the number.",
- "Bonus: try <code>parseInt(\"3.99\")</code> and see what you get.",
- <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const sizeStr = "42px";
-// const size = parseInt(sizeStr);
-// console.log(size); // 42
+**Example:**
 
-// console.log(parseInt("3.99")); // ?`}</pre>,
- ]}
- answers={ <pre className="m-0 whitespace-pre-wrap">{`const sizeStr = "42px";
+```js
+const sizeStr = "42px";
 const size = parseInt(sizeStr);
-console.log(size); // 42
 
-console.log(parseInt("3.99")); // 3`}</pre>
-}
->
-
-  <p className="m-0">
-    Use this when you want the **integer part** and expect trailing characters after the digits.
-  </p>
-</HandbookChallenge>
+console.log(size);        // 42
+console.log(typeof size); // "number"
+```
 
 ---
 
@@ -91,32 +62,15 @@ console.log(parseInt("3.99")); // 3`}</pre>
 
 Use `parseFloat(...)` when you want to keep the **decimal** portion and the number sits at the **start** of the string.
 
-<HandbookChallenge
- title="Keep the decimal, ignore the units"
- hints={[
- "Make <code>widthStr</code> as <code>\"12.5px\"</code> and <code>opacityStr</code> as <code>\"0.75rem\"</code>.",
- "Create <code>width</code> and <code>opacity</code> using <code>parseFloat(...)</code>.",
- "Log both values.",
- <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const widthStr = "12.5px";
-// const opacityStr = "0.75rem";
-// const width = parseFloat(widthStr);
-// const opacity = parseFloat(opacityStr);
-// console.log(width, opacity);`}</pre>,
- ]}
- answers={ <pre className="m-0 whitespace-pre-wrap">{`const widthStr = "12.5px";
-const opacityStr = "0.75rem";
+**Example:**
 
+```js
+const widthStr = "12.5px";
 const width = parseFloat(widthStr);
-const opacity = parseFloat(opacityStr);
 
-console.log(width, opacity); // 12.5 0.75`}</pre>
-}
->
-
-  <p className="m-0">
-    Same “read from the front” behavior as <code>parseInt</code>, but it preserves the fractional part.
-  </p>
-</HandbookChallenge>
+console.log(width);        // 12.5
+console.log(typeof width); // "number"
+```
 
 ---
 
@@ -130,48 +84,90 @@ console.log(width, opacity); // 12.5 0.75`}</pre>
 
 ---
 
-## Put it together: parse like a form
-
-Pretend these came from a form or an API:
-
-```
-qtyStr   = "3"
-priceStr = " 19.99 "
-widthStr = "12.5px"
-```
-
-Pick the **right parser** for each and produce usable numbers.
+## Challenge 1: Add prices to your books
 
 <HandbookChallenge
- title="Three inputs, three parsers"
- hints={[
- "Use <code>Number(...)</code> for <code>qtyStr</code> and <code>priceStr</code>.",
- "Use <code>parseFloat(...)</code> for <code>widthStr</code> to keep the decimal.",
- "Log the resulting numbers so you can see them all together.",
- <pre key="peek" className="m-0 whitespace-pre-wrap">{`// const qtyStr = "3";
-// const priceStr = " 19.99 ";
-// const widthStr = "12.5px";
+  title="Attach price data to your existing books"
+  hints={["Reuse the same book1, book2, and book3 objects from the Collections and String Methods chapters—just add a new property to each one."]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`
+const book1 = {
+  title: "The Way of Kings",
+  author: "Brandon Sanderson",
+  pages: 1010,
+  isPaperback: false,
+  genre: "Fantasy",
+  price: 18.99,
+};
 
-// const qty = Number(qtyStr);
-// const price = Number(priceStr);
-// const width = parseFloat(widthStr);
+const book2 = {
+  title: "Words of Radiance",
+  author: "Brandon Sanderson",
+  pages: 1100,
+  isPaperback: false,
+  price: 19.99,
+};
 
-// console.log(qty, price, width);`}</pre>,
- ]}
- answers={ <pre className="m-0 whitespace-pre-wrap">{`const qtyStr = "3";
-const priceStr = " 19.99 ";
-const widthStr = "12.5px";
+const book3 = {
+  title: "Oathbringer",
+  author: "Brandon Sanderson",
+  pages: 1248,
+  isPaperback: false,
+  price: 21.99,
+};
 
-const qty = Number(qtyStr);
-const price = Number(priceStr);
-const width = parseFloat(widthStr);
 
-console.log(qty, price, width); // 3 19.99 12.5`}</pre>
-}
+
+
+console.log(book1.price);
+console.log(book2.price);
+console.log(book3.price);`}</pre>
+  }
 >
 
   <p className="m-0">
-    You chose a parser for each situation and produced numbers ready for math. That’s the whole job.
+    Add a new <code>price</code> property to each of your book objects. This turns your bookshelf into something you can actually compare against a reader's budget.
+  </p>
+</HandbookChallenge>
+
+---
+
+## Challenge 2: Price and budget flow
+
+<HandbookChallenge
+  title="Check whether a reader can afford a book"
+  hints={["Look back at the Number(...) example above to remind yourself how to turn a string like \"20.00\" into a real number."]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// ...book1, book2, book3, books, and prices already defined above
+
+const userBudgetInput = "20.00";
+const userBudget = Number(userBudgetInput);
+
+const canAffordFirstBook = userBudget >= book1.price;
+const isExactPriceMatch = userBudget === book2.price;
+
+console.log(userBudget);
+console.log(typeof userBudget);
+console.log(canAffordFirstBook);
+console.log(isExactPriceMatch);`}</pre>
+  }
+>
+
+  <p className="m-0">
+    At the bottom of your file, add a new string called <code>userBudgetInput</code>:
+  </p>
+  <p className="m-0 mt-2"><code>const userBudgetInput = "20.00";</code></p>
+  <p className="m-0 mt-2">
+    This represents what a reader typed into a budget field on your library's website. Use one of the number parsers above to convert that string into a real number called <code>userBudget</code>, then compare it to your book prices:
+  </p>
+  <ul className="mt-2 mb-2">
+    <li>Create <code>userBudget</code> with one of the number parsers above.</li>
+    <li>Create <code>canAffordFirstBook</code> with <code>userBudget \<= book1.price</code>.</li>
+    <li>Create <code>isExactPriceMatch</code> to store the results of your check that <code>userBudget === book2.price</code> to check for an exact match to the second book's price.</li>
+    <li>Use <code>console.log()</code> to print the budget, its type, and both booleans so you can see how the comparisons turned out.</li>
+  </ul>
+  <p className="m-0">
+    This flow mirrors what real apps do: they take numeric-looking strings from a form, parse them into numbers, and then use comparisons to decide what a user can afford.
   </p>
 </HandbookChallenge>
 

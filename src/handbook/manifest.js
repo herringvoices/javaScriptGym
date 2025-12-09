@@ -93,16 +93,6 @@ export const handbookStructure = {
         title: 'Arrays of Objects',
         load: () => import('./standards/JS.VDT.COL/arrays-of-objects.mdx'),
       },
-      {
-        id: 'JS.VDT.COL.ARR_ENDS',
-        title: 'Arrays: End Controls',
-        load: () => import('./standards/JS.VDT.COL/arrays-end-controls.mdx'),
-      },
-      {
-        id: 'JS.VDT.COL.PROJ.LIB',
-        title: 'Mini Project: Library Shelf',
-        load: () => import('./standards/JS.VDT.COL/project-library-shelf.mdx'),
-      },
     ],
     loadIntro: () => import('./JS.VDT.COL.mdx'),
   },
@@ -122,6 +112,11 @@ export const handbookStructure = {
         id: 'JS.VDT.MTH.OBJ_UTIL',
         title: 'Object Utilities · Peek & Shape',
         load: () => import('./standards/JS.VDT.MTH/object-utilities-peek-shape.mdx'),
+      },
+      {
+        id: 'JS.VDT.COL.ARR_ENDS',
+        title: 'Array Methods · Add & Remove Items',
+        load: () => import('./standards/JS.VDT.MTH/arrays-end-controls.mdx'),
       },
     ],
     loadIntro: () => import('./JS.VDT.MTH.mdx'),

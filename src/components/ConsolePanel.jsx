@@ -28,16 +28,7 @@ export default function ConsolePanel({ className = "", compact = true }) {
 				) : (
 					logs.map((row, idx) => (
 						<div key={idx} className="mb-2">
-							<span className={
-								row.type === 'error' || row.type === 'runtime-error'
-									? 'text-red-400'
-									: row.type === 'warn'
-									? 'text-amber-300'
-									: 'text-slate-300'
-							}>
-								{row.type}:
-							</span>
-							<span className="ml-2 whitespace-pre-wrap break-words">
+							<span className="whitespace-pre-wrap break-words">
 								{formatArgs(row.args, compact)}
 							</span>
 						</div>
@@ -53,6 +44,9 @@ function formatArgs(args, compact) {
 	try {
 		return args
 			.map((a) => {
+				// Decode special sentinel objects passed from the sandbox bridge
+				if (a && typeof a === 'object' && a.__type === 'undefined') return 'undefined';
+				if (a && typeof a === 'object' && a.__type === 'null') return 'null';
 				if (typeof a === "string") return a;
 				if (compact) {
 					try { return JSON.stringify(a); } catch { return String(a); }

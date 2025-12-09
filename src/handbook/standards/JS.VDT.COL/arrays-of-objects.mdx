@@ -1,50 +1,6 @@
 ---
 
 id: JS.VDT.COL.ARR_OBJ
-title: Arrays of Objects · Playlists of Records
-short: Store rows of related fields as objects inside an ordered array; access fields by index and dot paths, update them, and add a new record at the end by index.
----
-
-# Data Types → Arrays of Objects
-
-*Last time we* used  **objects (binders)** to group labeled fields and **arrays (playlists)** to keep values in order. *This time we’re* combining those ideas: an **array of objects**—an ordered list where **each item is a small object** that keeps its fields together. It reads like real data: a playlist where every track carries both a `title` and an `artist` in one piece.
-
----
-
-## When you need more than a title
-
-Suppose you want to represent both the **title** and the **artist** for each song. A first thought might be two arrays—one for titles and one for artists—then read them at the same index.
-
-```js
-const titles  = ["Sunset Drive", "Neon Rain", "Echoes & Honey", "Midnight Paper Planes"];
-const artists = ["Axton",        "Riza",       "Palmer",        "Paper Planes Collective"];
-
-console.log(titles[2], "by", artists[2]); // "Echoes & Honey by Palmer"
-```
-
-This only works if both arrays stay perfectly aligned. Insert, remove, or reorder in one array and the pairing breaks. You’re left babysitting two lists that want to wander off in different directions.
-
----
-
-## The better fit: one ordered list of full records
-
-Arrays can hold **any** data type, including objects. So make **one array** where **each item is an object** with the fields that belong together.
-
-```js
-const songs = [
-  { title: "Sunset Drive",          artist: "Axton" },
-  { title: "Neon Rain",             artist: "Riza" },
-  { title: "Echoes & Honey",        artist: "Palmer" },
-  { title: "Midnight Paper Planes", artist: "Paper Planes Collective" }
-];
-console.log(songs);
-```
-
-Each object is a single record; the array keeps their order.
-
----
-
-id: JS.VDT.COL.ARR_OBJ
 title: Arrays of Objects · Shelves of Books
 short: Store full book records as objects inside an ordered array; access and update them by index and dot path.
 ---
@@ -221,4 +177,5 @@ console.log(books[0].title);
 console.log(books[2].author);
 ```
 
-You’ll use this <code>books</code> array to practice adding and removing books from the ends of the shelf in the next chapter.
+In the next chapter, you’ll pick up this same <code>books</code> array and learn **array methods** like <code>push</code>, <code>pop</code>, <code>shift</code>, and <code>unshift</code>—tools that let you add and remove books from either end of the shelf without juggling indexes by hand.
+

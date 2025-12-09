@@ -1,5 +1,4 @@
 ---
-
 id: JS.VDT.COL.ARR_ENDS
 title: Arrays · Add & Remove at the Ends
 short: Use push, pop, unshift, and shift to append, prepend, and remove items from an array without manual index math.
@@ -7,7 +6,7 @@ short: Use push, pop, unshift, and shift to append, prepend, and remove items fr
 
 # Data Types → Arrays (End Controls for Books)
 
-You now have a <code>books</code> array of book objects. Real shelves change: you acquire new books, loan some out, and sometimes feature one at the very front.
+You now have a <code>books</code> array of book objects, but we haven't done anything with it. Real shelves change: you add books to the end or the beginning, you loan one out to a friend, etc.
 
 Arrays give you built-in **methods** for these “end of the shelf” moves:
 
@@ -16,21 +15,16 @@ Arrays give you built-in **methods** for these “end of the shelf” moves:
 * <code>unshift</code> — add to the **start**
 * <code>shift</code> — remove from the **start**
 
-<Callout type="danger" title="What's a method?">
-You'll learn more about methods in the next chapter.
-- A method is an action you can perform on a piece of data.
-- You use them by attaching them to the data with a <code>.</code>.
-- You then tell the JavaScript engine to run that action by adding a <code>()</code> at the end.
-- For example <code>myArray.pop()</code> would remove the last item from the end of <code>myArray</code>.
-
-When you want to use a method that adds something to an array, you put the item you want to add in the parentheses: <code>myArray.push("hello!")</code> adds the string <code>"hello!"</code> to the end of <code>myArray</code>.
-</Callout>
-
 ---
 
-## Before you start: make sure Checkpoint D is loaded
+## Step 0 – Reset to the bookshelf state
+<Callout type="danger" title="Quick Cleanup">
+<p className="text-xl">
+Get rid of the code you wrote in the previous section. All you need now are your book objects and the array of books.
+</p>
+</Callout>
 
-This chapter assumes your editor already has <code>book1</code>, <code>book2</code>, <code>book3</code>, and a <code>books</code> array, like this:
+Keep the three book objects (with their prices) plus the <code>books</code> array—those are the only pieces this section needs. Your file should look like this before you continue:
 
 ```js
 const book1 = {
@@ -39,13 +33,15 @@ const book1 = {
   pages: 1010,
   isPaperback: false,
   genre: "Fantasy",
+  price: 18.99,
 };
 
 const book2 = {
   title: "Words of Radiance",
   author: "Brandon Sanderson",
-  pages: 1100,
+  pages: 1087,
   isPaperback: false,
+  price: 19.99,
 };
 
 const book3 = {
@@ -53,12 +49,13 @@ const book3 = {
   author: "Brandon Sanderson",
   pages: 1248,
   isPaperback: false,
+  price: 21.99,
 };
 
 const books = [book1, book2, book3];
 ```
 
-If your editor doesn’t have a <code>books</code> array like this, clear it and paste the **Checkpoint D** snippet from the Arrays-of-Objects chapter.
+If things feel messy, clear the file and re-paste this “canonical” state before moving on.
 
 ---
 

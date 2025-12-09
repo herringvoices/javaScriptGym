@@ -27,7 +27,12 @@ export function buildSrcDoc({ files, entry }) {
 	const consoleHook = `
 		(function(){
 			const ORIG = { log: console.log, warn: console.warn, error: console.error };
-			function safe(v){ try { return typeof v === 'string' ? v : JSON.stringify(v); } catch { return String(v); } }
+			function safe(v){
+				// Preserve undefined/null explicitly so the UI can render them
+				if (v === undefined) return { __type: 'undefined' };
+				if (v === null) return { __type: 'null' };
+				try { return typeof v === 'string' ? v : JSON.stringify(v); } catch { return String(v); }
+			}
 			function parseLocFromStack(stack){
 				try{
 					const lines = String(stack||'').split('\\n');
