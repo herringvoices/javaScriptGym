@@ -8,8 +8,8 @@ import HandbookChallenge from "../components/HandbookChallenge";
 function Note(props) {
   return (
     <div className="rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
-      <p className="m-0 font-medium tracking-wide text-brand-300">Note</p>
-      <div className="mt-1 leading-relaxed">{props.children}</div>
+		  <div className="m-0 font-medium tracking-wide text-brand-300">Note</div>
+		  <div className="mt-1 leading-relaxed">{props.children}</div>
     </div>
   );
 }
@@ -17,8 +17,8 @@ function Note(props) {
 function Tip(props) {
   return (
     <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-slate-200">
-      <p className="m-0 font-medium tracking-wide text-emerald-300">Tip</p>
-      <div className="mt-1 leading-relaxed">{props.children}</div>
+		  <div className="m-0 font-medium tracking-wide text-emerald-300">Tip</div>
+		  <div className="mt-1 leading-relaxed">{props.children}</div>
     </div>
   );
 }
@@ -29,6 +29,9 @@ const components = {
   HandbookChallenge,
   Note,
   Tip,
+  // Let MDX render real paragraphs; block components are responsible
+  // for not wrapping MDX children in <p>.
+  p: (props) => <p {...props} className={props.className || ""} />,
   h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
   h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
   // Only style inline code; let rehype-pretty-code render fenced blocks.

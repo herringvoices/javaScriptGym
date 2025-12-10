@@ -28,7 +28,19 @@ const entry = {
     {
       path: "/main.js",
       active: true,
-      content: "",
+      content: `
+console.log("=== Welcome to the App ===");
+console.log("Pick a character to begin.");
+console.log("Have fun!");
+
+console.log("=== Welcome to the App ===");
+console.log("Pick a character to begin.");
+console.log("Have fun!");
+
+console.log("=== Welcome to the App ===");
+console.log("Pick a character to begin.");
+console.log("Have fun!");
+  `,
     },
   ],
   entry: "/index.html",
