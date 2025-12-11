@@ -1,0 +1,188 @@
+---
+
+id: JS.PF.ITR.NEST
+title: Iteration · Nested for…of Loops
+short: Use nested for…of loops to cross-reference two collections and build summaries.
+---
+
+# Iteration → Nested for…of Loops (Crossing Collections)
+
+So far, you’ve used loops to:
+
+* visit every hero in the `heroes` array,
+* build new arrays like `heroNames`,
+* and filter heroes with conditions in a single `for…of` loop.
+
+In the last chapter, you imagined a `for…of` loop as a **conveyor belt** handing you one hero at a time while the machine quietly took care of Start, Stop, and Step.
+
+Now we’ll cross **two** conveyor belts at once: one for heroes, one for their powers.
+You’ll handle a **pair** of collections—like heroes and their powers—by nesting one `for…of` loop inside another.
+
+The mental model is still a conveyor belt, just with **two belts**:
+
+* Outer belt: heroes roll past, one hero at a time.
+* Inner belt: for each hero, you scan every power in the `powerVault`.
+
+Together, they let you answer questions like:
+
+> “Which powers belong to this hero?”
+> “How many powers does each hero have?”
+
+---
+
+## 1) Two belts, one hero at a time
+
+Imagine this structure:
+
+```js
+for (const hero of heroes) {
+  // hero is one hero object
+
+  for (const power of powerVault) {
+    // power is one power object
+    // here you can check if this power belongs to this hero
+  }
+}
+```
+
+On each **outer** pass:
+
+* `hero` is one hero from `heroes`.
+
+On each **inner** pass:
+
+* `power` walks through *all* of `powerVault` from start to finish.
+
+Inside the inner loop, you have **both**:
+
+* the current `hero`, and
+* the current `power`.
+
+That’s enough to compare fields like `power.heroId === hero.id` and decide whether they go together.
+
+You can think of it as:
+
+> For each hero on the outer belt, run the entire power belt and pick out the powers that match.
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 7 · List each hero’s powers"
+hints={[
+"Start with a for…of loop over heroes: `for (const hero of heroes) { ... }`.",
+"Inside that loop, log a header like `--- Powers for <name> ---` using `hero.name`.",
+"Then, inside the hero loop, write another for…of over `powerVault`.",
+"In the inner loop, check `if (power.heroId === hero.id)` to see if the power belongs to the current hero.",
+"When it matches, log the power description with a dash in front so it appears under that hero's header.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{"// Nested for…of: heroes on the outer belt, powers on the inner belt\n\nfor (const hero of heroes) {\n  console.log(`--- Powers for ${hero.name} ---`);\n\n  for (const power of powerVault) {\n    if (power.heroId === hero.id) {\n      console.log(`- ${power.description}`);\n    }\n  }\n}"}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    Write a nested pair of <code>for…of</code> loops that lists each hero&apos;s powers.
+    In the outer loop, use <code>for (const hero of heroes)</code> and log a header line like
+    <code>&quot;--- Powers for Crimson Phoenix ---&quot;</code> using <code>hero.name</code>.
+    Inside that loop, add another <code>for…of</code> that walks through <code>powerVault</code>. For each
+    <code>power</code>, check if its <code>heroId</code> matches the current <code>hero.id</code>. If it does,
+    log a line that starts with a dash and the power description (for example,
+    <code>&quot;- Plasma flight&quot;</code>). Each hero should print only their own powers.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 2) Using nested loops to build summaries
+
+Nested loops aren’t just for logging; they’re also useful for building **summary data**.
+
+For example:
+
+* “How many powers does each hero have?”
+* “Can I build a quick lookup list of hero names and their power counts?”
+
+You can answer that by:
+
+1. Looping over each hero,
+2. Counting how many powers match that hero inside an inner loop,
+3. Pushing a summary object into a new array.
+
+Pattern:
+
+```js
+const heroSummaries = [];
+
+for (const hero of heroes) {
+  let powerCount = 0;
+
+  for (const power of powerVault) {
+    if (power.heroId === hero.id) {
+      powerCount = powerCount + 1;
+    }
+  }
+
+  heroSummaries.push({
+    name: hero.name,
+    powerCount: powerCount,
+  });
+}
+
+console.log(heroSummaries);
+```
+
+Key ideas:
+
+* `powerCount` is reset to `0` **for each hero** (inside the outer loop).
+* The inner loop walks all powers and increments `powerCount` when there’s a match.
+* After the inner loop finishes for that hero, you push one summary object.
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 8 · Build heroSummaries (name + powerCount)"
+hints={[
+"Start by declaring an empty array: `const heroSummaries = [];`.",
+"Use `for (const hero of heroes)` for the outer loop.",
+"Inside the outer loop, set `let powerCount = 0;` so it resets for each hero.",
+"Use another `for…of` over `powerVault` inside, and increment `powerCount` whenever `power.heroId === hero.id`.",
+"After the inner loop finishes (still inside the outer loop), push an object like `{ name: hero.name, powerCount: powerCount }` into `heroSummaries`, and log `heroSummaries` at the end to see one summary per hero.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{"const heroSummaries = [];\n\nfor (const hero of heroes) {\n  let powerCount = 0;\n\n  for (const power of powerVault) {\n    if (power.heroId === hero.id) {\n      powerCount = powerCount + 1;\n    }\n  }\n\n  heroSummaries.push({\n    name: hero.name,\n    powerCount: powerCount,\n  });\n}\n\nconsole.log(heroSummaries);\n// Example output (your heroes/powers may differ):\n// [\n//   { name: \"Crimson Phoenix\", powerCount: 2 },\n//   { name: \"Neon Volt\",       powerCount: 1 },\n//   { name: \"Star Sentinel\",   powerCount: 1 }\n// ]"}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    Create an empty array called <code>heroSummaries</code>. Then, write a nested pair of
+    <code>for…of</code> loops. In the outer loop, walk through each <code>hero</code> in <code>heroes</code> and start
+    a <code>powerCount</code> at <code>0</code>. In the inner loop, walk through each <code>power</code> in
+    <code>powerVault</code> and increment <code>powerCount</code> whenever the power&apos;s
+    <code>heroId</code> matches the current <code>hero.id</code>. After the inner loop finishes for that hero, push an
+    object with <code>name</code> and <code>powerCount</code> into <code>heroSummaries</code>. Finally, log
+    <code>heroSummaries</code> to see one summary row per hero.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) Keeping nested loops under control
+
+Nested loops are powerful, but a few habits will keep them understandable:
+
+* Give clear names to your loop variables
+  (`hero` / `power`, not `a` / `b`).
+* Reset counters or temporary values **inside** the outer loop
+  (like `let powerCount = 0;` for each hero).
+* Keep most of your work inside the inner loop **small and focused**
+  (check a condition, maybe increment a count or push once).
+
+As long as you remember that each hero gets its own full walk through the power vault, nested `for…of` loops stay grounded in the same conveyor belt mental model—just with two belts crossing instead of one.

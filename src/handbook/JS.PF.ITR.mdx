@@ -1,0 +1,120 @@
+id: JS.PF.ITR
+title: Iteration · Repeating Actions on Purpose
+short: Use for and for…of loops to walk collections, do work for each item, and avoid common loop mistakes.
+---
+
+# Iteration → Repeating Actions on Purpose
+
+Welcome! In this chapter you’ll meet another big idea in JavaScript: **iteration** — the way your program repeats actions on purpose.
+
+Imagine a machine that does the same thing over and over again.
+If you set it up to make tacos, it will make taco after taco until you tell it to stop.
+If you tell it to email your grandmother, it will send her the same email again and again and again.
+That’s what iteration is in code: you give the computer a small script to run, and it repeats that script until your rule says “enough.”
+
+---
+
+## 1) The machine’s three settings: Start, Stop, Step
+
+Our repeating machine always needs three settings before it can do anything useful:
+
+* **Start** — how things look before repetition begins
+  (for example, a counter at `0`, or the first hero in a list).
+* **Stop** — the rule that must stay true for the machine to keep running
+  (for example, “we haven’t hit 10 tacos yet” or “we still have heroes left in the array”).
+* **Step** — what happens at the end of each loop
+  (for example, “add `1` to a counter” or “move to the next name in the list”).
+
+You can imagine turning a few dials on the front of the machine:
+
+* Should we start counting from 0 or from 1?
+* Do we stop after 3 emails, or after 100?
+* Do we add 1 each time, or skip every other item?
+
+Every useful loop has:
+
+* a **Start** (how things look before repetition begins),
+* a **Stop** rule (the condition that must stay true to keep repeating),
+* and a **Step** (how you change things after each run so you eventually hit the stop rule).
+
+In the next chapters, you’ll see how JavaScript’s `for` and `for…of` loops let you program these three settings directly, so the computer can be the repeating machine for you.
+
+---
+
+## Practice · Spot repetition before loops
+
+Before we let JavaScript act as the repeating machine for us, you’ll do things the “manual” way once. For now, **you** are going to be the machine: you’ll repeat the same pattern by hand and feel how repetitive it is.
+
+The examples below assume you already have a `heroes` array in your file with several hero objects. You’ll work with that data directly.
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 1 · Manual welcomes and a manual hero count"
+hints={[
+"Use bracket access like `heroes[0].name` to reach each hero by position.",
+"Start small: get a single `console.log` working for the first hero, then duplicate it for the others.",
+
+"After you add a new hero to the array, make sure you add a new welcome line for them and update your `heroCount` so it still matches the number of heroes.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{"// 1) Manual welcomes for each hero by index\nconsole.log('${heroes[0].name} has arrived!');\nconsole.log('${heroes[1].name} has arrived!');\nconsole.log('${heroes[2].name} has arrived!');\n\n// 2) Manual hero count\nconst heroCount = 3;\nconsole.log('There are ' + heroCount + ' heroes in the League.');\n\n// 3) Add a new hero to the array (one possible example)\nheroes.push({ id: 4, name: 'Aurora Pulse' });\n\n// 4) Update the welcomes and count so they stay correct\nconsole.log('${heroes[0].name} has arrived!');\nconsole.log('${heroes[1].name} has arrived!');\nconsole.log('${heroes[2].name} has arrived!');\nconsole.log('${heroes[3].name} has arrived!');\n\nconst updatedHeroCount = 4;\nconsole.log('There are ' + updatedHeroCount + ' heroes in the League.');"}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    Using your existing <code>heroes</code> array, write one <code>console.log</code> per hero that prints a message like
+    <code>&quot;Crimson Phoenix has arrived!&quot;</code> by accessing <code>heroes[0].name</code>, <code>heroes[1].name</code>, and so on.
+    Then declare a <code>heroCount</code> variable and log how many heroes are in the League. Finally, add a new hero to the <code>heroes</code> array
+    and update all of your logs and <code>heroCount</code> so the output is still correct.
+  </p>
+</HandbookChallenge>
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 2 · Manually build a heroNames playlist"
+hints={[
+"Start by declaring an empty array: `const heroNames = [];`.",
+"Push each hero's name into the array one at a time using `heroNames.push(heroes[0].name)` and so on.",
+
+"When you have pushed each hero's name into the array, log `heroNames` to confirm it contains all of the names in order.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{`const heroNames = [];
+
+// Manually push each hero's name into the playlist
+heroNames.push(heroes[0].name);
+heroNames.push(heroes[1].name);
+heroNames.push(heroes[2].name);
+heroNames.push(heroes[3].name);
+
+console.log(heroNames);
+// Example output: ["Crimson Phoenix", "Neon Volt", "Star Sentinel", "Aurora Pulse"]`}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    Create a new array called <code>heroNames</code>. Then, without using any loops yet, push each hero&apos;s
+    <code>.name</code> into that array one at a time using bracket access. When you&apos;re done, log
+    <code>heroNames</code> to see your new &quot;playlist&quot; of hero names.
+  </p>
+</HandbookChallenge>
+
+---
+
+You just acted like a very patient, very manual loop:
+
+* You **started** with the first hero.
+* You **stopped** when you ran out of heroes.
+* You **stepped** forward by changing the index or picking the next hero yourself.
+
+In the next chapters, we’ll hand this job to actual JavaScript loops so you don’t have to be the machine anymore.

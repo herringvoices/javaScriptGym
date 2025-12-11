@@ -8,6 +8,7 @@ export const handbookChapters = {
   'JS.VDT.MTH': () => import('./JS.VDT.MTH.mdx'),
   'JS.FN.BAS': () => import('./JS.FN.BAS.mdx'),
   'JS.PF.CON': () => import('./JS.PF.CON.mdx'),
+  'JS.PF.ITR': () => import('./JS.PF.ITR.mdx'),
   'JS.FN.HOF': () => import('./JS.FN.HOF.mdx'),
 };
 
@@ -19,6 +20,7 @@ export const handbookOrder = [
   'JS.FN.BAS',
   'JS.FN.HOF',
   'JS.PF.CON',
+  'JS.PF.ITR',
 ];
 
 // New-style handbook entries with embedded editor workbench
@@ -33,6 +35,8 @@ export const handbookEntries = {
   'JS.VDT.MTH': () => import('./entries/JS.VDT.MTH.js').then(m => m.default),
   'JS.FN.BAS': () => import('./entries/JS.FN.BAS.js').then(m => m.default),
   'JS.PF.CON': () => import('./entries/JS.PF.CON.js').then(m => m.default),
+  'JS.PF.ITR': () => import('./entries/JS.PF.ITR.js').then(m => m.default),
+
 };
 
 export async function loadHandbookEntry(standardId) {
@@ -170,6 +174,26 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.PF.CON.mdx'),
+  },
+  'JS.PF.ITR': {
+    chapters: [
+      {
+        id: 'JS.PF.ITR.INTRO',
+        title: 'Iteration · for Loops (Start, Stop, Step)',
+        load: () => import('./standards/JS.PF.ITR/iteration-for-loops.mdx'),
+      },
+      {
+        id: 'JS.PF.ITR.FOROF',
+        title: 'Iteration · for…of Loops (One Item at a Time)',
+        load: () => import('./standards/JS.PF.ITR/iteration-forof-loops.mdx'),
+      },
+      {
+        id: 'JS.PF.ITR.NEST',
+        title: 'Iteration · Nested for…of Loops',
+        load: () => import('./standards/JS.PF.ITR/iteration-nested-forof-loops.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.PF.ITR.mdx'),
   },
   // Add more standards here as their chapters are authored
 };

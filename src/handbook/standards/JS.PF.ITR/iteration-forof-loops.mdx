@@ -1,0 +1,213 @@
+---
+
+id: JS.PF.ITR.FOROF
+title: Iteration · for…of Loops (One Item at a Time)
+short: Use for…of loops to visit each item in a collection without managing indexes yourself.
+---
+
+# Iteration → for…of Loops (One Item at a Time)
+
+In the last chapter, you wrote classic `for` loops that used an index:
+
+* `i` started at `0`,
+* looped while `i < heroes.length`,
+* and used `heroes[i]` to reach each hero.
+
+That pattern is powerful, especially when you **need** the index. But sometimes you don’t care about positions at all—you just want each item, one after another. That’s where `for…of` shines.
+
+In that chapter, you used a `for` loop as a **control panel** for the repeating machine: you chose where to **Start**, when to **Stop**, and how to **Step** through the slots of an array.
+
+A `for…of` loop is like turning on **factory mode**.
+Under the hood, JavaScript handles Start, Stop, and Step for you.
+The mental model here is a **conveyor belt** that already knows how to:
+
+* start at the first box,
+* stop after the last box,
+* and step forward one box at a time.
+
+You don’t manage `start`, `stop`, and `step` directly. You just say: “For each thing in this collection, give me the item.”
+
+---
+
+## 1) The “current item” variable
+
+Here’s the basic pattern:
+
+```js
+const seeds = ["pumpkin", "sunflower", "sesame"];
+
+for (const seed of seeds) {
+  console.log(seed);
+}
+```
+
+You can read it as:
+
+> “For each `seed` of the `seeds` array, run this block of code.”
+
+The word `seed` is just a variable name you choose. It represents **the current item on the belt**:
+
+* First pass → `seed` is `"pumpkin"`
+* Second pass → `seed` is `"sunflower"`
+* Third pass → `seed` is `"sesame"`
+
+You could call it `item`, `snack`, or `banana` and the loop would behave the same—only the name you use inside the body changes.
+
+```js
+for (const hero of heroes) {
+  console.log(hero.name);
+}
+```
+
+Here, `hero` is the “box on the belt” each time through the loop. On every pass, `hero` is one object from the `heroes` array.
+
+---
+
+## 2) Comparing `for` and `for…of`
+
+Suppose you want to log every hero’s name.
+
+With a classic `for` loop, you manage the index:
+
+```js
+for (let i = 0; i < heroes.length; i++) {
+  console.log(heroes[i].name);
+}
+```
+
+With `for…of`, you skip the index and just ask for each hero:
+
+```js
+for (const hero of heroes) {
+  console.log(hero.name);
+}
+```
+
+Both loops:
+
+* run once per hero,
+* log each hero’s name.
+
+The difference is where your attention goes:
+
+* `for` → you think about indexes (`i`) and boundaries (`i < heroes.length`).
+* `for…of` → you think about the **items** (`hero`) and what to do with each.
+
+A classic `for` loop is like programming the machine by hand: “Start at 0, keep going while `i < heroes.length`, add 1 each time.”
+A `for…of` loop is like standing at the conveyor belt while the machine does the walking. Each time a new item rolls past, you get it as the loop variable (`hero`, `seed`, `power`) and decide what to do with it.
+
+When you don’t need the index, `for…of` usually reads more clearly and leaves less room for off-by-one mistakes.
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 5 · Welcome heroes with for…of"
+hints={[
+"Follow the pattern: `for (const hero of heroes) { ... }`.",
+"Inside the loop, `hero` will be each object from the `heroes` array, one at a time.",
+"Use `hero.name` in a welcome message so each hero gets their own line in the output, similar to how you previously used `heroes[i].name`.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{"// Rewrite the welcome logic using for…of:\n\nfor (const hero of heroes) {\n  console.log(`${hero.name} has arrived!`);\n}"}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    In the previous chapter, you welcomed each hero using a classic <code>for</code> loop with an index
+    (<code>heroes[i]</code>). Comment out that old loop. Then, write a new loop using
+    <code>for (const hero of heroes)</code> and log a welcome message for each hero using <code>hero.name</code>.
+    The output should still welcome each hero, but the loop header will be shorter and you won&apos;t have to manage
+    an index variable.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) Filtering and collecting with `for…of`
+
+A `for…of` loop can do more than just log. You can:
+
+* **filter** items (only act on ones that meet a condition),
+* and **collect** results into a new array.
+
+Here’s a pattern you’ll use a lot:
+
+```js
+const longNames = [];
+
+for (const hero of heroes) {
+  if (hero.name.length > 12) {
+    longNames.push(hero.name);
+  }
+}
+
+console.log(longNames);
+```
+
+On each pass:
+
+1. `hero` is the current hero.
+2. The `if` checks a condition about that hero.
+3. If it passes, you push something (like `hero.name`) into a new array.
+
+By the end, `longNames` only contains the items that matched your condition.
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 6 · Find heroes with long names"
+hints={[
+"Start with an empty array: `const longNameHeroes = [];`.",
+"Use `for (const hero of heroes)` to get each hero object.",
+"Inside the loop, check `if (hero.name.length > 12)` (or a similar length you choose).",
+"When the condition is true, push `hero.name` into `longNameHeroes`, log a message that their name is long, and after the loop, log `longNameHeroes` to see which names were collected.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{"const longNameHeroes = [];\n\nfor (const hero of heroes) {\n  if (hero.name.length > 12) {\n    longNameHeroes.push(hero.name);\n    console.log(`${hero.name} has a long name.`);\n  }\n}\n\nconsole.log(longNameHeroes);\n// Example output:\n// [\"Crimson Phoenix\", \"Star Sentinel\"] (your actual heroes may vary)"}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    Create an empty array called <code>longNameHeroes</code>. Then, write a <code>for…of</code> loop that goes through
+    each <code>hero</code> in <code>heroes</code>. If a hero&apos;s <code>name.length</code> is greater than some number
+    you choose (for example, 12), push that name into <code>longNameHeroes</code> and log a message saying their name is
+    long. After the loop finishes, log <code>longNameHeroes</code> to see which heroes made the cut.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) When to prefer `for…of`
+
+You now have two main loop patterns:
+
+* Use **`for`** when:
+
+  * you care about the index (position),
+  * you’re jumping around in the array (skipping, slicing, counting down),
+  * or you’re looping over something that *requires* numeric positions.
+
+* Use **`for…of`** when:
+
+  * you just need each item,
+  * you’re focusing on conditions and transformations,
+  * and you want less “index bookkeeping” in your head.
+
+Underneath, both loops still follow the same repeating-machine idea:
+
+* something sets **Start**,
+* something enforces the **Stop** rule,
+* something performs the **Step**.
+
+With a classic `for` loop, you see and program those settings yourself.
+With `for…of`, the machine flips into conveyor-belt mode and hides those details so you can focus more on the **work you do for each item** instead of the mechanics of walking the list.
+
+In the next chapter, you’ll combine `for…of` loops: one belt of heroes, one belt of powers. You’ll nest them to figure out which powers belong to which hero and build summaries from that data.

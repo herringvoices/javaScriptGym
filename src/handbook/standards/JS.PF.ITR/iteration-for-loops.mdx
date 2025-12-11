@@ -1,0 +1,265 @@
+---
+
+id: JS.PF.ITR.FOR
+title: Iteration · for Loops (Start, Stop, Step)
+short: Use classic for loops to count, walk arrays by index, and avoid off-by-one errors.
+---
+
+# Iteration → for Loops (Start, Stop, Step)
+
+In the last chapter, you did the “manual labor” version of iteration:
+
+* one `console.log` per hero,
+* a hand-maintained `heroCount`,
+* and a `heroNames` array built by pushing each name one at a time.
+
+That was on purpose: now you have something for loops to improve.
+
+A `for` loop is the **control panel** for your repeating machine. Before you tell it *what* to do (welcome each hero, count tacos, send emails), you give it three settings:
+
+* **Start** — where the machine begins (`let i = 0`),
+* **Stop** — when the machine must stop repeating (`i < heroes.length`),
+* **Step** — how the machine moves from one repetition to the next (`i++`).
+
+Once those three settings are in place, JavaScript runs the machine over and over until the Stop rule fails.
+
+---
+
+## 1) Reading `for (start; stop; step)` like a sentence
+
+A classic `for` loop looks like this:
+
+```js
+for (let i = 0; i < 3; i++) {
+  console.log("Box #", i);
+}
+```
+
+You can read the header as a single sentence:
+
+> Start at 0, keep going while `i` is less than 3, and add 1 to `i` after each pass.
+
+Matched to the machine’s three settings:
+
+* **Start:** `let i = 0` (we start our counter at 0),
+* **Stop:** `i < 3` (as long as `i` is less than 3, keep going),
+* **Step:** `i++` (after each run, add 1 to `i`).
+
+On each pass:
+
+1. Check the **Stop** rule (`i < 3`).
+2. If it’s `true`, run the body (`console.log("Box #", i)`).
+3. Apply the **Step** (`i++`) and repeat.
+
+A tiny trace of the machine’s counter:
+
+| Pass | `i` at start of pass | Check `i < 3` | Body runs?        | `i` after `i++` |
+| ---- | -------------------- | ------------- | ----------------- | --------------- |
+| 1    | 0                    | true          | logs `"Box # 0"`  | 1               |
+| 2    | 1                    | true          | logs `"Box # 1"`  | 2               |
+| 3    | 2                    | true          | logs `"Box # 2"`  | 3               |
+| 4    | 3                    | false         | body does not run | (loop stops)    |
+
+A `for` loop is just “check, run, step, repeat” until the Stop rule is no longer true.
+
+---
+
+## 2) Using `for` with arrays (indexes + length)
+
+`for` loops shine when you care about **positions in an array**—the numbered slots in a list.
+
+Think of the array as a row of slots: slot `0`, slot `1`, slot `2`, and so on. The loop’s counter `i` is the machine’s “current slot number.”
+
+If you have a `heroes` array, this pattern walks from the first hero to the last:
+
+```js
+for (let i = 0; i < heroes.length; i++) {
+  console.log(heroes[i].name);
+}
+```
+
+* **Start:** begin at index `0` (the first slot in the list).
+* **Stop:** keep going while `i` is less than `heroes.length` (before you fall off the end of the list).
+* **Step:** `i++` moves the machine to the next slot each time.
+
+If you change how many heroes are in the array, the loop automatically adjusts because it uses `heroes.length` instead of a hard-coded number.
+
+In the last chapter you wrote **four separate lines** to welcome each hero and kept a separate `heroCount` in sync. Let’s replace both of those with a single `for` loop.
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 3 · Welcome and count heroes with a for loop"
+hints={[
+"Use the pattern `for (let i = 0; i < heroes.length; i++) { ... }` to walk each index.",
+"Inside the loop, reach each hero with `heroes[i]` and log `heroes[i].name`.",
+"Start `heroCount` at 0 before the loop, add 1 to it on each pass inside the loop, and then log the final `heroCount` after the loop finishes.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{`// Replace the manual welcomes and manual count with a for loop:
+
+let heroCount = 0;
+
+for (let i = 0; i &lt; heroes.length; i++) {
+  console.log(\`\${heroes[i].name} has arrived!\`);
+  heroCount = heroCount + 1;
+}
+
+console.log(\`There are \${heroCount} heroes in the League.\`);`}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    In the previous chapter, you logged a separate welcome message for each hero and maintained a hard-coded
+    <code>heroCount</code>. Comment out or delete those manual <code>console.log</code> lines and the old
+    <code>heroCount</code> variable. Then write a single <code>for</code> loop that walks through the
+    <code>heroes</code> array using an index <code>i</code>, logs a welcome message for each hero, and increments a
+    <code>heroCount</code> variable on every pass. After the loop, log how many heroes you counted.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 3) Using `for` to build a new array
+
+Loops aren’t just for logging; they’re also good at **building** new collections.
+
+In the intro, you created a `heroNames` array by manually pushing each name:
+
+```js
+const heroNames = [];
+
+heroNames.push(heroes[0].name);
+heroNames.push(heroes[1].name);
+// ...
+```
+
+A `for` loop can do that repetitive work for you:
+
+```js
+const heroNames = [];
+
+for (let i = 0; i < heroes.length; i++) {
+  heroNames.push(heroes[i].name);
+}
+
+console.log(heroNames);
+```
+
+One recipe, applied to every hero.
+
+---
+
+<HandbookChallenge
+title="ITR Challenge 4 · Build heroNames with a for loop"
+hints={[
+"Start by declaring `const heroNames = [];` again so you have a fresh, empty array.",
+"Use the same loop pattern: `for (let i = 0; i < heroes.length; i++) { ... }`.",
+"Inside the loop, push each hero's name with `heroNames.push(heroes[i].name)`, and when the loop is done, log `heroNames` to confirm it contains all of the hero names.",
+
+]}
+answers={
+
+  <pre className="m-0 whitespace-pre-wrap">{`// Comment out your old manual pushes from the intro chapter,
+// then build heroNames using a for loop instead:
+
+const heroNames = [];
+
+for (let i = 0; i &lt; heroes.length; i++) {
+  heroNames.push(heroes[i].name);
+}
+
+console.log(heroNames);
+// Example output:
+// ["Crimson Phoenix", "Neon Volt", "Star Sentinel", "Aurora Pulse"]`}</pre>
+
+}
+
+>
+
+  <p className="m-0">
+    Comment out the manual <code>heroNames.push(...)</code> lines you wrote before. Then, create a fresh
+    <code>heroNames</code> array and use a <code>for</code> loop that walks the <code>heroes</code> array by index.
+    On each pass, push the current hero&apos;s <code>.name</code> into <code>heroNames</code>. Finally, log
+    <code>heroNames</code> to confirm that the loop built the same playlist of names for you.
+  </p>
+</HandbookChallenge>
+
+---
+
+## 4) Avoiding common `for` loop bugs
+
+Because `for` loops let you control everything, they also make it easy to make small mistakes. A few to watch for:
+
+### Off-by-one with arrays
+
+This loop is **wrong**:
+
+```js
+for (let i = 0; i <= heroes.length; i++) {
+  console.log(heroes[i]);
+}
+```
+
+* When `i` reaches `heroes.length`, `heroes[i]` is `heroes[heroes.length]`, which is `undefined`.
+* You’ll usually see an extra `undefined` at the end of your logs.
+
+The safe pattern when walking an array by index is:
+
+```js
+for (let i = 0; i < heroes.length; i++) {
+  console.log(heroes[i]);
+}
+```
+
+Use `<` with `array.length`, not `<=`.
+
+### Infinite loops (step doesn’t move toward stop)
+
+Another common bug is forgetting to update the counter, or updating it in the wrong direction:
+
+```js
+// ❌ Infinite loop: i never changes
+for (let i = 0; i < heroes.length; ) {
+  console.log(heroes[i].name);
+}
+
+// ❌ Counts the wrong way: i-- will never make i < heroes.length false if you start at 0
+for (let i = 0; i < heroes.length; i--) {
+  console.log(heroes[i].name);
+}
+```
+
+Checklist for any `for` loop:
+
+* Does **Start** set a sensible initial value?
+* Does **Stop** use the right comparison (`<` vs `<=`) for what you’re looping over?
+* Does **Step** move you **toward** making Stop false, not away from it?
+
+If something runs forever, or you see `undefined` when looping arrays, your first suspects should be the **stop** and **step** parts of the loop header.
+
+---
+
+## 5) From manual settings to simpler loops
+
+With a `for` loop, you program all three settings of the repeating machine yourself:
+
+* how to **Start**,
+* when to **Stop**,
+* and how to **Step** through positions in an array.
+
+That control is powerful when you care about indexes and slot numbers. In the next chapter, you’ll meet `for…of`, which flips the machine into a mode where it quietly handles Start, Stop, and Step for you and simply hands you each item in the collection, one at a time.
+
+---
+
+In this chapter, you used `for` loops to:
+
+* Log a message for each hero,
+* Count heroes as you go,
+* And build a new `heroNames` array.
+
+In the next chapter, you’ll see how `for…of` can simplify some of this when you don’t care about the index—you just want each hero handed to you, one by one, as they ride the conveyor belt.
