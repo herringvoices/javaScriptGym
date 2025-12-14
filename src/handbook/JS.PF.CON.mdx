@@ -1,10 +1,424 @@
 ---
 id: JS.PF.CON.INTRO
-title: Conditionals 101 · Mesh Screens for Decisions
+title: Conditionals · Mesh Screens for Decisions
 short: Use if and else to choose different actions based on booleans and comparisons.
 ---
 
-# Program Flow → Conditionals (Introduction)
+# **Conditionals (First Mesh Screen)**
 
-In this section we'll introduce conditionals — the language features (if, else, else if) that let your program choose different actions based on booleans and comparisons. You'll learn the basic patterns and examples needed to make decisions in code; more advanced uses will be introduced later where they appear naturally in other chapters.
+A while back, you learned about booleans (`true` / `false` values) and comparisons like `age >= 18` that answer yes/no questions.
+
+Now it’s time to use those booleans to actually change what your program does next using something called **conditionals**.
+
+In real web apps, conditionals are everywhere. You use them anytime your app has to make a decision, like:
+
+- show “Welcome back!” if a user is logged in, otherwise show “Please log in.”
+- allow checkout if the cart isn’t empty, otherwise show an error message
+- show an “Admin Panel” link only if the user has the right role
+- mark a form field red if it’s invalid, otherwise let the user continue
+
+Booleans don’t just answer questions. They control the path your program takes.
+
+That’s what conditionals are: decision points in your code.
+
+
+
+---
+
+## **1) Why we need conditionals (the chute with no screens)**
+
+Imagine you’ve started a beach salvage business where you look for treasures buried in the sand.
+
+At first, you’re out there with a metal detector, waiting for it to beep. When it does, you dig and check what you found.
+
+You can describe that “beep or no beep” moment with a boolean:
+
+```js
+const isTreasure = item.material === "metal";
+```
+
+That’s useful information—but it still leaves the *decision* in your hands. You’re the one deciding what happens next.
+
+So you upgrade: you rent some heavy machinery, scoop up an absurd amount of sand, and take it to a processing facility.
+
+There, you dump the sand into a chute that pours it over a mesh screen.
+
+- **Sand** falls straight through.
+- Anything **bigger than a grain of sand** gets **caught**, then funneled down a different chute into your treasure bin.
+
+That’s the idea behind conditionals: not just asking a question, but using the answer to **control what happens next**.
+
+When this condition is true, run this block of code.
+
+That’s what `if` is for.
+
+---
+
+## **2)** `if` **— one mesh screen**
+
+A basic `if` statement is one mesh screen in your sorting machine:
+
+- A **condition** (a true/false expression) in parentheses.
+- A **body** (the action) in curly braces.
+
+If the condition is `true`, the item gets “caught” and your code runs. If it’s `false`, it slips through and nothing happens.
+
+```js
+const item = { name: "ancient Grecian urn", size: 50 };
+
+if (item.size > 1) {
+  treasures.push(item);
+  console.log(`${item.name} caught by the screen! Added to treasures.`);
+}
+```
+
+Read it aloud:
+
+If the item’s size is greater than 1, add it to treasures.
+
+Under the hood:
+
+- `item.size > 1` → condition (returns `true` or `false`)
+- `{ ... }` → body (only runs when the condition is `true`)
+
+Think of the condition as the mesh. Anything that passes the test gets caught and routed into the curly-brace chute where the action happens.
+
+<HandbookChallenge
+title="Add-only-if-big-enough"
+hints={[
+"Create a <code>barrel</code> array near the top of your file along with starter seeds such as <code>pumpkinSeed</code>, <code>sunflowerSeed</code>, and <code>sesameSeed</code>.",
+"Give every seed a <code>type</code> string (like 'pumpkin') and a numeric <code>size</code> to work with.",
+"Write a function named <code>addSeed(seed)</code> that accepts one seed object.",
+"Inside <code>addSeed</code>, write an <code>if</code> statement that checks <code>seed.size &gt; 1</code>.",
+"When the condition is true, <code>barrel.push(seed)</code> and log <code>\`${'${'}seed.type{'}'} seed added to the barrel!\`</code>.",
+"Call <code>addSeed</code> for every starter seed so only the large seeds stay in <code>barrel</code>.",
+"Finish by logging <code>barrel</code> so you can confirm it only contains seeds with <code>size &gt; 1</code>.",
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`const barrel = [];
+
+const pumpkinSeed = { type: "pumpkin", size: 3 };
+const sunflowerSeed = { type: "sunflower", size: 1 };
+const sesameSeed = { type: "sesame", size: 2 };
+
+function addSeed(seed) {
+  if (seed.size > 1) {
+    barrel.push(seed);
+    console.log(
+      \`${'${'}seed.type{'}'} seed added to the barrel!\`
+    );
+  }
+}
+
+addSeed(pumpkinSeed);
+addSeed(sunflowerSeed);
+addSeed(sesameSeed);
+
+console.log(barrel);`}</pre>,
+]}
+answers={
+  <pre className="m-0 whitespace-pre-wrap">{`const barrel = [];
+
+const pumpkinSeed = { type: "pumpkin", size: 3 };
+const sunflowerSeed = { type: "sunflower", size: 1 };
+const sesameSeed = { type: "sesame", size: 2 };
+
+function addSeed(seed) {
+  if (seed.size > 1) {
+    barrel.push(seed);
+    console.log(
+      \`${'${'}seed.type{'}'} seed added to the barrel!\`
+    );
+  }
+}
+
+addSeed(pumpkinSeed);
+addSeed(sunflowerSeed);
+addSeed(sesameSeed);
+
+console.log(barrel);
+// Only seeds with size > 1 were added
+// Run with: node path-to-your-file.js`}</pre>
+}
+>
+
+  <div className="m-0">
+    <p className="m-0">Follow these steps to finish the challenge:</p>
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Ensure you have a `barrel` array and at least three seed objects with `type` and `size` properties.</li>
+      <li>Write a function called `addSeed(seed)` that checks `seed.size > 1` before doing anything else.</li>
+      <li>Inside the `if`, push the seed into `barrel` and log ``${seed.type} seed added to the barrel!``.</li>
+      <li>Call `addSeed` for every seed object in your code.</li>
+      <li>Use `console.log(barrel)` after the calls to confirm only large seeds made it through the screen.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## **3) Comparison operators: questions that power your screens**
+
+To build a screen, you need a question. In JavaScript, that’s usually a comparison.
+
+```js
+const size = item.size;
+
+const isHuge = size > 20;          // greater than
+const isMedium = size >= 5;        // greater than or equal
+const isTiny = size < 2;           // less than
+const isExactlyTen = size === 10;  // strictly equal (same value AND same type)
+const isNotTen = size !== 10;      // strictly not equal
+```
+
+Each of these lines produces a boolean:
+
+- `true` if the comparison is correct
+- `false` if it isn’t
+
+Then you plug those questions into your `if`:
+
+```js
+if (size > 20) {
+  console.log("That’s definitely not sand.");
+}
+```
+
+### `=` **vs** `===` **(assignment vs comparison)**
+
+It’s easy to mix these up, so let’s separate them clearly:
+
+- `=` → assignment. Store a value in a variable. `myAge = 35;`
+- `===` → comparison. Ask if two values are exactly the same. `myAge === yourAge;`
+
+Read `===` out loud as “is exactly equal to?”.
+
+
+---
+
+## **4)** `if / else` **— two chutes, one outcome**
+
+A single `if` means “do this or do nothing.” Often you want “do this or do that.”
+
+With the sand screen, there are two paths:
+
+- If the item is big enough → it gets caught and sent to the treasure bin.
+- Otherwise → it passes through with the sand.
+
+You can write that with `if / else`:
+
+```js
+const item = { name: "grain of sand", size: 0.2 };
+
+if (item.size > 1) {
+  console.log("Caught it — treasure chute!");
+} else {
+  console.log("Too small — falls through with the sand.");
+}
+```
+
+Important details:
+
+- Exactly one branch runs:
+  - If the condition is `true`, the `if` body runs and the `else` is skipped.
+  - If the condition is `false`, the `if` body is skipped and the `else` body runs.
+- There is no condition after `else`. It’s the “everything that fell through” chute.
+
+The `if` is your screen. The `else` is the chute for everything that didn’t get caught.
+
+
+---
+
+## **5) Plugging booleans into** `if` **(not just comparisons)**
+
+Your condition doesn’t have to be a full comparison every time. It just needs to be something that evaluates to a boolean.
+
+You can:
+
+- Use a comparison directly: `if (item.size > 1) { ... }`
+- Or use a boolean variable that you computed earlier: `if (isTreasure) { ... }`
+
+Example:
+
+```js
+const item = { name: "rusty bottle cap", material: "metal" };
+
+const isTreasure = item.material === "metal";
+
+if (isTreasure) {
+  console.log("Beep. Treasure detected.");
+} else {
+  console.log("No beep. Back to the beach with you.");
+}
+```
+
+Here, `isTreasure` is already a boolean (`true` or `false`). The `if` statement just uses that answer.
+
+You can also combine comparison + storage:
+
+```js
+const treasuresFound = 9;
+const treasuresGoal = 10;
+
+const isGoalMet = treasuresFound === treasuresGoal;
+
+if (isGoalMet) {
+  console.log("Goal met. Time to label everything like a museum.");
+} else {
+  console.log("Keep sifting. The beach is holding out.");
+}
+```
+
+Any expression that ends up as `true` or `false` can be your condition.
+
+
+
+---
+
+## **6) Using** `!` **(not) in conditions**
+
+You met the negation operator `!` with booleans. In conditions, it lets you say “the opposite rule.”
+
+For example, a simple login check:
+
+```js
+const isLoggedIn = false;
+
+if (!isLoggedIn) {
+  console.log("Please log in to continue.");
+}
+```
+
+Read it as:
+
+“If not logged in, show the login message.”
+
+Or paired with a boolean we computed:
+
+```js
+const treasuresFound = 8;
+const treasuresGoal = 8;
+
+const isGoalMet = treasuresFound === treasuresGoal;
+
+if (!isGoalMet) {
+  console.log("Not there yet — keep sifting.");
+} else {
+  console.log("Goal met.");
+}
+```
+
+Same idea as before, but we flipped the question: instead of “if goal met,” we used “if not goal met.”
+
+<HandbookChallenge
+title="Clean Seeds"
+hints={[
+"Reuse the `barrel` array and starter seeds from the previous challenge so you already have a few items to work with.",
+"Add an <code>isClean</code> property to each seed: give at least one seed <code>false</code> and at least one seed <code>true</code> to see both results.",
+"Declare a new function named <code>cleanSeed(seed)</code> that takes one seed object.",
+"Inside <code>cleanSeed</code>, write an <code>if</code> statement that checks <code>!seed.isClean</code> to find dirty seeds.",
+"When the seed is dirty, set <code>seed.isClean = true</code> and log <code>\`${'${'}seed.type{'}'} seed has been cleaned.\`</code>.",
+"Otherwise, use an <code>else</code> to log <code>\`${'${'}seed.type{'}'} was already clean\`</code>.",
+"Call <code>cleanSeed</code> for each seed you have stored in <code>barrel</code> and log individual seeds afterward to confirm their updated state.",
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`function cleanSeed(seed) {
+  if (!seed.isClean) {
+    seed.isClean = true;
+    console.log(
+      \`${'${'}seed.type{'}'} seed has been cleaned.\`
+    );
+  } else {
+    console.log(
+      \`${'${'}seed.type{'}'} was already clean\`
+    );
+  }
+}
+
+cleanSeed(barrel[0]);
+cleanSeed(barrel[1]);`}</pre>,
+]}
+answers={
+  <pre className="m-0 whitespace-pre-wrap">{`const barrel = [];
+
+const pumpkinSeed = { type: "pumpkin", size: 3, isClean: false };
+const sunflowerSeed = { type: "sunflower", size: 2, isClean: true };
+const sesameSeed = { type: "sesame", size: 2, isClean: false };
+
+function addSeed(seed) {
+  if (seed.size > 1) {
+    barrel.push(seed);
+    console.log(
+      \`${'${'}seed.type{'}'} seed added to the barrel!\`
+    );
+  }
+}
+
+addSeed(pumpkinSeed);
+addSeed(sunflowerSeed);
+addSeed(sesameSeed);
+
+function cleanSeed(seed) {
+  if (!seed.isClean) {
+    seed.isClean = true;
+    console.log(
+      \`${'${'}seed.type{'}'} seed has been cleaned.\`
+    );
+  } else {
+    console.log(
+      \`${'${'}seed.type{'}'} was already clean\`
+    );
+  }
+}
+
+// Clean each seed currently in the barrel
+cleanSeed(barrel[0]);
+cleanSeed(barrel[1]);
+cleanSeed(barrel[2]);
+
+console.log(barrel[0]);
+console.log(barrel[1]);
+console.log(barrel[2]);
+// Run with: node path-to-your-file.js`}</pre>
+}
+>
+
+  <div className="m-0">
+    <p className="m-0">Work through each step carefully:</p>
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Write `cleanSeed(seed)` so it checks `!seed.isClean` to find dirty seeds.</li>
+      <li>Inside the `if`, flip `seed.isClean` to `true` and log ``${seed.type} seed has been cleaned.``.</li>
+      <li>Use an `else` block to log ``${seed.type} was already clean`` when the seed started out clean.</li>
+      <li>Call `cleanSeed` for every seed in `barrel`, then log a few seeds to verify they are all clean.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+
+---
+
+## **Technical Vocabulary**
+
+| Term                | Plain-English meaning                                 | Tiny example              |
+| :------------------ | :---------------------------------------------------- | :------------------------ |
+| condition           | A true/false test that decides a path                 | `item.size > 1`           |
+| comparison operator | Symbol that compares two values and returns a boolean | `===`, `>`, `<`           |
+| assignment operator | Stores a value in a variable                          | `x = 5`                   |
+| if statement        | Runs its body only when the condition is true         | `if (isGoalMet)`          |
+| else                | The path that runs when the `if` condition is false   | `else`                    |
+| boolean variable    | Variable that holds `true` or `false`                 | `const isTreasure = true` |
+| negation operator   | “not” — flips a boolean                               | `!isLoggedIn`             |
+
+---
+
+## **Wrap-up**
+
+In this chapter, you:
+
+- Used comparisons like `item.size > 1` to build conditions.
+- Saw how an `if` works as a single mesh screen:
+
+  - If the condition is `true`, the body runs.
+  - If it’s `false`, it’s skipped.
+- Used `if / else` to create two mutually exclusive paths.
+- Plugged booleans (both comparison results and boolean variables) into your `if` statements.
+- Used `!` to flip a boolean condition when you want the opposite rule.
+
+Next up, you’ll stack multiple screens together with `else if` and see why the order of your conditions matters.
+
 

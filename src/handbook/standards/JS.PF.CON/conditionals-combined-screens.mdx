@@ -1,0 +1,287 @@
+---
+
+id: JS.PF.CON.COMBO
+title: Conditionals · Combined Screens (AND, OR & Short-Circuiting)
+short: Combine conditions with && and || so your code can care about more than one thing at a time.
+---
+
+# Combined Conditions (AND & OR)
+
+So far, your ladders have mostly checked **one thing at a time**:
+
+* "Is this find big enough?"
+* "Is it already cleaned?"
+* "Should it go back into the surf?"
+
+That is already useful, but real decisions rarely stop at a single detail. The salvage crew wants rules like:
+
+* "Display only if it is big **and** polished."
+* "Reject anything that is too wet **or** too sharp."
+* "Keep it if it is from the lighthouse registry **or** it is massive."
+
+To write rules like that you combine conditions with logical operators:
+
+* **`&&`** ("and") -- every check must pass.
+* **`||`** ("or") -- at least one check must pass.
+
+You will also meet a handy behavior called **short-circuiting**: JavaScript stops evaluating as soon as it already knows the outcome.
+
+---
+
+## 1) Two checks in a row: `&&` (AND)
+
+Imagine a relic rolling down the sorter:
+
+```js
+const item = {
+    name: "lantern glass",
+    size: 7,
+    isPolished: true,
+};
+```
+
+You only want to send it to the display table if it is both sizeable and already polished. You could nest two `if` statements:
+
+```js
+if (item.size >= 6) {
+    if (item.isPolished) {
+        console.log("Display it.");
+    }
+}
+```
+
+That works, but nested logic becomes hard to scan. The **`&&` operator** lets you combine both screens into a single condition:
+
+```js
+if (item.size >= 6 && item.isPolished) {
+    console.log("Display it.");
+}
+```
+
+Read it aloud: "If the item is big enough **and** it is polished, display it."
+
+### Mesh screen picture
+
+Think of `&&` as **two screens in a row** on the same chute:
+
+1. Screen A checks `item.size >= 6`.
+2. Screen B checks `item.isPolished`.
+
+To reach the chute, the item must pass **both** screens. Failing the first screen means it never even sees the second.
+
+Back in the practice file you still work with seeds, so the challenge below keeps using `processSeed`. The idea is the same.
+
+<HandbookChallenge
+title="Big AND clean before roasting"
+hints={[
+"Keep using the same practice file where you built your `processSeed(seed)` ladder in the previous chapter.",
+"Find the branch in `processSeed` that currently marks big seeds as \"roasted\" based only on size.",
+"Update that roasting condition so it requires TWO things joined with `&&`: big enough (your existing size threshold, like `seed.size &gt;= 6`) AND `seed.isClean`.",
+"If a seed is big enough but NOT clean, send it to a different outcome instead (for example, set `seed.condition = \"cleaning\"` and log that it is getting cleaned first).",
+"Leave the rest of the ladder (shucked / pressed / too small) alone so only the roasting rule changes.",
+"Test with one big dirty seed (`isClean = false`) and confirm it does not roast, then flip it to clean and confirm it can now roast.",
+<pre key="peek1" className="m-0 whitespace-pre-wrap">{`function processSeed(seed) {
+    if (seed.size >= 6 && seed.isClean) {
+        seed.condition = "roasted";
+    } else if (seed.size >= 6 && !seed.isClean) {
+        seed.condition = "cleaning";
+        console.log(seed.type + " seed is getting cleaned first.");
+        return;
+    } else if (seed.size >= 4) {
+        seed.condition = "shucked";
+    } else if (seed.size >= 2) {
+        seed.condition = "pressed";
+    } else {
+        seed.condition = "too small";
+    }
+
+    console.log(seed.type + " seed will be " + seed.condition + ".");
+}`}</pre>,
+]}
+answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// Roast only when a seed is big AND clean
+function processSeed(seed) {
+    if (seed.size >= 6 && seed.isClean) {
+        seed.condition = "roasted";
+    } else if (seed.size >= 6 && !seed.isClean) {
+        seed.condition = "cleaning";
+        console.log(seed.type + " seed is getting cleaned first.");
+        return;
+    } else if (seed.size >= 4) {
+        seed.condition = "shucked";
+    } else if (seed.size >= 2) {
+        seed.condition = "pressed";
+    } else {
+        seed.condition = "too small";
+    }
+
+    console.log(seed.type + " seed will be " + seed.condition + ".");
+}
+
+const dirtyBigSeed = {
+    type: "pumpkin",
+    size: 7,
+    isClean: false,
+    moisture: 0.2,
+};
+
+const cleanBigSeed = {
+    type: "pumpkin",
+    size: 7,
+    isClean: true,
+    moisture: 0.2,
+};
+
+processSeed(dirtyBigSeed); // goes to "cleaning"
+processSeed(cleanBigSeed); // can be "roasted"
+// Run with: node path-to-your-file.js`}</pre>
+}
+>
+
+    <div className="m-0">
+        <p className="m-0">Work through the following steps:</p>
+        <ul className="mt-2 mb-0 list-disc list-inside px-3">
+            <li>Locate the branch that currently sets `seed.condition = "roasted"` based only on size.</li>
+            <li>Modify it so that it also checks for if the seed is clean.</li>
+            <li>Add a new `else if` right below it that handles big-but-dirty seeds by invoking `cleanSeed()` on it.</li>
+            <li>Leave the remaining branches (shucked / pressed / too small) exactly as they were.</li>
+            <li>Create one dirty big seed and one clean big seed to prove the rule works for both cases.</li>
+        </ul>
+    </div>
+</HandbookChallenge>
+
+---
+
+## 2) Either-or rules: `||` (OR)
+
+Some rules do not need every screen to pass. Sometimes **either** condition is enough.
+
+Picture the reject funnel: you toss an item if it is too saturated with seawater **or** it is dangerously sharp.
+
+```js
+const item = {
+    name: "rusty shard",
+    moisture: 0.7,
+    edgeRating: "sharp",
+};
+
+if (item.moisture > 0.5 || item.edgeRating === "sharp") {
+    console.log("Discard for safety.");
+}
+```
+
+Read it aloud: "If the item is too wet **or** it is sharp, discard it."
+
+### Mesh screen picture
+
+Think of `||` as **two screens feeding the same chute**. Passing either screen drops the find into the same bin.
+
+<HandbookChallenge
+title="Too wet OR too small -> reject"
+hints={[
+"Keep working in your existing `processSeed(seed)` function so the guard sits above the size ladder you already wrote.",
+"Near the very top of `processSeed`, before your normal size-based ladder, add a new guard `if` that checks for bad seeds.",
+"Use `||` so the guard trips when the seed is too wet OR too small, for example: `if (seed.moisture &gt; 0.5 || seed.size &lt; 2)`.",
+"Inside that guard, set `seed.condition = \"reject\"`, log a message explaining why it was rejected, and then `return` so the rest of the ladder is skipped.",
+"Leave the rest of `processSeed` alone so good seeds still flow into roasted / shucked / pressed / too small.",
+"Test by making one seed very wet (high `moisture`) and another seed small but dry to confirm they both become \"reject\", while a big, low-moisture seed still goes through the normal logic.",
+<pre key="peek2" className="m-0 whitespace-pre-wrap">{`function processSeed(seed) {
+    if (seed.moisture > 0.5 || seed.size < 2) {
+        seed.condition = "reject";
+        console.log(seed.type + " seed rejected (too wet or too small).");
+        return;
+    }
+
+    // existing ladder for roasted / shucked / pressed / too small...
+}`}</pre>,
+]}
+answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// Reject seeds that are too wet OR too small before the ladder runs
+function processSeed(seed) {
+    if (seed.moisture > 0.5 || seed.size < 2) {
+        seed.condition = "reject";
+        console.log(seed.type + " seed rejected (too wet or too small).");
+        return;
+    }
+
+    if (seed.size >= 6 && seed.isClean) {
+        seed.condition = "roasted";
+    } else if (seed.size >= 6 && !seed.isClean) {
+        seed.condition = "cleaning";
+    } else if (seed.size >= 4) {
+        seed.condition = "shucked";
+    } else if (seed.size >= 2) {
+        seed.condition = "pressed";
+    } else {
+        seed.condition = "too small";
+    }
+
+    console.log(seed.type + " seed will be " + seed.condition + ".");
+}
+
+const tooWet = {
+    type: "sunflower",
+    size: 4,
+    isClean: true,
+    moisture: 0.8,
+};
+
+const tooSmall = {
+    type: "sesame",
+    size: 1,
+    isClean: true,
+    moisture: 0.1,
+};
+
+const goodBig = {
+    type: "pumpkin",
+    size: 7,
+    isClean: true,
+    moisture: 0.2,
+};
+
+processSeed(tooWet);   // reject
+processSeed(tooSmall); // reject
+processSeed(goodBig);  // normal ladder
+// Run with: node path-to-your-file.js`}</pre>
+}
+>
+
+    <div className="m-0">
+        <p className="m-0">Make sure each step is complete:</p>
+        <ul className="mt-2 mb-0 list-disc list-inside px-3">
+            <li>Insert a guard at the _**start**_ of `processSeed` that checks `seed.moisture < 0.5 || seed.size < 2`.</li>
+            <li>Inside that guard, set `seed.condition = "reject"`, log why it failed, and `return` immediately.</li>
+            <li>Keep the rest of the ladder untouched so healthy seeds still follow the normal flow.</li>
+            <li>Create at least two failing seeds (one wet, one tiny) and one passing seed to prove the guard works.</li>
+        </ul>
+    </div>
+</HandbookChallenge>
+
+---
+
+## Technical Vocabulary
+
+| Term               | Plain-English meaning                                   | Tiny example                               |
+| ------------------ | ------------------------------------------------------- | ------------------------------------------ |
+| logical AND (`&&`) | Both checks must pass                                   | `size >= 6 && item.isPolished`             |
+| logical OR (`||`)  | At least one check must pass                            | `item.type === "token" || item.size >= 8` |
+| short-circuiting   | Stopping early once the result is known                 | `false && needsCleaning()`                 |
+| combined condition | One condition made from smaller ones with `&&` or `||` | `(isTagged && isDry) || isMassive`         |
+| grouping           | Using parentheses to keep related checks together       | `(A && B) || C`                            |
+| guard check        | Early exit that prevents the rest of the code from running | `if (!item) return;`                    |
+| threshold          | The comparison boundary used in a condition             | `item.moisture <= 0.2`                     |
+
+---
+
+## Wrap-up
+
+In this chapter, you:
+
+* Used **`&&`** to demand **two screens in a row**.
+* Used **`||`** so **either** screen can trigger the same chute.
+* Learned how **short-circuiting** keeps JavaScript from doing extra work.
+* Grouped conditions with parentheses so intent stays clear.
+* Named combined checks to keep your `if` statements readable.
+
+Next up, you will meet **`switch`**: an alternate branching tool for matching one value against several exact options.

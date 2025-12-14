@@ -152,25 +152,21 @@ export const handbookStructure = {
   },
   'JS.PF.CON': {
     chapters: [
-      {
-        id: 'JS.PF.CON.INTRO',
-        title: 'Conditionals 101 · Mesh Screens for Decisions',
-        load: () => import('./standards/JS.PF.CON/conditionals-101-mesh-screens.mdx'),
-      },
+
       {
         id: 'JS.PF.CON.LADDER',
-        title: 'Conditionals 102 · Stacks of Screens (Else If & Ordering)',
-        load: () => import('./standards/JS.PF.CON/conditionals-102-stacks-of-screens.mdx'),
+        title: 'Conditionals · Stacks of Screens (Else If & Ordering)',
+        load: () => import('./standards/JS.PF.CON/conditionals-stacks-of-screens.mdx'),
       },
       {
         id: 'JS.PF.CON.COMBO',
-        title: 'Conditionals 103 · Combined Screens (AND, OR & Short-Circuiting)',
-        load: () => import('./standards/JS.PF.CON/conditionals-103-combined-screens.mdx'),
+        title: 'Conditionals · Combined Screens (AND, OR & Short-Circuiting)',
+        load: () => import('./standards/JS.PF.CON/conditionals-combined-screens.mdx'),
       },
       {
         id: 'JS.PF.CON.SWITCH',
-        title: 'Conditionals 104 · Labeled Gates (switch vs if/else)',
-        load: () => import('./standards/JS.PF.CON/conditionals-104-labeled-gates.mdx'),
+        title: 'Conditionals · Labeled Gates (switch vs if/else)',
+        load: () => import('./standards/JS.PF.CON/conditionals-labeled-gates.mdx'),
       },
     ],
     loadIntro: () => import('./JS.PF.CON.mdx'),

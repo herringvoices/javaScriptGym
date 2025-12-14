@@ -5,39 +5,24 @@ short: Use for and for…of loops to walk collections, do work for each item, an
 
 # Iteration → Repeating Actions on Purpose
 
-Welcome! In this chapter you’ll meet another big idea in JavaScript: **iteration** — the way your program repeats actions on purpose.
+Welcome! In this chapter you’ll meet another big idea in JavaScript: **iteration** — the way your program repeats a set of actions. Most of the time, that means doing the same kind of work for **each item in an array**.
 
-Imagine a machine that does the same thing over and over again.
-If you set it up to make tacos, it will make taco after taco until you tell it to stop.
-If you tell it to email your grandmother, it will send her the same email again and again and again.
-That’s what iteration is in code: you give the computer a small script to run, and it repeats that script until your rule says “enough.”
+Now, that might not sound particularly useful… until you need to:
 
----
+* **total up** everything in a customer’s cart
+* **scan** a library’s checked-out books to see whether any are overdue
+* **use** data from a database to build a dropdown menu (one option per item)
 
-## 1) The machine’s three settings: Start, Stop, Step
+Notice what those have in common: you’re not dealing with one thing. You’re dealing with a **collection**—a list of cart items, a stack of books, a batch of records. To do anything useful, your code has to move through that collection one item at a time and do the same kind of work each time.
 
-Our repeating machine always needs three settings before it can do anything useful:
+That’s where **loops** come in. Loops are how you tell JavaScript: “Take this set of instructions… and repeat it for each item until we’re done.”
 
-* **Start** — how things look before repetition begins
-  (for example, a counter at `0`, or the first hero in a list).
-* **Stop** — the rule that must stay true for the machine to keep running
-  (for example, “we haven’t hit 10 tacos yet” or “we still have heroes left in the array”).
-* **Step** — what happens at the end of each loop
-  (for example, “add `1` to a counter” or “move to the next name in the list”).
+Think of it like a machine that runs the same script over and over.
+Set it up to make tacos, and it makes taco after taco until you shut it off.
+Set it up to email your grandmother, and—well—she’s going to have questions.
 
-You can imagine turning a few dials on the front of the machine:
+Iteration is that idea in code: a repeatable process, driven by a clear rule that eventually says, “Alright. Stop.”
 
-* Should we start counting from 0 or from 1?
-* Do we stop after 3 emails, or after 100?
-* Do we add 1 each time, or skip every other item?
-
-Every useful loop has:
-
-* a **Start** (how things look before repetition begins),
-* a **Stop** rule (the condition that must stay true to keep repeating),
-* and a **Step** (how you change things after each run so you eventually hit the stop rule).
-
-In the next chapters, you’ll see how JavaScript’s `for` and `for…of` loops let you program these three settings directly, so the computer can be the repeating machine for you.
 
 ---
 
@@ -103,8 +88,8 @@ console.log(heroNames);
 >
 
   <p className="m-0">
-    Create a new array called <code>heroNames</code>. Then, without using any loops yet, push each hero&apos;s
-    <code>.name</code> into that array one at a time using bracket access. When you&apos;re done, log
+    Create a new array called <code>heroNames</code>. Then, without using any loops yet, push each hero's
+    <code>.name</code> into that array one at a time using bracket access. When you're done, log
     <code>heroNames</code> to see your new &quot;playlist&quot; of hero names.
   </p>
 </HandbookChallenge>

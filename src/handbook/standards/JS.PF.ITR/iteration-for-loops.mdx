@@ -18,7 +18,7 @@ That was on purpose: now you have something for loops to improve.
 A `for` loop is the **control panel** for your repeating machine. Before you tell it *what* to do (welcome each hero, count tacos, send emails), you give it three settings:
 
 * **Start** — where the machine begins (`let i = 0`),
-* **Stop** — when the machine must stop repeating (`i < heroes.length`),
+* **Stop** — a condition that, when false, stops the machine (`i < heroes.length`),
 * **Step** — how the machine moves from one repetition to the next (`i++`).
 
 Once those three settings are in place, JavaScript runs the machine over and over until the Stop rule fails.
@@ -184,7 +184,7 @@ console.log(heroNames);
   <p className="m-0">
     Comment out the manual <code>heroNames.push(...)</code> lines you wrote before. Then, create a fresh
     <code>heroNames</code> array and use a <code>for</code> loop that walks the <code>heroes</code> array by index.
-    On each pass, push the current hero&apos;s <code>.name</code> into <code>heroNames</code>. Finally, log
+    On each pass, push the current hero's <code>.name</code> into <code>heroNames</code>. Finally, log
     <code>heroNames</code> to confirm that the loop built the same playlist of names for you.
   </p>
 </HandbookChallenge>

@@ -1,0 +1,357 @@
+---
+
+id: JS.PF.CON.LADDER
+title: Conditionals · Stacks of Screens (Else If & Ordering)
+short: Build if / else if / else ladders and order your checks from most specific to most general.
+---
+
+# Conditionals (Stacks of Screens)
+
+Last time, you built your **first mesh screen** with `if` and `if / else`:
+
+- A **condition** (a true/false question) goes in the parentheses.
+- An **action** (the chute) lives in the curly braces.
+- Anything that matches the condition gets **caught** and routed somewhere else.
+
+This time, we're going to **stack** those screens so your code can handle **several different cases** in one sift.
+
+Instead of "keep or ignore," you'll be able to say:
+
+- Route the **big finds** to the "museum piece" bin,
+- Route the **medium finds** to the "sell" bin,
+- Route the **small finds** to the "scrap" bin,
+- And let everything else fall through as plain old sand.
+
+One dump. Many possible chutes.
+
+---
+
+## 1) From one decision to many (why ladders exist)
+
+Here's a single find in the mix:
+
+```js
+const item = { name: "bottle cap", size: 3 };
+```
+
+In the last chapter, you might have written something like:
+
+```js
+if (item.size > 1) {
+  console.log("Caught it -- send to treasures.");
+} else {
+  console.log("Too small -- falls through as sand.");
+}
+```
+
+That works **as long as** there are only two outcomes.
+
+But a real sorting setup usually has more than two bins. Suppose you want:
+
+- Size **≥ 6** → "display it"
+- Size **≥ 4** → "sell it"
+- Size **≥ 2** → "scrap it"
+- Anything else → "just sand"
+
+Two paths aren't enough. You need a **sequence** of screens, each one checking a different range.
+
+That's what an `if / else if / else` ladder gives you: a way to express **multiple screens** in a clear, readable order.
+
+---
+
+## 2) The `if / else if / else` ladder (one find, one chute)
+
+A ladder is just multiple checks in a row:
+
+- Start with `if` for the first screen.
+- Add as many `else if` screens as you need.
+- End with `else` for the catch-all chute.
+
+```js
+const item = { name: "mysterious trinket", size: 5 };
+
+if (item.size >= 6) {
+  console.log("Display bin.");
+} else if (item.size >= 4) {
+  console.log("Sell bin.");
+} else if (item.size >= 2) {
+  console.log("Scrap bin.");
+} else {
+  console.log("Sand bin.");
+}
+```
+
+Read it as:
+
+- "If size is at least 6, display."
+- "Else, if size is at least 4, sell."
+- "Else, if size is at least 2, scrap."
+- "Else, sand."
+
+**Key idea:**
+As soon as one condition is `true`, its body runs and the rest are skipped.
+
+That's the whole point of a stacked-screen sorter: the **first screen that catches something** decides its route. It doesn't keep falling to see what the other screens think about it.
+
+<HandbookChallenge
+title="Process ladder (order matters)"
+hints={[
+"In <code>seeds.js</code>, assume you already have a <code>barrel</code> array of seeds with <code>type</code> and <code>size</code> properties from earlier challenges.",
+"Create a function <code>processSeed(seed)</code> that decides what to do with one seed based on <code>seed.size</code>.",
+"Inside <code>processSeed</code>, build an <code>if / else if / else</code> ladder:",
+"- <code>size &gt;= 6</code> → set <code>seed.condition = \"roasted\"</code>",
+"- <code>size &gt;= 4</code> → set <code>seed.condition = \"shucked\"</code>",
+"- <code>size &gt;= 2</code> → set <code>seed.condition = \"pressed\"</code>",
+"- otherwise → set <code>seed.condition = \"too small\"</code>",
+"After setting <code>seed.condition</code>, log a message that includes both <code>seed.type</code> and the decision (for example, \`${'${'}seed.type{'}'} seed will be ${'${'}seed.condition{'}'}.\`).",
+"Call <code>processSeed</code> for each seed in <code>barrel</code> (for example, <code>processSeed(barrel[0])</code>, <code>processSeed(barrel[1])</code>, etc.).",
+"Then, intentionally mess up the order by checking <code>size &gt;= 2</code> first, run again, and notice how bigger seeds fall into the wrong branch before you fix the order back.",
+<pre key="peek" className="m-0 whitespace-pre-wrap">{`function processSeed(seed) {
+  if (seed.size >= 6) {
+    seed.condition = "roasted";
+  } else if (seed.size >= 4) {
+    seed.condition = "shucked";
+  } else if (seed.size >= 2) {
+    seed.condition = "pressed";
+  } else {
+    seed.condition = "too small";
+  }
+
+  console.log(
+    \`${'${'}seed.type{'}'} seed will be ${'${'}seed.condition{'}'}.\`
+  );
+}
+
+processSeed(barrel[0]);`}
+</pre>,
+]}
+answers={
+  <pre className="m-0 whitespace-pre-wrap">{`// seeds.js (using a size-based ladder)
+function processSeed(seed) {
+  if (seed.size >= 6) {
+    seed.condition = "roasted";
+  } else if (seed.size >= 4) {
+    seed.condition = "shucked";
+  } else if (seed.size >= 2) {
+    seed.condition = "pressed";
+  } else {
+    seed.condition = "too small";
+  }
+
+  console.log(
+
+    \`${'${'}seed.type{'}'} seed will be ${'${'}seed.condition{'}'}.\`
+  );
+}
+
+// Example: process each seed in the barrel
+processSeed(barrel[0]);
+processSeed(barrel[1]);
+processSeed(barrel[2]);
+
+// If you temporarily move the "size >= 2" check to the top of the ladder,
+// larger seeds will incorrectly become "pressed" instead of "roasted" or "shucked".
+// Restoring the order (largest threshold first) fixes the results.
+// Run with: node seeds.js`}</pre>
+}
+>
+
+  <div className="m-0">
+    <p className="m-0">Your goal:</p>
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Build a <code>processSeed(seed)</code> ladder that sets <code>seed.condition</code> based on size.</li>
+      <li>Process every seed in <code>barrel</code> using bracket notation (`barrel[0]`, for example) so you can see the outcomes for each branch.</li>
+      <li>Temporarily reorder the checks (like putting your `seed.size >= 2` check on top) to prove why the most specific screen must run first.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## 3) Specific vs broad screens (why order matters)
+
+The ladder you just wrote works because of the **order**:
+
+```js
+if (item.size >= 6) { ... }       // most specific (catches fewer things)
+else if (item.size >= 4) { ... }
+else if (item.size >= 2) { ... }  // broadest screen in the ladder
+else { ... }                      // catch-all chute
+```
+
+Each condition is a **screen**:
+
+- `size >= 6` catches only the biggest finds.
+- `size >= 4` catches medium and big.
+- `size >= 2` catches a whole lot of stuff.
+
+The rule of thumb:
+
+> Put your **most specific** screens first, and your **broadest** screens last.
+
+If you put a broad screen too early, it can catch items that you meant to route somewhere else.
+
+For example:
+
+```js
+const item = { name: "chunky coin", size: 6 };
+
+if (item.size >= 2) {
+  console.log("Scrap bin.");
+} else if (item.size >= 4) {
+  console.log("Sell bin.");
+} else if (item.size >= 6) {
+  console.log("Display bin.");
+}
+```
+
+What happens?
+
+- `item.size >= 2` is `true` for size 6.
+- The first branch runs, and the rest are skipped.
+- The "Sell" and "Display" screens are now basically decorative.
+
+That's not a bug in JavaScript. It's your ladder doing exactly what it promised: **first true wins**.
+
+
+
+---
+
+## 4) Designing thresholds (your own factory rules)
+
+The numbers `6`, `4`, and `2` aren't magic. They are **thresholds**--the cutoffs you choose for each screen.
+
+You can design thresholds for any situation:
+
+- game scores
+- shipping prices
+- warning levels
+- membership tiers
+- grading systems
+
+Example: rating finds by condition before you catalog them:
+
+```js
+const item = { name: "old coin", conditionScore: 82 };
+
+if (item.conditionScore >= 90) {
+  console.log("Mint condition");
+} else if (item.conditionScore >= 75) {
+  console.log("Good condition");
+} else if (item.conditionScore >= 60) {
+  console.log("Rough condition");
+} else {
+  console.log("Reject");
+}
+```
+
+Same ordering rule:
+
+- highest threshold first
+- then the next
+- then the next
+- then `else` for everything unmatched
+
+When your ranges overlap, your ladder becomes a **priority list** from top to bottom.
+
+
+
+---
+
+## 5) Putting it in a function (building a reusable sorter)
+
+So far, we've been writing ladders that log directly. In real apps, it's often useful to wrap a ladder in a **function** so other parts of your code can ask:
+
+"Given this item, where should it go?"
+
+Here's a helper that returns a label instead of logging:
+
+```js
+const classifyItem = (item) => {
+  if (item.size >= 6) {
+    return "display";
+  } else if (item.size >= 4) {
+    return "sell";
+  } else if (item.size >= 2) {
+    return "scrap";
+  } else {
+    return "sand";
+  }
+};
+
+const a = { name: "urn fragment", size: 7 };
+const b = { name: "bottle cap", size: 4 };
+const c = { name: "tiny metal bit", size: 2 };
+const d = { name: "grain", size: 0 };
+
+console.log(classifyItem(a)); // display
+console.log(classifyItem(b)); // sell
+console.log(classifyItem(c)); // scrap
+console.log(classifyItem(d)); // sand
+```
+
+Now the ladder has a name (`classifyItem`) and a clear output you can use anywhere:
+
+- log it
+- store it
+- show it in the UI
+- attach it to the object as a new property
+
+
+
+---
+
+## 6) Mini practice: ordering and unreachable branches
+
+Let's solidify the idea that **order matters**.
+
+Here's a ladder with overlapping screens:
+
+```js
+const item = { name: "coin", size: 6 };
+
+if (item.size >= 2) {
+  console.log("Worth keeping");
+} else if (item.size >= 4) {
+  console.log("Worth selling");
+} else if (item.size >= 6) {
+  console.log("Display-worthy");
+} else {
+  console.log("Sand");
+}
+```
+
+Questions to think through:
+
+1. Which message prints for size 6?
+2. Will the "Display-worthy" branch ever run for any positive size?
+3. How would you reorder this ladder so all three labels are actually reachable?
+
+
+
+---
+
+## Technical Vocabulary
+
+| Term               | Plain-English meaning                                            | Tiny example                                 |
+| ------------------ | ---------------------------------------------------------------- | -------------------------------------------- |
+| ladder             | A chain of <code>if / else if / else</code> branches             | <code>if (...) { } else if (...) { }</code>  |
+| branch             | One possible path in the ladder                                  | The code inside one pair of curly braces     |
+| threshold          | The comparison value that defines a screen boundary              | <code>item.size >= 4</code>                 |
+| specific condition | A narrower check that matches fewer values                       | <code>size >= 6</code>                      |
+| broad condition    | A wider check that matches many values                           | <code>size >= 2</code>                      |
+| catch-all          | The final <code>else</code> branch for anything unmatched        | <code>else \{... }</code>                   |
+| unreachable branch | A branch that never runs because earlier checks catch everything | broad checks above narrow ones               |
+
+---
+
+## Wrap-up
+
+In this chapter, you:
+
+- Turned single `if` screens into **ladders** with `if / else if / else`.
+- Used thresholds to route items into **several categories**.
+- Saw why **order matters**: specific checks go first, broad checks go later, `else` goes last.
+- Wrapped a ladder in a **function** so you can reuse the same decision logic anywhere in your code.
+
+Next up, you'll combine checks with **multiple conditions at once**--screens that care about size *and* material, or wet *or* dry--using logical operators like `&&` and `||`.
