@@ -55,6 +55,42 @@ export function isStandardUnlocked(standardId, masteredSet = loadMastered()) {
   return idx <= currentUnlockIndex(masteredSet);
 }
 
+function hasMasteredFactory(masteredSet) {
+  if (masteredSet && typeof masteredSet.has === "function") {
+    return (id) => masteredSet.has(id);
+  }
+  if (Array.isArray(masteredSet)) {
+    return (id) => masteredSet.includes(id);
+  }
+  return () => false;
+}
+
+function arePrerequisitesMastered(challenge, masteredSet) {
+  if (!challenge) return true;
+  const prereqs = Array.isArray(challenge.prerequisiteStandards)
+    ? challenge.prerequisiteStandards.filter(Boolean)
+    : [];
+  if (!prereqs.length) return true;
+  const hasMastered = hasMasteredFactory(masteredSet);
+  for (const id of prereqs) {
+    if (id === "overview") continue;
+    if (!hasMastered(id)) return false;
+  }
+  return true;
+}
+
+export function isChallengeUnlocked(challenge, masteredSet = loadMastered()) {
+  if (!challenge) return true;
+  if (challenge.isCompleted) return true;
+  if (!arePrerequisitesMastered(challenge, masteredSet)) return false;
+  const prereqs = Array.isArray(challenge.prerequisiteStandards)
+    ? challenge.prerequisiteStandards.filter(Boolean)
+    : [];
+  if (prereqs.length) return true;
+  const std = challenge?.primaryStandard || challenge?.standards?.[0];
+  return isStandardUnlocked(std, masteredSet);
+}
+
 // Filter challenges based on unlocks. If options.showLocked is true, returns the
 // original list. Completed challenges are always included regardless of lock.
 export function filterByUnlock(challenges, masteredSet = loadMastered(), options = {}) {
@@ -62,8 +98,7 @@ export function filterByUnlock(challenges, masteredSet = loadMastered(), options
   if (showLocked) return challenges;
   return challenges.filter((challenge) => {
     if (challenge?.isCompleted) return true;
-    const std = challenge?.primaryStandard || challenge?.standards?.[0];
-    return isStandardUnlocked(std, masteredSet);
+    return isChallengeUnlocked(challenge, masteredSet);
   });
 }
 

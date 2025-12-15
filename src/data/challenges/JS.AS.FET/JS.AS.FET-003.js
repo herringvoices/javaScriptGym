@@ -12,7 +12,11 @@ const challenge = {
     "JS.SD.ELM"    // DOM selection & manipulation
   ],
   primaryStandard: "JS.AS.FET",
-  difficulty: 2,
+  prerequisiteStandards: [
+    "JS.SD.EVH",
+    "JS.AR.ACC"
+  ],
+  difficulty: 4,
   description: "Provide a way to update the price (in cents) of an existing product using PUT /api/products/:id. After updating, reflect the new formatted $ price in the list without reloading the page.",
   mock: {
     apiSeed: {

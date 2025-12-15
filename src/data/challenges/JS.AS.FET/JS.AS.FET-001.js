@@ -12,7 +12,11 @@ const challenge = {
     "JS.SD.ELM",   // Select DOM elements     Update DOM to display the <li> elements
   ],
   primaryStandard: "JS.AS.FET",
-  difficulty: 1,
+  prerequisiteStandards: [
+    "JS.AR.MTH",
+    "JS.SD.ELM"
+  ],
+  difficulty: 3,
   description: "Marketing wants to display a list of products. Fetch the list from /api/products and render each product as a list item showing Name – $Price (price in dollars). Use async/await and Array.map to build the list items.",
   // Author-only mock metadata for offline fetch seeding
   mock: {

@@ -12,7 +12,12 @@ const challenge = {
     "JS.SD.ELM"    // Select & update DOM elements
   ],
   primaryStandard: "JS.AS.FET",
-  difficulty: 1,
+  prerequisiteStandards: [
+    "JS.SD.EVH",
+    "JS.SD.STA",
+    "JS.AR.ACC"
+  ],
+  difficulty: 4,
   description: "Allow marketing to add a new product. Provide a small form that POSTs to /api/products with name and priceInCents, then render the updated list including the new product.",
   mock: {
     apiSeed: {

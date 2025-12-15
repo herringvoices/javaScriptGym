@@ -33,6 +33,7 @@
  * @property {string[]} [tags]
  * @property {ChallengeSandboxPrefs} [sandbox]
  * @property {{ apiSeed?: any, mockNet?: any }} [mock] // Author-only metadata to seed fetch mock.
+ * @property {string[]} [prerequisiteStandards] // Optional list of standards that must be mastered first.
  * @property {boolean} [isCompleted] // Derived/UI state: whether the user has marked this challenge complete.
  */
 

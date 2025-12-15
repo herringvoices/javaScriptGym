@@ -3,21 +3,26 @@ import Modal from "./Modal";
 import { loadMastered, saveMastered } from "../lib/mastery";
 import standards, { standardOrder } from "../data/standards";
 
-export default function MasteryModal({ open, onClose }) {
-  const [mastered, setMastered] = useState(() => loadMastered());
+export default function MasteryModal({ open, onClose, masteredSet, onMasteredChange }) {
+  const [localMastered, setLocalMastered] = useState(() => new Set(masteredSet ?? loadMastered()));
 
   // keep in sync when reopened
   useEffect(() => {
-    if (open) setMastered(loadMastered());
-  }, [open]);
+    if (open) {
+      setLocalMastered(new Set(masteredSet ?? loadMastered()));
+    }
+  }, [open, masteredSet]);
 
   const list = useMemo(() => standardOrder.filter((id) => id !== "overview"), []);
 
   const toggle = (id) => {
-    setMastered((prev) => {
+    setLocalMastered((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
       saveMastered(next);
+      if (onMasteredChange) {
+        onMasteredChange(new Set(next));
+      }
       return next;
     });
   };
@@ -36,7 +41,7 @@ export default function MasteryModal({ open, onClose }) {
               <input
                 type="checkbox"
                 className="h-4 w-4 accent-brand-500"
-                checked={mastered.has(id)}
+                checked={localMastered.has(id)}
                 onChange={() => toggle(id)}
               />
               <span className="text-sm text-slate-200">{label}</span>

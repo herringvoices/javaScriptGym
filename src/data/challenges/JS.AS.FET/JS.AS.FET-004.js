@@ -12,7 +12,11 @@ const challenge = {
     "JS.SD.ELM"    // DOM selection
   ],
   primaryStandard: "JS.AS.FET",
-  difficulty: 2,
+  prerequisiteStandards: [
+    "JS.SD.EVH",
+    "JS.AR.ACC"
+  ],
+  difficulty: 3,
   description: "Enable deletion of a product via DELETE /api/products/:id. Render a list with a delete button for each product. When clicked, send DELETE and remove that item from the DOM (and local state) without a full reload.",
   mock: {
     apiSeed: {

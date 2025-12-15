@@ -10,7 +10,7 @@ import challenges from "../data/challenges";
 import standards, { standardOrder } from "../data/standards";
 import useLocalStorage from "../hooks/useLocalStorage";
 import Callout from "../components/Callout";
-import { filterByUnlock, isStandardUnlocked, loadMastered, currentUnlockIndex } from "../lib/mastery";
+import { filterByUnlock, loadMastered, currentUnlockIndex, isChallengeUnlocked } from "../lib/mastery";
 
 const difficultyOptions = [
   { value: 1, label: "★ Novice" },
@@ -39,6 +39,7 @@ export default function ChallengesPage() {
   const [masteryOpen, setMasteryOpen] = useState(false);
   const [unlockToast, setUnlockToast] = useState(null); // { label, until }
   const prevUnlockRef = useRef(null);
+  const [masteredSet, setMasteredSet] = useState(() => loadMastered());
 
   // Track completed challenges (array of challenge ids) in localStorage
   const [completedIds, setCompletedIds] = useLocalStorage("completedChallenges", []);
@@ -67,7 +68,7 @@ export default function ChallengesPage() {
   }, []);
 
   const filteredChallenges = useMemo(() => {
-    const mastered = loadMastered();
+    const mastered = masteredSet;
     let list = challenges
       .map((c) => ({ ...c, isCompleted: isChallengeCompleted(c.id) }))
       .filter((challenge) => {
@@ -82,7 +83,7 @@ export default function ChallengesPage() {
       list = filterByUnlock(list, mastered, { showLocked });
     }
     return list;
-  }, [selectedCategory, selectedDifficulty, hideCompleted, isChallengeCompleted, respectOrder, showLocked]);
+  }, [selectedCategory, selectedDifficulty, hideCompleted, isChallengeCompleted, respectOrder, showLocked, masteredSet]);
 
   const handleRandom = () => {
     if (!filteredChallenges.length) return;
@@ -109,7 +110,7 @@ export default function ChallengesPage() {
     return () => clearTimeout(t);
   }, [unlockToast]);
 
-  const masteredForRender = loadMastered();
+  const masteredForRender = masteredSet;
 
   return (
     <section className="space-y-8">
@@ -135,7 +136,7 @@ export default function ChallengesPage() {
           type="button"
           className="inline-flex items-center rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-brand-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-200"
           onClick={() => {
-            const before = currentUnlockIndex(loadMastered());
+            const before = currentUnlockIndex(masteredSet);
             prevUnlockRef.current = before;
             setMasteryOpen(true);
           }}
@@ -179,8 +180,9 @@ export default function ChallengesPage() {
       {filteredChallenges.length ? (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredChallenges.map((challenge) => {
-            const std = challenge.primaryStandard || challenge.standards?.[0];
-            const locked = respectOrder ? !isStandardUnlocked(std, masteredForRender) && !challenge.isCompleted : false;
+            const locked = respectOrder
+              ? !isChallengeUnlocked(challenge, masteredForRender) && !challenge.isCompleted
+              : false;
             return (
               <ChallengeCard
                 key={challenge.id}
@@ -312,9 +314,11 @@ export default function ChallengesPage() {
 
       <MasteryModal
         open={masteryOpen}
+        masteredSet={masteredSet}
+        onMasteredChange={(next) => setMasteredSet(new Set(next))}
         onClose={() => {
           setMasteryOpen(false);
-          const after = currentUnlockIndex(loadMastered());
+          const after = currentUnlockIndex(masteredSet);
           const before = prevUnlockRef.current;
           if (typeof before === "number" && after > before) {
             const id = standardOrder[after];
