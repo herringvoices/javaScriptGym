@@ -1,4 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink, Outlet } from "react-router-dom";
+import { faDumbbell } from "@fortawesome/free-solid-svg-icons";
 
 const navLinkClass = ({ isActive }) =>
   [
@@ -17,7 +19,7 @@ export default function AppLayout() {
             to="/"
             className="text-xl font-semibold text-white tracking-tight"
           >
-            FE Practice Playground
+            JavaScript Gym <FontAwesomeIcon icon={faDumbbell}/>
           </NavLink>
           <nav className="flex items-center gap-2">
             <NavLink to="/" className={navLinkClass} end>
