@@ -29,7 +29,7 @@ const entry = {
       path: "/main.js",
       active: true,
       content: `
-      const book1 = {
+const book1 = {
   title: "The Way of Kings",
   author: "Brandon Sanderson",
   pages: 1010,
