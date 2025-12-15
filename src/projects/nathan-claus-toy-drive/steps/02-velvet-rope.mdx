@@ -1,0 +1,26 @@
+---
+id: 02-velvet-rope
+title: Qualify the Kids
+---
+
+# Step 1 — The Velvet Rope
+
+Nathan needs a bouncer function. Create `isEligibleForGift(person)` so it returns `true` only when the person is both **under 18** and **nice**.
+
+## Requirements
+
+- Accept a single `person` object.
+- Return `true` when `person.age < 18` and `person.isNice` is truthy.
+- Return `false` for everyone else (adults, grumps, missing data).
+
+## Checkpoint
+
+Pick a few entries from `people` and log the outcomes. You should see both `true` and `false` cases. Example playground code:
+
+```js
+console.log(isEligibleForGift(people[0]));
+console.log(isEligibleForGift(people[2]));
+console.log(isEligibleForGift(people[3]));
+```
+
+When the velvet rope works, move on to the shipping label.

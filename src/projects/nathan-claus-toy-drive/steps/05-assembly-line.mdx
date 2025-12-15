@@ -1,0 +1,24 @@
+---
+id: 05-assembly-line
+title: Loop Through the List
+---
+
+# Step 4 — The Assembly Line
+
+Scale the operation from one kid to the entire list. Use `runToyDrive()` to loop every person, qualify them, and assign gifts when appropriate.
+
+## Requirements
+
+- Iterate with `for...of` over `people`.
+- Use `isEligibleForGift` to check that the person qualifies for a gift
+- Call `assignGift` for every _**qualifying**_ kid.
+- Use temporary `console.log()`s to make sure they were added successfully.
+
+## Checkpoint
+
+After running `runToyDrive()`:
+
+- `kidToys.length` should equal the number of qualifying kids.
+- Spot-check a couple of records to ensure requested toys were honored when possible.
+
+When the assembly line runs smoothly, you are ready to print the receipt.

@@ -1,7 +1,7 @@
 // Projects manifest and loaders
 // Each project mirrors the handbook approach: one JS entry in entries/ and MDX files per step.
 
-export const projects = [
+const projects = [
 	{
 		id: "landers-zoo",
 		title: "Lander's Zoo",
@@ -32,18 +32,33 @@ export const projects = [
             { id: "06-stretch", title: "Stretch Goals & Extras" },
         ],
     },
+	{
+		id: "nathan-claus-toy-drive",
+		title: "Nathan Claus' Toy Drive (No Relation)",
+		summary: "Build a console-based matching system that filters a nice-list, assigns toys with requests and random picks, and prints a readable delivery log.",
+		standards: ["JS.FN.BAS", "JS.VDT.COL", "JS.PF.ITR"],
+		steps: [
+			{ id: "01-intro", title: "Meet Operation: Nice List" },
+			{ id: "02-velvet-rope", title: "Qualify the Kids" },
+			{ id: "03-shipping-label", title: "Record a Kid-Toy Match" },
+			{ id: "04-assign-gifts", title: "Handle Requests & Random Picks" },
+			{ id: "05-assembly-line", title: "Loop Through the List" },
+			{ id: "06-receipt-printer", title: "Print the Final Report" },
+			{ id: "07-stretch", title: "Stretch Goals" },
+		],
+	},
 ];
 
-export function getProject(projectId) {
+function getProject(projectId) {
 	return projects.find((p) => p.id === projectId) || null;
 }
 
-export function getProjectSteps(projectId) {
+function getProjectSteps(projectId) {
 	const meta = getProject(projectId);
 	return meta?.steps || [];
 }
 
-export const projectStepLoaders = {
+const projectStepLoaders = {
 	"landers-zoo": {
 		"01-intro": () => import("./landers-zoo/steps/01-intro.mdx"),
 		"02-animals": () => import("./landers-zoo/steps/02-animals.mdx"),
@@ -60,21 +75,31 @@ export const projectStepLoaders = {
 		"05-inject": () => import("./love-on-the-lawn/steps/05-inject.mdx"),
 		"06-stretch": () => import("./love-on-the-lawn/steps/06-stretch.mdx"),
 	},
+    "nathan-claus-toy-drive": {
+        "01-intro": () => import("./nathan-claus-toy-drive/steps/01-intro.mdx"),
+        "02-velvet-rope": () => import("./nathan-claus-toy-drive/steps/02-velvet-rope.mdx"),
+        "03-shipping-label": () => import("./nathan-claus-toy-drive/steps/03-shipping-label.mdx"),
+        "04-assign-gifts": () => import("./nathan-claus-toy-drive/steps/04-assign-gifts.mdx"),
+        "05-assembly-line": () => import("./nathan-claus-toy-drive/steps/05-assembly-line.mdx"),
+        "06-receipt-printer": () => import("./nathan-claus-toy-drive/steps/06-receipt-printer.mdx"),
+        "07-stretch": () => import("./nathan-claus-toy-drive/steps/07-stretch.mdx"),
+    },
 };
 
-export function getStepLoader(projectId, stepId) {
+function getStepLoader(projectId, stepId) {
 	const map = projectStepLoaders[projectId];
 	if (!map) return null;
 	const fn = map[stepId];
 	return fn || null;
 }
 
-export const projectEntries = {
+const projectEntries = {
 	"landers-zoo": () => import("./entries/landers-zoo.js").then((m) => m.default),
     "love-on-the-lawn": () => import("./entries/love-on-the-lawn.js").then((m) => m.default),
+	"nathan-claus-toy-drive": () => import("./entries/nathan-claus-toy-drive.js").then((m) => m.default),
 };
 
-export async function loadProjectEntry(projectId) {
+async function loadProjectEntry(projectId) {
 	const loader = projectEntries[projectId];
 	if (!loader) return null;
 	try {
@@ -85,4 +110,14 @@ export async function loadProjectEntry(projectId) {
 		return null;
 	}
 }
+
+export {
+	projects,
+	getProject,
+	getProjectSteps,
+	projectStepLoaders,
+	getStepLoader,
+	projectEntries,
+	loadProjectEntry,
+};
 

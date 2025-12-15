@@ -40,7 +40,7 @@ const standards = {
   },
   "JS.FN.BAS": {
     id: "JS.FN.BAS",
-    title: "Functions · Basics",
+    title: "Functions · Function Basics",
     short: "Write focused functions that accept inputs and return results.",
     bodyMd: `### Standards\n\n- **JS.FN.BAS.1** Declare and invoke functions, recognizing that some use parameters and/or return values while others do not.\n- **JS.FN.BAS.2** Write functions with both the \`function\` keyword and arrow syntax using both named and anonymous functions appropriately (e.g., named for reuse/clarity; anonymous for inline use).\n- **JS.FN.BAS.3** Use parameters and return values to pass data in and out of a function; prefer passing data over relying on outer variables when feasible.\n- **JS.FN.BAS.4** Compose small, single-purpose functions to build larger features (i.e. break a problem into helper functions).`,
   },

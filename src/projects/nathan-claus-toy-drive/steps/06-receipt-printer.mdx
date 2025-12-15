@@ -1,0 +1,21 @@
+---
+id: 06-receipt-printer
+title: Print the Final Report
+---
+
+# Step 5 — The Receipt Printer
+
+Nathan needs human-readable proof that every gift found a home. Implement `printAssignments()` so it joins ids back to names and toys.
+
+## Requirements
+
+- Loop over every record in `kidToys`.
+- For each record, find the matching kid in `people` and the toy in `toys`
+- If it helps, assign each match to a variable such as `kidFound` or `toyFound`
+- Print a sentence like `Suzy got a Puzzle Cube`.
+- Avoid leaking raw ids into the final message.
+
+
+## Final Check
+
+Run `runToyDrive()` followed by `printAssignments()`. You should see a cheerful list of deliveries in the console. If a line reads `undefined got undefined`, read your code carefully (line-by-line) to find the bug.

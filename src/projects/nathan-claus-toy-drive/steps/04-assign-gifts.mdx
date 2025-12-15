@@ -1,0 +1,27 @@
+---
+id: 04-assign-gifts
+title: Handle Requests & Random Picks
+---
+
+# Step 3 — The Special Request Desk
+
+Time to fulfill wishes. Implement `assignGift(kid)` so it decides which toy the kid receives and records it in `kidToys`.
+
+## Logic to Cover
+
+1. **Requested gift path**
+   - If `kid.requestedGiftId` exists, confirm there is a matching toy.
+   - If the toy exists, use that id.
+   - If it is missing, use `chooseRandomToyId(toy)` to get a safe random toy id and use that.
+2. **Always record**
+   - Call `createAssignmentRecord` with the chosen ids.
+   - Push the new record into `kidToys`.
+
+## Checkpoint
+
+Run `assignGift` on:
+
+- A qualifying kid with a valid request.
+- A qualifying kid with no request.
+
+Inspect `kidToys` after each call to confirm it grows with sensible records.

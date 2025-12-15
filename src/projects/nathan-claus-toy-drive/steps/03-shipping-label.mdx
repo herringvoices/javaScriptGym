@@ -1,0 +1,25 @@
+---
+id: 03-shipping-label
+title: Record a Kid-Toy Match
+---
+
+# Step 2 — The Shipping Label
+
+Nathan does not trust vibes; he needs receipts. Build `createAssignmentRecord(kidId, toyId)` so each assignment lands in `kidToys` with a clean, consistent shape.
+
+## Requirements
+
+- Accept two arguments: the kid's id and the toy's id.
+- Return a brand new object with exactly those two properties: `{ kidId, toyId }`.
+- Do **not** mutate inputs or push to `kidToys` yet. That comes later.
+
+## Checkpoint
+
+Call the function manually and inspect the result:
+
+```js
+const sample = createAssignmentRecord(5, 3);
+console.log(sample);
+```
+
+If the returned object makes sense as a shipping label, you are ready for the special request desk.
