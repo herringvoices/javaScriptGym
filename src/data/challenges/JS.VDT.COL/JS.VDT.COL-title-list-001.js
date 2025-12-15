@@ -5,7 +5,7 @@ const challenge = {
   id: "JS.VDT.COL-title-list-001",
   title: "Title List",
   challengeType: ChallengeTypes.CODE_AND_SEE,
-  standards: ["JS.VDT.COL", "JS.VDT.COL"],
+  standards: ["JS.VDT.COL", ],
   primaryStandard: "JS.VDT.COL",
   prerequisiteStandards: ["JS.VDT.PRM"],
   difficulty: 1,

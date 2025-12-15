@@ -5,7 +5,7 @@ const challenge = {
   id: "JS.VDT.PRM-player-status-001",
   title: "Player Status Line",
   challengeType: ChallengeTypes.CODE_AND_SEE,
-  standards: ["JS.VDT.PRM", "JS.VDT.PRM"],
+  standards: ["JS.VDT.PRM", ],
   primaryStandard: "JS.VDT.PRM",
   difficulty: 1,
   description: `

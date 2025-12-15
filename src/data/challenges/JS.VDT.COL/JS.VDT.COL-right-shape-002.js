@@ -5,7 +5,7 @@ const challenge = {
   id: "JS.VDT.COL-right-shape-002",
   title: "Pick the Right Shape",
   challengeType: ChallengeTypes.CODE_AND_SEE,
-  standards: ["JS.VDT.COL", "JS.VDT.COL"],
+  standards: ["JS.VDT.COL", ],
   primaryStandard: "JS.VDT.COL",
   prerequisiteStandards: ["JS.VDT.PRM"],
   difficulty: 3,
