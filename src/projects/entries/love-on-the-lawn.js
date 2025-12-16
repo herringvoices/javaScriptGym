@@ -48,11 +48,11 @@ export default {
     title: "Love on the Lawn",
     files: [
         { path: "/index.html", content: INDEX_HTML, active: false },
-        { path: "/main.js", content: MAIN_JS, active: true },
+        { path: "/scripts/main.js", content: MAIN_JS, active: true },
         { path: "/styles.css", content: STYLES_CSS, readOnly: false, hidden: false },
         { path: "/database.js", content: DATABASE_JS, readOnly: false, hidden: false },
-        { path: "/lawnDecorations.js", content: LAWN_DECORATIONS_JS, readOnly: false, hidden: false },
-        { path: "/romanceNovels.js", content: ROMANCE_NOVELS_JS, readOnly: false, hidden: false },
+        { path: "/scripts/lawnDecorations.js", content: LAWN_DECORATIONS_JS, readOnly: false, hidden: false },
+        { path: "/scripts/romanceNovels.js", content: ROMANCE_NOVELS_JS, readOnly: false, hidden: false },
     ],
     entry: "/index.html",
 };
