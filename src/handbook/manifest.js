@@ -10,6 +10,7 @@ export const handbookChapters = {
   'JS.PF.CON': () => import('./JS.PF.CON.mdx'),
   'JS.PF.ITR': () => import('./JS.PF.ITR.mdx'),
   'JS.FN.HOF': () => import('./JS.FN.HOF.mdx'),
+  'JS.AR.ACC': () => import('./JS.AR.ACC.mdx'),
 };
 
 export const handbookOrder = [
@@ -21,6 +22,7 @@ export const handbookOrder = [
   'JS.FN.HOF',
   'JS.PF.CON',
   'JS.PF.ITR',
+  'JS.AR.ACC',
 ];
 
 // New-style handbook entries with embedded editor workbench
@@ -36,6 +38,7 @@ export const handbookEntries = {
   'JS.FN.BAS': () => import('./entries/JS.FN.BAS.js').then(m => m.default),
   'JS.PF.CON': () => import('./entries/JS.PF.CON.js').then(m => m.default),
   'JS.PF.ITR': () => import('./entries/JS.PF.ITR.js').then(m => m.default),
+  'JS.AR.ACC': () => import('./entries/JS.AR.ACC.js').then(m => m.default),
 
 };
 

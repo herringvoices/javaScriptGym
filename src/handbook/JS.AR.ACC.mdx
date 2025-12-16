@@ -1,0 +1,320 @@
+---
+id: JS.AR.ACC
+title: Arrays & Objects · Mutation and the "Wait… Why Did That Change?!" Bug
+short: Arrays and objects are reference types, so they can change in surprising ways—learn how mutation works and fix accidental shared data with spread (...).
+---
+
+# Arrays & Objects → Mutation and the "Wait… Why Did That Change?!" Bug
+
+So far, arrays have mostly behaved the way you expected: you add things, remove things, loop through them, life is good.
+
+But arrays (and objects) have a secret: they don’t work like primitives.
+
+When you assign a **primitive** (like a number or a string), you get an actual copy of the value:
+
+```js
+let a = 5;
+let b = a;
+b = 99;
+
+console.log(a); // 5
+console.log(b); // 99
+```
+
+Changing `b` didn’t change `a`, because `b` got its own separate value.
+
+But **arrays and objects are reference types**. When you assign one, you’re not copying the whole array/object — you’re copying a *reference* to it (basically: “here’s where that thing lives”).
+
+So this can happen:
+
+```js
+const nums = [1, 2, 3];
+const otherNums = nums;
+
+otherNums.pop();
+
+console.log(nums);      // [1, 2]
+console.log(otherNums); // [1, 2]
+```
+
+That’s the "Wait… why did that change?!" bug.
+
+In this one-page chapter, you’ll intentionally create that bug twice, then learn the everyday fix: using the **spread operator** to make shallow copies before you mutate.
+
+---
+
+## 1) The production line problem
+
+You’ve got several **car blueprints** arriving at a factory. Your job is to add them to the production line with a new id.
+
+Your starter code includes:
+
+* `let nextId = 1`
+* `const productionLine = []`
+* a blueprint object like `sedanBlueprint`
+
+### First, do it the “obvious” way
+
+<HandbookChallenge
+title="Add objects the obvious way (and watch what happens)"
+answers={<pre className="m-0 whitespace-pre-wrap">{`const addCar = (car, color) => {
+  car.id = nextId;
+  nextId++;
+  car.color = color
+  productionLine.push(car);
+};
+
+addCarBad(sedanBlueprint);
+addCarBad(sedanBlueprint);
+addCarBad(sedanBlueprint);
+
+console.log(productionLine);`}</pre>}
+>
+
+  <div className="m-0">
+<ul className="mt-2 mb-0 list-disc list-inside px-3">
+<li>Write a function named addCar() that takes an object called `car` and a string called `color` as parameters.</li>
+<li>Inside it, assign an id directly onto the car: `car.id = nextId`.</li>
+<li>Update the color property of the car object to match the `color` parameter.</li>
+<li>Increment nextId.</li>
+<li>`.push()` car into productionLine.</li>
+<li>Call addCarBad 3 times using the SAME blueprint object.</li>
+<li>Console.log productionLine and answer: What do you notice?</li>
+</ul>
+  </div>
+</HandbookChallenge>
+
+### What’s going on?
+
+When you do this:
+
+```js
+productionLine.push(car)
+```
+
+…you’re not putting a fresh copy into the array. You’re putting a **reference** to an object.
+
+So if you reuse the same blueprint object, you’re basically doing:
+
+* “Put this blueprint on the line.”
+* “Put this same blueprint on the line again.”
+* “Put this same blueprint on the line again again.”
+
+Now you’ve got multiple array entries pointing at the **same object**. If you mutate that object (like setting `car.id`), every reference “sees” the latest mutation.
+
+---
+
+## 2) Mutation vs non-mutation
+
+**Mutating** means: you change the original thing in place.
+
+```js
+car.id = 7;            // mutates the original object
+productionLine.push(); // mutates the original array
+productionLine.pop();  // mutates the original array
+```
+
+**Non-mutating** means: you don’t change the original; you create/return something new.
+
+In a lot of real apps, you’ll still mutate arrays and objects. The goal isn’t “never mutate.” The goal is:
+
+> Don’t mutate something you didn’t mean to share.
+
+So you need a quick way to make a new array or object before you start changing it.
+
+---
+
+## 3) The fix for objects: the spread operator
+
+The **spread operator** is `...`.
+
+When you use it inside an object, it creates a **shallow copy**:
+
+```js
+const newCar = { ...car, id: nextId };
+```
+
+That says:
+
+* “Make a new object with all of `car`’s properties…”
+* “…and also set/override `id`.”
+
+Now you’re not mutating the blueprint. You’re creating a new car.
+
+<HandbookChallenge
+title="Add cars without mutating the blueprint"
+hints={[
+"Write a function named addCar(car).",
+"Inside it, create a new object: `const newCar = { ...car, id: nextId }`.",
+"Increment nextId.",
+"Push newCar to productionLine.",
+"Call addCar 3 times using the SAME Hondord blueprint object (for example, `hondordGrove`).",
+"Log productionLine and compare to Challenge M1.",
+]}
+answers={<pre className="m-0 whitespace-pre-wrap">{`const addCar = (car) => {
+  const newCar = { ...car, id: nextId };
+  nextId++;
+  productionLine.push(newCar);
+};
+
+addCar(hondordGrove);
+addCar(hondordGrove);
+addCar(hondordGrove);
+
+console.log(productionLine);`}</pre>}
+>
+
+  <div className="m-0">
+<ul className="mt-2 mb-0 list-disc list-inside px-3">
+<li>Refactor your existing `addCar()` function so it does <em>not</em> change the original car object directly.</li>
+<li>Inside it, create a brand‑new object using the spread operator: `const newCar = { ...car, id: nextId }`.</li>
+<li>Increment `nextId` after you’ve created the new car.</li>
+<li>Push `newCar` into `productionLine` instead of the original `car` blueprint.</li>
+<li>Call `addCar` three times with the same Hondord blueprint object from your starter code (for example, `hondordGrove`).</li>
+<li>Log `productionLine` and compare the result to your first challenge.</li>
+<li><strong>What changed?</strong> How do the `id` values and objects look now?</li>
+</ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## 4) The dealership problem
+
+Now you need to send inventory to three dealership branches:
+
+* west
+* east
+* central
+
+You decide to make three “inventories” from the production line.
+
+### First, do it the “obvious” way
+
+<HandbookChallenge
+title="Three branches that act suspiciously like one branch"
+hints={[
+"Create the branch inventories using direct assignment:",
+"`const westBranchInventory = productionLine` (same for east/central).",
+"Pop one car from eastBranchInventory into a showroom variable.",
+"Log the three inventories.",
+"Answer: why did they all change together?",
+]}
+answers={<pre className="m-0 whitespace-pre-wrap">{`const westBranchInventory = productionLine;
+const eastBranchInventory = productionLine;
+const centralBranchInventory = productionLine;
+
+const eastShowroomCar = eastBranchInventory.pop();
+
+console.log("West inventory:", westBranchInventory);
+console.log("East inventory:", eastBranchInventory);
+console.log("Central inventory:", centralBranchInventory);`}</pre>}
+>
+
+  <div className="m-0">
+<ul className="mt-2 mb-0 list-disc list-inside px-3">
+<li>Create three branch inventory variables all pointing at the same array: `westBranchInventory`, `eastBranchInventory`, and `centralBranchInventory`, each assigned to `productionLine`.</li>
+<li>Use `pop()` on `eastBranchInventory` to remove one car and store it in a showroom variable (for example, `eastShowroomCar`).</li>
+<li>Log all three inventories: west, east, and central.</li>
+<li><strong>What do you notice?</strong> Why did changing just the east branch affect what you logged for the other branches?</li>
+</ul>
+  </div>
+</HandbookChallenge>
+
+### What’s going on?
+
+This line:
+
+```js
+const eastBranchInventory = productionLine;
+```
+
+does **not** make a copy.
+
+It makes a new variable that points at the **same array**.
+
+So when one branch does `pop()`, it mutates the shared array — which means everyone’s “inventory” changes, because it’s all one inventory wearing three different name tags.
+
+---
+
+## 5) The fix for arrays: spread-copy before you mutate
+
+Spread works for arrays too:
+
+```js
+const eastBranchInventory = [...productionLine];
+```
+
+That creates a new array with the same items.
+
+Now each branch can mutate its own array without accidentally stealing from the other branches.
+
+<HandbookChallenge
+title="Independent branch inventories"
+hints={[
+"Create each branch inventory with spread: `[...productionLine]`.",
+"Pop a car from eastBranchInventory.",
+"Log all inventories again.",
+"Only east should change now.",
+]}
+answers={<pre className="m-0 whitespace-pre-wrap">{`const westBranchInventory = [...productionLine];
+const eastBranchInventory = [...productionLine];
+const centralBranchInventory = [...productionLine];
+
+const eastShowroomCar = eastBranchInventory.pop();
+
+console.log("West inventory:", westBranchInventory);
+console.log("East inventory:", eastBranchInventory);
+console.log("Central inventory:", centralBranchInventory);`}</pre>}
+>
+
+  <div className="m-0">
+<ul className="mt-2 mb-0 list-disc list-inside px-3">
+<li>Create three new branch inventory arrays using spread, for example: `const eastBranchInventory = [...productionLine]` (and the same pattern for west and central).</li>
+<li>Each branch should start with its own copy of the cars, not a shared reference.</li>
+<li>Use `pop()` on `eastBranchInventory` to move one car into a showroom variable.</li>
+<li>Log all three branch inventories again.</li>
+<li><strong>What changed?</strong> Which inventories lost a car this time, and which stayed exactly the same?</li>
+</ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## 6) One important note: spread is shallow
+
+Spread makes a **new outer container**:
+
+* a new object for `{ ...car }`
+* a new array for `[...productionLine]`
+
+But it does **not** magically clone everything inside.
+
+If an array contains objects, spread copies the array, but the objects inside are still the same object references.
+
+For now, that’s fine—and it’s exactly what you’ll use most often.
+
+---
+
+## **Technical Vocabulary**
+
+| Term            | Plain-English meaning                                                | Tiny example                                      |
+| :-------------- | :------------------------------------------------------------------- | :------------------------------------------------ |
+| reference       | A pointer‑like link to an array or object, not a full copy          | `const otherNums = nums`                          |
+| reference type  | A type where variables hold references instead of raw values        | `const car = { make: "Hondord" }`                |
+| mutate          | Change an existing array or object in place                         | `car.id = 7`, `productionLine.push(car)`         |
+| non‑mutating    | Make a new array/object instead of changing the original            | `const copy = [...productionLine]`               |
+| shared reference| Two variables that both point at the same underlying array/object   | `const east = productionLine`                    |
+| spread operator | The `...` syntax that makes shallow copies or merges properties     | `const newCar = { ...car, id: nextId }`          |
+| shallow copy    | A new outer array/object that still shares its inner objects/arrays | `[...carsWithDetails]`                            |
+
+---
+
+## What to remember
+
+* Primitives copy values. Arrays and objects copy **references**.
+* **Mutating** changes the original array/object in place.
+* A lot of bugs come from accidentally mutating shared references.
+* Use spread for quick shallow copies:
+  * objects: `{ ...obj }`
+  * arrays: `[...arr]`
