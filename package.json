@@ -19,6 +19,7 @@
     "monaco-editor": "^0.52.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-inspector": "^9.0.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.4",
     "react-router-dom": "^7.1.3"
