@@ -1,0 +1,221 @@
+---
+id: JS.AR.MTH.LOOKUPS
+title: Lookups & Validation · find, some, every
+short: Use find, some, and every to answer questions about your arrays.
+---
+
+# Array Methods → Lookup Methods
+
+## Lookups and validation: `find()`, `some()`, `every()`
+
+So far you’ve used array methods to **transform** a list (`map()`) or **create a subset** (`filter()`). Now you’ll use methods that **ask the list questions**.
+
+`find()`, `some()`, and `every()` let you **look up** information in an array, or **validate** something about it.
+
+Instead of building a brand-new array (like `map()` or `filter()`), these methods **ask the array a question** by running your callback on items until they know the answer.
+
+This callback is often called a **predicate**: it answers “yes or no?” for each item.
+
+Here are the three big ones:
+
+- `find()` → “Give me the one item that matches a rule.” → returns **one item** (or `undefined`)
+- `some()` → “Does *any* item match a rule?” → returns **true/false**
+- `every()` → “Do *all* items match a rule?” → returns **true/false**
+
+---
+
+### 1) `find()` — get the one match
+
+`find()` runs your predicate on each item and:
+
+- returns the **first** item where the callback returns `true`
+- returns `undefined` if it never finds a match
+
+**Example:**
+
+```js
+const student3 = students.find((s) => s.id === 3);
+```
+
+Now `student3` is the student object whose `id` is `3` (or `undefined` if that student doesn’t exist).
+
+What about an example from real life? Maybe you’re trying to find the first clean shirt in a chaotic laundry pile:
+
+```js
+const firstCleanShirt = shirts.find((s) => s.isClean);
+```
+
+Or maybe you’re trying to find the first gas station that’s actually open (because your gas light light is judging you):
+
+```js
+const openStation = stations.find((st) => st.isOpen);
+```
+Most often, when you use `find()`, you're looking for one specific thing, and you're trying to find it by a unique identifier that only that thing has.
+
+For example: you're trying to pick up your kid from daycare. They are one of two kids named "Hoffle Sturp McWoof." So the daycare looks them up by a unique id they gave them when you first signed them up:
+
+```js
+const yourKidId = 14
+const yourKid = kids.find(k => k.id === yourKidId)
+```
+
+We could do this all day! The point is: `find()` is for when you want **one specific item**, not a whole subset.
+
+---
+
+### 2) `some()` — does any match?
+
+`some()` checks whether **at least one** item passes your predicate. It runs your callback on items and:
+
+- returns `true` as soon as it finds one item where the callback returns `true`
+- returns `false` if it checks everything and nothing matches
+
+**Example:**
+
+```js
+const hasAnyFines = fines.some((f) => f.studentId === student.id);
+```
+
+Now `hasAnyFines` is `true` if this student has at least one fine record, otherwise `false`.
+
+What about an example from real life? Maybe you’re checking your fridge for *any* snack that counts as “food”:
+
+```js
+const hasAnyFood = fridge.some((item) => item.isEdible);
+```
+
+Or you’re checking if *any* of your friends are free tonight before you bother forming a group chat:
+
+```js
+const anyoneFree = friends.some((f) => f.isFreeTonight);
+```
+
+The point here is: `some()` is for “**is there at least one?**”
+
+---
+
+### 3) `every()` — do all match?
+
+`every()` checks whether **all** items pass your predicate. It runs your callback on items and:
+
+- returns `false` as soon as it finds one item where the callback returns `false`
+- returns `true` only if every item passes
+
+A common pattern is: **filter down to the relevant items first**, then use `every()` to validate.
+
+**Example:**
+
+```js
+const studentGrades = grades.filter((g) => g.studentId === student.id);
+const needsTutoring = studentGrades.every((g) => g.grade < 2);
+```
+
+Now `needsTutoring` is `true` if *every* one of that student’s grades is below 2.
+
+What about an example from real life? Maybe you’re checking whether everyone in a group chat has RSVP’d before you book the thing:
+
+```js
+const everyoneReplied = invites.every((i) => i.hasResponded);
+```
+
+Or maybe you’re checking whether all your devices are charged before a trip (and yes, this is how you end up packing 14 cables):
+
+```js
+const allCharged = devices.every((d) => d.batteryPercent >= 80);
+```
+
+One weird-but-important edge case: `every()` on an empty array returns `true`. That’s not a bug—it’s just how the logic works. In real apps, you often add a quick check like “do we even have any items?” before trusting the result:
+
+```js
+const hasGrades = studentGrades.length > 0;
+const needsTutoring = hasGrades && studentGrades.every((g) => g.grade < 2);
+```
+
+---
+
+### Teacher lookup chaining
+
+You’ll also often use these lookups together—one right after another: find a student, then use their data to find their teacher.
+
+```js
+const student3 = students.find((s) => s.id === 3);
+const teacher = teachers.find((t) => t.id === student3.homeroomTeacherId);
+```
+<Callout type="tip" title="A Look Ahead">
+In the next section you'll see method chaining — calling array methods one after another (for example: `students.filter(...).map(...).find(...)`). Chaining can make code shorter and easier to read...and can make you feel very clever and proud of yourself, which is also nice.
+</Callout>
+
+---
+
+<HandbookChallenge
+  title="Build the Boarblemish lookup helpers"
+  hints={[
+    "Each helper should do one job and return a value.",
+    "If you get `undefined`, double-check which array you should use `find` on (single object) vs `filter` (array).",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const getStudentById = (id) => {
+  return students.find((s) => s.id === id);
+};
+
+const getHomeroomTeacher = (student) => {
+  return teachers.find((t) => t.id === student.homeroomTeacherId);
+};
+
+const hasFines = (student) => {
+  return fines.some((f) => f.studentId === student.id);
+};
+
+const needsTutoring = (student) => {
+  const studentGrades = grades.filter((g) => g.studentId === student.id);
+
+  // If they have no grades yet, we probably shouldn't mark them as "needs tutoring".
+  if (studentGrades.length === 0) return false;
+
+  return studentGrades.every((g) => g.grade < 2);
+};
+
+// Practice call
+const sample = getStudentById(3);
+const sampleTeacher = getHomeroomTeacher(sample);
+
+console.log(sample.lastName);
+console.log(sampleTeacher.name);
+console.log("Has fines?", hasFines(sample));
+console.log("Needs tutoring?", needsTutoring(sample));`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>These helpers should return values. Don’t `console.log` inside the helpers.</li>
+      <li>
+        Create <code>getStudentById(id)</code> using <code>students.find(...)</code> to return the matching student
+        object.
+      </li>
+      <li>
+        Create <code>getHomeroomTeacher(student)</code> using <code>teachers.find(...)</code> and
+        <code>student.homeroomTeacherId</code>.
+      </li>
+      <li>
+        Create <code>hasFines(student)</code> using <code>fines.some(...)</code> to check whether any fine record has
+        <code>studentId === student.id</code>.
+      </li>
+      <li>
+        Create <code>needsTutoring(student)</code> using the rule: all their <code>grade</code> values are
+        <code>&lt; 2</code>. Use <code>grades.filter(...)</code> to get just that student’s grades, then
+        <code>every(...)</code> to test them.
+      </li>
+      <li>If a student has no grades yet, don’t label them as needing tutoring.</li>
+      <li>
+        Practice: pick an <code>id</code>, get the student, log their <code>lastName</code>, log their teacher’s name,
+        and log whether they <code>hasFines</code> and <code>needsTutoring</code>.
+      </li>
+      <li>Keep vs Trash: Keep all lookup helpers. The roster formatter will use them.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+You should now have helpers `getStudentById`, `getHomeroomTeacher`, `hasFines`, and `needsTutoring`.
+
+---

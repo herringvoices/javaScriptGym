@@ -11,6 +11,7 @@ export const handbookChapters = {
   'JS.PF.ITR': () => import('./JS.PF.ITR.mdx'),
   'JS.FN.HOF': () => import('./JS.FN.HOF.mdx'),
   'JS.AR.ACC': () => import('./JS.AR.ACC.mdx'),
+  'JS.AR.MTH': () => import('./JS.AR.MTH.mdx'),
 };
 
 export const handbookOrder = [
@@ -23,6 +24,7 @@ export const handbookOrder = [
   'JS.PF.CON',
   'JS.PF.ITR',
   'JS.AR.ACC',
+  'JS.AR.MTH',
 ];
 
 // New-style handbook entries with embedded editor workbench
@@ -39,6 +41,8 @@ export const handbookEntries = {
   'JS.PF.CON': () => import('./entries/JS.PF.CON.js').then(m => m.default),
   'JS.PF.ITR': () => import('./entries/JS.PF.ITR.js').then(m => m.default),
   'JS.AR.ACC': () => import('./entries/JS.AR.ACC.js').then(m => m.default),
+  'JS.AR.MTH': () => import('./entries/JS.AR.MTH.js').then(m => m.default),
+
 
 };
 
@@ -193,6 +197,41 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.PF.ITR.mdx'),
+  },
+  'JS.AR.MTH': {
+    chapters: [
+      {
+        id: 'JS.AR.MTH.CALLBACKS',
+        title: 'Callback Functions · Let Arrays Run Your Code',
+        load: () => import('./standards/JS.AR.MTH/callbacks.mdx'),
+      },
+      {
+        id: 'JS.AR.MTH.MAP',
+        title: 'Array Methods · map() Transforms',
+        load: () => import('./standards/JS.AR.MTH/map-transforms.mdx'),
+      },
+      {
+        id: 'JS.AR.MTH.FILTER',
+        title: 'Array Methods · filter() Creates Subsets',
+        load: () => import('./standards/JS.AR.MTH/filter-subsets.mdx'),
+      },
+      {
+        id: 'JS.AR.MTH.LOOKUPS',
+        title: 'Lookups & Validation · find, some, every',
+        load: () => import('./standards/JS.AR.MTH/lookups-validation.mdx'),
+      },
+      {
+        id: 'JS.AR.MTH.REDUCE',
+        title: 'Array Methods · reduce() Summarizes',
+        load: () => import('./standards/JS.AR.MTH/reduce-summarize.mdx'),
+      },
+      {
+        id: 'JS.AR.MTH.ROSTERS',
+        title: 'House Rosters · map + join + Helpers',
+        load: () => import('./standards/JS.AR.MTH/printing-rosters.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.AR.MTH.mdx'),
   },
   // Add more standards here as their chapters are authored
 };

@@ -1,0 +1,52 @@
+---
+id: JS.AR.MTH
+title: Arrays · Array Methods at the Boarblemish Sorting Terminal
+short: Use array methods like map, filter, find, some, every, and reduce to transform student data into house rosters.
+---
+
+# Array Methods → The Boarblemish Sorting Terminal
+
+Boarblemish Academy has a **sorting terminal** in the front hall. It takes raw lists of students, teachers, fines, and grades and prints the rosters that staff actually care about: who belongs in which house, who has pets, who owes fines, and who needs tutoring.
+
+In this standard, you’ll turn those **plain arrays of objects** into meaningful output using **array methods**:
+
+- `map` to transform each item
+- `filter` to create focused subsets
+- `find`, `some`, and `every` to answer questions about your lists
+- `reduce` to summarize data into a single result
+
+By the end, you’ll generate house rosters like this:
+
+```txt
+======DRAGONPORT ROSTER======
+---------------------------
+Edgar Gullylog
+* Prof. Honeypot's Homeroom
+* has fines
+* needs tutoring
+---------------------------
+Polly Frumpleton
+* Prof. Jellyroll's Homeroom
+* needs tutoring
+---------------------------
+Pets in Dragonport: 6
+---------------------------
+```
+
+All of this comes from a handful of **array methods** that accept **callback functions**. You’ll learn to write those callbacks, plug them into the right methods, and chain the steps together into readable “data pipelines.”
+
+---
+
+## 0) What you’re building
+
+In this chapter, you’ll build a single file that gradually grows into the Boarblemish Sorting Terminal. The starter code gives you arrays like `students`, `teachers`, `fines`, and `grades`; your job is to turn them into useful views.
+
+You’ll practice:
+
+- Turning an array of student records into an **attendance list** (`"First Last"` names joined by commas).
+- Sorting students into **houses** based on their `nature` field.
+- Building lookup helpers that answer questions like “who is this student’s teacher?”, “does this student owe fines?”, and “do they need tutoring?”.
+- Counting **pets per house** to produce little house summaries.
+- Composing everything into formatted **house roster printouts** for all four Boarblemish houses.
+
+Each section in the sidebar focuses on one tool (callbacks, `map`, `filter`, lookups, `reduce`, and final roster printing). Work through them in order—the later sections assume you’ve written the helpers from the earlier ones.

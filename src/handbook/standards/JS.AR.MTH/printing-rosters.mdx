@@ -1,0 +1,345 @@
+---
+id: JS.AR.MTH.ROSTERS
+title: House Rosters · map + join + Helpers
+short: Compose helpers and methods to print full Boarblemish house rosters.
+---
+
+# Array Methods → Putting it All Together
+
+## Method chaining: letting one step feed the next
+
+By now you’ve noticed something important about array methods:
+
+Most of them **return a value**.
+
+And if you have a value, you can immediately do the next step.
+
+That’s all *method chaining* is: a little pipeline where **each step hands its result to the next step**.
+
+### What “the next step” really means
+
+When you write this:
+
+```js
+students.filter(...).map(...).join("\n");
+```
+
+JavaScript evaluates it left to right:
+
+1. `students.filter(...)` runs first and returns a **new array**
+2. then `.map(...)` runs on that returned array and returns **another new array**
+3. then `.join(...)` runs on that returned array and returns a **string**
+
+So chaining is basically:
+
+**result of step 1 → becomes the input for step 2 → becomes the input for step 3**
+
+---
+
+## Example 1: Party planning (filter → map)
+
+Maybe you’re texting invitations. You only want to invite people who are free, and you want to turn each person into a message string.
+
+```js
+const messages = friends
+  .filter((f) => f.isFreeTonight)
+  .map((f) => `Hey ${f.name}, want to hang out?`);
+```
+
+Read it step-by-step:
+
+- start with `friends`
+- **filter**: keep only friends where `isFreeTonight` is true
+  → result: a smaller array (just the free friends)
+- **map**: turn each friend into an invitation message
+  → result: an array of strings (messages)
+
+If you said this out loud, it’s basically:
+
+“From all my friends, keep the free ones, then turn them into texts.”
+
+---
+
+## Example 2: Grocery trip (filter → map → join)
+
+Maybe you’ve got a grocery list, but you only want items that are urgent, and you want one string you can paste into a text message.
+
+```js
+const textToSend = groceries
+  .filter((g) => g.isUrgent)
+  .map((g) => g.name)
+  .join(", ");
+```
+
+Read it step-by-step:
+
+- start with `groceries`
+- **filter**: keep only urgent items
+  → result: array of urgent grocery objects
+- **map**: transform each object into just its `name`
+  → result: array of strings (names)
+- **join**: combine the names into one comma-separated string
+  → result: one string you can send
+
+So the output type changes as you go:
+
+`array of objects → array of objects → array of strings → string`
+
+That’s normal. You’re reshaping the data until it’s exactly what you need.
+
+---
+
+## Example 3: “Do we have a problem?” (filter → some)
+
+Sometimes a chain ends in a boolean question.
+
+Maybe you want to know if there are **any** overdue books for a specific student:
+
+```js
+const hasOverdueBooks = books
+  .filter((b) => b.borrowerId === student.id)
+  .some((b) => b.isOverdue);
+```
+
+Read it step-by-step:
+
+- start with `books`
+- **filter**: keep only the books borrowed by this student
+  → result: array of that student’s books
+- **some**: check whether any of those books are overdue
+  → result: `true` or `false`
+
+So now `hasOverdueBooks` is a simple boolean. It’s either `true` (yes, at least one is overdue) or `false` (nope, they’re good).
+
+---
+
+## Example 4: A chain that ends in `reduce()` (map → reduce)
+
+Maybe you want the total cost of a cart, but you want to apply tax first (or some kind of transformation) before totaling.
+
+```js
+const totalWithTax = cart
+  .map((item) => item.price * 1.1)
+  .reduce((sum, price) => sum + price, 0);
+```
+
+Read it step-by-step:
+
+- start with `cart`
+- **map**: turn each item into its taxed price
+  → result: array of numbers (prices)
+- **reduce**: add those numbers into one total
+  → result: one number
+
+Again: each step returns something, and the next method runs on **that**.
+
+---
+
+## What chaining is *not*
+
+Chaining isn’t “doing three things at once.”
+
+It’s doing one thing in small, readable steps. Each dot is like a little piece of punctuation: it waits for the previous step to finish and hand back a result, then it uses that result to move on to the next step.
+
+### The readability rule
+
+Chaining is awesome… until it becomes a spaghetti slide.
+
+If a chain makes you read it twice, split it into a couple variables:
+
+```js
+const urgentItems = groceries.filter((g) => g.isUrgent);
+const names = urgentItems.map((g) => g.name);
+const textToSend = names.join(", ");
+```
+
+Same logic, just easier to debug and easier to teach.
+
+---
+
+## Printing house rosters
+
+You now have all the tools:
+
+- house arrays from `filter()`
+- lookup helpers (`getHomeroomTeacher`, `hasFines`, `needsTutoring`)
+- a `countPets` helper from `reduce()`
+
+In this section, you’ll **compose** them to print full house rosters.
+
+Each house should print:
+
+- Header line: `======HOUSE ROSTER======` (house uppercased)
+- Divider line: `---------------------------`
+- For each student:
+  - Full name
+  - `* Prof. ___'s Homeroom`
+  - `* has fines` (only if they have fines)
+  - `* needs tutoring` (only if they need tutoring)
+  - Divider line after each student block
+- `Pets in HouseName: X`
+- Final divider line
+
+---
+
+### HandbookChallenge: `formatStudentBlock(student)`
+
+<HandbookChallenge
+  title="Format one student block"
+  hints={[
+    "Build an array of lines, then join them with `\\n`.",
+    "Use your existing helpers (`getHomeroomTeacher`, `hasFines`, `needsTutoring`) instead of re-writing the logic.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const formatStudentBlock = (student) => {
+  const teacher = getHomeroomTeacher(student);
+  const lines = [];
+
+  const fullName = \`\${student.firstName} \${student.lastName}\`;
+  lines.push(fullName);
+  lines.push(\`* \${teacher.name}'s Homeroom\`);
+  lines.push(\`* pets: \${student.pets}\`);
+
+  if (hasFines(student)) {
+    lines.push("* has fines");
+  }
+
+  if (needsTutoring(student)) {
+    lines.push("* needs tutoring");
+  }
+
+  return lines.join("\n");
+};`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Write `formatStudentBlock(student)` that returns one multi-line string describing a student.</li>
+      <li>It must include the student’s full name, their teacher’s name (via `getHomeroomTeacher(student)`), and their pets count.</li>
+      <li>Use a `lines` array to collect the pieces; join them with `"\n"` at the end.</li>
+      <li>Add conditional lines:</li>
+      <ul className="list-disc list-inside pl-4">
+        <li>If `hasFines(student)` is true, include a fines warning line.</li>
+        <li>If `needsTutoring(student)` is true, include a tutoring line.</li>
+      </ul>
+      <li>Practice by calling `formatStudentBlock` for one student and logging the returned string.</li>
+      <li>Keep vs Trash: Keep `formatStudentBlock`. It’s required for the roster printer.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+You should now have `formatStudentBlock(student)` plus your house arrays, lookup helpers, and `countPets(houseArray)`.
+
+---
+
+### HandbookChallenge: `printHouseRoster(houseName, houseArray)`
+
+<HandbookChallenge
+  title="Print a full house roster"
+  hints={[
+    "Use `map(formatStudentBlock)` to create the block strings.",
+    "Use `join` with a divider between blocks.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const printHouseRoster = (houseName, houseArray) => {
+  const header = \`======\${houseName.toUpperCase()} ROSTER======\`;
+  const divider = "---------------------------";
+
+  console.log(header);
+  console.log(divider);
+
+  const blocks = houseArray.map((s) => formatStudentBlock(s));
+  const joinedBlocks = blocks.join(\`\\n\${divider}\\n\`);
+
+  if (joinedBlocks.length > 0) {
+    console.log(joinedBlocks);
+    console.log(divider);
+  }
+
+  const petTotal = countPets(houseArray);
+  console.log(\`Pets in \${houseName}: \${petTotal}\`);
+  console.log(divider);
+};
+
+printHouseRoster("Dragonport", dragonportHouse);`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>This challenge assumes you already have the house arrays, `countPets`, and `formatStudentBlock`.</li>
+      <li>Create `printHouseRoster(houseName, houseArray)`.</li>
+      <li>Log the header line `======HOUSE ROSTER======` where `HOUSE` is `houseName.toUpperCase()`.</li>
+      <li>Log a divider line `---------------------------`.</li>
+      <li>Use `houseArray.map(formatStudentBlock)` to create an array of student blocks.</li>
+      <li>Join the blocks with `"\n---------------------------\n"` between them and log the result (if there are any students).</li>
+      <li>Use `countPets(houseArray)` to compute the pet total, then log `Pets in HouseName: X`.</li>
+      <li>Log a final divider line.</li>
+      <li>Call `printHouseRoster("Dragonport", dragonportHouse)` and check that the output roughly matches the target format from the intro.</li>
+      <li>Keep vs Trash: Keep `printHouseRoster`. You’ll reuse it immediately in the next challenge.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+### HandbookChallenge: Print all Boarblemish houses
+
+<HandbookChallenge
+  title="Print all Boarblemish houses"
+  hints={["You should not need any new helpers—just wire up the ones you already wrote."]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`printHouseRoster("Dragonport", dragonportHouse);
+printHouseRoster("Crowbeak", crowbeakHouse);
+printHouseRoster("Sidleup", sidleupHouse);
+printHouseRoster("Heavysigh", heavysighHouse);`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Call `printHouseRoster` four times: Dragonport, Crowbeak, Sidleup, and Heavysigh.</li>
+      <li>
+        Scan the output to confirm each roster has:
+        <ul className="list-disc list-inside pl-4">
+          <li>a header and dividers</li>
+          <li>student blocks with teacher and pets, plus fines/tutoring lines where appropriate</li>
+          <li>a pet summary line</li>
+        </ul>
+      </li>
+      <li>Adjust minor spacing as needed so the output stays readable, but keep the structure the same.</li>
+      <li>Keep vs Trash: Keep everything from this section. This is your final “report generator” set of helpers.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Technical Vocabulary
+
+| Term              | Plain-English meaning                                       | Tiny example                                                |
+| ----------------- | ----------------------------------------------------------- | ----------------------------------------------------------- |
+| callback function | A function you pass into another function to run later      | `students.map((s) => s.firstName)`                         |
+| map               | Transform every item into a new value (same length array)   | `ids = students.map((s) => s.id)`                           |
+| filter            | Keep only items that match a rule (subset array)           | `petOwners = students.filter((s) => s.pets > 0)`            |
+| find              | Return the first item that matches, or `undefined`         | `students.find((s) => s.id === 3)`                          |
+| some              | Check if at least one item matches (boolean)               | `fines.some((f) => f.studentId === s.id)`                   |
+| every             | Check if all items match (boolean)                         | `studentGrades.every((g) => g.grade < 2)`                   |
+| reduce            | Roll an array into a single result                         | `students.reduce((total, s) => total + s.pets, 0)`         |
+| transform         | Change the shape of data into something more useful        | `students → ["First Last", ...]` via `map()`               |
+| subset            | Smaller array built from items that passed a test          | `dragonportHouse` from `students.filter(...)`               |
+| summarize         | Combine many values into one meaningful result             | `countPets(dragonportHouse)`                               |
+| chain             | Call multiple methods in a row to build a data pipeline    | `grades.filter(...).every(...)` or `blocks.join("\n\n")` |
+
+---
+
+## What to remember
+
+- Array methods like `map`, `filter`, `find`, `some`, `every`, and `reduce` all take **callbacks**.
+- `map` transforms items into a new array of the **same length`.
+- `filter` selects matching items to create a **subset array`.
+- `find` returns **one** matching item (or `undefined` if none match).
+- `some` and `every` answer **boolean questions** about your data.
+- `reduce` produces **one result** from many items (like a total or summary object).
+- Chaining methods is just step‑by‑step transformation—keep each step small and the pipeline stays readable.

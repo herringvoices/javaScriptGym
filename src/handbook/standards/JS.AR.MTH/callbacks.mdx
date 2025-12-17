@@ -1,0 +1,132 @@
+---
+id: JS.AR.MTH.CALLBACKS
+title: Callback Functions · Let Arrays Run Your Code
+short: Pass functions into other functions so array methods can call your logic for each item.
+---
+# Array Methods → Callback Functions
+
+## 1) Callback functions
+
+Array methods like `map`, `filter`, `find`, `some`, `every`, and `reduce` all share a common pattern: **you pass them a function**, and they call that function for each item (or until they know the answer).
+
+<Callout type="tip" title="Does that sound familiar?">
+It should! Each of these functions _**iterate**_ through an array; performing pre-determined actions on each item in that array, just like what we did with our `for...of` loops a couple of chapters ago.
+</Callout>
+
+That passed-in function is a **callback**. The array method controls **when** it runs and which values it passes in; your callback controls **what to do** with each value.
+
+---
+
+### A function can accept a function
+
+```js
+const announce = (fn) => {
+  fn();
+};
+
+announce(() => console.log("Boarblemish calls!"));
+```
+
+Here, `announce` doesn’t know what will happen; it just promises to call `fn`. The caller decides which function to pass.
+
+I know, in that example callback functions seem pretty useless, but hopefully by the end of this chapter, you'll see how powerful they can be!
+
+
+<Callout type="note" title="Anonymous functions (the () => {} shape)">
+In `announce(() => console.log("Boarblemish calls!"))`, the `() => console.log()` part is an **anonymous function** (a function with no name) being passed in as the callback.
+
+How to read it:
+- `()` = the parameters (none here)
+- `=>` = “this is a function”
+- `console.log("Boarblemish calls!")` = the code it runs
+
+A lot of callback functions follow that same pattern, so it's good to get familiar with it now.
+
+</Callout>
+
+
+---
+
+### A callback can receive data
+
+```js
+const runForEachStudent = (list, action) => {
+    for (const s of list) {
+        action(s);
+    }
+};
+
+runForEachStudent(students, (s) => console.log(s.firstName));
+```
+
+`runForEachStudent`  loops over a list and calls your `action` callback once for each student, handing it the current `s`.
+
+---
+
+### Callbacks often return something
+
+In many array methods:
+
+- The callback **returns a new value** for each item (`map`).
+- Or it returns a **boolean** to say “keep this one” or “skip it” (`filter`).
+- Or it updates a **running total** (`reduce`).
+
+You’ll see each of those patterns in later sections. For now, just get comfortable **passing a function into another function** and using the value it receives.
+
+<Callout type="tip" title="When can you skip () and {}?">
+Arrow functions have a few handy shortcuts:
+
+- **Parameters**:
+  - One parameter? You can skip the parentheses: `s => s.firstName`.
+  - Zero or many parameters? Keep them: `() => ...` or `(student, index) => ...`.
+- **Body**:
+  - Doing or returning **one thing**? You can skip `{}` and return the expression directly: `s => s.firstName`.
+  - Doing/returning **two or more things**? Use `{}` and remember `return`:
+
+    ```js
+    (s) => {
+      const fullName = `${s.firstName} ${s.lastName}`;
+      return fullName;
+    };
+    ```
+
+Use the short form when it stays readable; switch to the block form when you need more steps.
+</Callout>
+
+---
+
+<HandbookChallenge
+  title="Callback warmup: run code for every student"
+  hints={[
+    "Look at the tiny runForEachStudent example above if you get stuck.",
+    "Remember: you’re passing the function in, and the helper calls it for each student.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const runForEachStudent = (list, action) => {
+  for (const s of list) {
+    action(s);
+  }
+};
+
+runForEachStudent(students, (s) => {
+  const fullName = \`\${s.firstName} \${s.lastName}\`;
+  console.log(fullName);
+  if (s.pets > 0) {
+    console.log("has pets");
+  }
+});`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>This is practice for passing a function into another function.</li>
+      <li>Create a helper named `runForEachStudent(list, action)` that loops with `for...of` and calls `action(s)` for each student.</li>
+      <li>Call it once with the `students` array and a callback that logs each student’s `firstName`.</li>
+      <li>Change the callback so it logs the student’s full name in one string.</li>
+      <li>Add an `if` inside the callback: if `s.pets > 0`, log an extra line like `has pets` underneath their name.</li>
+      <li>Run it again and watch how your single helper function can run **any** callback you pass in.</li>
+      <li>Keep vs Trash: Keep `runForEachStudent` as a reference for callbacks. The specific callback you wrote is just practice.</li>
+    </ul>
+  </div>
+</HandbookChallenge>

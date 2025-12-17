@@ -87,6 +87,21 @@ export function buildSrcDoc({ files, entry }) {
 					imports[bare] = dataUrl;
 					// Also map with ./ prefix for relative imports
 					imports['./' + bare] = dataUrl;
+
+					// Also map by file name (with and without extension) so
+					// same-directory imports like "./database" or "./database.js"
+					// can resolve even when the file lives in a subfolder
+					const segments = bare.split('/');
+					const fileName = segments[segments.length - 1]; // e.g. 'database.js'
+					const fileNameNoExt = fileName.replace(/\.js$/i, ''); // e.g. 'database'
+
+					// Prefer not to overwrite any more-specific mappings that already exist
+					if (!imports[fileName]) imports[fileName] = dataUrl;
+					if (!imports['./' + fileName]) imports['./' + fileName] = dataUrl;
+					if (fileNameNoExt !== fileName) {
+						if (!imports[fileNameNoExt]) imports[fileNameNoExt] = dataUrl;
+						if (!imports['./' + fileNameNoExt]) imports['./' + fileNameNoExt] = dataUrl;
+					}
 				}
 			}
 		});

@@ -1,0 +1,194 @@
+---
+id: JS.AR.MTH.REDUCE
+title: Array Methods · reduce() Summarizes
+short: Use reduce() to roll an array of students into a single total.
+---
+
+# Array Methods → Reducing Arrays to One Value
+
+So far you’ve mostly gotten back arrays (`map()`, `filter()`) or quick answers (`find()`, `some()`, `every()`). `reduce()` is the one you use when you want to say:
+
+“Take this whole list… and summarize it into a single thing.”
+
+That “single thing” might be:
+
+- a number (sum, total, average, max)
+- a string (build a receipt line)
+- an object (count things, group things)
+
+Bascially, `reduce()` **reduces** an entire array down into **one result**.
+
+### A quick warning (because you’re not alone)
+
+`reduce()` is hard for a lot of beginners—not because it’s magic, but because the syntax is a little weird at first.
+
+With `map()` and `filter()`, your callback returns something that becomes part of a new array.
+
+With `reduce()`, your callback returns the **updated accumulator**—the running result you’re building step-by-step.
+
+Once that clicks, it stops feeling like a boss fight.
+
+---
+
+## 1) The pattern
+
+You give `reduce()` a callback that receives:
+
+- an **accumulator** (your running result)
+- the **current item** (the thing you’re currently looking at)
+
+And your callback must **return the updated accumulator** each step.
+
+You also give `reduce()` an **initial value**—the starting value for your accumulator.
+
+For totals, you almost always start at `0`.
+
+---
+
+## 2) Main example: totaling a receipt
+
+Imagine your cart is an array of items:
+
+```js
+const cart = [
+  { name: "Granola Bar", price: 2.5 },
+  { name: "Sparkling Water", price: 1.25 },
+  { name: "Gum", price: 0.99 },
+];
+```
+
+To get the total cost, you can use `reduce()`:
+
+```js
+const total = cart.reduce((sum, item) => {
+  return sum + item.price;
+}, 0);
+```
+
+After `reduce()` finishes, `total` holds **one number**: the sum of all the `price` values.
+
+Same thing, shorter:
+
+```js
+const total = cart.reduce((sum, item) => sum + item.price, 0);
+```
+
+---
+
+## 3) Step-by-step: what `reduce()` is doing during iteration
+
+Using the `cart` above, here’s what happens:
+
+- **Start:** `sum` begins as the initial value → `0`
+- **Step 1:** current item is `{ name: "Granola Bar", price: 2.5 }` → return `0 + 2.5` → new `sum` becomes `2.5`
+- **Step 2:** current item is `{ name: "Sparkling Water", price: 1.25 }` → return `2.5 + 1.25` → new `sum` becomes `3.75`
+- **Step 3:** current item is `{ name: "Gum", price: 0.99 }` → return `3.75 + 0.99` → new `sum` becomes `4.74`
+- **Done:** `reduce()` returns the final accumulator value → `4.74`
+
+That’s the whole trick: the accumulator is just “the answer so far,” and each step updates it.
+
+---
+
+## 4) Another common use: counting with `if`
+
+Counting is also a perfect use for `reduce()`. In these cases, you also start at `0`, and then use an `if` statement to decide whether to add to the count.
+
+Example: count how many items cost more than $2:
+
+```js
+const expensiveCount = cart.reduce((count, item) => {
+  if (item.price > 2) {
+    return count + 1;
+  }
+
+  return count;
+}, 0);
+```
+
+---
+
+## 5) Choosing a good initial value
+
+Your initial value should match the kind of result you want:
+
+- total / count → start at `0`
+- building a string → start at `""`
+- building an array → start at `[]`
+- building an object → start at `{}`
+
+Even when JavaScript lets you omit it, beginners usually shouldn’t. Supplying an initial value makes the “running result” concept clearer (and avoids some annoying edge cases).
+
+---
+
+## If `reduce()` feels like too much right now…
+
+Totally normal. You can do the **exact same thing** with a `for...of` loop — it’s just a little wordier because *you* have to manage the “running total” manually.
+
+Here’s the receipt total again, using `for...of`:
+
+```js
+let total = 0;
+
+for (const item of cart) {
+  total = total + item.price;
+}
+```
+
+Same idea, different shape:
+
+- `total` starts at `0`
+- each loop adds the current `item.price` to `total`
+- when the loop ends, `total` holds the final answer
+
+And here’s the “count items over $2” example without `reduce()`:
+
+```js
+let expensiveCount = 0;
+
+for (const item of cart) {
+  if (item.price > 2) {
+    expensiveCount = expensiveCount + 1;
+  }
+}
+```
+
+If you understand *this* version first, you’re in great shape — `reduce()` is basically just a more compact way to do the same running-result pattern.
+
+---
+
+<HandbookChallenge
+  title="Count pets in a house with reduce()"
+  hints={["Use the house arrays you created with filter() in the previous section."]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const countPets = (houseArray) => {
+  return houseArray.reduce((total, s) => total + s.pets, 0);
+};
+
+console.log("Dragonport pets:", countPets(dragonportHouse));`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Create a function `countPets(houseArray)` that returns a number.</li>
+      <li>Inside, use `houseArray.reduce((total, s) => total + s.pets, 0)` to add up all `pets` values.</li>
+      <li>Make sure your `reduce` starts at `0` so the total is always a number.</li>
+      <li>Call it for at least one house array (for example, `dragonportHouse`) and log the result.</li>
+      <li>Optionally, call it for every house to see pet counts side‑by‑side.</li>
+      <li>Keep vs Trash: Keep `countPets`. The roster printer will call it.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+You should now have a `countPets(houseArray)` helper built on top of your house arrays.
+
+---
+
+### Technical Vocabulary
+
+| Term             | Meaning                                                         |
+| ---------------- | --------------------------------------------------------------- |
+| accumulator      | The running result you’re building up as you iterate            |
+| current item     | The array item you’re processing right now                      |
+| initial value    | The starting value for the accumulator (like `0`)               |
+| reducer callback | The function that updates and returns the accumulator each step |

@@ -1,0 +1,147 @@
+---
+id: JS.AR.MTH.FILTER
+title: Array Methods · filter() Creates Subsets
+short: Use filter() to keep only the students who match a house rule.
+---
+# Array Methods → Filtering Arrays
+
+## The `filter()` Method
+
+`filter()` does exactly what it says on the tin: it lets you filter an array, and keep only the items that match a rule. It runs your callback on each item and:
+
+- keeps it if the callback returns `true`
+- skips it if the callback returns `false`
+
+This callback is often called a **predicate**: it answers “yes or no?” for each item.
+
+**Example:**
+
+```js
+const petOwners = students.filter((s) => s.pets > 0);
+```
+
+Now `petOwners` contains only student objects with at least one pet.
+
+What about an example from real life? Maybe you've decided to surround yourself with only beautiful people?
+```js
+const myFriends = people.filter(p => !p.isUgly)
+```
+There! Now the `myFriends` array is only full of people for whom `isUgly` is `false` (note the `!`).
+
+Maybe you love Starbursts, but only the pink ones?
+
+```js
+const pinkStarbursts = starbursts.filter((s) => s.color === "pink");
+```
+We could do this all day! The point is, `filter()` lets you pick through an array **item by item** and decide what should **_stay_** and what should **_go_** based on a condition.
+
+
+---
+
+### House sorting rules
+
+At Boarblemish, students are sorted into houses based on their `nature`:
+
+- `"brave"` → Dragonport
+- `"smart"` → Crowbeak
+- `"sneaky"` → Sidleup
+- everything else → Heavysigh
+
+You’ll use `filter()` to create a separate array for each house.
+
+---
+
+<HandbookChallenge
+  title="Sort students into houses (for...of loop version)"
+  hints={["Use one `if / else if / else` chain so each student goes to exactly one house."]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const dragonportHouse = [];
+const crowbeakHouse = [];
+const sidleupHouse = [];
+const heavysighHouse = [];
+
+for (const s of students) {
+  if (s.nature === "brave") {
+    dragonportHouse.push(s);
+  } else if (s.nature === "smart") {
+    crowbeakHouse.push(s);
+  } else if (s.nature === "sneaky") {
+    sidleupHouse.push(s);
+  } else {
+    heavysighHouse.push(s);
+  }
+}
+
+console.log(
+  dragonportHouse.length,
+  crowbeakHouse.length,
+  sidleupHouse.length,
+  heavysighHouse.length
+);`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Create four empty arrays: `dragonportHouse`, `crowbeakHouse`, `sidleupHouse`, and `heavysighHouse`.</li>
+      <li>Loop through `students` with `for...of`.</li>
+      <li>Use one `if / else if / else` chain so each student goes to exactly one house based on `nature`:</li>
+      <ul className="list-disc list-inside pl-4">
+        <li>`"brave"` → Dragonport</li>
+        <li>`"smart"` → Crowbeak</li>
+        <li>`"sneaky"` → Sidleup</li>
+        <li>anything else → Heavysigh</li>
+      </ul>
+      <li>Log the length of each house array to sanity-check your sorting.</li>
+      <li>Keep vs Trash: Trash this loop version once FILTER 2 works.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+<HandbookChallenge
+  title="Sort students into houses with filter()"
+  hints={[
+    "Use one filter per house.",
+    "Use a small helper for Heavysigh so your intent is readable.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const dragonportHouse = students.filter((s) => s.nature === "brave");
+const crowbeakHouse = students.filter((s) => s.nature === "smart");
+const sidleupHouse = students.filter((s) => s.nature === "sneaky");
+
+const heavysighHouseCheck = (student) => {
+  return (
+    student.nature !== "brave" &&
+    student.nature !== "smart" &&
+    student.nature !== "sneaky"
+  );
+};
+
+const heavysighHouse = students.filter(heavysighHouseCheck);
+
+console.log(
+  dragonportHouse.length,
+  crowbeakHouse.length,
+  sidleupHouse.length,
+  heavysighHouse.length
+);`}</pre>
+  }
+>
+
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Create `dragonportHouse`, `crowbeakHouse`, and `sidleupHouse` with `filter()` based on the `nature` rules above.</li>
+      <li>Write a helper function `heavysighHouseCheck(student)` that returns `true` only when a student’s `nature` is not `"brave"`, `"smart"`, or `"sneaky"`.</li>
+      <li>Create `heavysighHouse = students.filter(heavysighHouseCheck)`.</li>
+      <li>Log the `.length` of each house array so you can quickly sanity‑check your sorting.</li>
+      <li>Your house lengths should match the loop version.</li>
+      <li>Keep vs Trash: Keep the house arrays and the Heavysigh check helper. You’ll use them in `reduce()` and roster printing.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+You should now have `dragonportHouse`, `crowbeakHouse`, `sidleupHouse`, `heavysighHouse`, and a `heavysighHouseCheck(student)` helper.
+
+---
