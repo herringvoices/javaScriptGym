@@ -12,6 +12,7 @@ export const handbookChapters = {
   'JS.FN.HOF': () => import('./JS.FN.HOF.mdx'),
   'JS.AR.ACC': () => import('./JS.AR.ACC.mdx'),
   'JS.AR.MTH': () => import('./JS.AR.MTH.mdx'),
+  'JS.SD.ELM': () => import('./JS.SD.ELM.mdx'),
 };
 
 export const handbookOrder = [
@@ -25,6 +26,7 @@ export const handbookOrder = [
   'JS.PF.ITR',
   'JS.AR.ACC',
   'JS.AR.MTH',
+  'JS.SD.ELM',
 ];
 
 // New-style handbook entries with embedded editor workbench
@@ -42,6 +44,8 @@ export const handbookEntries = {
   'JS.PF.ITR': () => import('./entries/JS.PF.ITR.js').then(m => m.default),
   'JS.AR.ACC': () => import('./entries/JS.AR.ACC.js').then(m => m.default),
   'JS.AR.MTH': () => import('./entries/JS.AR.MTH.js').then(m => m.default),
+
+  'JS.SD.ELM': () => import('./entries/JS.SD.ELM.js').then(m => m.default),
 
 
 };
@@ -232,6 +236,33 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.AR.MTH.mdx'),
+  },
+
+  'JS.SD.ELM': {
+    chapters: [
+      {
+        id: 'dom-basics',
+        title: 'DOM Basics · Elements, Selectors, and Updates',
+        load: () => import('./standards/JS.SD.ELM/dom-basics.mdx'),
+      },
+      {
+        id: 'textcontent-vs-innerhtml',
+        title: 'textContent vs innerHTML · Updating the DOM',
+        load: () => import('./standards/JS.SD.ELM/textcontent-vs-innerhtml.mdx'),
+      },
+
+      {
+        id: 'profileitem-component',
+        title: 'ProfileItem · A Tiny UI Component',
+        load: () => import('./standards/JS.SD.ELM/profileitem-component.mdx'),
+      },
+      {
+        id: 'full-list-render',
+        title: 'Full List Render · map + join + innerHTML',
+        load: () => import('./standards/JS.SD.ELM/full-list-render.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.SD.ELM.mdx'),
   },
   // Add more standards here as their chapters are authored
 };

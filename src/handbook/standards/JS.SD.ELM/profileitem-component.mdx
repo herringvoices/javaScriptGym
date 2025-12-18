@@ -1,0 +1,189 @@
+---
+id: JS.SD.ELM.PROFILEITEM_COMPONENT
+title: ProfileItem · A Tiny UI Component
+short: Turn one data object into one HTML string.
+---
+
+# `ProfileItem` (One profile in, one `<li>` out)
+
+Right now, we’re trying to build a page that shows profiles based on data.
+
+You *could* write the HTML for a profile directly in `/scripts/main.js`… but then:
+
+- If you need multiple profiles, you’ll repeat yourself.
+- If the layout changes, you’ll have to fix it everywhere.
+- If you’re on a team, everyone editing the same file gets messy.
+
+Instead, we’re going to make a tiny component: a function that takes **one profile object** and returns **one `<li>` string**.
+
+<Callout type="note" title="Components">
+- When a function `return`s an HTML string, we call that function a **component**.
+- By convention, components are **Capitalized** so they stand out when you’re scanning code.
+</Callout>
+
+## Step 1: Return a single `<li>` (static for now)
+
+Before we connect real data, we’re going to prove the *shape*.
+
+<HandbookChallenge
+  title="Write ProfileItem() and export it"
+  hints={[
+    "Start with a static <li> first.",
+    "Make sure the function is exported.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/ProfileItem.js
+export function ProfileItem() {
+  return \`<li class=\"profile-item\">Placeholder profile</li>\`;
+}
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Open `/scripts/ProfileItem.js`.</li>
+      <li>Write a <strong>Capitalized</strong> function named `ProfileItem`.</li>
+      <li>Have it `return` a single `<li>...</li>` HTML string (it can be static text for now).</li>
+      <li><strong>Export</strong> the function.</li>
+      <li>Keep vs Trash: Keep the idea “this function returns one `<li>` string.” Trash the placeholder text inside the `<li>` (we’re about to replace it).</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Step 2: Make `ProfileItem(profile)` use real data
+
+Now we upgrade the function so it takes a profile object and uses its properties.
+
+<HandbookChallenge
+  title="Update ProfileItem(profile) to use profile.name and profile.role"
+  hints={[
+    "Make sure your function has one parameter named `profile`.",
+    "Use a template literal (backticks) so you can insert values with ${ ... }.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/ProfileItem.js
+export function ProfileItem(profile) {
+  return \`<li class=\"profile-item\">\n  <p class=\"profile-name\">\${profile.name}</p>\n  <p class=\"profile-role\">\${profile.role}</p>\n</li>\`;
+}
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Stay in `/scripts/ProfileItem.js`.</li>
+      <li>Change your function so it takes one parameter: `ProfileItem(profile)`.</li>
+      <li>Return a single `<li>` string that includes both `profile.name` and `profile.role` somewhere in the markup.</li>
+      <li>Make sure the function is still <strong>exported</strong>.</li>
+      <li>Keep vs Trash: Keep using `profile` as a parameter and reading properties from it. Trash hard-coded names/roles in your HTML.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Step 3: A very short module note (`type="module"`, `export`, `import`)
+
+In `/index.html`, your script tag looks like this:
+
+```html
+<script type="module" src="/scripts/main.js"></script>
+```
+
+That `type="module"` tells the browser: “This file is a module.” Modules are what allow you to:
+
+- **`export`** something from one file
+- **`import`** it into another file
+
+The pattern you need right now is simple:
+
+- If another file needs to use it → `export` it
+```js
+//inside sayHello.js
+export const sayHello = () => "Hello!"
+```
+- If you want to use something from another file → `import` it
+```js
+//inside main.js
+import {sayHello} from "./sayHello.js"
+console.log(sayHello())
+```
+
+### Note the syntax: imports & exports
+
+Here are some more examples of the syntax you'll use to `import`/`export` in your modules:
+
+- `export` (multiple per file):
+
+```js
+export function sayHello() { return "Hi"; }
+export const PI = 3.14;
+```
+
+- `import` (use curly braces):
+
+```js
+import { sayHello, PI } from "./utils.js";
+```
+
+<Callout type="note" title="Dot-Slash">
+- That `./` before the file name just means the file you're importing is in the same directory (or folder) as the file you're working in.
+- If it were one directory up, we'd use `../` with two dots before the filename.
+- If it were in a neighboring directory called `styles`, we'd use `../styles/` before the filename.
+</Callout>
+
+
+
+---
+
+## Step 4: Import + render the first profile
+
+Now we’ll wire it up in `/scripts/main.js`.
+
+<HandbookChallenge
+  title="Import ProfileItem and render profiles[0]"
+  hints={[
+    "database.js already exports getProfiles for you.",
+    "Make sure you render an element with id=profile-list before selecting it.",
+    "Rendering only profiles[0] is temporary — you’ll render all of them next.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/main.js
+import { getProfiles } from "./database.js";
+import { ProfileItem } from "./ProfileItem.js";
+
+const main = document.querySelector("#app");
+
+main.innerHTML = \`
+  <h1>Profile Viewer</h1>
+  <ul id=\"profile-list\"></ul>
+\`;
+
+const profiles = getProfiles();
+
+const listEl = document.querySelector("#profile-list");
+listEl.innerHTML = ProfileItem(profiles[0]);
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Open `/scripts/main.js`.</li>
+      <li><strong>Import</strong> `getProfiles` from `"./database.js"`.</li>
+      <li><strong>Import</strong> `ProfileItem` from `"./ProfileItem.js"`.</li>
+      <li>Render a shell into `#app` that includes:</li>
+      <li>
+        <ul className="mt-2 mb-0 list-disc list-inside px-3">
+          <li>`<h1>Profile Viewer</h1>`</li>
+          <li>`<ul id="profile-list"></ul>`</li>
+        </ul>
+      </li>
+      <li>Call `getProfiles()` and store the array in `profiles`.</li>
+      <li>Select `#profile-list` and store it in `listEl`.</li>
+      <li>Set `listEl.innerHTML` to `ProfileItem(profiles[0])`.</li>
+      <li>Refresh the preview and confirm you see exactly one profile in the list.</li>
+      <li>Keep vs Trash: Keep `ProfileItem(profile)` and the `export`/`import` pattern. Trash (soon) rendering only `profiles[0]` (next, you’ll render all of them).</li>
+    </ul>
+  </div>
+</HandbookChallenge>

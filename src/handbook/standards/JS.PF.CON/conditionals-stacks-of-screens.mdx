@@ -99,13 +99,13 @@ hints={[
 "In <code>seeds.js</code>, assume you already have a <code>barrel</code> array of seeds with <code>type</code> and <code>size</code> properties from earlier challenges.",
 "Create a function <code>processSeed(seed)</code> that decides what to do with one seed based on <code>seed.size</code>.",
 "Inside <code>processSeed</code>, build an <code>if / else if / else</code> ladder:",
-"- <code>size &gt;= 6</code> → set <code>seed.condition = \"roasted\"</code>",
-"- <code>size &gt;= 4</code> → set <code>seed.condition = \"shucked\"</code>",
-"- <code>size &gt;= 2</code> → set <code>seed.condition = \"pressed\"</code>",
+"- <code>size >= 6</code> → set <code>seed.condition = \"roasted\"</code>",
+"- <code>size >= 4</code> → set <code>seed.condition = \"shucked\"</code>",
+"- <code>size >= 2</code> → set <code>seed.condition = \"pressed\"</code>",
 "- otherwise → set <code>seed.condition = \"too small\"</code>",
 "After setting <code>seed.condition</code>, log a message that includes both <code>seed.type</code> and the decision (for example, \`${'${'}seed.type{'}'} seed will be ${'${'}seed.condition{'}'}.\`).",
 "Call <code>processSeed</code> for each seed in <code>barrel</code> (for example, <code>processSeed(barrel[0])</code>, <code>processSeed(barrel[1])</code>, etc.).",
-"Then, intentionally mess up the order by checking <code>size &gt;= 2</code> first, run again, and notice how bigger seeds fall into the wrong branch before you fix the order back.",
+"Then, intentionally mess up the order by checking <code>size >= 2</code> first, run again, and notice how bigger seeds fall into the wrong branch before you fix the order back.",
 <pre key="peek" className="m-0 whitespace-pre-wrap">{`function processSeed(seed) {
   if (seed.size >= 6) {
     seed.condition = "roasted";

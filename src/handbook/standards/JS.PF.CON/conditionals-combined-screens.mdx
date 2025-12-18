@@ -76,7 +76,7 @@ title="Big AND clean before roasting"
 hints={[
 "Keep using the same practice file where you built your `processSeed(seed)` ladder in the previous chapter.",
 "Find the branch in `processSeed` that currently marks big seeds as \"roasted\" based only on size.",
-"Update that roasting condition so it requires TWO things joined with `&&`: big enough (your existing size threshold, like `seed.size &gt;= 6`) AND `seed.isClean`.",
+"Update that roasting condition so it requires TWO things joined with `&&`: big enough (your existing size threshold, like `seed.size >= 6`) AND `seed.isClean`.",
 "If a seed is big enough but NOT clean, send it to a different outcome instead (for example, set `seed.condition = \"cleaning\"` and log that it is getting cleaned first).",
 "Leave the rest of the ladder (shucked / pressed / too small) alone so only the roasting rule changes.",
 "Test with one big dirty seed (`isClean = false`) and confirm it does not roast, then flip it to clean and confirm it can now roast.",
@@ -181,7 +181,7 @@ title="Too wet OR too small -> reject"
 hints={[
 "Keep working in your existing `processSeed(seed)` function so the guard sits above the size ladder you already wrote.",
 "Near the very top of `processSeed`, before your normal size-based ladder, add a new guard `if` that checks for bad seeds.",
-"Use `||` so the guard trips when the seed is too wet OR too small, for example: `if (seed.moisture &gt; 0.5 || seed.size &lt; 2)`.",
+"Use `||` so the guard trips when the seed is too wet OR too small, for example: `if (seed.moisture > 0.5 || seed.size < 2)`.",
 "Inside that guard, set `seed.condition = \"reject\"`, log a message explaining why it was rejected, and then `return` so the rest of the ladder is skipped.",
 "Leave the rest of `processSeed` alone so good seeds still flow into roasted / shucked / pressed / too small.",
 "Test by making one seed very wet (high `moisture`) and another seed small but dry to confirm they both become \"reject\", while a big, low-moisture seed still goes through the normal logic.",

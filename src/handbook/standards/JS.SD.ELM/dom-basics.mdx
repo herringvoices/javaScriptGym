@@ -1,0 +1,129 @@
+---
+id: JS.SD.ELM.DOM_BASICS
+title: DOM Basics · Elements, Selectors, and Updates
+short: Learn the DOM as a live tree, and practice selecting elements and updating their content.
+---
+
+# DOM Basics
+
+Before we can change what a user sees, we need to understand what we’re actually changing.
+
+---
+
+## The DOM as the document object
+
+When your page loads, the browser creates a special JavaScript object called `document`.
+
+That `document` object represents your page.
+
+Inside it are a bunch of other objects—one for each piece of your HTML.
+
+So when you write:
+
+```html
+<div id="app"></div>
+```
+
+…the browser creates an element object for that `<div>` and stores it inside the bigger `document` object.
+
+---
+
+## Nodes are objects you can talk to
+
+Each “thing” in the DOM is called a **node**.
+
+For our purposes right now, the most important nodes are **element nodes** (the ones that come from tags like `div`, `p`, `button`, etc.).
+
+And here’s the key: a node is an **object**.
+
+That means it has:
+
+- properties (data about it)
+- methods (things it can do)
+
+You don’t need to memorize all of them today. Just know this:
+
+Once you select a node, you can read from it and change it.
+
+---
+
+## Getting an element from the `document` object (or "from the DOM")
+
+When you want to use an element from the DOM in your JavaScript, you need to select it first.
+
+Luckily, just like arrays come with methods like `map()` and `push()` and strings come with methods like `toUpperCase()`, the `document` object has a lot of helpful methods baked right into it. Two of these (`getElementById()` and `querySelector()`) are specifically designed to help us select our elements from the `document` object.
+
+### `getElementById()`
+
+The first one is called `getElementById()`. I'll give you three guesses what it does.
+
+The syntax to use it is:
+
+```js
+const main = document.getElementById("app");
+```
+So what's happening here? Well, we:
+1. Call the method on the `document` object, and pass the `id` of the element we're looking for as an argument.
+1. Store the result (the element we were looking for as a node object) in a variable.
+
+<Callout type="tip" title="Notice">
+Because it's a method inside the `document` object, we use dot notation to access it **_from that object_**. It's the same pattern we used in the previous chapters with our array methods—we're just using it on the `document` object instead of our arrays.
+</Callout>
+
+If it finds it, `main` becomes a real element object with its own properties and methods.
+If it doesn’t find it, you get `null` — which is the DOM’s way of saying “that element isn’t on the page (or your selector didn’t match).”
+
+Same process, different tool:
+
+```js
+const main = document.querySelector("#app");
+```
+
+This one searches using CSS selector rules.
+
+The node object you get back comes with a huge list of its own properties and methods. You can use `console.dir()` to log the whole element node and see everything it comes with, but fair warning — it’s a lot.
+
+Some examples of things you’re actually likely to use as a beginner are:
+
+- `textContent` → set or read the text inside an element
+- `innerHTML` → set or read the HTML inside an element
+- `value` → read what a user typed into an input
+- `classList.add()` / `classList.remove()` / `classList.toggle()` → change classes to update styling or show/hide things
+- `setAttribute()` / `getAttribute()` → read or change attributes like `src`, `id`, `disabled`, etc.
+
+You don’t need to memorize everything an element can do yet. The key is:
+
+Select the element → store it → use it to change what the user sees.
+
+For example, if you wanted to change the text your site's main header, you might do:
+```js
+const mainHeader = document.querySelector('#main-header')
+mainHeader.textContent = "The Changed Text"
+```
+What's happening here? You are:
+1. Finding the element using its `id` and the `querySelector()` method.
+1. Assigning it to a variable called `mainHeader`.
+1. Changing the `textContent` property of the element object `mainHeader` to a different string.
+
+---
+
+<HandbookChallenge
+  title="Make #app your mount point"
+  hints={[
+    "Use document.querySelector(\"#app\").",
+    "Keep the variable at the top of the file so you can reuse it.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/main.js\n\nconst app = document.querySelector(\"#app\");\n\n// Your app will render inside this element\napp.textContent = \"Mount point ready\";\n`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>In `/scripts/main.js`, create a variable called `app` that selects the element whose `id="app"`.</li>
+      <li>Set `app.textContent` to a short confirmation message.</li>
+      <li>Keep vs Trash: Keep the `app` variable forever. Trash the temporary confirmation message once you move on.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---

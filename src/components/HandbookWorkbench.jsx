@@ -23,7 +23,7 @@ const CONSOLE_HEIGHT = 220;
  */
 export default function HandbookWorkbench({ entry, showConsole = true }) {
   const [showFiles, setShowFiles] = useState(false);
-  const [bottomPanel, setBottomPanel] = useState("console");
+  const [bottomPanel, setBottomPanel] = useState(entry?.sandbox?.defaultPanel || "console");
   const [compactConsole, setCompactConsole] = useState(true);
   // Storage scope: default to handbook when a standard is provided, otherwise project scope
   const storageKey = entry ? (entry.standard ? `handbook:${entry.standard}:${entry.id}` : `project:${entry.id}`) : null;
@@ -97,6 +97,7 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
     setFilesState(model.files);
     setActiveFile(model.activeFile);
     setSrcDoc(""); // don't auto-run when switching entries
+    setBottomPanel(entry?.sandbox?.defaultPanel || "console");
   }, [model]);
 
   const handleRun = useCallback(() => {
