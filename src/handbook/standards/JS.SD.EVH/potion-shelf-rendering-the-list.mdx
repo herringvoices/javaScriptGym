@@ -1,0 +1,206 @@
+---
+id: JS.SD.EVH-01
+title: Potion Shelf · Rendering the List
+short: Render a full list from data and label each item with `data-*` attributes.
+---
+
+# Rendering the Potion Shelf List
+
+You already have the app shell on the page. Right now the Shelf panel is still doing the “trust me, content will arrive later” thing.
+
+In this section, you’ll do one very specific move:
+
+**Take an array of objects and turn it into a list of `<li>` elements.**
+
+While you do that, you’ll add one small upgrade that will matter *a lot* in the next sections:
+
+**Each `<li>` will store the potion’s id using a `data-*` attribute.**
+
+Why? Because clicks happen in the DOM world — but the real potion info lives in the data world. `data-*` is the bridge between them.
+
+---
+
+## The idea: turn data into a list of HTML strings
+
+When you render a list, the pattern is:
+
+1. Get an array
+2. Map each item to an HTML string
+3. Join the strings into one big string
+4. Inject it into the DOM
+
+Here’s the smallest version that still feels real:
+
+```js
+const items = ["A", "B", "C"];
+
+const listItems = items
+  .map(item => `<li>${item}</li>`)
+  .join("");
+
+document.querySelector("#somewhere").innerHTML = `<ul>${listItems}</ul>`;
+```
+
+### What’s happening here?
+
+1. `map()` runs once per item and returns a new array.
+2. Each run returns a **string of HTML** (a `<li>...</li>`).
+3. `join("")` smashes that array of strings into one long string.
+4. `innerHTML` replaces whatever was inside the container with your new markup.
+
+That’s the core “render a list” move. You’ll use it constantly.
+
+---
+
+## `data-*` attributes: hiding helpful data in plain sight
+
+A `data-*` attribute is just a custom HTML attribute you can put on an element.
+
+```html
+<li data-potion-id="3">Glacier Draught</li>
+```
+
+It doesn’t change how the element looks. It’s not magic. It’s just information attached to the element.
+
+Later, when a click happens, you can grab that element and ask:
+
+- “Okay… which potion id are you?”
+
+That’s why we’re doing this now.
+
+---
+
+## Generic example: ids on list items
+
+Let’s say your data looks like this:
+
+```js
+const pets = [
+  { id: 1, name: "Dexter" },
+  { id: 2, name: "Mochi" }
+];
+```
+
+A good render would produce:
+
+```html
+<li data-pet-id="1">Dexter</li>
+<li data-pet-id="2">Mochi</li>
+```
+
+Notice the trick:
+
+- the user sees the **name**
+- your code can still access the **id**
+
+That id is how you connect a DOM click back to the correct object in your data.
+
+---
+
+<Callout type="tip" title="String interpolation is your friend">
+  When you build markup from data, you’ll usually use template literals.
+
+  - Template literal: <code>{"`<li>${potion.name}</li>`"}</code>
+  - Old school concatenation: <code>{'"<li>" + potion.name + "</li>"'}</code>
+
+  We’re sticking with template literals because they read like actual HTML instead of a ransom note.
+</Callout>
+
+---
+
+<HandbookChallenge
+  title="Render the full potion list"
+  hints={[
+    "Import getPotions from ./database.js.",
+    "Select #potionList after you render the shell.",
+    "Set potionListEl.innerHTML = `<ul class=\"potionList\">${...}</ul>`.",
+    "Each <li> needs data-potion-id so clicks can map back to data.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/render.js
+import { getPotions } from "./database.js";
+
+export const render = () => {
+  const app = document.querySelector("#app");
+
+  app.innerHTML = [
+    '<header class="header">',
+      "<h1>Potion Shelf</h1>",
+      '<p class="subtitle">A tiny catalog for a magical shop. Filter potions by school, then click one to reveal its effect.</p>',
+    "</header>",
+
+    '<main class="layout">',
+      '<section class="panel" id="potionShelf">',
+        "<h2>Shelf</h2>",
+        '<div id="controls">',
+          '<p class="placeholder">A school filter will appear here.</p>',
+        "</div>",
+        '<div id="shelfStatus">',
+          '<p class="placeholder">A “Showing: …” label will appear here.</p>',
+        "</div>",
+        '<div id="potionList">',
+          '<p class="placeholder">Potions will appear here.</p>',
+        "</div>",
+      "</section>",
+
+      '<section class="panel" id="potionDetails">',
+        "<h2>Effect</h2>",
+        '<div id="details">',
+          '<p class="placeholder">Click a potion to see its effect.</p>',
+        "</div>",
+      "</section>",
+    "</main>",
+  ].join("");
+
+  const potions = getPotions();
+  const potionListEl = document.querySelector("#potionList");
+
+  const items = potions
+    .map((p) => \`<li data-potion-id="\${p.id}">\${p.name}</li>\`)
+    .join("");
+
+  potionListEl.innerHTML = \`<ul class="potionList">\${items}</ul>\`;
+};
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Open `/scripts/render.js`.</li>
+      <li><strong>Import</strong> `getPotions` from `"./database.js"`.</li>
+      <li>Inside `render()`, call `getPotions()` and store the result.</li>
+      <li>Select `#potionList` after the shell renders.</li>
+      <li>Set `#potionList.innerHTML` to a `<ul class="potionList">` containing one `<li>` per potion.</li>
+      <li>Build the `<li>` elements with `map()` + `join("")`.</li>
+      <li>Each `<li>` must include `data-potion-id` set to the potion’s `id`.</li>
+      <li>Refresh and confirm the full potion list appears.</li>
+      <li>Inspect a potion `<li>` and confirm you see `data-potion-id="..."`.</li>
+      <li>Keep vs Trash: Keep the `<ul class="potionList">` + `map()` → `join("")` pattern and the `data-potion-id` attribute. Trash the placeholder “Potions will appear here.” paragraph.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Recap
+
+You can now:
+
+- Render a full list by mapping data into HTML strings
+- Combine those strings with `join("")`
+- Inject the final markup into the DOM with `innerHTML`
+- Label DOM elements with `data-*` attributes so events can identify them later
+
+Next up, we’ll start listening for clicks — and those `data-potion-id` attributes will suddenly feel extremely clever.
+
+---
+
+## Technical Vocabulary
+
+| Term               | Meaning                                                                 |
+| ------------------ | ----------------------------------------------------------------------- |
+| `map()`            | Builds a new array by running a function once per item.                 |
+| `join("")`         | Combines an array of strings into one string with nothing between them. |
+| template literal   | A string written with backticks that supports `${}` interpolation.      |
+| `data-*` attribute | A custom HTML attribute for storing extra info on an element.           |
+| `innerHTML`        | Replaces an element’s content with new HTML markup.                     |

@@ -1,0 +1,112 @@
+---
+
+id: JS.SD.EVH
+title: State & DOM · Events & Handlers
+short: Make UI respond to user actions with `click` and `change` events.
+---
+
+# State & DOM → Events & Handlers
+
+Up to this point, you’ve learned a genuinely powerful move: take data and render it into the DOM. That’s the moment you stop hard-coding screens and start building apps.
+
+But there’s a problem.
+
+A site that only renders data is basically a poster. A nice poster, sure. But still a poster.
+
+It just… sits there.
+
+You can stare at it. You can admire it. You can even point at it dramatically like a museum docent.
+
+But the second a user tries to *do* something—click, choose, change—your app has no way to notice. And if your app can’t notice, it can’t respond. It can’t update what’s shown. It can’t become interactive.
+
+So today we’re fixing that.
+
+## The browser is always talking — you just haven’t been listening
+
+Every time someone interacts with a page, the browser creates a little “incident report” describing what happened.
+
+A click.
+A dropdown change.
+A checkbox toggle.
+A key press.
+
+Those reports are called **events**.
+
+And you get to decide what to do with them—by registering a function that runs when they happen. That function is an **event handler** because—get this—it **handles** what happens when the **event** triggers. Every so often, the people in charge of naming things get one right.
+
+If rendering is how your data becomes UI, events are how the UI talks back.
+
+## The object the browser hands you
+
+When an event happens, the browser doesn’t just shout “CLICK!” and run away.
+
+It hands your handler an **event object**—a real JavaScript object packed with details:
+
+* what kind of event it was
+* what element it happened on
+* what value changed (for inputs)
+* and a bunch of other info you can inspect when you need it
+
+Learning to read that object is the whole game. It’s how you go from “something happened” to “I know exactly what happened, and what to do next.”
+
+## The loop that powers basically everything
+
+Here’s the mental model for this chapter. It’s a loop, and you’re going to get very good at it:
+
+1. The user interacts with the page
+2. The browser fires an **event**
+3. Your **handler** runs
+4. Your handler decides what should change
+5. You update the DOM so the UI reflects that change
+
+That’s it. That’s the engine. Once this clicks, you can build anything from filters to forms to full-on apps.
+
+## Potion Shelf 🧪
+
+This project is called **Potion Shelf**—a tiny catalog for a magical shop.
+
+You’ll start with a shelf of potions pulled from `database.js`, then you’ll bring it to life with two kinds of user actions:
+
+* **Change** the dropdown to filter which potions are visible
+* **Click** a potion to reveal its effect
+
+That’s the whole experience—and it’s perfect for learning events, because every interaction produces an immediate, visible result.
+
+The UI has two main areas:
+
+* **Shelf**: a dropdown filter + a list of potions
+* **Effect**: a details panel that updates when you click a potion
+
+No sprawling feature set. No state-sync marathon. Just the clean “listen → inspect → respond” loop, repeated until it feels natural.
+
+## What you’ll practice
+
+By the end of this chapter, you’ll be able to:
+
+* Listen for events with `addEventListener()`
+* Use `click` and `change` events intentionally
+* Inspect the event object (especially `event.type`, `event.target`, and `event.currentTarget`)
+* Read dropdown choices using `event.target.value`
+* Identify clicked list items using `dataset`
+* Use event delegation so one listener can handle many potions
+* Re-render the list when the filter changes
+* Render linked “effect” details when a potion is clicked
+
+## The pipeline you’ll keep returning to
+
+This chapter is built like a stable routine. Same landmarks, new skill each part:
+
+* Render the shell into `#app`
+* Render the dropdown into `#controls`
+* Render the potions into `#potionList`
+* Bind events in `bindEvents()`
+* Use handlers to decide what the UI should show next
+* Re-render the shelf and update the details panel as events happen
+
+Each part assumes earlier scaffolding stays. You’re building a little machine, one gear at a time.
+
+Alright.
+
+You already know how to *show* data.
+
+Now you’re going to learn how to *hear* the user.

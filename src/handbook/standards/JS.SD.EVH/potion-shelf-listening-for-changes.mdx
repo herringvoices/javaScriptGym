@@ -1,0 +1,245 @@
+---
+id: JS.SD.EVH-05
+title: Potion Shelf · Listening for Changes
+short: Attach a `change` listener to a specific element and read `event.target.value`.
+---
+
+# Listening for Changes
+
+Click events are great when the user chooses something by… well… clicking it.
+
+But a lot of UI choices aren’t “click the page.” They’re:
+
+- pick an option from a dropdown
+- toggle a checkbox
+- type into an input
+
+Those controls have their own events. Today’s focus is the simplest and most common one:
+
+**The `change` event.**
+
+Your goal in this section is very specific:
+
+**Create a dropdown from data, attach a `change` listener to the dropdown itself, and read `event.target.value`.**
+
+Not filtering yet. Not re-rendering the list yet.
+
+Just: **change → read value → prove it works.**
+
+---
+
+## The idea: listeners don’t have to live on `document`
+
+So far, you’ve attached a click listener to `document`. That’s useful when you want to hear clicks anywhere (and later, when one listener handles many list items).
+
+But for form controls, the most direct approach is usually:
+
+1. Select the element you care about
+2. Attach a listener to that element
+3. Read values from that element when the event fires
+
+That’s the new move: **attach the listener to the specific element.**
+
+---
+
+## Canonical snippet: `change` + `event.target.value`
+
+Here’s the smallest version of the pattern, using a neutral example.
+
+Imagine a dropdown that lets the user choose a difficulty level:
+
+```html
+<select id="difficulty">
+  <option value="easy">Easy</option>
+  <option value="medium">Medium</option>
+  <option value="hard">Hard</option>
+</select>
+```
+
+Then your JavaScript does this:
+
+```js
+const select = document.querySelector("#difficulty");
+
+select.addEventListener("change", (event) => {
+  console.log(event.target.value);
+});
+```
+
+### What’s happening here?
+
+1. You select the dropdown element.
+2. You attach a `change` listener to that dropdown.
+3. When the user selects a different option, the browser fires a `change` event.
+4. Your function runs and receives an `event` object.
+5. `event.target` is the dropdown that changed.
+6. `event.target.value` is the value of the selected option.
+
+That’s it. That’s the whole move.
+
+---
+
+## Rendering a dropdown from data (the same list pattern as before)
+
+A dropdown is just a list too.
+
+Instead of mapping data into `<li>` elements, you map data into `<option>` elements.
+
+Here’s a neutral example: a list of languages.
+
+```js
+const languages = [
+  { id: 1, label: "JavaScript" },
+  { id: 2, label: "Python" },
+  { id: 3, label: "Ruby" }
+];
+
+const options = languages
+  .map(lang => `<option value="${lang.id}">${lang.label}</option>`)
+  .join("");
+
+document.querySelector("#controls").innerHTML =
+  `<select id="languageSelect">${options}</select>`;
+```
+
+### What’s happening here?
+
+1. You map an array of objects into `<option>` strings.
+2. You join them into one string.
+3. You inject that string into the DOM as a `<select>`.
+
+Same rendering muscle, different HTML tags.
+
+---
+
+<Callout type="tip" title="The value you read is whatever you put in the HTML">
+  <p>The browser doesn’t “know” what your ids mean.</p>
+  <p>It just reports back the selected option’s <code>value</code>.</p>
+  <p>So if you set:</p>
+  <ul>
+    <li><code>{'<option value="0">All</option>'}</code></li>
+    <li><code>{'<option value="3">Shadow</option>'}</code></li>
+  </ul>
+  <p>Then <code>event.target.value</code> will be <code>"0"</code> or <code>"3"</code>.</p>
+  <p>You control what values exist by how you render the options.</p>
+</Callout>
+
+---
+
+## Why we’re logging first (instead of filtering immediately)
+
+When you learn a new move, you want clear proof that the move works.
+
+Logging is the “proof mode” for event handling:
+
+- you change the selection
+- you see the value printed
+- you know the event fired and your handler ran
+
+Then, in the next part, you’ll replace the log with visible behavior (filtering the list).
+
+---
+
+<HandbookChallenge
+  title="Render the school dropdown and log changes"
+  hints={[
+    "Render the <select> into #controls after the shell exists.",
+    "Include an 'All Schools' option with value=\"0\".",
+    "Attach the change listener to the dropdown itself (not document).",
+    "Log event.target.value as proof the handler fires.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/render.js
+import { getSchools } from "./database.js";
+
+export const render = () => {
+  const app = document.querySelector("#app");
+
+  app.innerHTML = \`
+    <header class="header">
+      <h1>Potion Shelf</h1>
+      <p class="subtitle">A tiny catalog for a magical shop. Filter potions by school, then click one to reveal its effect.</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel" id="potionShelf">
+        <h2>Shelf</h2>
+        <div id="controls">
+          <p class="placeholder">A school filter will appear here.</p>
+        </div>
+        <div id="shelfStatus">
+          <p class="placeholder">A “Showing: …” label will appear here.</p>
+        </div>
+        <div id="potionList">
+          <p class="placeholder">Potions will appear here.</p>
+        </div>
+      </section>
+
+      <section class="panel" id="potionDetails">
+        <h2>Effect</h2>
+        <div id="details">
+          <p class="placeholder">Click a potion to see its effect.</p>
+        </div>
+      </section>
+    </main>
+  \`;
+
+  const schools = getSchools();
+  const options = schools
+    .map((s) => \`<option value="\${s.id}">\${s.name}</option>\`)
+    .join("");
+
+  const controlsEl = document.querySelector("#controls");
+  controlsEl.innerHTML = \`
+    <label class="field">
+      <span>School</span>
+      <select id="schoolFilter">
+        <option value="0">All Schools</option>
+        \${options}
+      </select>
+    </label>
+  \`;
+};
+
+
+// /scripts/handlers.js
+export const bindEvents = () => {
+  const schoolFilter = document.querySelector("#schoolFilter");
+  schoolFilter.addEventListener("change", (event) => {
+    console.log(event.target.value);
+  });
+};
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Open `/scripts/render.js`.</li>
+      <li><strong>Import</strong> `getSchools` from `"./database.js"`.</li>
+      <li>Inside `render()`, call `getSchools()` and store the array.</li>
+      <li>Select `#controls` and set `#controls.innerHTML` to include a dropdown:</li>
+      <li>Include an “All Schools” option with `value="0"`, then one option per school from data.</li>
+      <li>Refresh and confirm: the dropdown appears and contains all the schools.</li>
+      <li>Open `/scripts/handlers.js` and find `bindEvents()`.</li>
+      <li>Select the dropdown by its id and attach a `change` listener directly to it.</li>
+      <li>Inside the handler, log `event.target.value`.</li>
+      <li>Refresh, change the dropdown, and confirm the console logs a value each time.</li>
+      <li>Keep vs Trash: Keep the rendered dropdown, the `change` listener on the dropdown element, and reading `event.target.value`. Trash nothing yet (the log is proof mode).</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Recap
+
+You can now:
+
+- Render a dropdown from data by mapping objects into `<option>` strings
+- Attach an event listener to a specific element (not just `document`)
+- Use the `change` event to react to dropdown selection changes
+- Read the selected option’s value using `event.target.value`
+
+Next, you’ll use the value you’re reading to do something visible:
+
+**filter the potion list based on the selected school** — and you’ll revisit parsing, because DOM values arrive as strings.

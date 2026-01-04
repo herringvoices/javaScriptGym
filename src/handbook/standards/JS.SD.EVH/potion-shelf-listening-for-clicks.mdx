@@ -1,0 +1,208 @@
+---
+id: JS.SD.EVH-02
+title: Potion Shelf · Listening for Clicks
+short: Use `addEventListener()` to run code when the user clicks.
+---
+
+# Listening for Clicks
+
+Right now, Potion Shelf is doing one job: **displaying** data.
+
+That’s good. But it’s still a poster.
+
+In this section you’ll teach your page a new trick:
+
+**When the user clicks, run some code.**
+
+That’s the entire goal here. Not filtering. Not details. Not fancy UI updates.
+
+Just this: **the page can notice a click**.
+
+And the tool for that is `addEventListener()`.
+
+---
+
+## The idea: you register a “listener” and the browser calls it later
+
+When you write JavaScript like this:
+
+```js
+document.addEventListener("click", () => {
+  alert("You clicked on the page!");
+});
+```
+
+You are not “making an alert happen.”
+
+You are telling the browser:
+
+> “If a click happens later, please run this function.”
+
+That’s an important mental shift. Your code is no longer just running top-to-bottom one time. Some code is now *waiting* for the user.
+
+This is why event handling is such a big moment in learning web development:
+
+- rendering makes a UI appear
+- events make the UI respond
+
+---
+
+## `addEventListener()` always needs two things
+
+Here’s the pattern you’ll use constantly:
+
+```js
+someElement.addEventListener(eventType, listenerFunction);
+```
+
+### The two arguments
+
+1. **`eventType`**: a string describing what you’re listening for
+   Examples: `"click"`, `"change"`, `"submit"`, `"keydown"`
+
+2. **`listenerFunction`**: a function the browser will run *when* that event happens
+   Most of the time, this is an anonymous function at first.
+
+So in this part, you’re focusing on this idea:
+
+**`addEventListener()` connects an event type to a function.**
+
+---
+
+## Canonical snippet: the smallest “real” listener
+
+Here’s the smallest version that still feels like a real app behavior:
+
+```js
+document.addEventListener("click", () => {
+  alert("You clicked on the page!");
+});
+```
+
+### What’s happening here?
+
+1. You select an element to listen on (here it’s `document`).
+2. You tell it which event matters (`"click"`).
+3. You give the browser a function to run later (the anonymous function).
+4. Nothing happens immediately.
+5. When the user clicks, the browser runs your function and shows the alert.
+
+That “nothing happens immediately” point is the one beginners trip on most. Which brings us to…
+
+---
+
+<Callout type="tip" title="You’re passing a function, not running it">
+  <p><code>addEventListener()</code> needs a function so the browser can run it <strong>later</strong>.</p>
+  <p>This is the difference:</p>
+  <ul>
+    <li>✅ Pass a function: <code>{"() => { ... }"}</code></li>
+    <li>✅ Pass a function name: <code>handleClick</code></li>
+    <li>❌ Run it immediately: <code>handleClick()</code></li>
+  </ul>
+  <p>Parentheses mean “run this now.” For events, you usually want “run this later.”</p>
+</Callout>
+
+---
+
+## Why we’re listening on `document` (for now)
+
+You *can* attach a click listener to a specific element, like a button or a list.
+
+But we’re starting with `document` for two reasons:
+
+1. **It’s guaranteed to exist** when your script runs.
+2. It hears clicks anywhere on the page, which makes the “proof” obvious.
+
+Later, you’ll use this same approach to handle clicks on many list items with one listener (that move is called event delegation). For now, you’re just building the muscle memory:
+
+**add listener → click happens → function runs**
+
+---
+
+## Generic example: button clicks
+
+If you had a button like this:
+
+```html
+<button id="castSpell">Cast</button>
+```
+
+You could listen like this:
+
+```js
+document.querySelector("#castSpell").addEventListener("click", () => {
+  alert("✨ Spell cast!");
+});
+```
+
+Exact same pattern:
+
+- select an element
+- call `addEventListener("click", ...)`
+- put the response inside the function
+
+The only difference is *where* you attach the listener.
+
+---
+
+<HandbookChallenge
+  title="Bind your first click listener"
+  hints={[
+    "Put the listener inside bindEvents() in /scripts/handlers.js.",
+    "Use document.addEventListener(\"click\", ...).",
+    "Don’t call the function — pass a function so the browser can run it later.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/handlers.js
+export const bindEvents = () => {
+  document.addEventListener("click", () => {
+    alert("You clicked on the page!");
+  });
+};
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Open `/scripts/handlers.js`.</li>
+      <li>Find the `bindEvents()` function.</li>
+      <li>Inside `bindEvents()`, add a click listener to `document` using `addEventListener()`.</li>
+      <li>Use `"click"` as the first argument.</li>
+      <li>Use an anonymous function as the second argument.</li>
+      <li>Inside the anonymous function, add `alert("You clicked on the page!")`.</li>
+      <li>Refresh and confirm: clicking anywhere shows the alert.</li>
+      <li>Click a few different places (header, panels, potion list) and confirm it always works.</li>
+      <li>Keep vs Trash: Keep `bindEvents()` and the call to `bindEvents()` in `/scripts/main.js`. Trash nothing yet — this alert is proof-of-life.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Recap
+
+You can now:
+
+- Use `addEventListener()` to react to user actions
+- Explain the two arguments it needs (`eventType`, `listenerFunction`)
+- Attach a click listener to `document`
+- Put “what should happen” code inside the listener function
+
+Next, we’ll answer the question your app currently can’t answer:
+
+**“Okay… but what exactly did the user click?”**
+
+To solve that, you’ll meet the browser’s incident report: the `event` object.
+
+---
+
+## Technical Vocabulary
+
+| Term                 | Meaning                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| event                | A browser “incident report” describing a user action (click, change, submit, etc.). |
+| event listener       | The code that waits for an event to happen.                                          |
+| event handler        | The function that runs in response to an event.                                      |
+| `addEventListener()` | A method that registers a listener for a specific event type.                        |
+| callback             | A function passed to another function to be run later.                               |
+| anonymous function   | A function with no name, often written inline as `() => {}`.                         |

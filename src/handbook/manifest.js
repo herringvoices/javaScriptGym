@@ -13,6 +13,7 @@ export const handbookChapters = {
   'JS.AR.ACC': () => import('./JS.AR.ACC.mdx'),
   'JS.AR.MTH': () => import('./JS.AR.MTH.mdx'),
   'JS.SD.ELM': () => import('./JS.SD.ELM.mdx'),
+  'JS.SD.EVH': () => import('./JS.SD.EVH.mdx'),
 };
 
 export const handbookOrder = [
@@ -27,10 +28,8 @@ export const handbookOrder = [
   'JS.AR.ACC',
   'JS.AR.MTH',
   'JS.SD.ELM',
+  'JS.SD.EVH',
 ];
-
-// New-style handbook entries with embedded editor workbench
-// Map of standardId -> async loader returning a HandbookEntry object
 // Start small and migrate standards incrementally.
 export const handbookEntries = {
   // Example: migrate the "overview" standard to a new entry with an editor
@@ -46,6 +45,8 @@ export const handbookEntries = {
   'JS.AR.MTH': () => import('./entries/JS.AR.MTH.js').then(m => m.default),
 
   'JS.SD.ELM': () => import('./entries/JS.SD.ELM.js').then(m => m.default),
+
+  'JS.SD.EVH': () => import('./entries/JS.SD.EVH.js').then(m => m.default),
 
 
 };
@@ -240,6 +241,7 @@ export const handbookStructure = {
 
   'JS.SD.ELM': {
     chapters: [
+
       {
         id: 'dom-basics',
         title: 'DOM Basics · Elements, Selectors, and Updates',
@@ -263,6 +265,49 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.SD.ELM.mdx'),
+  },
+
+  'JS.SD.EVH': {
+    chapters: [
+
+      {
+        id: 'JS.SD.EVH-01',
+        title: 'Potion Shelf · Rendering the List',
+        load: () => import('./standards/JS.SD.EVH/potion-shelf-rendering-the-list.mdx'),
+      },
+
+      {
+        id: 'JS.SD.EVH-02',
+        title: 'Potion Shelf · Listening for Clicks',
+        load: () => import('./standards/JS.SD.EVH/potion-shelf-listening-for-clicks.mdx'),
+      },
+
+      {
+        id: 'JS.SD.EVH-03',
+        title: 'Potion Shelf · The Event Object',
+        load: () => import('./standards/JS.SD.EVH/potion-shelf-the-event-object.mdx'),
+      },
+
+      {
+        id: 'JS.SD.EVH-04',
+        title: 'Potion Shelf · From Click to Data',
+        load: () => import('./standards/JS.SD.EVH/potion-shelf-from-click-to-data.mdx'),
+      },
+
+      {
+        id: 'JS.SD.EVH-05',
+        title: 'Potion Shelf · Listening for Changes',
+        load: () => import('./standards/JS.SD.EVH/potion-shelf-listening-for-changes.mdx'),
+      },
+
+      {
+        id: 'JS.SD.EVH-06',
+        title: 'Potion Shelf · Change → Filter → Re-render',
+        load: () => import('./standards/JS.SD.EVH/potion-shelf-change-filter-rerender.mdx'),
+      },
+
+    ],
+    loadIntro: () => import('./JS.SD.EVH.mdx'),
   },
   // Add more standards here as their chapters are authored
 };

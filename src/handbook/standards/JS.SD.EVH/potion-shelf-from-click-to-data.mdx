@@ -1,0 +1,233 @@
+---
+id: JS.SD.EVH-04
+title: Potion Shelf · From Click to Data
+short: Use `closest()` + `dataset` + `.find()` to turn a click into a real UI update.
+---
+
+# From Click to Data (and back to the DOM)
+
+Last section, you learned how to *inspect* a click:
+
+- the browser fires an event
+- your handler receives an `event` object
+- `event.target` tells you where the click started
+- `closest()` helps you find the element you *meant* to interact with
+
+Now you’ll use that information to do something real:
+
+**Turn a click into a specific data lookup.**
+
+That’s the move.
+
+Because in a real app, “a click happened” is not the goal.
+
+The goal is:
+
+> “The user clicked *this* item… so show them the right information.”
+
+To do that, you need a bridge between:
+
+- **DOM world** (the element they clicked)
+- **data world** (the object that element represents)
+
+That bridge is `data-*`.
+
+---
+
+## The idea: DOM elements can carry small pieces of data
+
+You’ve already put `data-potion-id` on each potion `<li>`.
+
+That attribute is a tiny hidden label that lets your code answer:
+
+- “Which potion is this list item representing?”
+
+When you get a DOM element in JavaScript, you can read its `dataset`:
+
+- `data-potion-id="7"` becomes `element.dataset.potionId`
+
+So the core pattern for this part is:
+
+1. Use the click event to find the correct element
+2. Read an id from that element’s dataset
+3. Use the id to find the matching object in your data
+4. Update the UI
+
+---
+
+## Canonical snippet: the “identify and lookup” pattern
+
+This is the smallest “real” version of the move, using a neutral example.
+
+Imagine you have a list of cities, each `<li>` has `data-city-id`, and clicking a city should display its population.
+
+### Data
+
+```js
+const cities = [
+  { id: 1, name: "Nashville", population: 715_000 },
+  { id: 2, name: "Chicago", population: 2_665_000 },
+  { id: 3, name: "Seattle", population: 749_000 }
+];
+```
+
+### Markup idea
+
+```html
+<ul id="cityList">
+  <li data-city-id="1">Nashville</li>
+  <li data-city-id="2">Chicago</li>
+  <li data-city-id="3">Seattle</li>
+</ul>
+
+<section id="cityDetails">Click a city…</section>
+```
+
+### Listener + lookup
+
+```js
+document.addEventListener("click", (event) => {
+  const li = event.target.closest("li[data-city-id]");
+  if (!li) return;
+
+  const cityId = parseInt(li.dataset.cityId);
+  const city = cities.find(c => c.id === cityId);
+
+  document.querySelector("#cityDetails").textContent =
+    city ? `${city.name}: ${city.population.toLocaleString()} people` : "City not found.";
+});
+```
+
+### What’s happening here?
+
+1. `closest("li[data-city-id]")` finds the *right* `<li>` even if you clicked inside it.
+2. If you didn’t click a city, it returns `null`, and you safely do nothing.
+3. `dataset` gives you the id stored on that element.
+4. You convert it to a number so you can compare ids correctly.
+5. `.find()` gets the matching object from your data array.
+6. You update a details area in the DOM using a template literal.
+
+Same move every time: **click → id → find → display**.
+
+---
+
+## `.find()` is your “give me the matching object” tool
+
+`find()` searches an array and returns the first object that matches your condition.
+
+```js
+const match = cities.find(city => city.id === cityId);
+```
+
+- If a match exists: you get the object.
+- If no match exists: you get `undefined`.
+
+That makes `find()` perfect for “I have an id, give me the object.”
+
+---
+
+## A common gotcha: ids and strings
+
+`dataset` values are always strings.
+
+That means:
+
+- `li.dataset.cityId` is `"2"`, not `2`
+
+And strict comparison won’t match:
+
+- `"2" === 2` is `false`
+
+So you convert it:
+
+```js
+const cityId = parseInt(li.dataset.cityId);
+```
+
+This part is not “a math lesson.” It’s a practical reality of web apps:
+
+**DOM values arrive as strings.**
+
+---
+
+<Callout type="tip" title="closest() + guard clause is a safety rail">
+  <p>Most clicks on your page are irrelevant to your feature.</p>
+  <p>If your handler tries to run feature logic on <em>every click</em>, you’ll get confusing bugs.</p>
+  <p>This is the safety pattern:</p>
+  <ul>
+    <li>find the element you care about</li>
+    <li>if it isn’t there, <code>return</code></li>
+  </ul>
+  <p>That’s not extra code. That’s how you keep your handler sane.</p>
+</Callout>
+
+---
+
+<HandbookChallenge
+  title="Click a potion → show its effect"
+  hints={[
+    "Use event.target.closest('li[data-potion-id]') and return early if it's null.",
+    "dataset values are strings — parseInt before comparing ids.",
+    "Use getPotions().find(...) and getEffects().find(...) to locate matching objects.",
+    "Render into #details with innerHTML so the UI updates immediately.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/handlers.js
+import { getEffects, getPotions } from "./database.js";
+
+export const bindEvents = () => {
+  document.addEventListener("click", (event) => {
+    const li = event.target.closest('li[data-potion-id]');
+    if (!li) return;
+
+    const potionId = parseInt(li.dataset.potionId);
+    const potion = getPotions().find((p) => p.id === potionId);
+    if (!potion) return;
+
+    const effect = getEffects().find((e) => e.id === potion.effectId);
+    if (!effect) return;
+
+    const detailsEl = document.querySelector("#details");
+    detailsEl.innerHTML = \`
+      <p class="details__line"><strong>\${potion.name}</strong></p>
+      <p class="details__line">\${effect.description}</p>
+      <p class="details__line"><strong>Warning:</strong> \${effect.warning}</p>
+    \`;
+  });
+};
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Open `/scripts/handlers.js`.</li>
+      <li>Find your document click listener inside `bindEvents()`.</li>
+      <li>Replace the debugging `console.dir(...)` line with real feature logic.</li>
+      <li>Use `event.target.closest('li[data-potion-id]')` to find the clicked potion list item.</li>
+      <li>If no matching `<li>` is found, `return` early (guard clause).</li>
+      <li>Read the potion id from `dataset` and convert it with `parseInt(...)`.</li>
+      <li><strong>Import</strong> `getPotions` and `getEffects` from `"./database.js"`.</li>
+      <li>Use `.find()` to locate the clicked potion, then use `effectId` to find the matching effect.</li>
+      <li>Select `#details` and set `#details.innerHTML` to show the potion name, effect description, and effect warning.</li>
+      <li>Refresh and confirm: clicking different potions updates the Effect panel.</li>
+      <li>Click outside the potion list and confirm: nothing changes.</li>
+      <li>Keep vs Trash: Keep the document click listener, `closest()` + guard clause, `data-potion-id` + `dataset`, and the `.find()` lookup. Trash the inspect-only logging line.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Recap
+
+You can now:
+
+- Use a click event to locate the correct DOM element with `closest()`
+- Read identifying data from an element using `dataset`
+- Convert DOM string values into numbers when needed
+- Use `.find()` to turn an id into the matching object
+- Update the UI in response to a user click
+
+Next, you’ll learn the other half of everyday UI interaction:
+
+**listening for changes on a specific element** — the dropdown — and reading `event.target.value`.

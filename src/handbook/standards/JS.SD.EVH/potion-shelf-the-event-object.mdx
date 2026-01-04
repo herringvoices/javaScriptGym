@@ -1,0 +1,211 @@
+---
+id: JS.SD.EVH-03
+title: Potion Shelf · The Event Object
+short: Use the `event` object to inspect what happened and what element it happened on.
+---
+
+# The Event Object (a.k.a. the browser’s incident report)
+
+Last section, you proved you can listen for clicks: click → your function runs.
+
+Now we level that up in one specific way:
+
+**Instead of reacting blindly, you’ll inspect what the browser hands you.**
+
+Because when a click happens, the browser doesn’t just yell “CLICK!” and sprint away. It hands your handler an **object** describing what happened.
+
+That object is the **`event` object**.
+
+And learning to read it is how you go from:
+
+- “something happened”
+- to “I know exactly what happened and where”
+
+---
+
+## Events are objects, just like the ones you already know
+
+You’ve worked with:
+
+- strings (have properties and methods)
+- arrays (have properties and methods)
+- DOM elements (have properties and methods)
+
+Events are the same deal.
+
+When your handler runs, it receives an object with:
+
+- **properties** (data about the event)
+- **methods** (things you can do in response)
+
+That means the skill here is not “memorize everything an event can do.”
+
+It’s:
+
+> **Inspect the object, find the properties you need, use them intentionally.**
+
+---
+
+## The three event tools you’ll use constantly
+
+### `event.target`
+
+This tells you **where the event started**.
+
+For a click event, it’s the element that was actually clicked.
+
+If you click the text inside an `<li>`, the target might be a `<span>` or `<strong>` inside it — not the `<li>` itself.
+
+That’s not a bug. That’s just what “where it started” means.
+
+### `event.target.closest(selector)`
+
+This is your “walk up the DOM tree until you find what I meant” tool.
+
+If you click a `<span>` inside a `<li>`, `closest("li")` can still find the `<li>` you care about.
+
+It’s how you turn messy “targets” into reliable “the thing I intended to click.”
+
+### `event.preventDefault()`
+
+This stops the browser’s default behavior for certain events.
+
+Examples of default behavior:
+
+- clicking a link navigates
+- submitting a form reloads / sends data (depending on setup)
+
+You won’t need it for today’s click inspection challenge, but you *will* use it often in real apps, especially with forms.
+
+We’re naming it now because it’s one of the first methods you’ll reach for when the browser is doing something you didn’t ask it to do.
+
+---
+
+## Canonical snippet: the browser hands your handler an object
+
+This is the pattern change in this section:
+
+```js
+document.addEventListener("click", (event) => {
+  console.dir(event);
+});
+```
+
+### What’s happening here?
+
+1. You attach a click listener to `document`.
+2. When the user clicks, the browser calls your function.
+3. The browser passes in an `event` object as the first argument.
+4. `console.dir(event)` prints the event as an expandable object so you can inspect its properties and methods.
+
+Why `console.dir`? Because you’re not trying to print a sentence — you’re trying to explore an object.
+
+---
+
+## Generic example: `target` vs `closest()`
+
+Imagine this HTML:
+
+```html
+<ul>
+  <li><span>Click me</span></li>
+</ul>
+```
+
+If the user clicks directly on the `<span>`, then:
+
+- `event.target` is the `<span>`
+- `event.target.closest("li")` is the `<li>`
+
+That difference is the whole reason `closest()` exists.
+
+You’re going to feel this immediately in the project, because your potion `<li>` elements contain nested elements too.
+
+---
+
+<Callout type="tip" title="closest() can return null — and that’s good information">
+  <p>If you call <code>event.target.closest("li")</code> and you clicked somewhere that is not inside any <code>&lt;li&gt;</code>, you’ll get <code>null</code>.</p>
+  <p>That’s not an error. That’s the browser saying:</p>
+  <p>“I searched upward and didn’t find what you asked for.”</p>
+  <p>Later, you’ll use this to safely ignore clicks that aren’t relevant.</p>
+</Callout>
+
+---
+
+## Quick peek: where `preventDefault()` usually shows up
+
+You don’t need this in the project yet, but this is the pattern you’ll see later with forms:
+
+```js
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  // your code goes here instead of the browser's default behavior
+});
+```
+
+Keep that mental sticky note. We’ll come back to it when the browser starts trying to “help” in ways you didn’t request.
+
+---
+
+<HandbookChallenge
+  title="Inspect what you clicked"
+  hints={[
+    "Accept an event parameter: (event) => { ... }.",
+    "console.dir is great for inspecting objects.",
+    "closest(\"li\") returns the nearest li ancestor — or null.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`// /scripts/handlers.js
+export const bindEvents = () => {
+  document.addEventListener("click", (event) => {
+    console.dir(event.target.closest("li"));
+  });
+};
+`}</pre>
+  }
+>
+  <div className="m-0">
+    <ul className="mt-2 mb-0 list-disc list-inside px-3">
+      <li>Open `/scripts/handlers.js`.</li>
+      <li>Find your `document.addEventListener("click", ...)` listener inside `bindEvents()`.</li>
+      <li>Update the listener so it accepts a parameter named `event`.</li>
+      <li>Remove the alert line.</li>
+      <li>Inside the handler, add: `console.dir(event.target.closest("li"))`.</li>
+      <li>Refresh the page and open DevTools.</li>
+      <li>Click a potion row, the header area, and empty space inside a panel.</li>
+      <li>Confirm you see an `<li>` object when you click inside a list item, and `null` when you click somewhere that isn’t inside any `<li>`.</li>
+      <li>Keep vs Trash: Keep the click listener, the `event` parameter, and the `closest()` pattern. Trash `alert("You clicked on the page!")`.</li>
+    </ul>
+  </div>
+</HandbookChallenge>
+
+---
+
+## Recap
+
+You can now:
+
+- Explain what the `event` object is (the browser’s incident report)
+- Use `event.target` to see what element a click started on
+- Use `event.target.closest(...)` to find the nearest matching ancestor element
+- Predict when `closest(...)` will return an element vs `null`
+- Use `console.dir(...)` to inspect objects instead of guessing
+
+Next, you’ll use this information to answer the question your app actually cares about:
+
+**“Which potion was clicked?”**
+
+And that’s where your `data-potion-id` attributes finally pay rent.
+
+---
+
+## Technical Vocabulary
+
+| Term               | Meaning                                                                          |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `event`            | An object the browser provides describing what happened (and where).             |
+| `event.target`     | The element where the event started (the thing that was clicked).                |
+| `closest()`        | A method that searches upward for the nearest ancestor that matches a selector.  |
+| `null`             | A special value meaning “nothing found” (often the result of a failed search).   |
+| `preventDefault()` | A method that stops the browser’s default behavior for an event.                 |
+| `console.dir()`    | Logs an object in a way that’s easy to expand and inspect.                       |
