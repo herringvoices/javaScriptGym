@@ -13,6 +13,74 @@
 export function buildSrcDoc({ files, entry }) {
 	const fileFor = (p) => files[p]?.code ?? null;
 
+	const normalizePath = (p) => {
+		let out = String(p || "");
+		out = out.replace(/\\/g, "/");
+		if (!out.startsWith("/")) out = "/" + out;
+		out = out.replace(/\/+/g, "/");
+		// resolve ./ and ../ segments
+		const parts = [];
+		for (const seg of out.split("/")) {
+			if (!seg || seg === ".") continue;
+			if (seg === "..") {
+				parts.pop();
+				continue;
+			}
+			parts.push(seg);
+		}
+		return "/" + parts.join("/");
+	};
+
+	const dirname = (p) => {
+		const path = normalizePath(p);
+		const idx = path.lastIndexOf("/");
+		return idx <= 0 ? "/" : path.slice(0, idx);
+	};
+
+	const resolveRelative = (fromFile, spec) => {
+		const base = dirname(fromFile);
+		return normalizePath(base + "/" + spec);
+	};
+
+	const resolveJsPath = (absPath) => {
+		const p = normalizePath(absPath);
+		if (files[p]?.code != null) return p;
+		if (!/\.js$/i.test(p) && files[p + ".js"]?.code != null) return p + ".js";
+		return p;
+	};
+
+	// In the Monaco iframe runner, modules are loaded via data: URLs.
+	// Browsers don't reliably resolve './x' relative imports from data: URLs,
+	// so we rewrite relative specifiers to virtual FS *bare* specifiers that
+	// are covered by the import map (e.g. 'scripts/database.js').
+	const rewriteRelativeImports = (code, fromPath) => {
+		if (!code || typeof code !== "string") return code;
+		const from = normalizePath(fromPath);
+
+		const rewriteOne = (raw) => {
+			if (!raw || typeof raw !== "string") return raw;
+			if (!(raw.startsWith("./") || raw.startsWith("../"))) return raw;
+			const abs = resolveJsPath(resolveRelative(from, raw));
+			// Prefer a bare specifier so import-map resolution doesn't depend on
+			// the module's base URL (data: URLs have no useful base for relatives).
+			return abs.startsWith("/") ? abs.slice(1) : abs;
+		};
+
+		// 1) static imports: import ... from "./x" and import "./x"
+		let out = code.replace(
+			/(\bimport\s+(?:[\s\S]*?\s+from\s+)?)(["'])(\.{1,2}\/[^"']+)(\2)/g,
+			(m, pre, q, spec, endq) => `${pre}${q}${rewriteOne(spec)}${endq}`
+		);
+
+		// 2) dynamic imports: import("./x")
+		out = out.replace(
+			/(\bimport\s*\(\s*)(["'])(\.{1,2}\/[^"']+)(\2)(\s*\))/g,
+			(m, pre, q, spec, endq, post) => `${pre}${q}${rewriteOne(spec)}${endq}${post}`
+		);
+
+		return out;
+	};
+
 	const getScriptInline = (code, type) => `<script ${type ? `type="${type}"` : ""}>\n${code}\n</script>`;
 	const getStyleInline = (code) => `<style>\n${code}\n</style>`;
 
@@ -26,7 +94,15 @@ export function buildSrcDoc({ files, entry }) {
 
 	const consoleHook = `
 		(function(){
-			const ORIG = { log: console.log, warn: console.warn, error: console.error };
+			const ORIG = {
+				log: console.log,
+				warn: console.warn,
+				error: console.error,
+				info: console.info,
+				debug: console.debug,
+				dir: console.dir,
+				table: console.table,
+			};
 			function safe(v){
 				// Preserve undefined/null explicitly so the UI can render them
 				if (v === undefined) return { __type: 'undefined' };
@@ -114,6 +190,10 @@ export function buildSrcDoc({ files, entry }) {
 			console.log = function(){ post('log', arguments); return ORIG.log.apply(console, arguments); };
 			console.warn = function(){ post('warn', arguments); return ORIG.warn.apply(console, arguments); };
 			console.error = function(){ post('error', arguments); return ORIG.error.apply(console, arguments); };
+			console.info = function(){ post('info', arguments); return ORIG.info ? ORIG.info.apply(console, arguments) : ORIG.log.apply(console, arguments); };
+			console.debug = function(){ post('debug', arguments); return ORIG.debug ? ORIG.debug.apply(console, arguments) : ORIG.log.apply(console, arguments); };
+			console.dir = function(){ post('dir', arguments); return ORIG.dir ? ORIG.dir.apply(console, arguments) : ORIG.log.apply(console, arguments); };
+			console.table = function(){ post('table', arguments); return ORIG.table ? ORIG.table.apply(console, arguments) : ORIG.log.apply(console, arguments); };
 			window.addEventListener('error', function(e){
 				const loc = { file: e && e.filename, line: e && e.lineno, column: e && e.colno };
 				post('runtime-error', [e && e.message ? e.message : String(e)], loc);
@@ -132,7 +212,7 @@ export function buildSrcDoc({ files, entry }) {
 		const imports = {};
 		Object.keys(files).forEach((path) => {
 			if (path.endsWith('.js') && !path.startsWith('/__')) {
-				const code = files[path]?.code ?? '';
+				const code = rewriteRelativeImports(files[path]?.code ?? '', path);
 				// Create data URL for this module
 				const dataUrl = `data:text/javascript;charset=utf-8,${encodeURIComponent(withSourceURL(code, path))}`;
 				// Map absolute path
