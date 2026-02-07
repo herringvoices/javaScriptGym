@@ -225,7 +225,6 @@ function ChallengeSandboxUI({
       setConsoleKey((k) => k + 1);
       const html = buildSrcDoc({ files, entry });
       setSrcDoc(html);
-      setRightPanel("preview");
       setShowRunnerColumn(true);
     } catch (e) {
       console.error("Preview build failed", e);
