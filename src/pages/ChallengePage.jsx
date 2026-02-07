@@ -476,8 +476,8 @@ function ChallengeSandboxUI({
                   </button>
                 </div>
               </div>
-              <div className="min-h-0 grow">
-                <div className={rightPanel === "preview" ? "h-full" : "hidden"}>
+              <div className="min-h-0 grow relative">
+                <div className={`absolute inset-0 ${rightPanel === "preview" ? "z-10" : "z-0 invisible"}`}>
                   {srcDoc ? (
                     <iframe
                       ref={iframeRef}
@@ -488,11 +488,11 @@ function ChallengeSandboxUI({
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-400">
-                      Click “Run preview” to build and load your project.
+                      Click "Run preview" to build and load your project.
                     </div>
                   )}
                 </div>
-                <div className={rightPanel === "console" ? "h-full" : "hidden"}>
+                <div className={`absolute inset-0 ${rightPanel === "console" ? "z-10" : "z-0 invisible"}`}>
                   <ConsolePanel key={consoleKey} />
                 </div>
               </div>
