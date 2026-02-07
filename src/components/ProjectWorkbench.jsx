@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MonacoWorkspace from "./MonacoWorkspace";
 
 // Simple editor-only workbench for projects. Persists edits per-project in localStorage.
@@ -66,18 +66,35 @@ export default function ProjectWorkbench({ projectId, entry, stepId }) {
 		setFiles(model.files);
 	}, [model]);
 
-	const onChange = (path, code) => {
-		setFiles((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
-		if (!storageKey) return;
+	const pendingSaveRef = useRef({});
+	const saveTimerRef = useRef(null);
+
+	const flushSave = useCallback(() => {
+		clearTimeout(saveTimerRef.current);
+		saveTimerRef.current = null;
+		if (!storageKey || Object.keys(pendingSaveRef.current).length === 0) return;
 		try {
 			const snapshot = JSON.parse(localStorage.getItem(storageKey) || "{}");
-			snapshot[path] = code;
+			Object.assign(snapshot, pendingSaveRef.current);
 			localStorage.setItem(storageKey, JSON.stringify(snapshot));
-			setSavedSnapshot((prev) => ({ ...prev, [path]: code }));
+			const flushed = pendingSaveRef.current;
+			pendingSaveRef.current = {};
+			setSavedSnapshot((prev) => ({ ...prev, ...flushed }));
 		} catch {
 			// ignore
 		}
-	};
+	}, [storageKey]);
+
+	// Flush pending saves on unmount or storageKey change
+	useEffect(() => flushSave, [flushSave]);
+
+	const onChange = useCallback((path, code) => {
+		setFiles((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
+		if (!storageKey) return;
+		pendingSaveRef.current[path] = code;
+		clearTimeout(saveTimerRef.current);
+		saveTimerRef.current = setTimeout(flushSave, 500);
+	}, [storageKey, flushSave]);
 
 	return (
 		<div className="rounded-3xl border border-slate-800 bg-slate-950/70 p-0 overflow-hidden">

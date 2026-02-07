@@ -21,6 +21,7 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 	const changeSubscriptionRef = React.useRef(null);
 	const isApplyingExternalEditRef = React.useRef(false);
 	const lastNotifiedActiveRef = React.useRef(null);
+	const [isEditorReady, setIsEditorReady] = React.useState(false);
 
 	const activeFile = React.useMemo(() => (activePath ? filesByPath.get(activePath) || null : null), [filesByPath, activePath]);
 	const explorerRows = React.useMemo(() => buildExplorerRows(filesByPath, expandedFolders), [filesByPath, expandedFolders]);
@@ -136,7 +137,7 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 			changeSubscriptionRef.current?.dispose();
 			changeSubscriptionRef.current = null;
 		};
-	}, [activeFile, onChange]);
+	}, [activeFile, onChange, isEditorReady]);
 
 	React.useEffect(() => () => {
 		changeSubscriptionRef.current?.dispose();
@@ -181,6 +182,7 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 	const handleEditorMount = React.useCallback((editor, monaco) => {
 		editorRef.current = editor;
 		monacoRef.current = monaco;
+		setIsEditorReady(true);
 		try {
 			onEditorMount?.(editor, monaco);
 		} catch (e) {

@@ -131,17 +131,58 @@ function ChallengeWorkspace({ challenge }) {
     setSrcDoc("");
   }, [setup.files, setup.activeFile]);
 
+  const pendingSaveRef = useRef({});
+  const saveTimerRef = useRef(null);
+
+  const flushSave = useCallback(() => {
+    clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = null;
+    if (Object.keys(pendingSaveRef.current).length === 0) return;
+    const batch = pendingSaveRef.current;
+    pendingSaveRef.current = {};
+    setSavedFiles((prev) => {
+      const next = { ...prev };
+      for (const [p, entry] of Object.entries(batch)) {
+        if (entry === null) delete next[p];
+        else next[p] = entry;
+      }
+      return next;
+    });
+  }, [setSavedFiles]);
+
+  // Flush pending saves on unmount or when flushSave identity changes
+  useEffect(() => {
+    return () => {
+      clearTimeout(saveTimerRef.current);
+      // Write directly to localStorage on unmount since setSavedFiles won't process
+      const batch = pendingSaveRef.current;
+      if (Object.keys(batch).length === 0) return;
+      try {
+        const raw = window.localStorage.getItem(storageKey);
+        const current = raw ? JSON.parse(raw) : {};
+        for (const [p, entry] of Object.entries(batch)) {
+          if (entry === null) delete current[p];
+          else current[p] = entry;
+        }
+        window.localStorage.setItem(storageKey, JSON.stringify(current));
+      } catch { /* ignore */ }
+      pendingSaveRef.current = {};
+    };
+  }, [storageKey]);
+
   const handleFileChange = useCallback((path, code) => {
     if (path.startsWith("/.playground")) return;
     const original = challenge.files?.[path]?.code;
     setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
-    setSavedFiles((prev) => {
-      const next = { ...prev };
-      if (original !== undefined && original === code) delete next[path];
-      else next[path] = { code };
-      return next;
-    });
-  }, [challenge.files, setSavedFiles]);
+    // Queue save (null means "delete this key" when code matches original)
+    if (original !== undefined && original === code) {
+      pendingSaveRef.current[path] = null;
+    } else {
+      pendingSaveRef.current[path] = { code };
+    }
+    clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(flushSave, 500);
+  }, [challenge.files, flushSave]);
 
   const handleResetStorage = useCallback(() => {
     // Clear mock API DB for this challenge if available

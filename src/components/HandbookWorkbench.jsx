@@ -111,19 +111,35 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
     }
   }, [filesState, model]);
 
-  const onChange = useCallback((path, code) => {
-    setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
-    if (!storageKey) return;
+  const pendingSaveRef = useRef({});
+  const saveTimerRef = useRef(null);
+
+  const flushSave = useCallback(() => {
+    clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = null;
+    if (!storageKey || Object.keys(pendingSaveRef.current).length === 0) return;
     try {
       const snapshot = JSON.parse(localStorage.getItem(storageKey) || "{}");
-      snapshot[path] = code;
+      Object.assign(snapshot, pendingSaveRef.current);
       localStorage.setItem(storageKey, JSON.stringify(snapshot));
-      // Keep local in-sync so subsequent step changes pick up latest edits
-      setSavedSnapshot((prev) => ({ ...prev, [path]: code }));
+      const flushed = pendingSaveRef.current;
+      pendingSaveRef.current = {};
+      setSavedSnapshot((prev) => ({ ...prev, ...flushed }));
     } catch {
       // ignore storage errors
     }
   }, [storageKey]);
+
+  // Flush pending saves on unmount or storageKey change
+  useEffect(() => flushSave, [flushSave]);
+
+  const onChange = useCallback((path, code) => {
+    setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
+    if (!storageKey) return;
+    pendingSaveRef.current[path] = code;
+    clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(flushSave, 500);
+  }, [storageKey, flushSave]);
 
   if (!entry || !model) {
     return (
