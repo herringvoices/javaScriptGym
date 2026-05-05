@@ -1,0 +1,76 @@
+---
+id: JS.SD.ELM.POTIONITEM_COMPONENT
+title: PotionItem · A Function That Returns HTML
+short: Extract one-potion rendering into a reusable component function.
+---
+
+# PotionItem · A Function That Returns HTML
+
+Rendering one potion directly works, but the app will need to render many potions.
+
+> If we write the `<li>` by hand every time, we repeat ourselves.
+
+## Concepts
+
+- A component is a function that returns an HTML string.
+- Components are capitalized by convention.
+- A parameter lets the function work with any potion.
+- `return` sends the HTML string back.
+
+## Code
+
+```js
+const PotionItem = (potion) => {
+  return `<li>${potion.name}</li>`;
+};
+
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+<HandbookChallenge
+  title="Write PotionItem"
+  hints={[
+    "PotionItem should take one parameter named potion.",
+    "Return the li string instead of assigning it inside the function.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const PotionItem = (potion) => {
+  return \`<li>\${potion.name}</li>\`;
+};
+
+potionList.innerHTML = PotionItem(potions[0]);
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Above the rendering logic, create a function named `PotionItem`.</li>
+    <li>Give `PotionItem` one parameter named `potion`.</li>
+    <li>Inside the function, return one `<li>` string.</li>
+    <li>Inside the `<li>`, render `potion.name`.</li>
+    <li>Replace the direct `<li>` rendering with `PotionItem(potions[0])`.</li>
+    <li>Refresh and confirm the first potion appears.</li>
+    <li>Change the argument to `potions[1]`, refresh, and confirm the function works with a different potion.</li>
+    <li>Change it back to `potions[0]`.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep:
+
+```js
+const PotionItem = (potion) => {
+  return `<li>${potion.name}</li>`;
+};
+```
+
+Trash direct one-off `<li>` rendering outside the component.
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| component | A function that returns an HTML string |
+| parameter | A named input a function can use |
+| argument | A value passed into a function |
+| `return` | Sends a value out of a function |

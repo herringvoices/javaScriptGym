@@ -1,0 +1,74 @@
+---
+id: JS.SD.ELM.ONE_OBJECT_ONE_LIST_ITEM
+title: One Object → One List Item
+short: Render one potion object's name as one li element.
+---
+
+# One Object → One List Item
+
+The app has real potion data now, but nothing from that data appears on the page.
+
+> We need to turn one potion object into one piece of HTML.
+
+## Concepts
+
+- Access object properties with dot notation.
+- Template literals insert data into strings.
+- One object can become one HTML string.
+- `innerHTML` can render that string into the list.
+
+## Code
+
+```js
+const firstPotion = potions[0];
+
+potionList.innerHTML = `
+  <li>${firstPotion.name}</li>
+`;
+```
+
+<HandbookChallenge
+  title="Render one potion name"
+  hints={[
+    "Use potions[0] to get the first object.",
+    "Use ${firstPotion.name} inside a template literal.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const firstPotion = potions[0];
+
+potionList.innerHTML = \`
+  <li>\${firstPotion.name}</li>
+\`;
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Keep the `potions` variable.</li>
+    <li>Create a variable named `firstPotion`.</li>
+    <li>Store `potions[0]` in `firstPotion`.</li>
+    <li>Set `potionList.innerHTML` to one `<li>`.</li>
+    <li>Inside the `<li>`, render `firstPotion.name`.</li>
+    <li>Refresh and confirm one potion appears.</li>
+    <li>Change `potions[0]` to `potions[1]`, refresh, and confirm a different potion appears.</li>
+    <li>Change it back to `potions[0]`.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep the idea:
+
+```js
+`<li>${potion.name}</li>`
+```
+
+Trash the `firstPotion` approach on the next page, because the app needs every potion.
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| dot notation | Reading a property with `object.property` |
+| template literal | A backtick string that can insert values with `${}` |
+| interpolation | Inserting a value into a string |
+| index | A number used to access an array item |

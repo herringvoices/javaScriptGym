@@ -1,0 +1,65 @@
+---
+id: JS.SD.ELM.TEXTCONTENT
+title: textContent · Put Plain Text on the Page
+short: Use textContent to make the first visible DOM update.
+---
+
+# textContent · Put Plain Text on the Page
+
+The app has a selected mount point, but the user still sees nothing.
+
+> We found the app container. Now we need to prove we can change what appears inside it.
+
+## Concepts
+
+- `textContent` changes the plain text inside an element.
+- `textContent` does not create HTML.
+- Assignment updates the DOM immediately.
+
+## Code
+
+```js
+app.textContent = "Potion Shelf loading...";
+```
+
+<HandbookChallenge
+  title="Render a plain text message"
+  hints={[
+    "Keep the app variable from the previous page.",
+    "Assign a string to app.textContent.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const app = document.querySelector("#app");
+
+app.textContent = "Potion Shelf ready.";
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Keep the `app` variable from the previous page.</li>
+    <li>Set `app.textContent` to `"Potion Shelf loading..."`.</li>
+    <li>Refresh the preview.</li>
+    <li>Confirm the text appears on the page.</li>
+    <li>Change the message to `"Potion Shelf ready."`.</li>
+    <li>Refresh again.</li>
+    <li>Confirm the visible text changes.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep:
+
+```js
+app.textContent = "Potion Shelf ready.";
+```
+
+Trash it on the next page when switching to `innerHTML`.
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| `textContent` | A property that sets or reads plain text inside an element |
+| property | A value stored on an object |
+| assignment | Using `=` to store or replace a value |

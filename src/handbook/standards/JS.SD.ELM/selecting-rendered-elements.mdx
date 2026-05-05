@@ -1,0 +1,76 @@
+---
+id: JS.SD.ELM.SELECTING_RENDERED_ELEMENTS
+title: Selecting Rendered Elements · Find the List
+short: Select the nested list after innerHTML creates it.
+---
+
+# Selecting Rendered Elements · Find the List
+
+The app shell includes:
+
+```html
+<ul id="potion-list"></ul>
+```
+
+But JavaScript cannot select that list until after the shell has been rendered.
+
+> You cannot select an element that does not exist yet.
+
+## Concepts
+
+- DOM updates happen in order.
+- If `innerHTML` creates an element, select that element after setting `innerHTML`.
+- `querySelector()` returns `null` when nothing matches.
+
+## Code
+
+```js
+const potionList = document.querySelector("#potion-list");
+console.dir(potionList);
+```
+
+<HandbookChallenge
+  title="Select the rendered list"
+  hints={[
+    "Put the potionList selection after the app.innerHTML block.",
+    "Move it above the shell briefly to see why order matters.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const potionList = document.querySelector("#potion-list");
+console.dir(potionList);
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Keep the app shell rendering code.</li>
+    <li>After the `app.innerHTML = ...` block, create a variable named `potionList`.</li>
+    <li>Use `document.querySelector("#potion-list")`.</li>
+    <li>Use `console.dir(potionList)`.</li>
+    <li>Refresh and confirm the logged value is the `<ul>` element.</li>
+    <li>Move the `potionList` selection above the `app.innerHTML` block.</li>
+    <li>Refresh and observe that the result is `null`.</li>
+    <li>Move the `potionList` selection back below the `app.innerHTML` block.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep:
+
+```js
+const potionList = document.querySelector("#potion-list");
+```
+
+Trash:
+
+```js
+console.dir(potionList);
+```
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| `null` | A value meaning "nothing was found" |
+| execution order | The order JavaScript runs statements |
+| nested element | An element inside another element |

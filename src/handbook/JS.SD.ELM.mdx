@@ -4,67 +4,63 @@ title: State & DOM · Element Selection & Manipulation
 short: Select and update the DOM intentionally.
 ---
 
-# State & DOM → Element Selection & Manipulation
+# Potion Shelf · Element Selection & DOM Manipulation
 
-If we tried to build a simple social media app with “just HTML,” it would go sideways fast.
+**Substandard:** `JS.SD.ELM`
 
-Imagine your page has a list of posts:
+**Chapter title:** State & DOM · Element Selection & Manipulation
 
-A user creates a post → you now need to add new HTML to the page.
+**Project:** Potion Shelf
 
-A user deletes a post → you now need to find the right post in the HTML and remove it.
+**Final chapter outcome:** Students render a list of potion names from data into the DOM.
 
-A user edits a post → you now need to find the right spot and replace the right text.
+By the end of Chapter 1, the app displays a simple Potion Shelf page:
 
-That’s doable… but it’s also how you end up with code that feels like:
+```html
+<header>
+  <h1>Potion Shelf</h1>
+  <p>A tiny catalog for a magical shop.</p>
+</header>
 
-“Where do I even put the HTML?”
-“Why didn’t the screen update?”
-“Why did the wrong thing update?”
+<main>
+  <section>
+    <h2>Available Potions</h2>
+    <ul>
+      <li>Mender's Sip</li>
+      <li>Ember Tonic</li>
+      <li>Glacier Draught</li>
+    </ul>
+  </section>
+</main>
+```
 
-The better approach is to flip the responsibility:
+This chapter's job is:
 
-Instead of hand-editing HTML every time data changes, you let your data decide what the page should show, and you render the page from that data.
+```txt
+data -> HTML string -> DOM
+```
 
-That’s what this standard is about.
-
----
-
-## The big idea
-
-Your web page has two “worlds”:
-
-- Your data (arrays/objects that represent what’s true right now)
-- The DOM (the browser’s live page content — what the user sees)
-
-Your job is to keep those worlds in sync.
-
-When the data changes, you update what the DOM shows.
-
----
-
-## What you’ll practice in this standard
-
-You’ll build the core “rendering pipeline” that most web apps rely on:
-
-- Selecting elements using getElementById, querySelector, and querySelectorAll
-- Updating element content using textContent and innerHTML
-- Using a single mount point (like #app) as the place your UI is rendered
+No click handling. No dropdown. No filtering. No `data-*` attributes. No potion details panel yet.
 
 ---
 
-## The tiny project
+## The Big Idea
 
-Boarblemish Academy needs a cafeteria screen.
+HTML creates the starting page.
 
-When the page loads, it briefly says Loading…
-Then it shows a header and a list of student profile cards.
+The browser turns that HTML into the DOM.
 
-You’re going to build the pipeline that makes that possible:
+JavaScript can select parts of the DOM and change them.
 
-- Find the mount point (#app)
-- Render a page “shell” into the DOM (header + container)
-- Generate HTML strings from data (your first “components”)
-- Inject those strings into the page
+For this chapter, students build the first rendering pipeline:
 
-Work through the sidebar chapters in order — each one assumes you kept the helper code you built earlier.
+- select mount point
+- render shell
+- select nested list
+- get array data
+- turn one object into one HTML string
+- map all objects into HTML strings
+- join strings
+- set `innerHTML`
+
+Work through the sidebar pages in order. Each page adds one small move and tells you what to keep before moving on.

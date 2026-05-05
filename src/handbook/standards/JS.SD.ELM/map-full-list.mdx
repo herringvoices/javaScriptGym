@@ -1,0 +1,72 @@
+---
+id: JS.SD.ELM.MAP_FULL_LIST
+title: Full List Render · map() Turns Data Into HTML
+short: Use map to transform potion objects into li strings.
+---
+
+# Full List Render · map() Turns Data Into HTML
+
+`PotionItem(potions[0])` proves the component works, but the shelf needs every potion.
+
+> We have an array of potion objects, but the DOM needs one HTML string.
+
+## Concepts
+
+- `map()` runs once per item.
+- `map()` can call `PotionItem` for each potion.
+- The result is an array of HTML strings.
+- The array is not ready for `innerHTML` yet.
+
+## Code
+
+```js
+const potionHTMLArray = potions.map(PotionItem);
+console.log(potionHTMLArray);
+```
+
+<HandbookChallenge
+  title="Map potions into HTML strings"
+  hints={[
+    "Use potions.map(PotionItem).",
+    "Do not set innerHTML to the array yet.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const potionHTMLArray = potions.map(PotionItem);
+console.log(potionHTMLArray);
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Keep the `PotionItem` function.</li>
+    <li>Keep the `potions` array.</li>
+    <li>Create a variable named `potionHTMLArray`.</li>
+    <li>Set it equal to `potions.map(PotionItem)`.</li>
+    <li>Log `potionHTMLArray`.</li>
+    <li>Refresh and open DevTools.</li>
+    <li>Confirm `potionHTMLArray` is an array.</li>
+    <li>Confirm each item in the array is an `<li>` string.</li>
+    <li>Do not set `innerHTML` to `potionHTMLArray`.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep:
+
+```js
+potions.map(PotionItem)
+```
+
+Trash:
+
+```js
+console.log(potionHTMLArray);
+```
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| `map()` | Creates a new array by transforming each item |
+| callback | A function passed into another function |
+| transform | Change one kind of value into another kind of value |

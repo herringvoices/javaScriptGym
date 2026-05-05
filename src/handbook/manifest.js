@@ -244,24 +244,54 @@ export const handbookStructure = {
 
       {
         id: 'dom-basics',
-        title: 'DOM Basics · Elements, Selectors, and Updates',
+        title: 'DOM Basics � The Page as Objects',
         load: () => import('./standards/JS.SD.ELM/dom-basics.mdx'),
       },
       {
-        id: 'textcontent-vs-innerhtml',
-        title: 'textContent vs innerHTML · Updating the DOM',
-        load: () => import('./standards/JS.SD.ELM/textcontent-vs-innerhtml.mdx'),
+        id: 'textcontent',
+        title: 'textContent � Put Plain Text on the Page',
+        load: () => import('./standards/JS.SD.ELM/textcontent.mdx'),
       },
 
       {
-        id: 'profileitem-component',
-        title: 'ProfileItem · A Tiny UI Component',
-        load: () => import('./standards/JS.SD.ELM/profileitem-component.mdx'),
+        id: 'innerhtml-app-shell',
+        title: 'innerHTML � Render the App Shell',
+        load: () => import('./standards/JS.SD.ELM/innerhtml-app-shell.mdx'),
       },
       {
-        id: 'full-list-render',
-        title: 'Full List Render · map + join + innerHTML',
-        load: () => import('./standards/JS.SD.ELM/full-list-render.mdx'),
+        id: 'selecting-rendered-elements',
+        title: 'Selecting Rendered Elements � Find the List',
+        load: () => import('./standards/JS.SD.ELM/selecting-rendered-elements.mdx'),
+      },
+      {
+        id: 'importing-data',
+        title: 'Importing Data · Get the Potions',
+        load: () => import('./standards/JS.SD.ELM/importing-data.mdx'),
+      },
+      {
+        id: 'one-object-one-list-item',
+        title: 'One Object → One List Item',
+        load: () => import('./standards/JS.SD.ELM/one-object-one-list-item.mdx'),
+      },
+      {
+        id: 'potionitem-component',
+        title: 'PotionItem · A Function That Returns HTML',
+        load: () => import('./standards/JS.SD.ELM/potionitem-component.mdx'),
+      },
+      {
+        id: 'map-full-list',
+        title: 'Full List Render · map() Turns Data Into HTML',
+        load: () => import('./standards/JS.SD.ELM/map-full-list.mdx'),
+      },
+      {
+        id: 'join-render-full-list',
+        title: 'join("") · One Big String for innerHTML',
+        load: () => import('./standards/JS.SD.ELM/join-render-full-list.mdx'),
+      },
+      {
+        id: 'render-function',
+        title: 'Render Function · Put the DOM Update in One Place',
+        load: () => import('./standards/JS.SD.ELM/render-function.mdx'),
       },
     ],
     loadIntro: () => import('./JS.SD.ELM.mdx'),

@@ -1,0 +1,85 @@
+---
+id: JS.SD.ELM.INNERHTML_APP_SHELL
+title: innerHTML · Render the App Shell
+short: Replace plain text with the Potion Shelf HTML shell.
+---
+
+# innerHTML · Render the App Shell
+
+Plain text proves JavaScript can update the page, but an app needs structure: headings, sections, containers, and lists.
+
+> A real app needs HTML, not just a sentence.
+
+## Concepts
+
+- `innerHTML` treats a string as HTML markup.
+- The browser turns that markup into DOM nodes.
+- A shell is the stable structure the app renders into.
+
+## Code
+
+```js
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>A tiny catalog for a magical shop.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+```
+
+<HandbookChallenge
+  title="Render the Potion Shelf shell"
+  hints={[
+    "Replace app.textContent with app.innerHTML.",
+    "The empty list needs id=\"potion-list\" because you will select it later.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const app = document.querySelector("#app");
+
+app.innerHTML = \`
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>A tiny catalog for a magical shop.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+\`;
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Keep the `app` variable.</li>
+    <li>Replace `app.textContent` with `app.innerHTML`.</li>
+    <li>Render a `<header>` with an `<h1>` that says `Potion Shelf`.</li>
+    <li>Render a `<p>` subtitle.</li>
+    <li>Render a `<main>` with one `<section>`.</li>
+    <li>Inside the section, render an `<h2>` that says `Available Potions`.</li>
+    <li>Render an empty `<ul id="potion-list"></ul>`.</li>
+    <li>Refresh and confirm the shell exists.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep the app shell. Trash the old `textContent` line.
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| `innerHTML` | A property that sets or reads HTML inside an element |
+| markup | HTML written as text |
+| app shell | The basic page structure the app renders into |
+| container | An element that holds other elements |

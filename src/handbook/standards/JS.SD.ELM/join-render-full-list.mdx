@@ -1,0 +1,69 @@
+---
+id: JS.SD.ELM.JOIN_RENDER_FULL_LIST
+title: join("") · One Big String for innerHTML
+short: Join mapped li strings and render the full potion list.
+---
+
+# join("") · One Big String for innerHTML
+
+`map()` gives us an array of strings, but `innerHTML` needs one string.
+
+> The DOM does not need an array of list items. It needs one HTML string.
+
+## Concepts
+
+- `join("")` combines an array of strings.
+- `join("")` avoids commas between list items.
+- Set `innerHTML` once after the final string is ready.
+
+## Code
+
+```js
+const potionHTML = potions.map(PotionItem).join("");
+
+potionList.innerHTML = potionHTML;
+```
+
+<HandbookChallenge
+  title="Render every potion"
+  hints={[
+    "Use join(\"\") after map(PotionItem).",
+    "Set potionList.innerHTML to the final string.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`const potionHTML = potions.map(PotionItem).join("");
+
+potionList.innerHTML = potionHTML;
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Keep the `PotionItem` function.</li>
+    <li>Keep the `potions` variable.</li>
+    <li>Keep the `potionList` variable.</li>
+    <li>Create a variable named `potionHTML`.</li>
+    <li>Set `potionHTML` to `potions.map(PotionItem).join("")`.</li>
+    <li>Set `potionList.innerHTML` to `potionHTML`.</li>
+    <li>Refresh and confirm every potion appears in the list.</li>
+    <li>Inspect the page and confirm the potion names are inside `<li>` elements.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep the final render pattern:
+
+```js
+const potionHTML = potions.map(PotionItem).join("");
+potionList.innerHTML = potionHTML;
+```
+
+Trash one-potion rendering and temporary logs.
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| `join("")` | Combines an array into one string with nothing between items |
+| render pipeline | The sequence that turns data into DOM |
+| HTML string | Text that the browser can parse as HTML |

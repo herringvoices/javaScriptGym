@@ -1,0 +1,87 @@
+---
+id: JS.SD.ELM.IMPORTING_DATA
+title: Importing Data · Get the Potions
+short: Import getPotions, call it, and inspect the returned array.
+---
+
+# Importing Data · Get the Potions
+
+The page has an empty list. Hard-coding potion names directly into HTML would work, but it would tangle the data and the UI together.
+
+> The potion names belong in data. The DOM should display that data.
+
+## Concepts
+
+- Data can live in another module.
+- `import` brings exported code into the current file.
+- Calling `getPotions()` returns an array.
+- Arrays of objects represent structured data.
+
+## Starter Data Shape
+
+```js
+const potions = [
+  { id: 1, name: "Mender's Sip", baseId: 1, ingredientId: 1 },
+  { id: 2, name: "Ember Tonic", baseId: 2, ingredientId: 2 },
+  { id: 3, name: "Glacier Draught", baseId: 3, ingredientId: 3 }
+];
+```
+
+## Code
+
+```js
+import { getPotions } from "./database.js";
+
+const potions = getPotions();
+console.log(potions);
+```
+
+<HandbookChallenge
+  title="Import and inspect potion data"
+  hints={[
+    "Imports go at the top of the file.",
+    "Call getPotions() after rendering the app shell.",
+  ]}
+  answers={
+    <pre className="m-0 whitespace-pre-wrap">{`import { getPotions } from "./database.js";
+
+const potions = getPotions();
+console.log(potions);
+`}</pre>
+  }
+>
+  <ul className="mt-2 mb-0 list-disc list-inside px-3">
+    <li>Open `/scripts/main.js`.</li>
+    <li>At the top of the file, import `getPotions` from `"./database.js"`.</li>
+    <li>After rendering the app shell, call `getPotions()`.</li>
+    <li>Store the returned array in a variable named `potions`.</li>
+    <li>Log `potions`.</li>
+    <li>Refresh the preview and open DevTools.</li>
+    <li>Confirm `potions` is an array.</li>
+    <li>Expand the array and confirm each potion object has a `name`.</li>
+  </ul>
+</HandbookChallenge>
+
+## Keep vs Trash
+
+Keep:
+
+```js
+import { getPotions } from "./database.js";
+const potions = getPotions();
+```
+
+Trash:
+
+```js
+console.log(potions);
+```
+
+## Technical Vocabulary
+
+| Term | Meaning |
+| --- | --- |
+| module | A JavaScript file that can import/export code |
+| `import` | Bring exported code into the current file |
+| array of objects | A list where each item is an object |
+| data source | The place the app gets information from |

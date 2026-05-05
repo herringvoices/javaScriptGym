@@ -14,7 +14,7 @@ const entry = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JS.SD.ELM Workbench</title>
+    <title>Potion Shelf</title>
   </head>
   <body>
     <div id="app"></div>
@@ -26,24 +26,16 @@ const entry = {
       path: "/scripts/database.js",
       type: "javascript",
       readOnly: true,
-      content: /*js*/ `export function getProfiles() {
+      content: /*js*/ `export function getPotions() {
   return [
-    { id: 1, name: "Edgar Gullylog", role: "Lunch Monitor" },
-    { id: 2, name: "Polly Frumpleton", role: "Snack Captain" },
-    { id: 3, name: "Hugo Blint", role: "Tray Technician" },
+    { id: 1, name: "Mender's Sip", baseId: 1, ingredientId: 1 },
+    { id: 2, name: "Ember Tonic", baseId: 2, ingredientId: 2 },
+    { id: 3, name: "Glacier Draught", baseId: 3, ingredientId: 3 },
+    { id: 4, name: "Moonwake Elixir", baseId: 1, ingredientId: 4 },
+    { id: 5, name: "Stormroot Philter", baseId: 2, ingredientId: 5 },
   ];
 }
 `,
-    },
-    {
-      path: "/scripts/ProfileItem.js",
-      type: "javascript",
-      content: /*js*/ ``,
-    },
-    {
-      path: "/scripts/ProfileList.js",
-      type: "javascript",
-      content: /*js*/ ``,
     },
     {
       path: "/scripts/main.js",
