@@ -27,7 +27,7 @@ export default function StickyToggleBar({
        : "bg-slate-900/60 text-slate-200 border-slate-700 hover:bg-slate-800"}`;
 
   return (
-    <div className="sticky top-0 z-30 -mx-1 rounded-md bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-slate-900/50 border border-slate-700 px-2 py-2">
+    <div className="js-sticky-toggle-bar sticky top-0 z-30 -mx-1 rounded-md bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-slate-900/50 border border-slate-700 px-2 py-2">
       <div className="flex items-center justify-between px-4 gap-2 text-xs sm:text-sm">
         <div>
           <button

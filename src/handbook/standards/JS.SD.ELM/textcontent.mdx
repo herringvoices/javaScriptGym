@@ -56,6 +56,23 @@ app.textContent = "Potion Shelf ready.";
 
 Trash it on the next page when switching to `innerHTML`.
 
+---
+
+## Flow Update
+
+Your code changed the program flow. Add this line to `/sequenceDiagram.mmd`:
+
+```mermaid
+  Main->>DOM: set app.textContent
+```
+
+Then answer:
+
+- What changed in the DOM?
+- Did `main.js` ask `database.js` for data yet?
+
+Your diagram should now show that JavaScript can update the DOM, but no potion data is involved yet.
+
 ## Technical Vocabulary
 
 | Term | Meaning |

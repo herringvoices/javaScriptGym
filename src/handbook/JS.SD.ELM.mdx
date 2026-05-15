@@ -64,3 +64,33 @@ For this chapter, students build the first rendering pipeline:
 - set `innerHTML`
 
 Work through the sidebar pages in order. Each page adds one small move and tells you what to keep before moving on.
+
+---
+
+## Flow Diagram
+
+You will also maintain one small sequence diagram as the app grows.
+
+The goal is not to memorize Mermaid syntax yet. The goal is to keep a clear story of what happens first, next, and after that.
+
+The workbench includes an editable file named `/sequenceDiagram.mmd` with this starter diagram:
+
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant Main as main.js
+  participant DB as database.js
+  participant DOM
+```
+
+Each page will ask you to add or replace a few lines in `/sequenceDiagram.mmd`. The Sequence Diagram panel will render that file as you revise it.
+
+That matters because diagrams should match the current program, not every version of the program that ever existed.
+
+Chapter 1 diagram skill target:
+
+```txt
+read -> add -> replace -> explain order
+```
+
+You are not drawing from scratch yet. You are maintaining a provided diagram as the render flow becomes more complete.

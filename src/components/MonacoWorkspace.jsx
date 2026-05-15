@@ -149,6 +149,15 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 
 	const beforeMount = React.useCallback((monaco) => {
 		try {
+			const languages = monaco.languages.getLanguages();
+			if (!languages.some((language) => language.id === "mermaid")) {
+				monaco.languages.register({ id: "mermaid" });
+			}
+		} catch (e) {
+			void e;
+		}
+
+		try {
 			monaco.editor.defineTheme("dracula", {
 				base: "vs-dark",
 				inherit: true,
@@ -364,7 +373,7 @@ function buildExplorerRows(filesByPath, expandedFolders) {
 		let currentPath = "";
 		for (let i = 0; i < parts.length; i += 1) {
 			const segment = parts[i];
-			const nextPath = `${currentPath}/${segment}` || "/";
+			const nextPath = `${currentPath}/${segment}`;
 			const isFile = i === parts.length - 1;
 			if (isFile) {
 				node.children.set(segment, { kind: "file", path: normalizePath(nextPath), name: segment });
@@ -440,6 +449,8 @@ function guessLanguage(path) {
 	if (/\.css$/i.test(path)) return "css";
 	if (/\.json$/i.test(path)) return "json";
 	if (/\.mdx?$/i.test(path)) return "markdown";
+	if (/\.(mmd|mermaid)$/i.test(path)) return "mermaid";
+	if (/\.dbml$/i.test(path)) return "plaintext";
 	return "plaintext";
 }
 

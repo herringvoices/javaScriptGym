@@ -58,6 +58,33 @@ object vs array vs array of objects vs object of arrays of objects.
 //    - console.log(libraryState.readingQueue[0])
 
 `
+    },
+    "/sequenceDiagram.mmd": {
+      code: `sequenceDiagram
+  participant User
+  participant App
+  participant API
+
+  User->>App: Clicks Load Books
+  App->>API: fetch("/books")
+  API-->>App: books array
+  App-->>User: Renders book cards
+`
+    },
+    "/erd.dbml": {
+      code: `Table books {
+  id integer [primary key]
+  title varchar
+  author_id integer
+}
+
+Table authors {
+  id integer [primary key]
+  name varchar
+}
+
+Ref: books.author_id > authors.id
+`
     }
   },
   entry: "/main.js",

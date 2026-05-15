@@ -34,7 +34,7 @@ export const handbookOrder = [
 export const handbookEntries = {
   // Example: migrate the "overview" standard to a new entry with an editor
   overview: () => import('./entries/overview.js').then((m) => m.default),
-  // Add more as they’re converted:
+  // Add more as they are converted:
   'JS.VDT.PRM': () => import('./entries/JS.VDT.PRM.js').then(m => m.default),
   'JS.VDT.COL': () => import('./entries/JS.VDT.COL.js').then(m => m.default),
   'JS.VDT.MTH': () => import('./entries/JS.VDT.MTH.js').then(m => m.default),
@@ -116,22 +116,22 @@ export const handbookStructure = {
     chapters: [
       {
         id: 'JS.VDT.MTH.STR',
-        title: 'String Methods · Clean & Normalize Text',
+        title: 'String Methods \u00b7 Clean & Normalize Text',
         load: () => import('./standards/JS.VDT.MTH/string-methods-clean-normalize.mdx'),
       },
       {
         id: 'JS.VDT.MTH.NUM_PARSE',
-        title: 'Number Parsers · From Strings to Numbers',
+        title: 'Number Parsers \u00b7 From Strings to Numbers',
         load: () => import('./standards/JS.VDT.MTH/number-parsers-from-strings-to-numbers.mdx'),
       },
       {
         id: 'JS.VDT.MTH.OBJ_UTIL',
-        title: 'Object Utilities · Peek & Shape',
+        title: 'Object Utilities \u00b7 Peek & Shape',
         load: () => import('./standards/JS.VDT.MTH/object-utilities-peek-shape.mdx'),
       },
       {
         id: 'JS.VDT.COL.ARR_ENDS',
-        title: 'Array Methods · Add & Remove Items',
+        title: 'Array Methods \u00b7 Add & Remove Items',
         load: () => import('./standards/JS.VDT.MTH/arrays-end-controls.mdx'),
       },
     ],
@@ -141,22 +141,22 @@ export const handbookStructure = {
     chapters: [
       {
         id: 'JS.FN.BAS.INTRO',
-        title: 'Functions · Recipes for Reusable Code',
+        title: 'Functions \u00b7 Recipes for Reusable Code',
         load: () => import('./standards/JS.FN.BAS/functions-recipes-for-reusable-code.mdx'),
       },
       {
         id: 'JS.FN.BAS.PARAMS',
-        title: 'Functions · Parameters (Make One Recipe Do More)',
+        title: 'Functions \u00b7 Parameters (Make One Recipe Do More)',
         load: () => import('./standards/JS.FN.BAS/functions-parameters.mdx'),
       },
       {
         id: 'JS.FN.BAS.RETURN',
-        title: 'Functions · Return Values (Getting Results Back)',
+        title: 'Functions \u00b7 Return Values (Getting Results Back)',
         load: () => import('./standards/JS.FN.BAS/functions-return.mdx'),
       },
       {
         id: 'JS.FN.BAS.COMPOSE',
-        title: 'Functions · Composing Helpers (Small Pieces Working Together)',
+        title: 'Functions \u00b7 Composing Helpers (Small Pieces Working Together)',
         load: () => import('./standards/JS.FN.BAS/functions-composing-helpers.mdx'),
       },
     ],
@@ -167,17 +167,17 @@ export const handbookStructure = {
 
       {
         id: 'JS.PF.CON.LADDER',
-        title: 'Conditionals · Stacks of Screens (Else If & Ordering)',
+        title: 'Conditionals \u00b7 Stacks of Screens (Else If & Ordering)',
         load: () => import('./standards/JS.PF.CON/conditionals-stacks-of-screens.mdx'),
       },
       {
         id: 'JS.PF.CON.COMBO',
-        title: 'Conditionals · Combined Screens (AND, OR & Short-Circuiting)',
+        title: 'Conditionals \u00b7 Combined Screens (AND, OR & Short-Circuiting)',
         load: () => import('./standards/JS.PF.CON/conditionals-combined-screens.mdx'),
       },
       {
         id: 'JS.PF.CON.SWITCH',
-        title: 'Conditionals · Labeled Gates (switch vs if/else)',
+        title: 'Conditionals \u00b7 Labeled Gates (switch vs if/else)',
         load: () => import('./standards/JS.PF.CON/conditionals-labeled-gates.mdx'),
       },
     ],
@@ -187,17 +187,17 @@ export const handbookStructure = {
     chapters: [
       {
         id: 'JS.PF.ITR.INTRO',
-        title: 'Iteration · for Loops (Start, Stop, Step)',
+        title: 'Iteration \u00b7 for Loops (Start, Stop, Step)',
         load: () => import('./standards/JS.PF.ITR/iteration-for-loops.mdx'),
       },
       {
         id: 'JS.PF.ITR.FOROF',
-        title: 'Iteration · for…of Loops (One Item at a Time)',
+        title: 'Iteration \u00b7 for...of Loops (One Item at a Time)',
         load: () => import('./standards/JS.PF.ITR/iteration-forof-loops.mdx'),
       },
       {
         id: 'JS.PF.ITR.NEST',
-        title: 'Iteration · Nested for…of Loops',
+        title: 'Iteration \u00b7 Nested for...of Loops',
         load: () => import('./standards/JS.PF.ITR/iteration-nested-forof-loops.mdx'),
       },
     ],
@@ -207,32 +207,32 @@ export const handbookStructure = {
     chapters: [
       {
         id: 'JS.AR.MTH.CALLBACKS',
-        title: 'Callback Functions · Let Arrays Run Your Code',
+        title: 'Callback Functions \u00b7 Let Arrays Run Your Code',
         load: () => import('./standards/JS.AR.MTH/callbacks.mdx'),
       },
       {
         id: 'JS.AR.MTH.MAP',
-        title: 'Array Methods · map() Transforms',
+        title: 'Array Methods \u00b7 map() Transforms',
         load: () => import('./standards/JS.AR.MTH/map-transforms.mdx'),
       },
       {
         id: 'JS.AR.MTH.FILTER',
-        title: 'Array Methods · filter() Creates Subsets',
+        title: 'Array Methods \u00b7 filter() Creates Subsets',
         load: () => import('./standards/JS.AR.MTH/filter-subsets.mdx'),
       },
       {
         id: 'JS.AR.MTH.LOOKUPS',
-        title: 'Lookups & Validation · find, some, every',
+        title: 'Lookups & Validation \u00b7 find, some, every',
         load: () => import('./standards/JS.AR.MTH/lookups-validation.mdx'),
       },
       {
         id: 'JS.AR.MTH.REDUCE',
-        title: 'Array Methods · reduce() Summarizes',
+        title: 'Array Methods \u00b7 reduce() Summarizes',
         load: () => import('./standards/JS.AR.MTH/reduce-summarize.mdx'),
       },
       {
         id: 'JS.AR.MTH.ROSTERS',
-        title: 'House Rosters · map + join + Helpers',
+        title: 'House Rosters \u00b7 map + join + Helpers',
         load: () => import('./standards/JS.AR.MTH/printing-rosters.mdx'),
       },
     ],
@@ -244,53 +244,53 @@ export const handbookStructure = {
 
       {
         id: 'dom-basics',
-        title: 'DOM Basics � The Page as Objects',
+        title: 'DOM Basics \u00b7 The Page as Objects',
         load: () => import('./standards/JS.SD.ELM/dom-basics.mdx'),
       },
       {
         id: 'textcontent',
-        title: 'textContent � Put Plain Text on the Page',
+        title: 'textContent \u00b7 Put Plain Text on the Page',
         load: () => import('./standards/JS.SD.ELM/textcontent.mdx'),
       },
 
       {
         id: 'innerhtml-app-shell',
-        title: 'innerHTML � Render the App Shell',
+        title: 'innerHTML \u00b7 Render the App Shell',
         load: () => import('./standards/JS.SD.ELM/innerhtml-app-shell.mdx'),
       },
       {
         id: 'selecting-rendered-elements',
-        title: 'Selecting Rendered Elements � Find the List',
+        title: 'Selecting Rendered Elements \u00b7 Find the List',
         load: () => import('./standards/JS.SD.ELM/selecting-rendered-elements.mdx'),
       },
       {
         id: 'importing-data',
-        title: 'Importing Data · Get the Potions',
+        title: 'Importing Data \u00b7 Get the Potions',
         load: () => import('./standards/JS.SD.ELM/importing-data.mdx'),
       },
       {
         id: 'one-object-one-list-item',
-        title: 'One Object → One List Item',
+        title: 'One Object \u2192 One List Item',
         load: () => import('./standards/JS.SD.ELM/one-object-one-list-item.mdx'),
       },
       {
         id: 'potionitem-component',
-        title: 'PotionItem · A Function That Returns HTML',
+        title: 'PotionItem \u00b7 A Function That Returns HTML',
         load: () => import('./standards/JS.SD.ELM/potionitem-component.mdx'),
       },
       {
         id: 'map-full-list',
-        title: 'Full List Render · map() Turns Data Into HTML',
+        title: 'Full List Render \u00b7 map() Turns Data Into HTML',
         load: () => import('./standards/JS.SD.ELM/map-full-list.mdx'),
       },
       {
         id: 'join-render-full-list',
-        title: 'join("") · One Big String for innerHTML',
+        title: 'join("") \u00b7 One Big String for innerHTML',
         load: () => import('./standards/JS.SD.ELM/join-render-full-list.mdx'),
       },
       {
         id: 'render-function',
-        title: 'Render Function · Put the DOM Update in One Place',
+        title: 'Render Function \u00b7 Put the DOM Update in One Place',
         load: () => import('./standards/JS.SD.ELM/render-function.mdx'),
       },
     ],
@@ -302,37 +302,37 @@ export const handbookStructure = {
 
       {
         id: 'JS.SD.EVH-01',
-        title: 'Potion Shelf · Rendering the List',
+        title: 'Potion Shelf \u00b7 Rendering the List',
         load: () => import('./standards/JS.SD.EVH/potion-shelf-rendering-the-list.mdx'),
       },
 
       {
         id: 'JS.SD.EVH-02',
-        title: 'Potion Shelf · Listening for Clicks',
+        title: 'Potion Shelf \u00b7 Listening for Clicks',
         load: () => import('./standards/JS.SD.EVH/potion-shelf-listening-for-clicks.mdx'),
       },
 
       {
         id: 'JS.SD.EVH-03',
-        title: 'Potion Shelf · The Event Object',
+        title: 'Potion Shelf \u00b7 The Event Object',
         load: () => import('./standards/JS.SD.EVH/potion-shelf-the-event-object.mdx'),
       },
 
       {
         id: 'JS.SD.EVH-04',
-        title: 'Potion Shelf · From Click to Data',
+        title: 'Potion Shelf \u00b7 From Click to Data',
         load: () => import('./standards/JS.SD.EVH/potion-shelf-from-click-to-data.mdx'),
       },
 
       {
         id: 'JS.SD.EVH-05',
-        title: 'Potion Shelf · Listening for Changes',
+        title: 'Potion Shelf \u00b7 Listening for Changes',
         load: () => import('./standards/JS.SD.EVH/potion-shelf-listening-for-changes.mdx'),
       },
 
       {
         id: 'JS.SD.EVH-06',
-        title: 'Potion Shelf · Change → Filter → Re-render',
+        title: 'Potion Shelf \u00b7 Change \u2192 Filter \u2192 Re-render',
         load: () => import('./standards/JS.SD.EVH/potion-shelf-change-filter-rerender.mdx'),
       },
 

@@ -10,7 +10,10 @@ import Callout from "../components/Callout";
 import { loadMastered, saveMastered } from "../lib/mastery";
 import MonacoWorkspace from "../components/MonacoWorkspace";
 import ConsolePanel from "../components/ConsolePanel";
+import DiagramPanel from "../components/DiagramPanel";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
+import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
+import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const difficultyLabel = (value) => {
@@ -18,6 +21,20 @@ const difficultyLabel = (value) => {
   const n = Number(value) || 0;
   return "★".repeat(n) || "-";
 };
+
+function getOriginalChallengeFileCode(challenge, path) {
+  const files = challenge.files;
+
+  if (!files) return undefined;
+
+  if (Array.isArray(files)) {
+    const match = files.find((file) => file.path === path);
+    return match ? String(match.code ?? match.content ?? "") : undefined;
+  }
+
+  const match = files[path];
+  return match ? String(match.code ?? match.content ?? "") : undefined;
+}
 
 export default function ChallengePage() {
   const { challengeId } = useParams();
@@ -122,6 +139,7 @@ function ChallengeWorkspace({ challenge }) {
   const [filesState, setFilesState] = useState(setup.files);
   const [, setActiveFile] = useState(setup.activeFile);
   const [srcDoc, setSrcDoc] = useState("");
+  const [previewFullScreen, setPreviewFullScreen] = useState(false);
   const iframeRef = useRef(null);
 
   useEffect(() => {
@@ -172,7 +190,7 @@ function ChallengeWorkspace({ challenge }) {
 
   const handleFileChange = useCallback((path, code) => {
     if (path.startsWith("/.playground")) return;
-    const original = challenge.files?.[path]?.code;
+    const original = getOriginalChallengeFileCode(challenge, path);
     setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
     // Queue save (null means "delete this key" when code matches original)
     if (original !== undefined && original === code) {
@@ -182,7 +200,7 @@ function ChallengeWorkspace({ challenge }) {
     }
     clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(flushSave, 500);
-  }, [challenge.files, flushSave]);
+  }, [challenge, flushSave]);
 
   const handleResetStorage = useCallback(() => {
     // Clear mock API DB for this challenge if available
@@ -198,6 +216,14 @@ function ChallengeWorkspace({ challenge }) {
     setInitialFiles({});
     setFilesState(challenge.files);
   }, [resetSavedFiles, challenge.files]);
+
+  useEffect(() => {
+    function handleMsg(e) {
+      if (e?.data === "__PREVIEW_FULLSCREEN__") setPreviewFullScreen((v) => !v);
+    }
+    window.addEventListener("message", handleMsg);
+    return () => window.removeEventListener("message", handleMsg);
+  }, []);
 
   return (
     <section className="space-y-6 flex flex-col flex-1 min-h-0 w-full">
@@ -250,7 +276,7 @@ function ChallengeSandboxUI({
     challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
   );
   const [rightPanel, setRightPanel] = useState(
-    challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : "preview"
+    challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : DIAGRAM_PANEL.PREVIEW
   );
   const [showDetailsColumn, setShowDetailsColumn] = useState(true);
   const [showEditorColumn, setShowEditorColumn] = useState(true);
@@ -260,6 +286,7 @@ function ChallengeSandboxUI({
   const [consoleKey, setConsoleKey] = useState(0);
   const editorRef = useRef(null);
   const descriptionCopy = challenge.description || challenge.summary || "Description coming soon.";
+  const diagramFiles = useMemo(() => getDiagramFiles(files), [files]);
 
   const handleRun = () => {
     try {
@@ -277,6 +304,13 @@ function ChallengeSandboxUI({
     setSrcDoc("");
     setConsoleKey((k) => k + 1);
   };
+
+  useEffect(() => {
+    if (!isValidPanelForFiles(rightPanel, files)) {
+      const preferredPanel = challenge.sandbox?.defaultPanel || DIAGRAM_PANEL.PREVIEW;
+      setRightPanel(isValidPanelForFiles(preferredPanel, files) ? preferredPanel : DIAGRAM_PANEL.PREVIEW);
+    }
+  }, [rightPanel, files, challenge.sandbox?.defaultPanel]);
 
   useLayoutEffect(() => {
     let raf1 = 0;
@@ -503,38 +537,84 @@ function ChallengeSandboxUI({
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                   <button
                     type="button"
-                    onClick={() => setRightPanel("preview")}
-                    className={toggleClass(rightPanel === "preview")}
+                    onClick={() => setRightPanel(DIAGRAM_PANEL.PREVIEW)}
+                    className={toggleClass(rightPanel === DIAGRAM_PANEL.PREVIEW)}
                   >
                     Preview
                   </button>
                   <button
                     type="button"
-                    onClick={() => setRightPanel("console")}
-                    className={toggleClass(rightPanel === "console")}
+                    onClick={() => setRightPanel(DIAGRAM_PANEL.CONSOLE)}
+                    className={toggleClass(rightPanel === DIAGRAM_PANEL.CONSOLE)}
                   >
                     Console
                   </button>
+                  {diagramFiles.hasSequence ? (
+                    <button
+                      type="button"
+                      onClick={() => setRightPanel(DIAGRAM_PANEL.SEQUENCE)}
+                      className={toggleClass(rightPanel === DIAGRAM_PANEL.SEQUENCE)}
+                    >
+                      Sequence Diagram
+                    </button>
+                  ) : null}
+                  {diagramFiles.hasErd ? (
+                    <button
+                      type="button"
+                      onClick={() => setRightPanel(DIAGRAM_PANEL.ERD)}
+                      className={toggleClass(rightPanel === DIAGRAM_PANEL.ERD)}
+                    >
+                      ERD
+                    </button>
+                  ) : null}
                 </div>
               </div>
               <div className="min-h-0 grow relative">
-                <div className={`absolute inset-0 ${rightPanel === "preview" ? "z-10" : "z-0 invisible"}`}>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.PREVIEW ? "z-10" : "z-0 invisible"}`}>
                   {srcDoc ? (
-                    <iframe
-                      ref={iframeRef}
-                      title="preview"
-                      className="h-full w-full bg-white"
-                      sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
-                      srcDoc={srcDoc}
-                    />
+                    <div style={{ position: "relative", height: "100%", width: "100%" }}>
+                      <iframe
+                        ref={iframeRef}
+                        title="preview"
+                        className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
+                        style={previewFullScreen ? { border: "none", borderRadius: 0, margin: 0, padding: 0 } : {}}
+                        sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
+                        srcDoc={injectPreviewFullscreenButton(srcDoc)}
+                      />
+                      {previewFullScreen && (
+                        <button
+                          type="button"
+                          onClick={() => setPreviewFullScreen(false)}
+                          className="fixed top-4 right-4 z-[100] rounded bg-slate-900/80 px-4 py-2 text-white shadow hover:bg-slate-800"
+                          style={{ fontSize: 18 }}
+                          aria-label="Exit full screen"
+                        >
+                          × Exit Full Screen
+                        </button>
+                      )}
+                    </div>
                   ) : (
                     <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-400">
-                      Click "Run preview" to build and load your project.
+                      Click Run preview to build and load your project.
                     </div>
                   )}
                 </div>
-                <div className={`absolute inset-0 ${rightPanel === "console" ? "z-10" : "z-0 invisible"}`}>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.CONSOLE ? "z-10" : "z-0 invisible"}`}>
                   <ConsolePanel key={consoleKey} />
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.SEQUENCE ? "z-10" : "z-0 invisible"}`}>
+                  <DiagramPanel
+                    title="Sequence Diagram"
+                    source={diagramFiles.sequence?.code || ""}
+                    emptyMessage="Add /sequenceDiagram.mmd to this challenge to render a sequence diagram."
+                  />
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>
+                  <DiagramPanel
+                    title="ERD"
+                    source={dbmlToMermaidEr(diagramFiles.erd?.code || "")}
+                    emptyMessage="Add /erd.dbml to this challenge to render an ERD."
+                  />
                 </div>
               </div>
             </section>
@@ -543,4 +623,60 @@ function ChallengeSandboxUI({
       </div>
     </div>
   );
+}
+
+function injectPreviewFullscreenButton(srcDoc) {
+  if (!/<body[^>]*>/i.test(srcDoc)) return srcDoc;
+  const btnScript = `
+    <style>
+      #__fullscreen-btn__ {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 2147483647;
+        background: rgba(30,41,59,0.85);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-size: 15px;
+        font-family: inherit;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      #__fullscreen-btn__.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    </style>
+    <button id="__fullscreen-btn__" tabindex="0" aria-label="Full screen preview">⛶ Full Screen</button>
+    <script>
+      (function(){
+        var btn = document.getElementById("__fullscreen-btn__");
+        var hideTimer = null;
+        function showBtn() {
+          if (!btn) return;
+          btn.classList.add("visible");
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () {
+            if (!btn.matches(":hover")) btn.classList.remove("visible");
+          }, 1800);
+        }
+        document.addEventListener("mousemove", showBtn);
+        btn.addEventListener("mouseenter", function(){
+          clearTimeout(hideTimer);
+          btn.classList.add("visible");
+        });
+        btn.addEventListener("mouseleave", function(){
+          hideTimer = setTimeout(function () { btn.classList.remove("visible"); }, 800);
+        });
+        btn.addEventListener("click", function(){
+          window.parent.postMessage("__PREVIEW_FULLSCREEN__", "*");
+        });
+      })();
+    </script>
+  `;
+  return srcDoc.replace(/(<body[^>]*>)/i, "$1" + btnScript);
 }

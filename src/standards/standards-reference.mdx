@@ -1,0 +1,528 @@
+
+<div className="standards-reference space-y-12">
+
+# <span className="font-extrabold text-brand-300">JavaScript Standards Reference</span>
+
+<div className="mb-4 text-lg text-slate-200">This is the source-of-truth catalog for JavaScript Gym standards.<br />
+<span className="text-brand-200">Use the table of contents to jump to a strand, then scan each standard by its ID.</span></div>
+
+<Note>
+This page lists standards only. For explanations, examples, and walkthroughs, use the Handbook.
+</Note>
+
+<br />
+
+<section className="rounded-2xl border border-brand-500/30 bg-gradient-to-br from-brand-500/10 to-slate-900/40 p-6 shadow-lg" id="variables-data-types">
+<h2 className="text-2xl font-bold text-brand-300 flex items-center gap-2 mb-2">Variables & Data Types <span className="inline-block bg-brand-500/20 text-brand-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.VDT</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-brand-200 mt-4 mb-1">JS.VDT.PRM · Primitives</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.PRM.1</dt>
+			<dd className="font-normal text-brand-100">Declare and assign variables using <b>let</b> and <b>const</b> appropriately.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.PRM.2</dt>
+			<dd className="font-normal text-brand-100">Store and use primitive values (<b>string</b>, <b>number</b>, <b>boolean</b>, <b>null</b>, <b>undefined</b>) in web applications.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.PRM.3</dt>
+			<dd className="font-normal text-brand-100">Combine primitive values with operators and template literals to produce and evaluate expressions.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.PRM.4</dt>
+			<dd className="font-normal text-brand-100">Determine the appropriate primitive data type for a given situation.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-brand-200 mt-4 mb-1">JS.VDT.COL · Collections</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.COL.1</dt>
+			<dd className="font-normal text-brand-100">Create and access objects using key-value pairs.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.COL.2</dt>
+			<dd className="font-normal text-brand-100">Create and access arrays to store ordered lists of values.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.COL.3</dt>
+			<dd className="font-normal text-brand-100">Work with arrays of objects to represent structured data.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.COL.4</dt>
+			<dd className="font-normal text-brand-100">Determine the appropriate collection type for a given situation.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-brand-200 mt-4 mb-1">JS.VDT.MTH · Methods & Properties</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.MTH.1</dt>
+			<dd className="font-normal text-brand-100">Use string properties and methods (<b>.length</b>, <b>.trim()</b>, <b>.toLowerCase()</b>, <b>.split()</b>, <b>.replace()</b>).</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.MTH.2</dt>
+			<dd className="font-normal text-brand-100">Use number parsing and formatting methods (<b>Number()</b>, <b>parseInt()</b>, <b>parseFloat()</b>, <b>Number.isNaN()</b>, <b>.toFixed()</b>).</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-brand-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.VDT.MTH.3</dt>
+			<dd className="font-normal text-brand-100">Use object utilities (<b>Object.keys()</b>, <b>Object.values()</b>, <b>Object.entries()</b>).</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-slate-900/40 p-6 shadow-lg" id="functions">
+<h2 className="text-2xl font-bold text-emerald-300 flex items-center gap-2 mb-2">Functions <span className="inline-block bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.FN</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-emerald-200 mt-4 mb-1">JS.FN.BAS · Function Basics</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-emerald-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.FN.BAS.1</dt>
+			<dd className="font-normal text-emerald-100">Declare and invoke functions with and without parameters/returns.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-emerald-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.FN.BAS.2</dt>
+			<dd className="font-normal text-emerald-100">Write functions using function syntax and arrow syntax, choosing named or anonymous appropriately.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-emerald-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.FN.BAS.3</dt>
+			<dd className="font-normal text-emerald-100">Use parameters and return values to pass data in and out of functions.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-emerald-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.FN.BAS.4</dt>
+			<dd className="font-normal text-emerald-100">Compose small, single-purpose functions to build larger features.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-emerald-200 mt-4 mb-1">JS.FN.HOF · Higher-Order Functions</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-emerald-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.FN.HOF.1</dt>
+			<dd className="font-normal text-emerald-100">Distinguish between passing a function reference and invoking a function.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-emerald-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.FN.HOF.2</dt>
+			<dd className="font-normal text-emerald-100">Provide callbacks with the correct parameters and expected behavior.</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 to-slate-900/40 p-6 shadow-lg" id="program-flow">
+<h2 className="text-2xl font-bold text-yellow-300 flex items-center gap-2 mb-2">Program Flow <span className="inline-block bg-yellow-500/20 text-yellow-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.PF</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-yellow-200 mt-4 mb-1">JS.PF.CON · Conditionals</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-yellow-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.PF.CON.1</dt>
+			<dd className="font-normal text-yellow-100">Use if/else to branch behavior based on input, state, or user actions.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-yellow-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.PF.CON.2</dt>
+			<dd className="font-normal text-yellow-100">Choose between if/else and switch for readability and intent.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-yellow-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.PF.CON.3</dt>
+			<dd className="font-normal text-yellow-100">Combine conditions with comparison/logical operators and reason about truthy/falsy.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-yellow-200 mt-4 mb-1">JS.PF.ITR · Iteration</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-yellow-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.PF.ITR.1</dt>
+			<dd className="font-normal text-yellow-100">Iterate through arrays and DOM collections using loops.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-yellow-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.PF.ITR.2</dt>
+			<dd className="font-normal text-yellow-100">Use loops to perform actions for each item in a collection.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-yellow-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.PF.ITR.3</dt>
+			<dd className="font-normal text-yellow-100">Identify and fix common loop errors.</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-slate-900/40 p-6 shadow-lg" id="arrays-collections">
+<h2 className="text-2xl font-bold text-blue-300 flex items-center gap-2 mb-2">Arrays & Collections <span className="inline-block bg-blue-500/20 text-blue-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.AR</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-blue-200 mt-4 mb-1">JS.AR.ACC · Access & Updates</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.ACC.1</dt>
+			<dd className="font-normal text-blue-100">Update arrays and objects by adding, changing, or removing elements/properties.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.ACC.2</dt>
+			<dd className="font-normal text-blue-100">Distinguish mutating vs non-mutating operations and choose intentionally.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.ACC.3</dt>
+			<dd className="font-normal text-blue-100">Use arrays of objects to represent and manipulate structured data.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-blue-200 mt-4 mb-1">JS.AR.MTH · Array Methods</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.MTH.1</dt>
+			<dd className="font-normal text-blue-100">Transform arrays with <b>map</b>.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.MTH.2</dt>
+			<dd className="font-normal text-blue-100">Filter arrays with <b>filter</b>.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.MTH.3</dt>
+			<dd className="font-normal text-blue-100">Aggregate arrays with <b>reduce</b>.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.MTH.4</dt>
+			<dd className="font-normal text-blue-100">Search and validate arrays with <b>find</b>, <b>some</b>, and <b>every</b>.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-blue-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AR.MTH.5</dt>
+			<dd className="font-normal text-blue-100">Chain methods to perform complex transformations.</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-pink-500/30 bg-gradient-to-br from-pink-500/10 to-slate-900/40 p-6 shadow-lg" id="state-dom">
+<h2 className="text-2xl font-bold text-pink-300 flex items-center gap-2 mb-2">State & DOM <span className="inline-block bg-pink-500/20 text-pink-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.SD</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-pink-200 mt-4 mb-1">JS.SD.ELM · Element Selection & Manipulation</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.ELM.1</dt>
+			<dd className="font-normal text-pink-100">Select DOM elements with <b>getElementById</b>/<b>querySelector</b> and related methods.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.ELM.2</dt>
+			<dd className="font-normal text-pink-100">Read and update element content and attributes.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-pink-200 mt-4 mb-1">JS.SD.EVH · Event Handling</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.EVH.1</dt>
+			<dd className="font-normal text-pink-100">Attach event listeners using <b>addEventListener</b>.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.EVH.2</dt>
+			<dd className="font-normal text-pink-100">Use event object properties (<b>event.target</b>, <b>preventDefault</b>) in handlers.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.EVH.3</dt>
+			<dd className="font-normal text-pink-100">Use event delegation on stable parents for dynamic children.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-pink-200 mt-4 mb-1">JS.SD.STA · State Synchronization</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.STA.1</dt>
+			<dd className="font-normal text-pink-100">Maintain state that reflects current UI/user input.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.STA.2</dt>
+			<dd className="font-normal text-pink-100">Update the DOM when state changes.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.STA.3</dt>
+			<dd className="font-normal text-pink-100">Read form input and update state.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-pink-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.SD.STA.4</dt>
+			<dd className="font-normal text-pink-100">Clear, reset, or toggle DOM elements based on state.</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-red-500/30 bg-gradient-to-br from-red-500/10 to-slate-900/40 p-6 shadow-lg" id="debugging">
+<h2 className="text-2xl font-bold text-red-300 flex items-center gap-2 mb-2">Debugging <span className="inline-block bg-red-500/20 text-red-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.DB</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-red-200 mt-4 mb-1">JS.DB.ERR · Error Messages & Stack Traces</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.ERR.1</dt>
+			<dd className="font-normal text-red-100">Read error messages and identify error types.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.ERR.2</dt>
+			<dd className="font-normal text-red-100">Use stack traces to locate file/line/frame origin.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.ERR.3</dt>
+			<dd className="font-normal text-red-100">Reproduce errors reliably and describe trigger conditions.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-red-200 mt-4 mb-1">JS.DB.TRC · Tracing & Inspection</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.TRC.1</dt>
+			<dd className="font-normal text-red-100">Use <b>console.log</b> to trace control flow and values.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.TRC.2</dt>
+			<dd className="font-normal text-red-100">Use breakpoints and step-through inspection in DevTools.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-red-200 mt-4 mb-1">JS.DB.BUG · Common Bugs & Fixes</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.BUG.1</dt>
+			<dd className="font-normal text-red-100">Diagnose and fix off-by-one/infinite loop errors.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.BUG.2</dt>
+			<dd className="font-normal text-red-100">Diagnose and fix undefined/null/type errors from access or selector issues.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.BUG.3</dt>
+			<dd className="font-normal text-red-100">Resolve async timing issues with loading/error paths or control-flow adjustments.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-red-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DB.BUG.4</dt>
+			<dd className="font-normal text-red-100">Correct DOM sync issues by checking selectors, event targets, and state.</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-slate-900/40 p-6 shadow-lg" id="modules-organization">
+<h2 className="text-2xl font-bold text-indigo-300 flex items-center gap-2 mb-2">Modules & Organization <span className="inline-block bg-indigo-500/20 text-indigo-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.MO</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-indigo-200 mt-4 mb-1">JS.MO.STR · Project Structure</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-indigo-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.MO.STR.1</dt>
+			<dd className="font-normal text-indigo-100">Organize code into a consistent feature- or layer-based structure.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-indigo-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.MO.STR.2</dt>
+			<dd className="font-normal text-indigo-100">Use clear naming conventions for files/folders.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-indigo-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.MO.STR.3</dt>
+			<dd className="font-normal text-indigo-100">Keep assets in a dedicated <b>assets/</b> or <b>public/</b> folder.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-indigo-200 mt-4 mb-1">JS.MO.IMP · Import/Export</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-indigo-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.MO.IMP.1</dt>
+			<dd className="font-normal text-indigo-100">Use named and default exports appropriately.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-indigo-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.MO.IMP.2</dt>
+			<dd className="font-normal text-indigo-100">Import code/data with clean, readable ES module syntax.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-indigo-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.MO.IMP.3</dt>
+			<dd className="font-normal text-indigo-100">Refactor by moving reusable code into modules.</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-slate-900/40 p-6 shadow-lg" id="asynchronous-js">
+<h2 className="text-2xl font-bold text-cyan-300 flex items-center gap-2 mb-2">Asynchronous JS <span className="inline-block bg-cyan-500/20 text-cyan-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.AS</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-cyan-200 mt-4 mb-1">JS.AS.PRO · Promises</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.PRO.1</dt>
+			<dd className="font-normal text-cyan-100">Use <b>.then()</b> and <b>.catch()</b> for asynchronous results and errors.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.PRO.2</dt>
+			<dd className="font-normal text-cyan-100">Explain synchronous vs asynchronous execution in practical terms.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-cyan-200 mt-4 mb-1">JS.AS.AAW · Async/Await</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.AAW.1</dt>
+			<dd className="font-normal text-cyan-100">Write async functions and use <b>await</b> to pause for promises.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.AAW.2</dt>
+			<dd className="font-normal text-cyan-100">Refactor simple promise chains into async/await.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-cyan-200 mt-4 mb-1">JS.AS.FET · Fetch & HTTP</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.FET.1</dt>
+			<dd className="font-normal text-cyan-100">Use <b>fetch</b> for GET requests and render results in the DOM.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.FET.2</dt>
+			<dd className="font-normal text-cyan-100">Use <b>fetch</b> with POST/PUT/DELETE (and other methods).</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.FET.3</dt>
+			<dd className="font-normal text-cyan-100">Handle loading states while waiting for data.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-cyan-200 mt-4 mb-1">JS.AS.ERR · Error Handling</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.ERR.1</dt>
+			<dd className="font-normal text-cyan-100">Use <b>.catch()</b> and <b>try/catch</b> to handle asynchronous errors.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-cyan-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.AS.ERR.2</dt>
+			<dd className="font-normal text-cyan-100">Provide user-facing feedback for common failure cases.</dd>
+		</div>
+	</dl>
+</div>
+
+
+</section>
+
+<section className="rounded-2xl border border-lime-500/30 bg-gradient-to-br from-lime-500/10 to-slate-900/40 p-6 shadow-lg" id="data-applications">
+<h2 className="text-2xl font-bold text-lime-300 flex items-center gap-2 mb-2">Data & Applications <span className="inline-block bg-lime-500/20 text-lime-300 text-xs font-bold rounded-full px-3 py-1 ml-2">JS.DA</span></h2>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-lime-200 mt-4 mb-1">JS.DA.SCH · Schema Planning</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.SCH.1</dt>
+			<dd className="font-normal text-lime-100">Model entities and relationships with <b>ERDs</b>.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.SCH.2</dt>
+			<dd className="font-normal text-lime-100">Use foreign keys for one-to-many relationships.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.SCH.3</dt>
+			<dd className="font-normal text-lime-100">Use join tables for many-to-many relationships.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-lime-200 mt-4 mb-1">JS.DA.SER · Services & Handlers</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.SER.1</dt>
+			<dd className="font-normal text-lime-100">Write modular service functions (for example <b>getUsers()</b>, <b>createPost()</b>) using fetch.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.SER.2</dt>
+			<dd className="font-normal text-lime-100">Organize services in separate reusable modules/files.</dd>
+		</div>
+	</dl>
+</div>
+
+
+<div className="mb-4">
+	<h3 className="text-lg font-semibold text-lime-200 mt-4 mb-1">JS.DA.UTA · Utilizing Data in Apps</h3>
+	<dl className="space-y-0">
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.UTA.1</dt>
+			<dd className="font-normal text-lime-100">Render state/API data into the DOM.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.UTA.2</dt>
+			<dd className="font-normal text-lime-100">Update UI when records are created/updated/deleted.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.UTA.3</dt>
+			<dd className="font-normal text-lime-100">Handle empty, loading, and error states.</dd>
+		</div>
+		<div className="flex items-start gap-3 my-3">
+			<dt className="shrink-0 font-mono bg-slate-800 text-lime-200 rounded px-2 py-0.5 text-xs shadow-sm border border-slate-300/60">JS.DA.UTA.4</dt>
+			<dd className="font-normal text-lime-100">Provide filtering, sorting, or searching in response to user actions.</dd>
+		</div>
+	</dl>
+</div>
+
+</section>
+
+</div>

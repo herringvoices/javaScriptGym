@@ -60,6 +60,37 @@ potionList.innerHTML = potionHTML;
 
 Trash one-potion rendering and temporary logs.
 
+---
+
+## Flow Update
+
+Your code changed the program flow. In `/sequenceDiagram.mmd`, replace this line:
+
+```mermaid
+  Main->>Main: create array of li strings
+```
+
+with these lines:
+
+```mermaid
+  Main->>Main: join li strings into one HTML string
+  Main->>DOM: set potionList.innerHTML
+```
+
+Your current data-to-DOM flow should now include:
+
+```mermaid
+  Main->>Main: map potions with PotionItem()
+  Main->>Main: join li strings into one HTML string
+  Main->>DOM: set potionList.innerHTML
+```
+
+Then answer:
+
+- Why does `innerHTML` need one string instead of an array?
+- Which step creates the final HTML string?
+- Which step updates the visible list?
+
 ## Technical Vocabulary
 
 | Term | Meaning |

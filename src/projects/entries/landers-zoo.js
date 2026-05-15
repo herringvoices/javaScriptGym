@@ -232,6 +232,31 @@ const DATA_JS = ``;
 // Empty on purpose for students to practice modularization later
 const FUNCTIONS_JS = ``;
 
+const SEQUENCE_DIAGRAM = `sequenceDiagram
+  participant User
+  participant App
+  participant API
+
+  User->>App: Clicks Load Books
+  App->>API: fetch("/books")
+  API-->>App: books array
+  App-->>User: Renders book cards
+`;
+
+const ERD_DBML = `Table books {
+  id integer [primary key]
+  title varchar
+  author_id integer
+}
+
+Table authors {
+  id integer [primary key]
+  name varchar
+}
+
+Ref: books.author_id > authors.id
+`;
+
 export default {
     id: "landers-zoo",
     title: "Lander's Zoo",
@@ -240,6 +265,8 @@ export default {
         { path: "/main.js", content: MAIN_JS, active: true },
     { path: "/data.js", content: DATA_JS, readOnly: false, hidden: true },
     { path: "/functions.js", content: FUNCTIONS_JS, readOnly: false, hidden: true },
+    { path: "/sequenceDiagram.mmd", content: SEQUENCE_DIAGRAM, active: false },
+    { path: "/erd.dbml", content: ERD_DBML, active: false },
   ],
   entry: "/index.html",
 };

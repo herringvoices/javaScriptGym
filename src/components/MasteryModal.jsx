@@ -30,7 +30,7 @@ export default function MasteryModal({ open, onClose, masteredSet, onMasteredCha
   return (
     <Modal isOpen={open} onClose={onClose} title="Standards I Know">
       <p className="text-sm text-slate-300">
-        Check the standards you've already mastered. This gates which challenges appear unlocked.
+        Check the standards you&apos;ve already mastered. This gates which challenges appear unlocked.
       </p>
       <div className="mt-2 grid grid-cols-1 gap-2">
         {list.map((id) => {

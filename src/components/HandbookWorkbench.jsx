@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import MonacoWorkspace from "./MonacoWorkspace";
 import ConsolePanel from "./ConsolePanel";
+import DiagramPanel from "./DiagramPanel";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
+import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
+import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
 
 const CONSOLE_HEIGHT = 220;
 
@@ -23,8 +26,8 @@ const CONSOLE_HEIGHT = 220;
  */
 export default function HandbookWorkbench({ entry, showConsole = true }) {
   const [showFiles, setShowFiles] = useState(false);
-  const [bottomPanel, setBottomPanel] = useState(entry?.sandbox?.defaultPanel || "console");
-  const [compactConsole, setCompactConsole] = useState(true);
+  const [bottomPanel, setBottomPanel] = useState(entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE);
+  // Removed compactConsole state
   // Storage scope: default to handbook when a standard is provided, otherwise project scope
   const storageKey = entry ? (entry.standard ? `handbook:${entry.standard}:${entry.id}` : `project:${entry.id}`) : null;
   // Live snapshot of saved edits for this storageKey. This ensures step changes (same key) pick up latest edits.
@@ -87,18 +90,28 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
   const [filesState, setFilesState] = useState(model?.files || {});
   const [, setActiveFile] = useState(model?.activeFile || null);
   const [srcDoc, setSrcDoc] = useState("");
+  const [previewFullScreen, setPreviewFullScreen] = useState(false);
   const iframeRef = useRef(null);
   const [consoleKey, setConsoleKey] = useState(0);
+  const diagramFiles = useMemo(() => getDiagramFiles(filesState), [filesState]);
   const consoleHeight = showConsole ? CONSOLE_HEIGHT : 0;
   const editorHeight = showConsole ? `calc(100% - ${CONSOLE_HEIGHT}px)` : "100%";
 
   useEffect(() => {
     if (!model) return;
+    const preferredPanel = entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE;
     setFilesState(model.files);
     setActiveFile(model.activeFile);
     setSrcDoc(""); // don't auto-run when switching entries
-    setBottomPanel(entry?.sandbox?.defaultPanel || "console");
-  }, [model]);
+    setBottomPanel(isValidPanelForFiles(preferredPanel, model.files) ? preferredPanel : DIAGRAM_PANEL.CONSOLE);
+  }, [model, entry?.sandbox?.defaultPanel]);
+
+  useEffect(() => {
+    if (!isValidPanelForFiles(bottomPanel, filesState)) {
+      const preferredPanel = entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE;
+      setBottomPanel(isValidPanelForFiles(preferredPanel, filesState) ? preferredPanel : DIAGRAM_PANEL.CONSOLE);
+    }
+  }, [bottomPanel, filesState, entry?.sandbox?.defaultPanel]);
 
   const handleRun = useCallback(() => {
     if (!model) return;
@@ -141,6 +154,22 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
     saveTimerRef.current = setTimeout(flushSave, 500);
   }, [storageKey, flushSave]);
 
+  useEffect(() => {
+    function handleMsg(e) {
+      if (e?.data === "__PREVIEW_FULLSCREEN__") setPreviewFullScreen((v) => !v);
+    }
+    window.addEventListener("message", handleMsg);
+    return () => window.removeEventListener("message", handleMsg);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    document.body.classList.toggle("workbench-fullscreen-active", previewFullScreen);
+    return () => {
+      document.body.classList.remove("workbench-fullscreen-active");
+    };
+  }, [previewFullScreen]);
+
   if (!entry || !model) {
     return (
       <div className="rounded border border-slate-800 p-3 text-sm text-slate-300">Select a standard to load its editor.</div>
@@ -174,9 +203,9 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => setBottomPanel("preview")}
+            onClick={() => setBottomPanel(DIAGRAM_PANEL.PREVIEW)}
             className={`rounded-full border px-3 py-1 transition ${
-              bottomPanel === "preview"
+              bottomPanel === DIAGRAM_PANEL.PREVIEW
                 ? "border-brand-400 bg-brand-500/20 text-brand-200"
                 : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
             }`}
@@ -185,27 +214,42 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
           </button>
           <button
             type="button"
-            onClick={() => setBottomPanel("console")}
+            onClick={() => setBottomPanel(DIAGRAM_PANEL.CONSOLE)}
             className={`rounded-full border px-3 py-1 transition ${
-              bottomPanel === "console"
+              bottomPanel === DIAGRAM_PANEL.CONSOLE
                 ? "border-brand-400 bg-brand-500/20 text-brand-200"
                 : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
             }`}
           >
             Console
           </button>
-          <button
-            type="button"
-            onClick={() => setCompactConsole((v) => !v)}
-            className={`rounded-full border px-3 py-1 transition ${
-              compactConsole
-                ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-            }`}
-            title="Toggle compact (stackless) console"
-          >
-            {compactConsole ? "Compact" : "Full"}
-          </button>
+          {diagramFiles.hasSequence ? (
+            <button
+              type="button"
+              onClick={() => setBottomPanel(DIAGRAM_PANEL.SEQUENCE)}
+              className={`rounded-full border px-3 py-1 transition ${
+                bottomPanel === DIAGRAM_PANEL.SEQUENCE
+                  ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                  : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+              }`}
+            >
+              Sequence Diagram
+            </button>
+          ) : null}
+          {diagramFiles.hasErd ? (
+            <button
+              type="button"
+              onClick={() => setBottomPanel(DIAGRAM_PANEL.ERD)}
+              className={`rounded-full border px-3 py-1 transition ${
+                bottomPanel === DIAGRAM_PANEL.ERD
+                  ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                  : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+              }`}
+            >
+              ERD
+            </button>
+          ) : null}
+          {/* Compact toggle removed */}
         </div>
       </div>
 
@@ -230,26 +274,110 @@ export default function HandbookWorkbench({ entry, showConsole = true }) {
           aria-hidden={!showConsole}
           style={{ height: consoleHeight }}
         >
-          <div className={bottomPanel === "preview" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+          <div className={bottomPanel === DIAGRAM_PANEL.PREVIEW ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
             {srcDoc ? (
-              <iframe
-                ref={iframeRef}
-                title="preview"
-                className="h-full w-full bg-white"
-                sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
-                srcDoc={srcDoc}
-              />
+              <div style={{position: "relative", height: "100%", width: "100%"}}>
+                <iframe
+                  ref={iframeRef}
+                  title="preview"
+                  className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
+                  style={previewFullScreen ? {border: "none", borderRadius: 0, margin: 0, padding: 0} : {}}
+                  sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
+                  srcDoc={injectPreviewFullscreenButton(srcDoc)}
+                />
+                {previewFullScreen && (
+                  <button
+                    type="button"
+                    onClick={() => setPreviewFullScreen(false)}
+                    className="fixed top-4 right-4 z-[100] rounded bg-slate-900/80 px-4 py-2 text-white shadow hover:bg-slate-800"
+                    style={{fontSize: 18}}
+                    aria-label="Exit full screen"
+                  >
+                    × Exit Full Screen
+                  </button>
+                )}
+              </div>
             ) : (
               <div className="flex h-full items-center justify-center text-slate-400 text-sm">
                 Click Run to build and load the preview…
               </div>
             )}
           </div>
-          <div className={bottomPanel === "console" ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
-            <ConsolePanel key={consoleKey} compact={compactConsole} />
+          <div className={bottomPanel === DIAGRAM_PANEL.CONSOLE ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+            <ConsolePanel key={consoleKey} compact={false} />
+          </div>
+          <div className={bottomPanel === DIAGRAM_PANEL.SEQUENCE ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+            <DiagramPanel
+              title="Sequence Diagram"
+              source={diagramFiles.sequence?.code || ""}
+              emptyMessage="Add /sequenceDiagram.mmd to this workspace to render a sequence diagram."
+            />
+          </div>
+          <div className={bottomPanel === DIAGRAM_PANEL.ERD ? "h-full" : "pointer-events-none absolute inset-0 h-0 overflow-hidden"}>
+            <DiagramPanel
+              title="ERD"
+              source={dbmlToMermaidEr(diagramFiles.erd?.code || "")}
+              emptyMessage="Add /erd.dbml to this workspace to render an ERD."
+            />
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function injectPreviewFullscreenButton(srcDoc) {
+  if (!/<body[^>]*>/i.test(srcDoc)) return srcDoc;
+  const btnScript = `
+    <style>
+      #__fullscreen-btn__ {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 2147483647;
+        background: rgba(30,41,59,0.85);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-size: 15px;
+        font-family: inherit;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      #__fullscreen-btn__.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    </style>
+    <button id="__fullscreen-btn__" tabindex="0" aria-label="Full screen preview">⛶ Full Screen</button>
+    <script>
+      (function(){
+        var btn = document.getElementById("__fullscreen-btn__");
+        var hideTimer = null;
+        function showBtn() {
+          if (!btn) return;
+          btn.classList.add("visible");
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () {
+            if (!btn.matches(":hover")) btn.classList.remove("visible");
+          }, 1800);
+        }
+        document.addEventListener("mousemove", showBtn);
+        btn.addEventListener("mouseenter", function(){
+          clearTimeout(hideTimer);
+          btn.classList.add("visible");
+        });
+        btn.addEventListener("mouseleave", function(){
+          hideTimer = setTimeout(function () { btn.classList.remove("visible"); }, 800);
+        });
+        btn.addEventListener("click", function(){
+          window.parent.postMessage("__PREVIEW_FULLSCREEN__", "*");
+        });
+      })();
+    </script>
+  `;
+  return srcDoc.replace(/(<body[^>]*>)/i, "$1" + btnScript);
 }

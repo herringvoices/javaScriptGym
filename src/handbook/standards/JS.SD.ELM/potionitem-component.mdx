@@ -66,6 +66,32 @@ const PotionItem = (potion) => {
 
 Trash direct one-off `<li>` rendering outside the component.
 
+---
+
+## Flow Update
+
+Your code changed the program flow. In `/sequenceDiagram.mmd`, replace this line:
+
+```mermaid
+  Main->>Main: read first potion from potions array
+```
+
+with these lines:
+
+```mermaid
+  Main->>Main: read first potion from potions array
+  Main->>Main: call PotionItem(firstPotion)
+  Main->>Main: receive one li string
+```
+
+Then answer:
+
+- What does `PotionItem` receive?
+- What does `PotionItem` return?
+- Does `PotionItem` update the DOM by itself?
+
+`PotionItem` does not render by itself. It returns a string. Another line sends that string to the DOM.
+
 ## Technical Vocabulary
 
 | Term | Meaning |

@@ -63,6 +63,32 @@ Trash:
 console.log(potionHTMLArray);
 ```
 
+---
+
+## Flow Update
+
+Your code changed the program flow. In `/sequenceDiagram.mmd`, replace the one-potion function call lines:
+
+```mermaid
+  Main->>Main: read first potion from potions array
+  Main->>Main: call PotionItem(firstPotion)
+  Main->>Main: receive one li string
+```
+
+with these lines:
+
+```mermaid
+  Main->>Main: map potions with PotionItem()
+  Main->>Main: create array of li strings
+```
+
+Then answer:
+
+- What does `map()` do once for each potion?
+- Why is the result not ready for `innerHTML` yet?
+
+The diagram now tracks the data transformation: array of potion objects to array of `<li>` strings.
+
 ## Technical Vocabulary
 
 | Term | Meaning |

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body.workbench-fullscreen-active .js-sticky-toggle-bar {
+  display: none;
+}
+
 html {
   @apply scroll-smooth;
 }
@@ -67,3 +71,136 @@ pre[data-theme] code > span.highlighted {
 .mini-sp-preview-wrapper { background:#020617; }
 .mini-sp-console-wrapper { background:#0f172a; }
 .mini-sp-console-wrapper pre { background: transparent !important; color:#e2e8f0 !important; }
+
+/* Standards reference readability */
+.standards-reference {
+  color: #d1d5db;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.standards-reference * {
+  min-width: 0;
+}
+
+.standards-reference h1 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.standards-reference h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  padding-bottom: 0.5rem;
+  scroll-margin-top: 6rem;
+}
+
+.standards-reference h3 {
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.standards-reference p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #cbd5e1;
+}
+
+.standards-reference ul {
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+}
+
+.standards-reference li {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  line-height: 1.55;
+  color: #e2e8f0;
+}
+
+.standards-reference dl {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.standards-reference dl > div {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.standards-reference dd {
+  margin-inline-start: 0;
+}
+
+.standards-reference section {
+  border-radius: 0.5rem;
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(15, 23, 42, 0.72);
+  overflow: hidden;
+}
+
+.standards-reference section + section {
+  margin-top: 2rem;
+}
+
+.standards-reference section h2,
+.standards-reference section h3 {
+  color: #bfdbfe;
+}
+
+.standards-reference section h2 span {
+  background: rgba(59, 130, 246, 0.2);
+  color: #bfdbfe;
+}
+
+.standards-reference dt {
+  border-color: rgba(147, 197, 253, 0.65);
+  background: #0f172a;
+  color: #bfdbfe;
+  min-width: 5.625rem;
+  text-align: center;
+}
+
+.standards-reference dd {
+  color: #dbeafe;
+}
+
+@media (max-width: 640px) {
+  .standards-reference {
+    margin-inline: -0.25rem;
+  }
+
+  .standards-reference section {
+    padding: 1rem;
+  }
+
+  .standards-reference h1 {
+    font-size: 1.5rem;
+  }
+
+  .standards-reference h2 {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .standards-reference h2 span {
+    margin-left: 0;
+  }
+
+  .standards-reference dl > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .standards-reference dt {
+    min-width: 0;
+  }
+}

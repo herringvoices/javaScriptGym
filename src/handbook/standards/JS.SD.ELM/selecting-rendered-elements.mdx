@@ -67,6 +67,24 @@ Trash:
 console.dir(potionList);
 ```
 
+---
+
+## Flow Update
+
+Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+
+```mermaid
+  Main->>DOM: select #potion-list
+  DOM-->>Main: return potionList element
+```
+
+Then answer:
+
+- Why does selecting `#potion-list` happen after setting `app.innerHTML`?
+- What would the DOM return if `main.js` asked for `#potion-list` too early?
+
+This makes the order visible: create `#potion-list`, then select `#potion-list`.
+
 ## Technical Vocabulary
 
 | Term | Meaning |

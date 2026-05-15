@@ -43,9 +43,20 @@ const entry = {
       active: true,
       content: /*js*/ ``,
     },
+    {
+      path: "/sequenceDiagram.mmd",
+      type: "mermaid",
+      active: false,
+      content: `sequenceDiagram
+  participant Browser
+  participant Main as main.js
+  participant DB as database.js
+  participant DOM
+`,
+    },
   ],
   entry: "/index.html",
-  sandbox: { runtime: "dom", defaultPanel: "preview" },
+  sandbox: { runtime: "dom", defaultPanel: "sequence" },
   mock: undefined,
   handbookMarkdown: "",
   tags: [],

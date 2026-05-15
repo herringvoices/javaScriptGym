@@ -64,6 +64,24 @@ Keep the idea:
 
 Trash the `firstPotion` approach on the next page, because the app needs every potion.
 
+---
+
+## Flow Update
+
+Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+
+```mermaid
+  Main->>Main: read first potion from potions array
+  Main->>DOM: set potionList.innerHTML
+```
+
+Then answer:
+
+- Why does the first step point from `Main` to `Main`?
+- Which step sends visible HTML to the DOM?
+
+Not every step is communication between files. Some steps are internal work inside `main.js`.
+
 ## Technical Vocabulary
 
 | Term | Meaning |

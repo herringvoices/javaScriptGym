@@ -75,6 +75,30 @@ app.innerHTML = \`
 
 Keep the app shell. Trash the old `textContent` line.
 
+---
+
+## Flow Update
+
+Your code changed the program flow. In `/sequenceDiagram.mmd`, replace this old diagram line:
+
+```mermaid
+  Main->>DOM: set app.textContent
+```
+
+with these lines:
+
+```mermaid
+  Main->>DOM: set app.innerHTML
+  DOM->>DOM: create header, main, section, and #potion-list
+```
+
+Then answer:
+
+- Why did we replace the `textContent` step instead of adding a new final step?
+- What new element exists after `app.innerHTML` runs?
+
+The diagram should match the current program, not every version of the program that ever existed.
+
 ## Technical Vocabulary
 
 | Term | Meaning |

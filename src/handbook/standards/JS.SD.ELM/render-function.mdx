@@ -45,8 +45,8 @@ const render = () => {
   `;
 
   const potions = getPotions();
-  const potionList = document.querySelector("#potion-list");
   const potionHTML = potions.map(PotionItem).join("");
+  const potionList = document.querySelector("#potion-list");
 
   potionList.innerHTML = potionHTML;
 };
@@ -86,8 +86,8 @@ const render = () => {
   \`;
 
   const potions = getPotions();
-  const potionList = document.querySelector("#potion-list");
   const potionHTML = potions.map(PotionItem).join("");
+  const potionList = document.querySelector("#potion-list");
 
   potionList.innerHTML = potionHTML;
 };
@@ -103,8 +103,8 @@ render();
     <li>Move the `#app` selection inside `render`.</li>
     <li>Move the app shell rendering inside `render`.</li>
     <li>Move the `getPotions()` call inside `render`.</li>
-    <li>Move the `#potion-list` selection inside `render`, after the shell is rendered.</li>
     <li>Move the `map()` + `join("")` list rendering inside `render`.</li>
+    <li>Move the `#potion-list` selection inside `render`, after the shell is rendered and before setting its `innerHTML`.</li>
     <li>Call `render()` at the bottom of the file.</li>
     <li>Refresh and confirm the page still displays every potion.</li>
   </ul>
@@ -123,6 +123,44 @@ render();
 ```
 
 Trash all duplicated rendering logic outside `render()`.
+
+---
+
+## Flow Update
+
+Your code changed the program flow. This is the final Chapter 1 diagram refactor.
+
+Update `/sequenceDiagram.mmd` so `main.js` calls `render()` before the detailed render steps:
+
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant Main as main.js
+  participant DB as database.js
+  participant DOM
+
+  Browser->>Main: load module script
+  Main->>Main: call render()
+  Main->>DOM: select #app
+  DOM-->>Main: return app element
+  Main->>DOM: set app.innerHTML
+  DOM->>DOM: create header, main, section, and #potion-list
+  Main->>DB: getPotions()
+  DB-->>Main: return potions array
+  Main->>Main: map potions with PotionItem()
+  Main->>Main: join li strings into one HTML string
+  Main->>DOM: select #potion-list
+  DOM-->>Main: return potionList element
+  Main->>DOM: set potionList.innerHTML
+```
+
+Then answer:
+
+- Which step starts the render process?
+- Which steps happen inside `render()`?
+- Which step gets data?
+- Which step turns data into HTML?
+- Which step updates the DOM?
 
 ## Chapter 1 Assessment Target
 

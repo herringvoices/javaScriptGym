@@ -14,15 +14,18 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <header className="bg-slate-900 border-b border-slate-800">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
           <NavLink
             to="/"
-            className="text-xl font-semibold text-white tracking-tight"
+            className="shrink-0 text-xl font-semibold text-white tracking-tight"
           >
             JavaScript Gym <FontAwesomeIcon icon={faDumbbell}/>
           </NavLink>
-          <nav className="flex items-center gap-2">
+          <nav className="flex w-full max-w-full items-center gap-2 overflow-x-auto pb-1 sm:w-auto sm:pb-0">
             <NavLink to="/" className={navLinkClass} end>
+              Home
+            </NavLink>
+            <NavLink to="/challenges" className={navLinkClass}>
               Challenges
             </NavLink>
             <NavLink to="/handbook/overview" className={navLinkClass}>
@@ -31,6 +34,9 @@ export default function AppLayout() {
             <NavLink to="/projects" className={navLinkClass}>
               Projects
             </NavLink>
+              <NavLink to="/standards" className={navLinkClass}>
+                Standards
+              </NavLink>
           </nav>
         </div>
       </header>

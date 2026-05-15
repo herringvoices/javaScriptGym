@@ -77,6 +77,25 @@ Trash:
 console.log(potions);
 ```
 
+---
+
+## Flow Update
+
+Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+
+```mermaid
+  Main->>DB: getPotions()
+  DB-->>Main: return potions array
+```
+
+Then answer:
+
+- Which file owns the potion data?
+- Which file asks for the potion data?
+- What does `database.js` return?
+
+This is the first multi-module flow: `main.js` asks `database.js` for data, and `database.js` returns it.
+
 ## Technical Vocabulary
 
 | Term | Meaning |

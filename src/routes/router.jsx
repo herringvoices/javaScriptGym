@@ -2,11 +2,13 @@ import { createBrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import AppLayout from "../layouts/AppLayout";
 
+const LandingPage = lazy(() => import("../pages/LandingPage"));
 const ChallengesPage = lazy(() => import("../pages/ChallengesPage"));
 const ChallengePage = lazy(() => import("../pages/ChallengePage"));
 const HandbookPage = lazy(() => import("../pages/HandbookPage"));
 const ProjectsPage = lazy(() => import("../pages/ProjectsPage"));
 const ProjectPage = lazy(() => import("../pages/ProjectPage"));
+const StandardsPage = lazy(() => import("../pages/StandardsPage"));
 
 const router = createBrowserRouter([
   {
@@ -14,6 +16,14 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: (
+          <Suspense fallback={null}>
+            <LandingPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/challenges",
         element: (
           <Suspense fallback={null}>
             <ChallengesPage />
@@ -52,6 +62,14 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+        {
+          path: "/standards",
+          element: (
+            <Suspense fallback={null}>
+              <StandardsPage />
+            </Suspense>
+          ),
+        },
       {
         path: "/project/:projectId",
         element: (

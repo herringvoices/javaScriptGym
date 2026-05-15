@@ -32,8 +32,12 @@ const components = {
   // Let MDX render real paragraphs; block components are responsible
   // for not wrapping MDX children in <p>.
   p: (props) => <p {...props} className={props.className || ""} />,
-  h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
-  h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
+  h2: ({ className = "", ...props }) => (
+    <h2 {...props} className={`text-2xl font-semibold ${className}`.trim()} />
+  ),
+  h3: ({ className = "", ...props }) => (
+    <h3 {...props} className={`text-xl font-semibold ${className}`.trim()} />
+  ),
   // Only style inline code; let rehype-pretty-code render fenced blocks.
   code: (props) => {
     const className = props?.className || "";

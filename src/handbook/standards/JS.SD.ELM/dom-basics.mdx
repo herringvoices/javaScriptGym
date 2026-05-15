@@ -69,6 +69,24 @@ Trash:
 console.dir(app);
 ```
 
+---
+
+## Flow Update
+
+Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+
+```mermaid
+  Browser->>Main: load module script
+  Main->>DOM: select #app
+  DOM-->>Main: return app element
+```
+
+Then answer:
+
+- Which participant represents the JavaScript file?
+- Which participant represents the live page?
+- What does the DOM return to `main.js`?
+
 ## Technical Vocabulary
 
 | Term | Meaning |
