@@ -10,6 +10,8 @@ import HandbookWorkbench from "../components/HandbookWorkbench";
 import HandbookSidebar from "../components/HandbookSidebar";
 import StickyToggleBar from "../components/StickyToggleBar";
 import PanelHideButton from "../components/PanelHideButton";
+import MobileAccordion from "../components/MobileAccordion";
+import useMediaQuery from "../hooks/useMediaQuery";
 
 // Removed page-level heading TOC ("On this page"); keep file lean.
 
@@ -25,6 +27,7 @@ export default function HandbookPage() {
   const [showEditor, setShowEditor] = useState(true);
   const [showConsole, setShowConsole] = useState(false);
   const tocRef = useRef(null);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   // New-style entry loader (preferred)
   const [entry, setEntry] = useState(null);
@@ -176,7 +179,7 @@ export default function HandbookPage() {
   return (
     // Full-bleed wrapper to span entire viewport width even inside AppLayout's max-w container
     <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
-      <div className="space-y-4 px-6 lg:px-8">
+      <div className="space-y-4 px-4 sm:px-6 lg:px-8">
         {/* Header with toggles */}
         <div className="rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
           <p className="text-sm uppercase tracking-widest text-brand-300">JavaScript Handbook</p>
@@ -204,8 +207,7 @@ export default function HandbookPage() {
         />
 
         {/* Body columns are weighted like challenges, with TOC as an extra optional column. */}
-        {(() => {
-          return (
+        {isDesktop ? (
             <div
               className="grid grid-cols-1 gap-6 lg:[grid-template-columns:var(--handbook-grid-template)]"
               style={{ "--handbook-grid-template": gridTemplate }}
@@ -390,8 +392,86 @@ export default function HandbookPage() {
                 )}
               </div>
             </div>
-          );
-        })()}
+        ) : (
+          <div className="space-y-3">
+            <MobileAccordion title="Contents" eyebrow="Handbook">
+              <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
+            </MobileAccordion>
+
+            <MobileAccordion title="Handbook" eyebrow={meta.title} defaultOpen contentClassName="prose prose-invert max-w-none">
+              {chapterId && chapterModule ? (
+                <div>
+                  {loadingChapter && <p className="text-sm text-slate-400">Loading chapter...</p>}
+                  {chapterError && (
+                    <p className="text-sm text-red-400">Failed to load chapter: {chapterError.message}</p>
+                  )}
+                  {chapterModule && (
+                    <HandbookMDXProvider>
+                      <chapterModule.default />
+                    </HandbookMDXProvider>
+                  )}
+                </div>
+              ) : entry && entry.handbookMarkdown ? (
+                <ReactMarkdown
+                  rehypePlugins={[rehypeSlug]}
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
+                    h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
+                    code: (props) => (
+                      <code
+                        {...props}
+                        className="rounded bg-slate-900 px-1.5 py-0.5 text-xs font-medium text-brand-200"
+                      />
+                    ),
+                    pre: (props) => (
+                      <pre {...props} className="overflow-auto rounded-lg bg-slate-900 p-4 text-sm shadow-inner" />
+                    ),
+                  }}
+                >
+                  {entry.handbookMarkdown}
+                </ReactMarkdown>
+              ) : hasMdx ? (
+                <div>
+                  {loadingMdx && <p className="text-sm text-slate-400">Loading content...</p>}
+                  {mdxError && (
+                    <p className="text-sm text-red-400">Failed to load chapter: {mdxError.message}</p>
+                  )}
+                  {mdxModule && (
+                    <HandbookMDXProvider>
+                      <mdxModule.default />
+                    </HandbookMDXProvider>
+                  )}
+                </div>
+              ) : meta.bodyMd ? (
+                <ReactMarkdown rehypePlugins={[rehypeSlug]} remarkPlugins={[remarkGfm]}>
+                  {meta.bodyMd}
+                </ReactMarkdown>
+              ) : loadingEntry ? (
+                <p className="text-sm text-slate-400">Loading content...</p>
+              ) : (
+                <p className="text-sm text-slate-400">Content coming soon...</p>
+              )}
+            </MobileAccordion>
+
+            <MobileAccordion title="Workspace" eyebrow="Code" defaultOpen>
+              {entryError ? (
+                <div className="rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">
+                  Failed to load entry: {entryError.message}
+                </div>
+              ) : loadingEntry && !entry ? (
+                <div className="rounded border border-slate-800 p-3 text-sm text-slate-300">Loading editor...</div>
+              ) : (
+                <HandbookWorkbench
+                  entry={entry}
+                  showEditor
+                  showRunner={showConsole}
+                  onShowRunnerChange={setShowConsole}
+                />
+              )}
+            </MobileAccordion>
+          </div>
+        )}
       </div>
     </div>
   );

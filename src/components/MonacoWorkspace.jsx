@@ -218,9 +218,9 @@ export default function MonacoWorkspace({ files = {}, onChange, onActiveChange, 
 	}, []);
 
 	return (
-		<div className={`flex w-full min-h-0 grow ${className}`}>
+		<div className={`flex w-full min-h-0 grow flex-col lg:flex-row ${className}`}>
 			{showExplorer ? (
-				<div className="hidden lg:block h-full w-60 shrink-0 border-r border-slate-800 bg-slate-950/80">
+				<div className="h-40 w-full shrink-0 border-b border-slate-800 bg-slate-950/80 lg:h-full lg:w-60 lg:border-b-0 lg:border-r">
 					<div className="px-3 py-2 text-xs text-slate-400 border-b border-slate-800">Files</div>
 					{explorerRows.length ? (
 						<ul className="max-h-[calc(100%-36px)] overflow-auto p-2 text-sm">

@@ -3,10 +3,12 @@ import MonacoWorkspace from "./MonacoWorkspace";
 import ConsolePanel from "./ConsolePanel";
 import DiagramPanel from "./DiagramPanel";
 import PanelHideButton from "./PanelHideButton";
+import MobileAccordion from "./MobileAccordion";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
 import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
+import useMediaQuery from "../hooks/useMediaQuery";
 
 export default function HandbookWorkbench({
   entry,
@@ -91,6 +93,7 @@ export default function HandbookWorkbench({
   const [consoleKey, setConsoleKey] = useState(0);
   const diagramFiles = useMemo(() => getDiagramFiles(filesState), [filesState]);
   const runnerVisible = showConsole ?? showRunner;
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
     if (!model) return;
@@ -198,144 +201,166 @@ export default function HandbookWorkbench({
     );
   }
 
-  return (
-    <>
-      <section className={showEditor ? "sticky top-[4rem] flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in" : "hidden"}>
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
-          <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
-          <div className="flex items-center gap-2">
-            {onHideEditor ? (
-              <PanelHideButton label="Hide editor" onClick={onHideEditor} />
-            ) : null}
-            <button
-              type="button"
-              onClick={() => setShowFiles((value) => !value)}
-              className={toggleClass(showFiles)}
-            >
-              {showFiles ? "Hide" : "Show"} files
-            </button>
-            <button
-              type="button"
-              onClick={handleRun}
-              className="rounded-full border border-emerald-500/40 px-3 py-1 text-emerald-300 transition hover:bg-emerald-500/10"
-              title="Build and run the preview"
-            >
-              Run
-            </button>
-          </div>
+  const editorPanel = (
+    <section className={isDesktop ? "sticky top-[4rem] flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in" : "flex h-[70vh] min-h-[420px] flex-col overflow-hidden"}>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
+        <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
+        <div className="flex items-center gap-2">
+          {onHideEditor ? (
+            <PanelHideButton label="Hide editor" onClick={onHideEditor} />
+          ) : null}
+          <button
+            type="button"
+            onClick={() => setShowFiles((value) => !value)}
+            className={toggleClass(showFiles)}
+          >
+            {showFiles ? "Hide" : "Show"} files
+          </button>
+          <button
+            type="button"
+            onClick={handleRun}
+            className="rounded-full border border-emerald-500/40 px-3 py-1 text-emerald-300 transition hover:bg-emerald-500/10"
+            title="Build and run the preview"
+          >
+            Run
+          </button>
         </div>
-        <div className="min-h-0 grow">
-          <MonacoWorkspace
-            files={filesState}
-            onChange={onChange}
-            onActiveChange={(path) => setActiveFile(path)}
-            showExplorer={showFiles}
-            className="h-full flex-1"
-            onEditorMount={(editor) => {
-              editorRef.current = editor;
-              try {
-                editor.layout();
-              } catch (error) {
-                void error;
-              }
-            }}
-          />
-        </div>
-      </section>
+      </div>
+      <div className="min-h-0 grow">
+        <MonacoWorkspace
+          files={filesState}
+          onChange={onChange}
+          onActiveChange={(path) => setActiveFile(path)}
+          showExplorer={showFiles}
+          className="h-full flex-1"
+          onEditorMount={(editor) => {
+            editorRef.current = editor;
+            try {
+              editor.layout();
+            } catch (error) {
+              void error;
+            }
+          }}
+        />
+      </div>
+    </section>
+  );
 
-      {runnerVisible ? (
-        <section className="sticky top-[4rem] flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
-            {onHideRunner ? (
-              <PanelHideButton label="Hide console" onClick={onHideRunner} />
-            ) : (
-              <span />
-            )}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setBottomPanel(DIAGRAM_PANEL.PREVIEW)}
-                className={toggleClass(bottomPanel === DIAGRAM_PANEL.PREVIEW)}
-              >
-                Preview
-              </button>
-              <button
-                type="button"
-                onClick={() => setBottomPanel(DIAGRAM_PANEL.CONSOLE)}
-                className={toggleClass(bottomPanel === DIAGRAM_PANEL.CONSOLE)}
-              >
-                Console
-              </button>
-              {diagramFiles.hasSequence ? (
+  const runnerPanel = runnerVisible ? (
+    <section className={isDesktop ? "sticky top-[4rem] flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in" : "flex h-[70vh] min-h-[420px] flex-col overflow-hidden"}>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
+        {onHideRunner ? (
+          <PanelHideButton label="Hide console" onClick={onHideRunner} />
+        ) : (
+          <span />
+        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setBottomPanel(DIAGRAM_PANEL.PREVIEW)}
+            className={toggleClass(bottomPanel === DIAGRAM_PANEL.PREVIEW)}
+          >
+            Preview
+          </button>
+          <button
+            type="button"
+            onClick={() => setBottomPanel(DIAGRAM_PANEL.CONSOLE)}
+            className={toggleClass(bottomPanel === DIAGRAM_PANEL.CONSOLE)}
+          >
+            Console
+          </button>
+          {diagramFiles.hasSequence ? (
+            <button
+              type="button"
+              onClick={() => setBottomPanel(DIAGRAM_PANEL.SEQUENCE)}
+              className={toggleClass(bottomPanel === DIAGRAM_PANEL.SEQUENCE)}
+            >
+              Sequence Diagram
+            </button>
+          ) : null}
+          {diagramFiles.hasErd ? (
+            <button
+              type="button"
+              onClick={() => setBottomPanel(DIAGRAM_PANEL.ERD)}
+              className={toggleClass(bottomPanel === DIAGRAM_PANEL.ERD)}
+            >
+              ERD
+            </button>
+          ) : null}
+        </div>
+      </div>
+      <div className="relative min-h-0 grow overflow-hidden">
+        <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.PREVIEW ? "z-10" : "z-0 invisible"}`}>
+          {srcDoc ? (
+            <div style={{ position: "relative", height: "100%", width: "100%" }}>
+              <iframe
+                ref={iframeRef}
+                title="preview"
+                className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
+                style={previewFullScreen ? { border: "none", borderRadius: 0, margin: 0, padding: 0 } : {}}
+                sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
+                srcDoc={injectPreviewFullscreenButton(srcDoc)}
+              />
+              {previewFullScreen && (
                 <button
                   type="button"
-                  onClick={() => setBottomPanel(DIAGRAM_PANEL.SEQUENCE)}
-                  className={toggleClass(bottomPanel === DIAGRAM_PANEL.SEQUENCE)}
+                  onClick={() => setPreviewFullScreen(false)}
+                  className="fixed top-4 right-4 z-[100] rounded bg-slate-900/80 px-4 py-2 text-white shadow hover:bg-slate-800"
+                  style={{ fontSize: 18 }}
+                  aria-label="Exit full screen"
                 >
-                  Sequence Diagram
+                  Exit Full Screen
                 </button>
-              ) : null}
-              {diagramFiles.hasErd ? (
-                <button
-                  type="button"
-                  onClick={() => setBottomPanel(DIAGRAM_PANEL.ERD)}
-                  className={toggleClass(bottomPanel === DIAGRAM_PANEL.ERD)}
-                >
-                  ERD
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <div className="relative min-h-0 grow overflow-hidden">
-            <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.PREVIEW ? "z-10" : "z-0 invisible"}`}>
-              {srcDoc ? (
-                <div style={{ position: "relative", height: "100%", width: "100%" }}>
-                  <iframe
-                    ref={iframeRef}
-                    title="preview"
-                    className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
-                    style={previewFullScreen ? { border: "none", borderRadius: 0, margin: 0, padding: 0 } : {}}
-                    sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
-                    srcDoc={injectPreviewFullscreenButton(srcDoc)}
-                  />
-                  {previewFullScreen && (
-                    <button
-                      type="button"
-                      onClick={() => setPreviewFullScreen(false)}
-                      className="fixed top-4 right-4 z-[100] rounded bg-slate-900/80 px-4 py-2 text-white shadow hover:bg-slate-800"
-                      style={{ fontSize: 18 }}
-                      aria-label="Exit full screen"
-                    >
-                      Exit Full Screen
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-400">
-                  Click Run to build and load the preview.
-                </div>
               )}
             </div>
-            <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.CONSOLE ? "z-10" : "z-0 invisible"}`}>
-              <ConsolePanel key={consoleKey} compact={false} />
+          ) : (
+            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-400">
+              Click Run to build and load the preview.
             </div>
-            <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.SEQUENCE ? "z-10" : "z-0 invisible"}`}>
-              <DiagramPanel
-                title="Sequence Diagram"
-                source={diagramFiles.sequence?.code || ""}
-                emptyMessage="Add /sequenceDiagram.mmd to this workspace to render a sequence diagram."
-              />
+          )}
+        </div>
+        <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.CONSOLE ? "z-10" : "z-0 invisible"}`}>
+          <ConsolePanel key={consoleKey} compact={false} />
+        </div>
+        <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.SEQUENCE ? "z-10" : "z-0 invisible"}`}>
+          <DiagramPanel
+            title="Sequence Diagram"
+            source={diagramFiles.sequence?.code || ""}
+            emptyMessage="Add /sequenceDiagram.mmd to this workspace to render a sequence diagram."
+          />
+        </div>
+        <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>
+          <DiagramPanel
+            title="ERD"
+            source={dbmlToMermaidEr(diagramFiles.erd?.code || "")}
+            emptyMessage="Add /erd.dbml to this workspace to render an ERD."
+          />
+        </div>
+      </div>
+    </section>
+  ) : null;
+
+  if (!isDesktop) {
+    return (
+      <div className="space-y-3">
+        <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen contentClassName="p-0">
+          {editorPanel}
+        </MobileAccordion>
+        <MobileAccordion title="Preview" eyebrow="Run" contentClassName="p-0">
+          {runnerPanel || (
+            <div className="px-4 py-6 text-sm text-slate-400">
+              Run the editor to open the preview.
             </div>
-            <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>
-              <DiagramPanel
-                title="ERD"
-                source={dbmlToMermaidEr(diagramFiles.erd?.code || "")}
-                emptyMessage="Add /erd.dbml to this workspace to render an ERD."
-              />
-            </div>
-          </div>
-        </section>
-      ) : null}
+          )}
+        </MobileAccordion>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {editorPanel}
+      {runnerPanel}
     </>
   );
 }

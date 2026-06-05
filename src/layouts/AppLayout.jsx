@@ -14,7 +14,7 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <header className="bg-slate-900 border-b border-slate-800">
-        <div className="mx-auto flex max-w-7xl flex-col items-start gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6">
           <NavLink
             to="/"
             className="shrink-0 text-xl font-semibold text-white tracking-tight"
@@ -40,7 +40,7 @@ export default function AppLayout() {
           </nav>
         </div>
       </header>
-      <main className="mx-auto px-6 py-2 flex-1 flex flex-col min-h-0 w-full">
+      <main className="mx-auto px-4 py-2 flex-1 flex flex-col min-h-0 w-full sm:px-6">
         <Outlet />
       </main>
     </div>

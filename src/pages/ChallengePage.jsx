@@ -13,9 +13,11 @@ import ConsolePanel from "../components/ConsolePanel";
 import DiagramPanel from "../components/DiagramPanel";
 import PanelHideButton from "../components/PanelHideButton";
 import StickyToggleBar from "../components/StickyToggleBar";
+import MobileAccordion from "../components/MobileAccordion";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
 import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
+import useMediaQuery from "../hooks/useMediaQuery";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const difficultyLabel = (value) => {
@@ -301,6 +303,7 @@ function ChallengeSandboxUI({
   const editorRef = useRef(null);
   const descriptionCopy = challenge.description || challenge.summary || "Description coming soon.";
   const diagramFiles = useMemo(() => getDiagramFiles(files), [files]);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const handleRun = () => {
     try {
@@ -435,46 +438,47 @@ function ChallengeSandboxUI({
         </div>
       </div>
 
+      {isDesktop ? (
       <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
         <div
-          className="grid grid-cols-1 gap-6 px-6 lg:px-8 lg:[grid-template-columns:var(--challenge-grid-template)]"
+          className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 lg:[grid-template-columns:var(--challenge-grid-template)]"
           style={{ "--challenge-grid-template": gridTemplate }}
         >
           {showDetailsColumn ? (
-            <aside className="space-y-5 rounded-3xl border border-slate-800 bg-slate-950/80 p-5 text-sm text-slate-300 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-auto">
-              <div className="flex justify-end">
+            <article className="prose prose-invert max-w-none animate-fade-in text-slate-300">
+              <div className="not-prose sticky top-[4rem] z-20 mb-2 flex justify-end">
                 <PanelHideButton label="Hide details" onClick={() => setShowDetailsColumn(false)} />
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
+              <div className="not-prose mb-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
                   Difficulty {difficultyLabel(challenge.difficulty)}
                 </span>
-            {isCompleted ? (
-              <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
-                Completed
-              </span>
-            ) : null}
+                {isCompleted ? (
+                  <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
+                    Completed
+                  </span>
+                ) : null}
               </div>
 
-              <div className="space-y-2">
-                <p className="text-xs uppercase tracking-widest text-brand-300">Challenge</p>
-                <h2 className="text-2xl font-semibold text-white">{challenge.title}</h2>
+              <div className="mb-5 space-y-2">
+                <p className="not-prose text-xs uppercase tracking-widest text-brand-300">Challenge</p>
+                <h2>{challenge.title}</h2>
               </div>
 
-              <StandardsBadges standards={challenge.standards} size="sm" />
-
-              <div className="space-y-3">
-                <Markdown className="prose prose-invert max-w-none text-sm text-slate-300">
-                  {descriptionCopy}
-                </Markdown>
+              <div className="not-prose mb-5">
+                <StandardsBadges standards={challenge.standards} size="sm" />
               </div>
+
+              <Markdown className="text-slate-300">
+                {descriptionCopy}
+              </Markdown>
 
               {Array.isArray(challenge.userStories) && challenge.userStories.length > 0 ? (
-                <div>
-                  <h3 className="text-base font-semibold text-white">User stories</h3>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
+                <div className="mt-6">
+                  <h3>User stories</h3>
+                  <ul>
                     {challenge.userStories.map((story, idx) => (
                       <li key={idx}>{story}</li>
                     ))}
@@ -483,20 +487,20 @@ function ChallengeSandboxUI({
               ) : null}
 
               {Array.isArray(challenge.acceptanceCriteria) && challenge.acceptanceCriteria.length > 0 ? (
-                <div>
-                  <h3 className="text-base font-semibold text-white">Acceptance criteria</h3>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
+                <div className="mt-6">
+                  <h3>Acceptance criteria</h3>
+                  <ul>
                     {challenge.acceptanceCriteria.map((rule, idx) => (
                       <li key={idx}>{rule}</li>
                     ))}
                   </ul>
                 </div>
               ) : null}
-            </aside>
+            </article>
           ) : null}
 
           {showEditorColumn ? (
-            <section className="flex min-h-[480px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80">
+            <section className="flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 lg:sticky lg:top-[4rem]">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
@@ -537,7 +541,7 @@ function ChallengeSandboxUI({
           ) : null}
 
           {showRunnerColumn ? (
-            <section className="flex min-h-[480px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80">
+            <section className="flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 lg:sticky lg:top-[4rem]">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <PanelHideButton label="Hide preview" onClick={() => setShowRunnerColumn(false)} />
@@ -637,6 +641,164 @@ function ChallengeSandboxUI({
           ) : null}
         </div>
       </div>
+      ) : (
+        <div className="space-y-3">
+          <MobileAccordion title="Details" eyebrow="Challenge" defaultOpen>
+            <article className="prose prose-invert max-w-none text-slate-300">
+              <div className="not-prose mb-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
+                <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
+                <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
+                  Difficulty {difficultyLabel(challenge.difficulty)}
+                </span>
+                {isCompleted ? (
+                  <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
+                    Completed
+                  </span>
+                ) : null}
+              </div>
+
+              <div className="mb-5 space-y-2">
+                <p className="not-prose text-xs uppercase tracking-widest text-brand-300">Challenge</p>
+                <h2>{challenge.title}</h2>
+              </div>
+
+              <div className="not-prose mb-5">
+                <StandardsBadges standards={challenge.standards} size="sm" />
+              </div>
+
+              <Markdown className="text-slate-300">
+                {descriptionCopy}
+              </Markdown>
+
+              {Array.isArray(challenge.userStories) && challenge.userStories.length > 0 ? (
+                <div className="mt-6">
+                  <h3>User stories</h3>
+                  <ul>
+                    {challenge.userStories.map((story, idx) => (
+                      <li key={idx}>{story}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {Array.isArray(challenge.acceptanceCriteria) && challenge.acceptanceCriteria.length > 0 ? (
+                <div className="mt-6">
+                  <h3>Acceptance criteria</h3>
+                  <ul>
+                    {challenge.acceptanceCriteria.map((rule, idx) => (
+                      <li key={idx}>{rule}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </article>
+          </MobileAccordion>
+
+          <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen contentClassName="p-0">
+            <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
+                <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
+                <button
+                  type="button"
+                  onClick={() => setShowExplorer((value) => !value)}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                    showExplorer
+                      ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                      : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                  }`}
+                >
+                  {showExplorer ? "Hide files" : "Show files"}
+                </button>
+              </div>
+              <div className="min-h-0 grow">
+                <MonacoWorkspace
+                  files={files}
+                  onChange={onFileChange}
+                  onActiveChange={setActiveFile}
+                  showExplorer={showExplorer}
+                  className="h-full"
+                  onEditorMount={(ed) => {
+                    editorRef.current = ed;
+                    try {
+                      ed.layout();
+                    } catch (e) {
+                      void e;
+                    }
+                  }}
+                />
+              </div>
+            </section>
+          </MobileAccordion>
+
+          <MobileAccordion title="Preview" eyebrow="Run" contentClassName="p-0">
+            <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
+                <button
+                  type="button"
+                  onClick={handleRun}
+                  className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+                  title="Build and load the preview"
+                >
+                  Run preview
+                </button>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                  <button type="button" onClick={() => setRightPanel(DIAGRAM_PANEL.PREVIEW)} className={toggleClass(rightPanel === DIAGRAM_PANEL.PREVIEW)}>
+                    Preview
+                  </button>
+                  <button type="button" onClick={() => setRightPanel(DIAGRAM_PANEL.CONSOLE)} className={toggleClass(rightPanel === DIAGRAM_PANEL.CONSOLE)}>
+                    Console
+                  </button>
+                  {diagramFiles.hasSequence ? (
+                    <button type="button" onClick={() => setRightPanel(DIAGRAM_PANEL.SEQUENCE)} className={toggleClass(rightPanel === DIAGRAM_PANEL.SEQUENCE)}>
+                      Sequence
+                    </button>
+                  ) : null}
+                  {diagramFiles.hasErd ? (
+                    <button type="button" onClick={() => setRightPanel(DIAGRAM_PANEL.ERD)} className={toggleClass(rightPanel === DIAGRAM_PANEL.ERD)}>
+                      ERD
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+              <div className="relative min-h-0 grow">
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.PREVIEW ? "z-10" : "z-0 invisible"}`}>
+                  {srcDoc ? (
+                    <iframe
+                      ref={iframeRef}
+                      title="preview"
+                      className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
+                      style={previewFullScreen ? { border: "none", borderRadius: 0, margin: 0, padding: 0 } : {}}
+                      sandbox="allow-scripts allow-modals allow-forms allow-pointer-lock allow-popups allow-same-origin"
+                      srcDoc={injectPreviewFullscreenButton(srcDoc)}
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-400">
+                      Click Run preview to build and load your project.
+                    </div>
+                  )}
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.CONSOLE ? "z-10" : "z-0 invisible"}`}>
+                  <ConsolePanel key={consoleKey} />
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.SEQUENCE ? "z-10" : "z-0 invisible"}`}>
+                  <DiagramPanel
+                    title="Sequence Diagram"
+                    source={diagramFiles.sequence?.code || ""}
+                    emptyMessage="Add /sequenceDiagram.mmd to this challenge to render a sequence diagram."
+                  />
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>
+                  <DiagramPanel
+                    title="ERD"
+                    source={dbmlToMermaidEr(diagramFiles.erd?.code || "")}
+                    emptyMessage="Add /erd.dbml to this challenge to render an ERD."
+                  />
+                </div>
+              </div>
+            </section>
+          </MobileAccordion>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,6 +6,8 @@ import ProjectSidebar from "../components/ProjectSidebar";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import StickyToggleBar from "../components/StickyToggleBar";
 import PanelHideButton from "../components/PanelHideButton";
+import MobileAccordion from "../components/MobileAccordion";
+import useMediaQuery from "../hooks/useMediaQuery";
 
 export default function ProjectPage() {
   const { projectId, stepId } = useParams();
@@ -26,6 +28,7 @@ export default function ProjectPage() {
   const [showEditor, setShowEditor] = useState(true);
   const [showConsole, setShowConsole] = useState(true);
   const tocRef = useRef(null);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
     let cancelled = false;
@@ -118,7 +121,7 @@ export default function ProjectPage() {
 
   return (
     <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
-      <div className="space-y-4 px-6 lg:px-8">
+      <div className="space-y-4 px-4 sm:px-6 lg:px-8">
         <div className="rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
           <p className="text-sm uppercase tracking-widest text-brand-300">Project</p>
           <h1 className="mt-0 text-2xl font-semibold">{meta ? meta.title : "Not found"}</h1>
@@ -140,6 +143,7 @@ export default function ProjectPage() {
         />
 
         {meta ? (
+          isDesktop ? (
           <div
             className="grid grid-cols-1 gap-6 lg:[grid-template-columns:var(--project-grid-template)]"
             style={{ "--project-grid-template": gridTemplate }}
@@ -187,6 +191,44 @@ export default function ProjectPage() {
               )}
             </div>
           </div>
+          ) : (
+            <div className="space-y-3">
+              <MobileAccordion title="Steps" eyebrow="Project" defaultOpen>
+                <ProjectSidebar project={meta} currentStepId={currentStepId} />
+              </MobileAccordion>
+
+              <MobileAccordion title="Instructions" eyebrow="Step" defaultOpen contentClassName="prose prose-invert max-w-none">
+                {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
+                {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
+                {stepModule ? (
+                  <HandbookMDXProvider>
+                    <stepModule.default />
+                  </HandbookMDXProvider>
+                ) : (
+                  <p className="text-sm text-slate-400">Step content coming soon...</p>
+                )}
+              </MobileAccordion>
+
+              <MobileAccordion title="Workspace" eyebrow="Code" defaultOpen>
+                {entryError ? (
+                  <div className="rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">
+                    Failed to load files: {entryError.message}
+                  </div>
+                ) : loadingEntry && !entryForStep ? (
+                  <div className="rounded border border-slate-800 p-3 text-sm text-slate-300">
+                    Loading editor...
+                  </div>
+                ) : (
+                  <HandbookWorkbench
+                    entry={entryForStep}
+                    showEditor
+                    showRunner={showConsole}
+                    onShowRunnerChange={setShowConsole}
+                  />
+                )}
+              </MobileAccordion>
+            </div>
+          )
         ) : (
           <section className="space-y-6">
             <header className="space-y-3">

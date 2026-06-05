@@ -70,7 +70,7 @@ export default function StickyToggleBar({
 
   return (
     <aside
-      className="js-visibility-rail group fixed left-0 top-28 z-40 flex items-stretch"
+      className="js-visibility-rail group fixed left-0 top-28 z-40 hidden items-stretch lg:flex"
       aria-label="Hidden panels"
     >
       <div className="flex w-1.5 flex-col overflow-hidden rounded-r bg-slate-800/70 shadow-lg shadow-slate-950/30 ring-1 ring-white/10 transition-all group-hover:w-2 group-focus-within:w-2">
