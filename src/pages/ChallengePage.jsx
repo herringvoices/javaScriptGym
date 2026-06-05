@@ -11,6 +11,8 @@ import { loadMastered, saveMastered } from "../lib/mastery";
 import MonacoWorkspace from "../components/MonacoWorkspace";
 import ConsolePanel from "../components/ConsolePanel";
 import DiagramPanel from "../components/DiagramPanel";
+import PanelHideButton from "../components/PanelHideButton";
+import StickyToggleBar from "../components/StickyToggleBar";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
 import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
@@ -225,6 +227,14 @@ function ChallengeWorkspace({ challenge }) {
     return () => window.removeEventListener("message", handleMsg);
   }, []);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    document.body.classList.toggle("workbench-fullscreen-active", previewFullScreen);
+    return () => {
+      document.body.classList.remove("workbench-fullscreen-active");
+    };
+  }, [previewFullScreen]);
+
   return (
     <section className="space-y-6 flex flex-col flex-1 min-h-0 w-full">
       {masteryToast ? (
@@ -249,6 +259,8 @@ function ChallengeWorkspace({ challenge }) {
         srcDoc={srcDoc}
         setSrcDoc={setSrcDoc}
         iframeRef={iframeRef}
+        previewFullScreen={previewFullScreen}
+        setPreviewFullScreen={setPreviewFullScreen}
       />
 
     </section>
@@ -271,6 +283,8 @@ function ChallengeSandboxUI({
   srcDoc,
   setSrcDoc,
   iframeRef,
+  previewFullScreen,
+  setPreviewFullScreen,
 }) {
   const [showExplorer, setShowExplorer] = useState(
     challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
@@ -333,15 +347,15 @@ function ChallengeSandboxUI({
       if (raf1) cancelAnimationFrame(raf1);
       if (raf2) cancelAnimationFrame(raf2);
     };
-  }, [showExplorer]);
+  }, [showExplorer, showDetailsColumn, showEditorColumn, showRunnerColumn]);
 
-  const visibleColumns = [showDetailsColumn, showEditorColumn, showRunnerColumn].filter(Boolean).length || 1;
-  const gridTemplate =
-    visibleColumns === 3
-      ? "lg:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)_minmax(320px,1.2fr)]"
-      : visibleColumns === 2
-      ? "lg:grid-cols-2"
-      : "lg:grid-cols-1";
+  const gridTemplate = useMemo(() => {
+    const columns = [];
+    if (showDetailsColumn) columns.push("minmax(280px,1fr)");
+    if (showEditorColumn) columns.push("minmax(0,2fr)");
+    if (showRunnerColumn) columns.push("minmax(320px,1.2fr)");
+    return columns.length ? columns.join(" ") : "minmax(0,1fr)";
+  }, [showDetailsColumn, showEditorColumn, showRunnerColumn]);
 
   const toggleClass = (active) =>
     `rounded-full border px-3 py-1 text-xs font-semibold transition ${
@@ -353,32 +367,23 @@ function ChallengeSandboxUI({
   return (
     <div className="min-h-0 flex-1 flex-col space-y-2 w-full">
       <div className="flex flex-col gap-4 lg:flex-row w-full justify-between">
-        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 px-4 py-4">
-          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-300">
-            <span className="text-brand-300">Workspace layout</span>
-            <button
-              type="button"
-              className={toggleClass(showDetailsColumn)}
-              onClick={() => setShowDetailsColumn((value) => !value)}
-            >
-              {showDetailsColumn ? "Hide details" : "Show details"}
-            </button>
-            <button
-              type="button"
-              className={toggleClass(showEditorColumn)}
-              onClick={() => setShowEditorColumn((value) => !value)}
-            >
-              {showEditorColumn ? "Hide editor" : "Show editor"}
-            </button>
-            <button
-              type="button"
-              className={toggleClass(showRunnerColumn)}
-              onClick={() => setShowRunnerColumn((value) => !value)}
-            >
-              {showRunnerColumn ? "Hide preview" : "Show preview"}
-            </button>
-          </div>
-        </div>
+        <StickyToggleBar
+          showTOC={showDetailsColumn}
+          showHandbook={true}
+          showEditor={showEditorColumn}
+          showConsole={showRunnerColumn}
+          onToggleTOC={() => setShowDetailsColumn((value) => !value)}
+          onToggleHandbook={() => {}}
+          onToggleEditor={() => setShowEditorColumn((value) => !value)}
+          onToggleConsole={() => setShowRunnerColumn((value) => !value)}
+          tocOffLabel="Show details"
+          tocShortLabel="Details"
+          tocKind="details"
+          editorOffLabel="Show editor"
+          editorShortLabel="Editor"
+          consoleOffLabel="Show preview"
+          consoleShortLabel="Preview"
+        />
         <div className="flex flex-col justify-center">
           <h2 className="text-2xl font-semibold text-white">{challenge.title}</h2>
         </div>
@@ -431,9 +436,16 @@ function ChallengeSandboxUI({
       </div>
 
       <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
-        <div className={`grid gap-6 px-6 lg:px-8 ${gridTemplate}`}>
+        <div
+          className="grid grid-cols-1 gap-6 px-6 lg:px-8 lg:[grid-template-columns:var(--challenge-grid-template)]"
+          style={{ "--challenge-grid-template": gridTemplate }}
+        >
           {showDetailsColumn ? (
             <aside className="space-y-5 rounded-3xl border border-slate-800 bg-slate-950/80 p-5 text-sm text-slate-300 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-auto">
+              <div className="flex justify-end">
+                <PanelHideButton label="Hide details" onClick={() => setShowDetailsColumn(false)} />
+              </div>
+
               <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
@@ -489,17 +501,20 @@ function ChallengeSandboxUI({
                 <div>
                   <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowExplorer((value) => !value)}
-                  className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                    showExplorer
-                      ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                      : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-                  }`}
-                >
-                  {showExplorer ? "Hide file tree" : "Show file tree"}
-                </button>
+                <div className="flex items-center gap-2">
+                  <PanelHideButton label="Hide editor" onClick={() => setShowEditorColumn(false)} />
+                  <button
+                    type="button"
+                    onClick={() => setShowExplorer((value) => !value)}
+                    className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                      showExplorer
+                        ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                        : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                    }`}
+                  >
+                    {showExplorer ? "Hide file tree" : "Show file tree"}
+                  </button>
+                </div>
               </div>
               <div className="min-h-0 grow">
                 <MonacoWorkspace
@@ -525,6 +540,7 @@ function ChallengeSandboxUI({
             <section className="flex min-h-[480px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <div className="flex flex-wrap items-center gap-2">
+                  <PanelHideButton label="Hide preview" onClick={() => setShowRunnerColumn(false)} />
                   <button
                     type="button"
                     onClick={handleRun}

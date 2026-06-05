@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpen, faCode, faMap, faTerminal } from "@fortawesome/free-solid-svg-icons";
+import { faBookOpen, faCircleInfo, faCode, faMap, faTerminal } from "@fortawesome/free-solid-svg-icons";
 
 const railItems = [
   {
@@ -41,13 +41,27 @@ export default function StickyToggleBar({
   handbookOffLabel = "Show handbook",
   editorOffLabel = "Show editor",
   consoleOffLabel = "Show console",
+  tocShortLabel = "Contents",
+  handbookShortLabel = "Handbook",
+  editorShortLabel,
+  consoleShortLabel,
+  tocKind = "contents",
 }) {
+  const tocIcon = tocKind === "details" ? faCircleInfo : faMap;
   const hiddenItems = railItems
     .map((item) => {
-      if (item.key === "toc" && !showTOC) return { ...item, label: tocOffLabel, shortLabel: "Contents", onClick: onToggleTOC };
-      if (item.key === "handbook" && !showHandbook) return { ...item, label: handbookOffLabel, shortLabel: "Handbook", onClick: onToggleHandbook };
-      if (item.key === "editor" && !showEditor) return { ...item, label: editorOffLabel, onClick: onToggleEditor };
-      if (item.key === "console" && !showConsole) return { ...item, label: consoleOffLabel, onClick: onToggleConsole };
+      if (item.key === "toc" && !showTOC) {
+        return { ...item, icon: tocIcon, label: tocOffLabel, shortLabel: tocShortLabel, onClick: onToggleTOC };
+      }
+      if (item.key === "handbook" && !showHandbook) {
+        return { ...item, label: handbookOffLabel, shortLabel: handbookShortLabel, onClick: onToggleHandbook };
+      }
+      if (item.key === "editor" && !showEditor) {
+        return { ...item, label: editorOffLabel, shortLabel: editorShortLabel, onClick: onToggleEditor };
+      }
+      if (item.key === "console" && !showConsole) {
+        return { ...item, label: consoleOffLabel, shortLabel: consoleShortLabel, onClick: onToggleConsole };
+      }
       return null;
     })
     .filter(Boolean);
