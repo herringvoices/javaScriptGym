@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
@@ -9,6 +9,7 @@ import HandbookMDXProvider from "../handbook/MDXProvider";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import HandbookSidebar from "../components/HandbookSidebar";
 import StickyToggleBar from "../components/StickyToggleBar";
+import PanelHideButton from "../components/PanelHideButton";
 
 // Removed page-level heading TOC ("On this page"); keep file lean.
 
@@ -22,7 +23,8 @@ export default function HandbookPage() {
   const [showTOC, setShowTOC] = useState(true);
   const [showHandbook, setShowHandbook] = useState(true);
   const [showEditor, setShowEditor] = useState(true);
-  const [showConsole, setShowConsole] = useState(true);
+  const [showConsole, setShowConsole] = useState(false);
+  const tocRef = useRef(null);
 
   // New-style entry loader (preferred)
   const [entry, setEntry] = useState(null);
@@ -132,6 +134,28 @@ export default function HandbookPage() {
     }
   }, [resolvedId, chapterId]);
 
+  useEffect(() => {
+    if (!showTOC || typeof document === "undefined") return undefined;
+
+    const handlePointerDown = (event) => {
+      if (tocRef.current?.contains(event.target)) return;
+      if (event.target.closest("[data-toc-toggle]")) return;
+      setShowTOC(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [showTOC]);
+
+  const gridTemplate = useMemo(() => {
+    const columns = [];
+    if (showTOC) columns.push("minmax(220px,0.75fr)");
+    if (showHandbook) columns.push("minmax(280px,1fr)");
+    if (showEditor) columns.push("minmax(0,2fr)");
+    if (showConsole) columns.push("minmax(320px,1.2fr)");
+    return columns.length ? columns.join(" ") : "minmax(0,1fr)";
+  }, [showTOC, showHandbook, showEditor, showConsole]);
+
   // No per-page TOC; sidebar now focuses on standards and chapters.
 
   // Legacy standardNav retained for potential future use (e.g., breadcrumbs). Removed from rendering.
@@ -179,22 +203,24 @@ export default function HandbookPage() {
           consoleOffLabel="Show console"
         />
 
-        {/* Body with three columns: 1:2:2 when all three visible; 1:1 when two visible; 1 when one visible */}
+        {/* Body columns are weighted like challenges, with TOC as an extra optional column. */}
         {(() => {
-          const visibleCount = [showTOC, showHandbook, showEditor].filter(Boolean).length;
-          const gridColsLg =
-            visibleCount >= 3
-              ? "lg:grid-cols-[1fr_2fr_2fr]"
-              : visibleCount === 2
-              ? "lg:grid-cols-2"
-              : "lg:grid-cols-1";
           return (
-            <div className={`grid gap-8 ${gridColsLg}`}>
-              <aside className={showTOC ? "space-y-6 sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto animate-fade-in" : "hidden"}>
+            <div
+              className="grid grid-cols-1 gap-6 lg:[grid-template-columns:var(--handbook-grid-template)]"
+              style={{ "--handbook-grid-template": gridTemplate }}
+            >
+              <aside
+                ref={tocRef}
+                className={showTOC ? "space-y-6 sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto animate-fade-in" : "hidden"}
+              >
                 <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
               </aside>
 
               <article className={`prose prose-invert max-w-none ${showHandbook ? "block animate-fade-in" : "hidden"}`}>
+                <div className="not-prose sticky top-[4rem] z-20 mb-2 flex justify-end">
+                  <PanelHideButton label="Hide handbook" onClick={() => setShowHandbook(false)} />
+                </div>
                 {chapterId && chapterModule ? (
                   <div>
                     {loadingChapter && (
@@ -345,23 +371,24 @@ export default function HandbookPage() {
                 })()}
               </article>
 
-              <section
-                className={
-                  showEditor
-                    ? "sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto animate-fade-in"
-                    : "hidden"
-                }
-              >
+              <div className="contents">
                 {entryError ? (
-                  <div className="rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">
+                  <div className={showEditor ? "rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300" : "hidden"}>
                     Failed to load entry: {entryError.message}
                   </div>
                 ) : loadingEntry && !entry ? (
-                  <div className="rounded border border-slate-800 p-3 text-sm text-slate-300">Loading editor…</div>
+                  <div className={showEditor ? "rounded border border-slate-800 p-3 text-sm text-slate-300" : "hidden"}>Loading editor…</div>
                 ) : (
-                  <HandbookWorkbench entry={entry} showConsole={showConsole} />
+                  <HandbookWorkbench
+                    entry={entry}
+                    showEditor={showEditor}
+                    showRunner={showConsole}
+                    onShowRunnerChange={setShowConsole}
+                    onHideEditor={() => setShowEditor(false)}
+                    onHideRunner={() => setShowConsole(false)}
+                  />
                 )}
-              </section>
+              </div>
             </div>
           );
         })()}

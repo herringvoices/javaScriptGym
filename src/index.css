@@ -6,6 +6,10 @@ body.workbench-fullscreen-active .js-sticky-toggle-bar {
   display: none;
 }
 
+body.workbench-fullscreen-active .js-visibility-rail {
+  display: none;
+}
+
 html {
   @apply scroll-smooth;
 }
