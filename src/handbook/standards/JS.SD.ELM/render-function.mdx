@@ -142,6 +142,10 @@ To refactor code means:
 
 > Change the structure of the code without changing what the program does.
 
+<Callout type="tip" title="Problem this solves">
+  <p className="m-0">When rendering code is grouped in one function, later pages can update the DOM by calling one named action instead of repeating the full pipeline.</p>
+</Callout>
+
 That is the whole goal of this page.
 
 After this refactor, Potion Shelf should still look the same.
@@ -454,6 +458,10 @@ But it does not run the function yet.
 
 A function declaration is like writing down a recipe.
 
+<Callout type="warn" title="Define is not run">
+  <p className="m-0">A function declaration is a recipe. A function call is actually using the recipe. If the page goes blank after refactoring, check whether <code>render()</code> is called.</p>
+</Callout>
+
 Very useful.
 
 But the soup does not appear just because the recipe exists.
@@ -564,45 +572,40 @@ We are not using that power yet.
 
 But we are shaping the code so it is ready.
 
-## Code Target
+Here is the same refactor shape with a small task list:
 
 ```js
-import { getPotions } from "./database.js";
-
-function PotionItem(potion) {
-  return `<li>${potion.name}</li>`;
+function TaskItem(task) {
+  return `<li>${task.label}</li>`;
 }
 
 function render() {
-  const app = document.querySelector("#app");
+  const dashboard = document.querySelector("#dashboard");
 
-  app.innerHTML = `
-    <header>
-      <h1>Potion Shelf</h1>
-      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-    </header>
-
-    <main>
-      <section>
-        <h2>Available Potions</h2>
-        <ul id="potion-list"></ul>
-      </section>
-    </main>
+  dashboard.innerHTML = `
+    <section>
+      <h2>Today’s Tasks</h2>
+      <ul id="task-list"></ul>
+    </section>
   `;
 
-  const potions = getPotions();
+  const taskHTML = tasks.map(TaskItem).join("");
 
-  const potionHTML = potions.map(PotionItem).join("");
+  const taskList = document.querySelector("#task-list");
 
-  const potionList = document.querySelector("#potion-list");
-
-  potionList.innerHTML = potionHTML;
+  taskList.innerHTML = taskHTML;
 }
 
 render();
 ```
 
-## Challenge Checklist
+The point is not the task data. The point is naming the render pipeline and calling it once.
+
+<HandbookChallenge title="ELM Challenge 11 · Group the render pipeline">
+
+  <Callout type="note" title="Starting point">
+    <p className="m-0">The page should already render the full potion list before this challenge. This is a refactor: the visible result should stay the same.</p>
+  </Callout>
 
 * Keep the `getPotions` import at the top of `/scripts/main.js`.
 * Keep the `PotionItem` function.
@@ -618,6 +621,8 @@ render();
 * Refresh the preview.
 * Confirm that every potion still appears in the list.
 * Confirm that the page looks the same as it did before the refactor.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -693,7 +698,7 @@ The goal is not to have two render pipelines.
 
 One cauldron is enough.
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 11 · Group the render flow">
 
 Your program flow is mostly the same, but now the render work happens when `main.js` calls `render()`.
 
@@ -720,7 +725,11 @@ The important idea is that the same steps still happen.
 
 They are just grouped inside the `render` function now.
 
-## Flow Questions
+Preview the diagram.
+
+The diagram should show one `render()` call followed by the same render pipeline from before.
+
+**Check your diagram:**
 
 * What does the `render` function do?
 * Does defining `render` automatically update the page?
@@ -729,6 +738,8 @@ They are just grouped inside the `render` function now.
 * Did the visible page change after this refactor?
 * What does it mean to refactor code?
 * Why might it be useful to have the render process in one function later?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

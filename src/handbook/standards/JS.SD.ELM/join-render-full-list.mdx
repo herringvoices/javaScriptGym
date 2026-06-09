@@ -188,6 +188,10 @@ See those commas?
 
 Not invited.
 
+<Callout type="tip" title="Why join uses an empty string">
+  <p className="m-0">The browser needs the list item strings next to each other, not separated by punctuation. <code>join("")</code> combines the array without adding commas.</p>
+</Callout>
+
 If we put that string into the DOM, the browser would show commas between the list items.
 
 That is not what we want.
@@ -392,6 +396,10 @@ They happen inside JavaScript.
 
 They do not change the page by themselves.
 
+<Callout type="note" title="The DOM changes last">
+  <p className="m-0">Building <code>potionHTML</code> prepares the content. Assigning that string to <code>potionList.innerHTML</code> is the moment the visible page changes.</p>
+</Callout>
+
 The DOM changes when this line runs:
 
 ```js
@@ -400,41 +408,21 @@ potionList.innerHTML = potionHTML;
 
 That is the line that changes what the user sees.
 
-## Code Target
+Here is the same final-combine move with tasks:
 
 ```js
-import { getPotions } from "./database.js";
-
-function PotionItem(potion) {
-  return `<li>${potion.name}</li>`;
+function TaskItem(task) {
+  return `<li>${task.label}</li>`;
 }
 
-const app = document.querySelector("#app");
+const taskHTML = tasks.map(TaskItem).join("");
 
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
-`;
-
-const potionList = document.querySelector("#potion-list");
-
-const potions = getPotions();
-
-const potionHTML = potions.map(PotionItem).join("");
-
-potionList.innerHTML = potionHTML;
+taskList.innerHTML = taskHTML;
 ```
 
-## Challenge Checklist
+The array transformation creates the final string. The `innerHTML` assignment renders that string.
+
+<HandbookChallenge title="ELM Challenge 10 · Join and render the full potion list">
 
 * Keep the `getPotions` import at the top of `/scripts/main.js`.
 * Keep the `PotionItem` function.
@@ -451,6 +439,8 @@ potionList.innerHTML = potionHTML;
 * Inspect the page in DevTools.
 * Confirm that the potion names are inside `<li>` elements.
 * Confirm that there are no commas between the potion items.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -498,7 +488,9 @@ potionList.innerHTML = potionHTMLArray;
 
 The DOM needs the final HTML string.
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 10 · Replace map-only flow with full list render">
+
+Open `/sequenceDiagram.mmd`.
 
 Replace the previous map-only lines:
 
@@ -525,7 +517,11 @@ The DOM gets involved when `main.js` sets `potionList.innerHTML`.
 
 That is when the user sees the full potion list.
 
-## Flow Questions
+Preview the diagram.
+
+The diagram should now show the data becoming one HTML string before the DOM receives it.
+
+**Check your diagram:**
 
 * What does `map()` return before `join("")` runs?
 * What does `join("")` return?
@@ -534,6 +530,8 @@ That is when the user sees the full potion list.
 * Which line updates the DOM?
 * What should the user see after `potionList.innerHTML = potionHTML` runs?
 * Are the potion names inside real `<li>` elements?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

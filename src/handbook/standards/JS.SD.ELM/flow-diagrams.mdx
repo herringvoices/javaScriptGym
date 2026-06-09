@@ -91,6 +91,10 @@ So if one line appears below another line, it happened after the first one.
 
 That may not sound dramatic, but it turns out to be very useful. A lot of beginner bugs are really order-of-operations bugs wearing a costume.
 
+<Callout type="tip" title="Problem this solves">
+  <p className="m-0">When a program involves the browser, JavaScript, data, and the DOM, bugs often come from doing the right step at the wrong time. The diagram gives you a place to track that order before you start changing code.</p>
+</Callout>
+
 ## The Starter Diagram
 
 Your workbench already includes a file named:
@@ -172,11 +176,13 @@ They are just a label for humans.
 
 That label should be short and clear. Its job is to explain the step, not to become a second programming language.
 
-For this page, use this exact line:
+For example, a diagram for loading a starter script could use a line like this:
 
 ```mermaid
-Browser->>Main: load module script
+Browser->>Main: start app code
 ```
+
+The wording after the colon can change to match the program you are describing. What matters is the order and the relationship: the browser starts the JavaScript file.
 
 ## The Diagram Should Match the Current Program
 
@@ -198,7 +204,7 @@ That is normal.
 
 The goal is not to preserve history. The goal is to explain what the program does now.
 
-## Try It
+<HandbookChallenge title="ELM Flow Challenge 1 · Track the module script">
 
 Open `/sequenceDiagram.mmd`.
 
@@ -219,6 +225,14 @@ Preview the diagram.
 You should see the browser pointing to `main.js`.
 
 That arrow represents the browser loading and running the module script.
+
+**Check your diagram:**
+
+- Does the diagram still include all four participants?
+- Does the browser load `main.js` before any DOM or data work appears?
+- Does the arrow label explain what happened in human words?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

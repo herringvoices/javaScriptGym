@@ -38,6 +38,10 @@ So now we are going to move the one-object-to-one-list-item pattern into a reusa
 
 We will call that function `PotionItem`.
 
+<Callout type="tip" title="Problem this solves">
+  <p className="m-0">A renderer function gives the one-item pattern a name. Instead of rebuilding the same template literal in several places, one function owns the shape of a list item.</p>
+</Callout>
+
 ## The Pattern Works, But It Is Not Reusable Yet
 
 At this point, your code should look like this:
@@ -199,6 +203,10 @@ That is on purpose.
 
 > Build the HTML string for one potion.
 
+<Callout type="note" title="One job only">
+  <p className="m-0"><code>PotionItem</code> should return HTML. It should not select the DOM, set <code>innerHTML</code>, or decide where the string goes.</p>
+</Callout>
+
 Another line of code will handle putting that string into the DOM.
 
 This gives us a cleaner separation of responsibilities.
@@ -220,49 +228,45 @@ and separately:
 
 That is much better than throwing everything into one cauldron and hoping it does not start whispering.
 
-## Use `PotionItem` to Render One Potion
+## Use a Renderer to Render One Item
 
-Now we can replace the old one-off rendering code.
+Now we can replace one-off rendering code with a reusable renderer call.
 
-Remove these lines:
+In a song list, old one-off rendering might look like this:
 
 ```js
-const firstPotion = potions[0];
+const firstSong = songs[0];
 
-potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+playlist.innerHTML = `<li>${firstSong.title}</li>`;
 ```
 
-Replace them with this:
+After creating a renderer function, that can become:
 
 ```js
-potionList.innerHTML = PotionItem(potions[0]);
+playlist.innerHTML = SongItem(songs[0]);
+```
+
+Here is that same function-call-to-DOM-update shape with the song renderer:
+
+```js
+playlist.innerHTML = SongItem(songs[0]);
 ```
 
 This line does two things.
 
-First, it calls `PotionItem` and gives it the first potion object:
+First, it calls `SongItem` and gives it the first song object:
 
 ```js
-PotionItem(potions[0])
+SongItem(songs[0])
 ```
 
 That function call returns one `<li>` string.
 
-Then `potionList.innerHTML` puts that returned string inside the list.
-
-So this line:
-
-```js
-potionList.innerHTML = PotionItem(potions[0]);
-```
+Then `playlist.innerHTML` puts that returned string inside the list.
 
 means:
 
-> Turn the first potion into an `<li>` string, then place that string inside the potion list.
-
-Refresh the preview.
-
-You should still see one potion appear under **Available Potions**.
+> Turn the first song into an `<li>` string, then place that string inside the playlist.
 
 The page should look the same as it did before.
 
@@ -272,25 +276,33 @@ Sometimes better code does not change what the user sees.
 
 Sometimes better code changes how the program is organized.
 
-## Try a Different Potion
+## Transfer Example: Try a Different Item
 
-Now let’s prove that `PotionItem` works with more than one object.
-
-Change this line:
+Here is the same reusable-renderer idea with songs instead of potions:
 
 ```js
-potionList.innerHTML = PotionItem(potions[0]);
+function SongItem(song) {
+  return `<li>${song.title}</li>`;
+}
 ```
 
-to this:
+The function receives one object and returns one HTML string.
+
+To prove that a renderer like this works with more than one object, you could call it with a different item from the same array:
 
 ```js
-potionList.innerHTML = PotionItem(potions[1]);
+playlist.innerHTML = SongItem(songs[0]);
+```
+
+Then temporarily try:
+
+```js
+playlist.innerHTML = SongItem(songs[1]);
 ```
 
 Refresh the preview.
 
-You should see a different potion appear.
+You should see a different song appear.
 
 Why?
 
@@ -304,15 +316,9 @@ Only the argument changed.
 
 That is the power of the parameter.
 
-`PotionItem` can receive different potion objects and still return the correct `<li>` string for each one.
+`SongItem` can receive different song objects and still return the correct `<li>` string for each one.
 
-Now change the line back:
-
-```js
-potionList.innerHTML = PotionItem(potions[0]);
-```
-
-We only used `potions[1]` as a quick test.
+After the test, change the argument back to the first item.
 
 ## Why This Still Does Not Render the Whole List
 
@@ -346,41 +352,9 @@ A full list will come from repeating this function for every potion in the array
 
 But that repetition is the next lesson.
 
-For now, the win is that we have a reusable function that knows how to turn one potion object into one list item string.
+For now, the win is that we have a reusable function that knows how to turn one object into one list item string.
 
-## Code Target
-
-```js
-import { getPotions } from "./database.js";
-
-function PotionItem(potion) {
-  return `<li>${potion.name}</li>`;
-}
-
-const app = document.querySelector("#app");
-
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
-`;
-
-const potionList = document.querySelector("#potion-list");
-
-const potions = getPotions();
-
-potionList.innerHTML = PotionItem(potions[0]);
-```
-
-## Challenge Checklist
+<HandbookChallenge title="ELM Challenge 8 · Extract PotionItem">
 
 * Keep the `getPotions` import at the top of `/scripts/main.js`.
 * Create a function named `PotionItem`.
@@ -400,6 +374,8 @@ potionList.innerHTML = PotionItem(potions[0]);
 * Refresh again.
 * Confirm that a different potion appears.
 * Change the argument back to `potions[0]`.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -449,7 +425,9 @@ Change it back to:
 potionList.innerHTML = PotionItem(potions[0]);
 ```
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 8 · Replace the one-potion render with PotionItem">
+
+Open `/sequenceDiagram.mmd`.
 
 Replace the previous one-item rendering lines:
 
@@ -473,7 +451,11 @@ The first two steps still happen inside `main.js`.
 
 The DOM only gets involved when `main.js` sets `potionList.innerHTML`.
 
-## Flow Questions
+Preview the diagram.
+
+The diagram should now show `main.js` calling the reusable `PotionItem` function.
+
+**Check your diagram:**
 
 * What value gets passed into `PotionItem`?
 * What is the parameter name inside the `PotionItem` function?
@@ -482,6 +464,8 @@ The DOM only gets involved when `main.js` sets `potionList.innerHTML`.
 * Which line actually changes what the user sees?
 * What changed when you passed `potions[1]` instead of `potions[0]`?
 * Does this code render every potion in the array yet?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

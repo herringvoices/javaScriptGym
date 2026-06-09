@@ -41,6 +41,10 @@ One list item.
 
 Tiny cauldron. Big lesson.
 
+<Callout type="tip" title="Problem this solves">
+  <p className="m-0">Rendering one item first makes the full list less mysterious. Once one object can become one piece of HTML, the rest of the chapter is about repeating that pattern.</p>
+</Callout>
+
 ## The Smallest Useful Rendering Step
 
 At this point, your code should look like this:
@@ -178,36 +182,36 @@ The potion name is just text.
 
 But the page needs HTML.
 
-Specifically, the potion list needs an `<li>` element.
+Imagine a small book list.
 
-So we can use a template literal to place the potion name inside an HTML string:
+The list needs an `<li>` element for one book, so we can use a template literal to place the book title inside an HTML string:
 
 ```js
-`<li>${firstPotion.name}</li>`
+`<li>${firstBook.title}</li>`
 ```
 
 This creates a string that looks like this:
 
 ```html
-<li>Healing Potion</li>
+<li>The Long Afternoon</li>
 ```
 
-The exact potion name may be different depending on the data in your project.
+The exact book title may be different depending on the data in that project.
 
 The important part is the pattern:
 
 ```js
-`<li>${firstPotion.name}</li>`
+`<li>${firstBook.title}</li>`
 ```
 
 Let’s slow that down.
 
-| Code                  | Meaning                                  |
-| --------------------- | ---------------------------------------- |
-| `` `...` ``           | Create a template literal                |
-| `<li>`                | Start a list item                        |
-| `${firstPotion.name}` | Insert the potion’s name into the string |
-| `</li>`               | End the list item                        |
+| Code                 | Meaning                                |
+| -------------------- | -------------------------------------- |
+| `` `...` ``          | Create a template literal              |
+| `<li>`               | Start a list item                      |
+| `${firstBook.title}` | Insert the book’s title into the string |
+| `</li>`              | End the list item                      |
 
 This is rendering in its smallest form.
 
@@ -217,31 +221,27 @@ We are turning data into an HTML string.
 
 Now we need to place that HTML string inside the empty `<ul>`.
 
-Add this code after the `firstPotion` variable:
+In the book example, the DOM update could look like this:
 
 ```js
-potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+bookList.innerHTML = `<li>${firstBook.title}</li>`;
 ```
 
-Your new code should look like this:
+The surrounding code could look like this:
 
 ```js
-const potions = getPotions();
+const books = getBooks();
 
-const firstPotion = potions[0];
+const firstBook = books[0];
 
-potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+bookList.innerHTML = `<li>${firstBook.title}</li>`;
 ```
 
 This line tells JavaScript:
 
-> Take the `<ul>` stored in `potionList` and put one `<li>` inside it using the first potion’s name.
+> Take the `<ul>` stored in `bookList` and put one `<li>` inside it using the first book’s title.
 
-Refresh the preview.
-
-You should now see one potion appear under **Available Potions**.
-
-Not every potion.
+Not every book.
 
 Just one.
 
@@ -251,31 +251,21 @@ A whole list is just this pattern repeated.
 
 Before we repeat it, we need to understand it once.
 
-## Try a Different Potion
-
-Now let’s prove that the page is really using the data from the array.
-
-Change this line:
+Here is that same one-object pattern with a book object:
 
 ```js
-const firstPotion = potions[0];
+const firstBook = books[0];
+
+bookList.innerHTML = `<li>${firstBook.title}</li>`;
 ```
 
-to this:
+To test whether the code is reading from the object, you could temporarily change the index:
 
 ```js
-const firstPotion = potions[1];
+const firstBook = books[1];
 ```
 
-Refresh the preview.
-
-You should see a different potion name appear.
-
-Why?
-
-Because `potions[1]` gets the second object in the array instead of the first.
-
-The HTML string did not change.
+The HTML pattern did not change.
 
 The DOM update line did not change.
 
@@ -283,17 +273,11 @@ Only the object changed.
 
 That is a big deal.
 
-It means our rendering code is not hard-coded to one specific potion name.
+It means the rendering code is not hard-coded to one specific item name.
 
-It is reading the `name` property from whichever potion object we give it.
+It is reading a property from whichever object we give it.
 
-Now change the line back:
-
-```js
-const firstPotion = potions[0];
-```
-
-We only used `potions[1]` as a quick test.
+After the test, change the index back to the first item.
 
 ## Why We Are Not Rendering the Whole Array Yet
 
@@ -323,37 +307,11 @@ First, we make sure one object can become one list item.
 
 Then we can worry about repeating the pattern.
 
-## Code Target
+<HandbookChallenge title="ELM Challenge 7 · Render one potion">
 
-```js
-import { getPotions } from "./database.js";
-
-const app = document.querySelector("#app");
-
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
-`;
-
-const potionList = document.querySelector("#potion-list");
-
-const potions = getPotions();
-
-const firstPotion = potions[0];
-
-potionList.innerHTML = `<li>${firstPotion.name}</li>`;
-```
-
-## Challenge Checklist
+  <Callout type="note" title="Starting point">
+    <p className="m-0">You should already have the app shell, the selected <code>potionList</code>, and the <code>potions</code> array from <code>getPotions()</code>.</p>
+  </Callout>
 
 * Keep the `getPotions` import at the top of `/scripts/main.js`.
 * Keep the `app` variable.
@@ -371,6 +329,8 @@ potionList.innerHTML = `<li>${firstPotion.name}</li>`;
 * Refresh again.
 * Confirm that a different potion appears.
 * Change `potions[1]` back to `potions[0]`.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -406,7 +366,9 @@ Change it back to:
 const firstPotion = potions[0];
 ```
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 7 · Add the one-potion render">
+
+Open `/sequenceDiagram.mmd`.
 
 Add these lines after the potion array is returned:
 
@@ -420,7 +382,11 @@ These first two lines stay inside `main.js` because JavaScript is working with v
 
 The DOM only gets involved when `main.js` updates `potionList.innerHTML`.
 
-## Flow Questions
+Preview the diagram.
+
+The diagram should now show one potion object turning into one visible list item.
+
+**Check your diagram:**
 
 * What object is stored in `firstPotion`?
 * Why does `potions[0]` give us the first potion?
@@ -428,6 +394,8 @@ The DOM only gets involved when `main.js` updates `potionList.innerHTML`.
 * Which line changes what the user sees?
 * Does this code render every potion in the array yet?
 * What happened when you changed `potions[0]` to `potions[1]`?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

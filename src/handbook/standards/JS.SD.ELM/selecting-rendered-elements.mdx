@@ -74,6 +74,10 @@ Then JavaScript sets `app.innerHTML`.
 
 Only after that does the `<ul id="potion-list"></ul>` exist in the DOM.
 
+<Callout type="warn" title="Create first, select after">
+  <p className="m-0">If JavaScript tries to select an element before the browser has it in the DOM, <code>querySelector()</code> returns <code>null</code>. The code can be spelled correctly and still run too early.</p>
+</Callout>
+
 So if we want to select that list, we have to do it after the `innerHTML` update.
 
 Order matters here.
@@ -82,52 +86,45 @@ Rude, but fair.
 
 ## Selecting the Potion List
 
-Now that `app.innerHTML` has created the list, we can select it.
+Once `innerHTML` has created a list, we can select it.
 
-Add this line after the `app.innerHTML` block:
+In a task dashboard, that could look like this after the dashboard shell is created:
 
 ```js
-const potionList = document.querySelector("#potion-list");
+const taskList = document.querySelector("#task-list");
 ```
 
 Then inspect it:
 
 ```js
-console.dir(potionList);
+console.dir(taskList);
 ```
 
-Your code should look like this:
+The surrounding code might look like this:
 
 ```js
-const app = document.querySelector("#app");
+const dashboard = document.querySelector("#dashboard");
 
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
+dashboard.innerHTML = `
+  <section>
+    <h2>Today’s Tasks</h2>
+    <ul id="task-list"></ul>
+  </section>
 `;
 
-const potionList = document.querySelector("#potion-list");
+const taskList = document.querySelector("#task-list");
 
-console.dir(potionList);
+console.dir(taskList);
 ```
 
 Let’s slow that down.
 
 | Code                                     | Meaning                                                    |
 | ---------------------------------------- | ---------------------------------------------------------- |
-| `const potionList`                       | Create a variable named `potionList`                       |
-| `document.querySelector("#potion-list")` | Search the DOM for the element with an id of `potion-list` |
-| `"#potion-list"`                         | A CSS selector for the list we created with `innerHTML`    |
-| `console.dir(potionList)`                | Inspect the selected list element in the console           |
+| `const taskList`                       | Create a variable named `taskList`                       |
+| `document.querySelector("#task-list")` | Search the DOM for the element with an id of `task-list` |
+| `"#task-list"`                         | A CSS selector for the list we created with `innerHTML`  |
+| `console.dir(taskList)`                | Inspect the selected list element in the console         |
 
 Refresh the preview and open the console.
 
@@ -142,33 +139,26 @@ This is one of those bugs that makes way more sense when you see it happen.
 Move this line:
 
 ```js
-const potionList = document.querySelector("#potion-list");
+const taskList = document.querySelector("#task-list");
 ```
 
-above the `app.innerHTML` block.
+above the `dashboard.innerHTML` block.
 
 Your code will look like this temporarily:
 
 ```js
-const app = document.querySelector("#app");
+const dashboard = document.querySelector("#dashboard");
 
-const potionList = document.querySelector("#potion-list");
+const taskList = document.querySelector("#task-list");
 
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
+dashboard.innerHTML = `
+  <section>
+    <h2>Today’s Tasks</h2>
+    <ul id="task-list"></ul>
+  </section>
 `;
 
-console.dir(potionList);
+console.dir(taskList);
 ```
 
 Refresh the preview and check the console.
@@ -181,14 +171,14 @@ null
 
 That is JavaScript saying:
 
-> I looked for `#potion-list`, but I did not find anything.
+> I looked for `#task-list`, but I did not find anything.
 
 And JavaScript is right.
 
 When this line ran:
 
 ```js
-const potionList = document.querySelector("#potion-list");
+const taskList = document.querySelector("#task-list");
 ```
 
 the list had not been created yet.
@@ -196,7 +186,7 @@ the list had not been created yet.
 The list only gets created later, when this line runs:
 
 ```js
-app.innerHTML = `...`;
+dashboard.innerHTML = `...`;
 ```
 
 So JavaScript was not being dramatic.
@@ -231,36 +221,29 @@ If we select before the list exists, we get `null`.
 
 ## Put It Back in the Right Order
 
-Now move the `potionList` selection back below the `app.innerHTML` block.
+Now move the `taskList` selection back below the `dashboard.innerHTML` block.
 
 The correct order is:
 
-1. Select `#app`.
-2. Set `app.innerHTML` to create the app shell.
-3. Select `#potion-list`.
+1. Select `#dashboard`.
+2. Set `dashboard.innerHTML` to create the dashboard shell.
+3. Select `#task-list`.
 
-Your code should look like this again:
+In the task dashboard example, the corrected order would look like this again:
 
 ```js
-const app = document.querySelector("#app");
+const dashboard = document.querySelector("#dashboard");
 
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
+dashboard.innerHTML = `
+  <section>
+    <h2>Today’s Tasks</h2>
+    <ul id="task-list"></ul>
+  </section>
 `;
 
-const potionList = document.querySelector("#potion-list");
+const taskList = document.querySelector("#task-list");
 
-console.dir(potionList);
+console.dir(taskList);
 ```
 
 Refresh the preview.
@@ -273,31 +256,30 @@ Create first.
 
 Select after.
 
-## Code Target
+Here is that same timing idea with a different render target:
 
 ```js
-const app = document.querySelector("#app");
+const dashboard = document.querySelector("#dashboard");
 
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
+dashboard.innerHTML = `
+  <section>
+    <h2>Today’s Tasks</h2>
+    <ul id="task-list"></ul>
+  </section>
 `;
 
-const potionList = document.querySelector("#potion-list");
+const taskList = document.querySelector("#task-list");
 
-console.dir(potionList);
+console.dir(taskList);
 ```
 
-## Challenge Checklist
+The list can only be selected after `innerHTML` creates it.
+
+<HandbookChallenge title="ELM Challenge 5 · Select the rendered list">
+
+  <Callout type="note" title="Starting point">
+    <p className="m-0">Keep the app shell from the previous page. The empty <code>#potion-list</code> only exists after that shell has been rendered.</p>
+  </Callout>
 
 * Keep the `app` variable from the previous part.
 * Keep the `app.innerHTML` block that renders the Potion Shelf shell.
@@ -312,6 +294,8 @@ console.dir(potionList);
 * Move the `potionList` selection back below the `app.innerHTML` block.
 * Refresh one more time.
 * Confirm that the console shows the `<ul>` element again.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -331,19 +315,27 @@ The `console.dir()` line was useful for checking your work, but we do not need t
 
 The `potionList` variable should stay because we will use it soon.
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 5 · Add the rendered list selection">
 
-Add this line after the `app.innerHTML` line:
+Open `/sequenceDiagram.mmd`.
+
+Add this line after `Main->>DOM: set app.innerHTML`:
 
 ```mermaid
   Main->>DOM: select #potion-list
 ```
 
-## Flow Questions
+Preview the diagram.
+
+The order should show that the list is created before JavaScript selects it.
+
+**Check your diagram:**
 
 * Why does `Main->>DOM: select #potion-list` need to happen after `Main->>DOM: set app.innerHTML`?
 * What did the console show when `#potion-list` was selected too early?
 * Did `main.js` ask `database.js` for potion data yet?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

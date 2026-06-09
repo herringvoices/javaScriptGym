@@ -116,6 +116,10 @@ But before `main.js` can call `getPotions`, it needs access to that function.
 
 Since `getPotions` lives in another file, we need to import it.
 
+<Callout type="note" title="Separation of jobs">
+  <p className="m-0"><code>database.js</code> stores and returns data. <code>main.js</code> decides how to use that data on the page. Keeping those jobs separate makes the render flow easier to follow.</p>
+</Callout>
+
 ## Importing `getPotions`
 
 At the very top of `/scripts/main.js`, add this line:
@@ -248,6 +252,10 @@ Before we use an array, we should inspect it.
 
 Before we use an object property, we should confirm that property exists.
 
+<Callout type="tip" title="Inspect before rendering">
+  <p className="m-0">A quick <code>console.log()</code> can prevent a lot of guessing. Check the array and object shape before writing DOM code that depends on it.</p>
+</Callout>
+
 That is why this page uses `console.log(potions)`.
 
 We are checking our ingredients before we start brewing.
@@ -256,35 +264,19 @@ Orborb would respect this.
 
 Probably.
 
-## Code Target
+Here is the same data-checking move with a different module:
 
 ```js
-import { getPotions } from "./database.js";
+import { getBooks } from "./library.js";
 
-const app = document.querySelector("#app");
+const books = getBooks();
 
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
-`;
-
-const potionList = document.querySelector("#potion-list");
-
-const potions = getPotions();
-
-console.log(potions);
+console.log(books);
 ```
 
-## Challenge Checklist
+The important move is: import a function, call it, store the returned data, and inspect the result before rendering.
+
+<HandbookChallenge title="ELM Challenge 6 · Import and inspect potion data">
 
 * Keep the `app` variable.
 * Keep the `app.innerHTML` block that renders the Potion Shelf shell.
@@ -299,6 +291,8 @@ console.log(potions);
 * Expand the array.
 * Confirm that each potion is an object.
 * Confirm that each potion object has a `name` property.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -326,7 +320,9 @@ But once you know the data is available, you do not need to keep logging the sam
 
 The `potions` variable should stay because we will use it soon.
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 6 · Add the data request">
+
+Open `/sequenceDiagram.mmd`.
 
 Add this line near the top of the diagram, after the browser loads `main.js`:
 
@@ -341,13 +337,19 @@ Then add these lines after the DOM list has been selected:
   DB-->>Main: return potions array
 ```
 
-## Flow Questions
+Preview the diagram.
+
+The diagram should now show `main.js` getting data from `database.js` before rendering potion names.
+
+**Check your diagram:**
 
 * Which file owns the potion data?
 * Which file calls `getPotions()`?
 * What kind of value does `getPotions()` return?
 * Does the potion data appear on the page yet?
 * Why is it useful to inspect the array before rendering it?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

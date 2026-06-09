@@ -84,10 +84,10 @@ But there is one big difference.
 That means this code:
 
 ```js
-app.innerHTML = "<h1>Potion Shelf</h1>";
+panel.innerHTML = "<h1>Reading Queue</h1>";
 ```
 
-creates a real heading inside `#app`.
+creates a real heading inside `#panel`.
 
 The browser does not show the angle brackets as text.
 
@@ -102,25 +102,29 @@ So now we have an important contrast:
 
 That makes `innerHTML` a much better fit when we want our app to start looking like an app.
 
+<Callout type="tip" title="Problem this solves">
+  <p className="m-0">Use <code>innerHTML</code> when JavaScript needs to create page structure, not just replace words. Headings, sections, and lists all need HTML structure.</p>
+</Callout>
+
 ## Putting It Together
 
-Now we are going to replace the old `textContent` line with a small HTML shell for the app.
+Now we are going to replace a plain text update with a small HTML shell.
 
-Your code should look like this:
+Here is the shape with a different page:
 
 ```js
-const app = document.querySelector("#app");
+const panel = document.querySelector("#panel");
 
-app.innerHTML = `
+panel.innerHTML = `
   <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+    <h1>Reading Queue</h1>
+    <p>Books waiting for review.</p>
   </header>
 
   <main>
     <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
+      <h2>Upcoming Books</h2>
+      <ul id="book-list"></ul>
     </section>
   </main>
 `;
@@ -174,6 +178,10 @@ That is why this chapter starts by removing the old `textContent` line.
 
 We are not adding the new structure underneath the old text.
 
+<Callout type="warn" title="Replacement, not addition">
+  <p className="m-0">Setting <code>innerHTML</code> overwrites the current contents of the selected element. That is useful for rendering, but it means old content does not stay unless your new HTML includes it.</p>
+</Callout>
+
 We are replacing the old text with a real app shell.
 
 ## The Empty List Is There on Purpose
@@ -200,27 +208,9 @@ So even though it is empty right now, it is still doing useful setup work.
 
 It is the future render target for the potion data.
 
-## Code Target
+The pattern is the important part: select a mount point, assign a multi-line HTML string, and include an empty list that later code can fill.
 
-```js
-const app = document.querySelector("#app");
-
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
-`;
-```
-
-## Challenge Checklist
+<HandbookChallenge title="ELM Challenge 4 · Render the app shell">
 
 - Keep the `app` variable from the previous chapter.
 - Remove the old `app.textContent = ...` line.
@@ -234,6 +224,8 @@ app.innerHTML = `
 - Add an empty `<ul id="potion-list"></ul>`.
 - Refresh the preview.
 - Confirm that the page now shows structured content instead of plain text.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -259,19 +251,33 @@ app.innerHTML = `
 
 We will build on this shell in the next chapter.
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 4 · Replace the text update with the app shell">
 
-Add this line:
+Open `/sequenceDiagram.mmd`.
+
+Replace the old text update line:
+
+```mermaid
+  Main->>DOM: set app.textContent
+```
+
+with this line:
 
 ```mermaid
   Main->>DOM: set app.innerHTML
 ```
 
-## Flow Questions
+Preview the diagram.
+
+The DOM update should now describe rendering the HTML shell instead of setting plain text.
+
+**Check your diagram:**
 
 - What changed in the DOM when `innerHTML` ran?
 - Is `#potion-list` part of the DOM after this line runs?
 - Did `main.js` ask `database.js` for potion data yet?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

@@ -108,6 +108,10 @@ In this chapter, we are only doing step one:
 
 We are not changing what the user sees yet. First, we need to make contact with the page.
 
+<Callout type="note" title="DOM checkpoint">
+  <p className="m-0">Selecting an element does not change the page. It only gives JavaScript a handle it can use later.</p>
+</Callout>
+
 ## The `document` Object
 
 The browser gives JavaScript a built-in object named `document`.
@@ -193,22 +197,50 @@ That means JavaScript can inspect it and eventually change it.
 To prove that, we can use `console.dir()`.
 
 ```js
-console.dir(app);
+console.dir(selectedElement);
 ```
 
 You have probably used `console.log()` before. `console.dir()` is similar, but it is especially useful when you want to inspect an object.
 
-Since DOM elements are objects, `console.dir(app)` lets us explore the selected element in the console.
+Since DOM elements are objects, `console.dir(selectedElement)` lets us explore a selected element in the console.
 
-## Try It
+<HandbookChallenge title="ELM Challenge 2 · Select the mount point">
 
-Your code should look like this:
+  <Callout type="note" title="Starting point">
+    <p className="m-0">Your HTML already contains <code>&lt;div id="app"&gt;&lt;/div&gt;</code>. This challenge is only about finding that element from JavaScript.</p>
+  </Callout>
 
-```js
-const app = document.querySelector("#app");
+In `/scripts/main.js`, select the Potion Shelf mount point and inspect it.
 
-console.dir(app);
+- Create a variable named `app`.
+- Use `document.querySelector("#app")` to store the `<div id="app"></div>` element in that variable.
+- Use `console.dir(app)` to inspect the selected element.
+- Refresh the preview.
+- Confirm that the console shows a DOM element object, not a string.
+
+</HandbookChallenge>
+
+<HandbookChallenge title="ELM Flow Challenge 2 · Add the mount point selection">
+
+Open `/sequenceDiagram.mmd`.
+
+Add this line after the browser loads `main.js`:
+
+```mermaid
+  Main->>DOM: select #app
 ```
+
+Preview the diagram.
+
+The new arrow should show `main.js` reaching into the DOM to find the app mount point.
+
+**Check your diagram:**
+
+- Does `Browser->>Main: load module script` still appear first?
+- Does `Main->>DOM: select #app` come after the browser loads `main.js`?
+- Has anything changed on the page yet, or has JavaScript only selected an element?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

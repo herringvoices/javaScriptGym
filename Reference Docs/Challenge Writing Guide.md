@@ -103,6 +103,18 @@ Before committing a challenge, verify:
 
 ---
 
+## Handbook Challenge examples
+
+Inline handbook tasks should use the `HandbookChallenge` component so learners can clearly tell when they are being asked to apply the lesson.
+
+Examples outside `HandbookChallenge` should be cousins, not twins, of the challenge:
+- Teach the same concept, method, or mental model with a different context, data shape, selector, or UI target.
+- Do not place the exact challenge solution in normal prose immediately before the challenge.
+- If a learner can copy an example and only rename variables or selectors to solve the challenge, the example is too close.
+- Put exact task steps inside `HandbookChallenge`; use hints only when the learner needs a nudge after trying.
+
+---
+
 ## Fetch mocking (opt-in)
 
 If a challenge uses `fetch("/api/...")`:

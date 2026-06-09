@@ -70,6 +70,10 @@ One of those properties is `textContent`.
 
 `textContent` represents the plain text inside an element.
 
+<Callout type="tip" title="Problem this solves">
+  <p className="m-0">After selecting an element, you need a specific property to change what the user sees. <code>textContent</code> is the simplest first property because it only deals with plain text.</p>
+</Callout>
+
 That means we can write code like this:
 
 ```js
@@ -134,7 +138,7 @@ It does **not** create HTML structure.
 For example, look at this code:
 
 ```js
-app.textContent = "<h1>Potion Shelf</h1>";
+notice.textContent = "<strong>Shop is open</strong>";
 ```
 
 You might think that would create a heading.
@@ -144,7 +148,7 @@ It will not.
 Instead, the browser will show the characters exactly as text:
 
 ```txt
-<h1>Potion Shelf</h1>
+<strong>Shop is open</strong>
 ```
 
 Why?
@@ -152,6 +156,10 @@ Why?
 Because `textContent` does not interpret HTML tags. It only places plain text inside the element.
 
 That is actually useful.
+
+<Callout type="warn" title="Plain text only">
+  <p className="m-0">Use <code>textContent</code> when you want text to appear exactly as written. If you need real HTML elements, wait for <code>innerHTML</code> on the next page.</p>
+</Callout>
 
 Sometimes you really do want to show plain text exactly as written.
 
@@ -163,15 +171,7 @@ That comes in the next chapter.
 
 For now, `textContent` is exactly what we need because it gives us the simplest possible way to prove that JavaScript can update the page.
 
-## Code Target
-
-```js
-const app = document.querySelector("#app");
-
-app.textContent = "Potion Shelf ready.";
-```
-
-## Challenge Checklist
+<HandbookChallenge title="ELM Challenge 3 · Update text content">
 
 - Keep the `app` variable from the previous page.
 - Remove the temporary `console.dir(app)` line.
@@ -181,6 +181,8 @@ app.textContent = "Potion Shelf ready.";
 - Change the message to `"Potion Shelf ready."`.
 - Refresh again.
 - Confirm the visible text changes.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -192,18 +194,26 @@ app.textContent = "Potion Shelf ready.";
 
 This line will be replaced on the next page.
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 3 · Add the textContent update">
 
-Add this line:
+Open `/sequenceDiagram.mmd`.
+
+Add this line after `Main->>DOM: select #app`:
 
 ```mermaid
   Main->>DOM: set app.textContent
 ```
 
-## Flow Questions
+Preview the diagram.
+
+The new arrow should show the first visible DOM update.
+
+**Check your diagram:**
 
 - What changed in the DOM?
 - Did `main.js` ask `database.js` for data yet?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 

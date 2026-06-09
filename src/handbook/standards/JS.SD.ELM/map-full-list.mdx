@@ -138,6 +138,10 @@ potions array → map with PotionItem → array of li strings
 
 `map()` does not change the page.
 
+<Callout type="note" title="Map returns a new array">
+  <p className="m-0"><code>map()</code> transforms one array into another array. The page will not update until a later line gives the DOM a final HTML string.</p>
+</Callout>
+
 `map()` does not put anything inside `potionList`.
 
 It only creates a new array.
@@ -376,41 +380,25 @@ That pause matters.
 
 We want to understand what `map()` returns before we hand that value to the DOM.
 
-## Code Target
+<Callout type="warn" title="Not ready for innerHTML yet">
+  <p className="m-0">An array of HTML strings is not the same thing as one HTML string. Inspect it now; render it after the strings have been joined.</p>
+</Callout>
+
+Here is the same `map()` inspection step with tasks:
 
 ```js
-import { getPotions } from "./database.js";
-
-function PotionItem(potion) {
-  return `<li>${potion.name}</li>`;
+function TaskItem(task) {
+  return `<li>${task.label}</li>`;
 }
 
-const app = document.querySelector("#app");
+const taskHTMLArray = tasks.map(TaskItem);
 
-app.innerHTML = `
-  <header>
-    <h1>Potion Shelf</h1>
-    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>Available Potions</h2>
-      <ul id="potion-list"></ul>
-    </section>
-  </main>
-`;
-
-const potionList = document.querySelector("#potion-list");
-
-const potions = getPotions();
-
-const potionHTMLArray = potions.map(PotionItem);
-
-console.log(potionHTMLArray);
+console.log(taskHTMLArray);
 ```
 
-## Challenge Checklist
+The result is an array of strings. It is useful to inspect that array before putting anything back into the DOM.
+
+<HandbookChallenge title="ELM Challenge 9 · Map potions into HTML strings">
 
 * Keep the `getPotions` import at the top of `/scripts/main.js`.
 * Keep the `PotionItem` function.
@@ -427,6 +415,8 @@ console.log(potionHTMLArray);
 * Confirm that `potionHTMLArray` is an array.
 * Confirm that each item in the array is an `<li>` string.
 * Do not set `potionList.innerHTML` to `potionHTMLArray` yet.
+
+</HandbookChallenge>
 
 ## Keep vs Trash
 
@@ -476,7 +466,9 @@ That is not the right final shape because `potionHTMLArray` is still an array.
 
 We need one more transformation before updating the DOM.
 
-## Flow Update
+<HandbookChallenge title="ELM Flow Challenge 9 · Replace one item with map">
+
+Open `/sequenceDiagram.mmd`.
 
 Replace the previous one-item rendering lines:
 
@@ -503,7 +495,11 @@ It creates a new array.
 
 The DOM will not receive the full potion HTML until the next step.
 
-## Flow Questions
+Preview the diagram.
+
+The diagram should now show that `main.js` creates an array of list-item strings but does not update the DOM on this page.
+
+**Check your diagram:**
 
 * What array does `map()` start with?
 * What function does `map()` use on each potion object?
@@ -512,6 +508,8 @@ The DOM will not receive the full potion HTML until the next step.
 * Does `map()` update the DOM by itself?
 * Why should we not set `potionList.innerHTML` to `potionHTMLArray` yet?
 * Where can you inspect the result of `map()` on this page?
+
+</HandbookChallenge>
 
 ## What You Should Notice
 
