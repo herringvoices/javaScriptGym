@@ -1,66 +1,304 @@
 ---
-id: JS.SD.ELM.IMPORTING_DATA
-title: Importing Data · Get the Potions
-short: Import getPotions, call it, and inspect the returned array.
+id: JS.SD.ELM.IMPORT_DATA
+title: Importing Data ? Get the Potions
+short: Import data before rendering list items.
 ---
 
-# Importing Data · Get the Potions
+# Importing Data: Get the Potions
 
-The page has an empty list. Hard-coding potion names directly into HTML would work, but it would tangle the data and the UI together.
+Potion Shelf now has more than an app shell.
 
-> The potion names belong in data. The DOM should display that data.
+Your JavaScript can select the empty list inside that shell.
 
-## Concepts
+That means we have a place where potion items can eventually go.
 
-- Data can live in another module.
-- `import` brings exported code into the current file.
-- Calling `getPotions()` returns an array.
-- Arrays of objects represent structured data.
+Beautiful.
 
-## Starter Data Shape
+Tiny problem, though.
 
-```js
-const potions = [
-  { id: 1, name: "Mender's Sip", baseId: 1, ingredientId: 1 },
-  { id: 2, name: "Ember Tonic", baseId: 2, ingredientId: 2 },
-  { id: 3, name: "Glacier Draught", baseId: 3, ingredientId: 3 }
-];
+The list is still empty.
+
+```html
+<ul id="potion-list"></ul>
 ```
 
-## Code
+Right now, Potion Shelf has a section called **Available Potions**, but it does not actually know what potions are available.
+
+That is not ideal for Orborb.
+
+A potion shop with no potions is mostly just shelves and vibes.
+
+So now we need to bring in the potion data.
+
+## The List Needs Data
+
+At this point, your code should look like this:
+
+```js
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+```
+
+This code does two useful things.
+
+First, it creates the Potion Shelf shell.
+
+Second, it selects the empty list where potion items will go later.
+
+But it still does not have potion data.
+
+We could hard-code potion names directly into the HTML string.
+
+Something like this:
+
+```js
+app.innerHTML = `
+  <ul id="potion-list">
+    <li>Healing Potion</li>
+    <li>Invisibility Potion</li>
+  </ul>
+`;
+```
+
+That would show potion names on the page.
+
+But it would also create a problem.
+
+The potion data would be trapped inside the HTML shell.
+
+If Orborb adds more potions later, we would have to dig through the HTML string and manually edit the list.
+
+That is not the pattern we want.
+
+Instead, our app should get potion data from a data source.
+
+Then our DOM code can use that data to decide what to display.
+
+That gives us a cleaner separation:
+
+> `database.js` owns the data.
+> `main.js` decides how to use that data on the page.
+
+That separation matters because the DOM should display the data, not secretly become the data.
+
+Sneaky behavior. We will not be doing that.
+
+## `database.js` Owns the Potion Data
+
+Your project includes a file named:
+
+```txt
+/scripts/database.js
+```
+
+That file owns the potion data for this project.
+
+Inside it, there is a function named `getPotions`.
+
+We are going to use that function to get an array of potion objects.
+
+But before `main.js` can call `getPotions`, it needs access to that function.
+
+Since `getPotions` lives in another file, we need to import it.
+
+## Importing `getPotions`
+
+At the very top of `/scripts/main.js`, add this line:
+
+```js
+import { getPotions } from "./database.js";
+```
+
+This line tells JavaScript:
+
+> From `database.js`, bring in the exported function named `getPotions` so this file can use it.
+
+Let’s slow that down.
+
+| Code              | Meaning                                       |
+| ----------------- | --------------------------------------------- |
+| `import`          | Bring code in from another file               |
+| `{ getPotions }`  | The specific exported function we want to use |
+| `from`            | Tell JavaScript where the import comes from   |
+| `"./database.js"` | The relative path to the data file            |
+
+The curly braces matter.
+
+This import is asking for a specific named export from `database.js`.
+
+So if `database.js` exports a function named `getPotions`, this line gives `main.js` access to that function.
+
+## Calling `getPotions`
+
+Importing the function does not automatically give us the potion array.
+
+It only gives us access to the function.
+
+To actually get the data, we need to call the function.
+
+After the app shell has been rendered, add this line:
+
+```js
+const potions = getPotions();
+```
+
+This creates a variable named `potions` and stores the value returned by `getPotions()`.
+
+In this project, that returned value should be an array of potion objects.
+
+To check that, log the variable:
+
+```js
+console.log(potions);
+```
+
+Your code should now look like this:
 
 ```js
 import { getPotions } from "./database.js";
 
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
 const potions = getPotions();
+
 console.log(potions);
 ```
 
-<HandbookChallenge
-  title="Import and inspect potion data"
-  hints={[
-    "Imports go at the top of the file.",
-    "Call getPotions() after rendering the app shell.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`import { getPotions } from "./database.js";
+Refresh the preview and open the console.
+
+You should see an array.
+
+That array should contain potion objects.
+
+Each object should represent one potion.
+
+## Inspecting the Potion Objects
+
+When you log the `potions` array, the console should let you expand it.
+
+Open the array and inspect one of the objects inside.
+
+You should see that each potion has a `name` property.
+
+That matters because the potion name is the first piece of data we will eventually render into the list.
+
+For now, we are not putting the potion names on the page yet.
+
+We are only proving that `main.js` can access the data.
+
+That might feel like a small step, but it is an important one.
+
+Potion Shelf now has both pieces we need for rendering:
+
+1. a DOM target
+2. an array of data
+
+The list is still empty.
+
+But now the app knows what potions exist.
+
+Progress: suspiciously glowing.
+
+## Why We Are Not Rendering Yet
+
+It may be tempting to immediately shove the potion data into the list.
+
+Resist the urge.
+
+Not forever.
+
+Just for one page.
+
+Right now, the goal is not to render the full list.
+
+The goal is to confirm that the data is available and shaped the way we expect.
+
+Before we use an array, we should inspect it.
+
+Before we use an object property, we should confirm that property exists.
+
+That is why this page uses `console.log(potions)`.
+
+We are checking our ingredients before we start brewing.
+
+Orborb would respect this.
+
+Probably.
+
+## Code Target
+
+```js
+import { getPotions } from "./database.js";
+
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
 
 const potions = getPotions();
+
 console.log(potions);
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Open `/scripts/main.js`.</li>
-    <li>At the top of the file, import `getPotions` from `"./database.js"`.</li>
-    <li>After rendering the app shell, call `getPotions()`.</li>
-    <li>Store the returned array in a variable named `potions`.</li>
-    <li>Log `potions`.</li>
-    <li>Refresh the preview and open DevTools.</li>
-    <li>Confirm `potions` is an array.</li>
-    <li>Expand the array and confirm each potion object has a `name`.</li>
-  </ul>
-</HandbookChallenge>
+```
+
+## Challenge Checklist
+
+* Keep the `app` variable.
+* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
+* Keep the `potionList` variable below the `app.innerHTML` block.
+* At the top of `/scripts/main.js`, import `getPotions` from `./database.js`.
+* After the shell has been rendered, create a `potions` variable.
+* Set `potions` equal to the result of calling `getPotions()`.
+* Log `potions` to the console.
+* Refresh the preview.
+* Open DevTools.
+* Confirm that `potions` is an array.
+* Expand the array.
+* Confirm that each potion is an object.
+* Confirm that each potion object has a `name` property.
 
 ## Keep vs Trash
 
@@ -68,39 +306,110 @@ Keep:
 
 ```js
 import { getPotions } from "./database.js";
+```
+
+Keep:
+
+```js
 const potions = getPotions();
 ```
 
-Trash:
+Trash after you have confirmed the data is loading:
 
 ```js
 console.log(potions);
 ```
 
----
+The `console.log()` line is useful while checking your work.
+
+But once you know the data is available, you do not need to keep logging the same array forever.
+
+The `potions` variable should stay because we will use it soon.
 
 ## Flow Update
 
-Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+Add this line near the top of the diagram, after the browser loads `main.js`:
 
 ```mermaid
-  Main->>DB: getPotions()
+  Main->>DB: import getPotions
+```
+
+Then add these lines after the DOM list has been selected:
+
+```mermaid
+  Main->>DB: call getPotions()
   DB-->>Main: return potions array
 ```
 
-Then answer:
+## Flow Questions
 
-- Which file owns the potion data?
-- Which file asks for the potion data?
-- What does `database.js` return?
+* Which file owns the potion data?
+* Which file calls `getPotions()`?
+* What kind of value does `getPotions()` return?
+* Does the potion data appear on the page yet?
+* Why is it useful to inspect the array before rendering it?
 
-This is the first multi-module flow: `main.js` asks `database.js` for data, and `database.js` returns it.
+## What You Should Notice
+
+This page still did not change what the user sees.
+
+Potion Shelf still has an empty list.
+
+That is okay.
+
+The important change is in what `main.js` can access.
+
+Before this page, `main.js` could select the app shell and the empty potion list.
+
+Now, `main.js` can also get the potion data from `database.js`.
+
+That gives us the next major idea in this section:
+
+> The DOM should render data that comes from a data source.
+
+We do not want to hard-code potion names into the app shell.
+
+The shell is the stable structure of the page.
+
+The potion array is the data that will eventually fill part of that structure.
+
+Those are different jobs.
+
+Keeping them separate makes the app easier to change later.
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| module | A JavaScript file that can import/export code |
-| `import` | Bring exported code into the current file |
-| array of objects | A list where each item is an object |
-| data source | The place the app gets information from |
+| Term            | Meaning                                                             |
+| --------------- | ------------------------------------------------------------------- |
+| `import`        | A JavaScript keyword that brings exported code in from another file |
+| export          | Code made available for other files to import                       |
+| named export    | An exported value imported by its specific name using curly braces  |
+| `getPotions`    | A function from `database.js` that returns the potion data          |
+| data source     | The place where an app gets the data it needs                       |
+| array           | A list-like value that can hold multiple items                      |
+| object          | A value with properties, used here to represent one potion          |
+| property        | A named value inside an object, like `name`                         |
+| `console.log()` | A console method used to print and inspect values                   |
+
+## Wrapping Up
+
+Potion Shelf now has a page shell, an empty list, and access to real potion data.
+
+That is a big deal.
+
+We still have not rendered the potions onto the page.
+
+But now we have the two ingredients we need:
+
+* `potionList`, the DOM element where potion items will go
+* `potions`, the array of potion objects we want to display
+
+Next, we will take the smallest possible rendering step.
+
+Instead of trying to render the whole array at once, we will start with one object.
+
+One potion object.
+
+One list item.
+
+Tiny cauldron. Big lesson.

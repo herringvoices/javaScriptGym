@@ -1,92 +1,500 @@
 ---
-id: JS.SD.ELM.ONE_OBJECT_ONE_LIST_ITEM
-title: One Object → One List Item
-short: Render one potion object's name as one li element.
+id: JS.SD.ELM.ONE_OBJECT_ONE_LI
+title: One Object ? One List Item
+short: Turn one data object into one list item string.
 ---
 
 # One Object → One List Item
 
-The app has real potion data now, but nothing from that data appears on the page.
+Potion Shelf now has a page shell, an empty list, and access to real potion data.
 
-> We need to turn one potion object into one piece of HTML.
+That gives us both ingredients we need:
 
-## Concepts
+* `potionList`, the DOM element where potion items should go
+* `potions`, the array of potion objects we want to display
 
-- Access object properties with dot notation.
-- Template literals insert data into strings.
-- One object can become one HTML string.
-- `innerHTML` can render that string into the list.
+Excellent.
 
-## Code
+Still one tiny problem.
+
+The potion data exists, but the customer still cannot see it.
+
+Right now, the potion data is hanging out in JavaScript while the page is sitting there with an empty list like:
+
+```html
+<ul id="potion-list"></ul>
+```
+
+That is better than nothing.
+
+But Orborb did not hire us to build a beautiful empty shelf.
+
+So now we are going to render our first potion.
+
+Not the whole list yet.
+
+One potion.
+
+One object.
+
+One list item.
+
+Tiny cauldron. Big lesson.
+
+## The Smallest Useful Rendering Step
+
+At this point, your code should look like this:
+
+```js
+import { getPotions } from "./database.js";
+
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+const potions = getPotions();
+
+console.log(potions);
+```
+
+This code gives us the two things we need for rendering:
+
+| Code         | What it gives us                               |
+| ------------ | ---------------------------------------------- |
+| `potionList` | The `<ul>` element where list items should go  |
+| `potions`    | The array of potion objects from `database.js` |
+
+On the previous page, we used `console.log(potions)` to inspect the data.
+
+That was useful.
+
+But now we are ready to make one piece of that data appear on the page.
+
+The goal is not to render every potion yet.
+
+The goal is to understand the smallest version of the pattern:
+
+> Take one object, read one property, build one HTML string, and put that string in the DOM.
+
+## Get One Potion Object
+
+`potions` is an array.
+
+An array can hold many items, but we can still grab one item from it.
+
+To get the first potion object, add this line after the `potions` variable:
+
+```js
+const firstPotion = potions[0];
+```
+
+This creates a new variable named `firstPotion`.
+
+That variable stores the first object from the `potions` array.
+
+The `[0]` part means:
+
+> Give me the item at index 0.
+
+In JavaScript, array indexes start at `0`.
+
+That means:
+
+| Code         | Meaning           |
+| ------------ | ----------------- |
+| `potions[0]` | The first potion  |
+| `potions[1]` | The second potion |
+| `potions[2]` | The third potion  |
+
+Yes, the first item is item `0`.
+
+JavaScript did this to us as a society, and now we all just live here.
+
+So this line:
+
+```js
+const firstPotion = potions[0];
+```
+
+means:
+
+> Get the first potion object from the array and store it in a variable named `firstPotion`.
+
+## Read the Potion Name
+
+On the previous page, you inspected the potion objects and confirmed that each potion has a `name` property.
+
+That means once we have one potion object, we can read its name with dot notation.
+
+```js
+firstPotion.name
+```
+
+This means:
+
+> Go to the object stored in `firstPotion` and read its `name` property.
+
+So if the first potion object looks something like this:
+
+```js
+{
+  id: 1,
+  name: "Healing Potion",
+  price: 25
+}
+```
+
+then this expression:
+
+```js
+firstPotion.name
+```
+
+gives us:
+
+```txt
+Healing Potion
+```
+
+That is the piece of data we want to show inside the list.
+
+## Build One List Item
+
+The potion name is just text.
+
+But the page needs HTML.
+
+Specifically, the potion list needs an `<li>` element.
+
+So we can use a template literal to place the potion name inside an HTML string:
+
+```js
+`<li>${firstPotion.name}</li>`
+```
+
+This creates a string that looks like this:
+
+```html
+<li>Healing Potion</li>
+```
+
+The exact potion name may be different depending on the data in your project.
+
+The important part is the pattern:
+
+```js
+`<li>${firstPotion.name}</li>`
+```
+
+Let’s slow that down.
+
+| Code                  | Meaning                                  |
+| --------------------- | ---------------------------------------- |
+| `` `...` ``           | Create a template literal                |
+| `<li>`                | Start a list item                        |
+| `${firstPotion.name}` | Insert the potion’s name into the string |
+| `</li>`               | End the list item                        |
+
+This is rendering in its smallest form.
+
+We are turning data into an HTML string.
+
+## Put the List Item in the DOM
+
+Now we need to place that HTML string inside the empty `<ul>`.
+
+Add this code after the `firstPotion` variable:
+
+```js
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+Your new code should look like this:
+
+```js
+const potions = getPotions();
+
+const firstPotion = potions[0];
+
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+This line tells JavaScript:
+
+> Take the `<ul>` stored in `potionList` and put one `<li>` inside it using the first potion’s name.
+
+Refresh the preview.
+
+You should now see one potion appear under **Available Potions**.
+
+Not every potion.
+
+Just one.
+
+That is exactly what we want for this step.
+
+A whole list is just this pattern repeated.
+
+Before we repeat it, we need to understand it once.
+
+## Try a Different Potion
+
+Now let’s prove that the page is really using the data from the array.
+
+Change this line:
+
+```js
+const firstPotion = potions[0];
+```
+
+to this:
+
+```js
+const firstPotion = potions[1];
+```
+
+Refresh the preview.
+
+You should see a different potion name appear.
+
+Why?
+
+Because `potions[1]` gets the second object in the array instead of the first.
+
+The HTML string did not change.
+
+The DOM update line did not change.
+
+Only the object changed.
+
+That is a big deal.
+
+It means our rendering code is not hard-coded to one specific potion name.
+
+It is reading the `name` property from whichever potion object we give it.
+
+Now change the line back:
+
+```js
+const firstPotion = potions[0];
+```
+
+We only used `potions[1]` as a quick test.
+
+## Why We Are Not Rendering the Whole Array Yet
+
+At this point, it may feel tempting to say:
+
+> Great. Now let’s render all of them.
+
+Soon.
+
+Not yet.
+
+Right now, we are learning the smallest useful rendering pattern:
+
+```txt
+one object → one HTML string → DOM
+```
+
+That pattern matters because a full list is not magic.
+
+A full list is just this same idea repeated for every object in the array.
+
+If we skip this step, `map()` will feel like it came out of nowhere wearing a fake mustache.
+
+We are not doing that.
+
+First, we make sure one object can become one list item.
+
+Then we can worry about repeating the pattern.
+
+## Code Target
+
+```js
+import { getPotions } from "./database.js";
+
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+const potions = getPotions();
+
+const firstPotion = potions[0];
+
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+## Challenge Checklist
+
+* Keep the `getPotions` import at the top of `/scripts/main.js`.
+* Keep the `app` variable.
+* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
+* Keep the `potionList` variable below the `app.innerHTML` block.
+* Keep the `potions` variable that stores the result of `getPotions()`.
+* Remove the temporary `console.log(potions)` line.
+* Create a variable named `firstPotion`.
+* Store `potions[0]` in `firstPotion`.
+* Set `potionList.innerHTML` to one `<li>` string.
+* Inside the `<li>`, display `firstPotion.name`.
+* Refresh the preview.
+* Confirm that one potion appears in the list.
+* Change `potions[0]` to `potions[1]`.
+* Refresh again.
+* Confirm that a different potion appears.
+* Change `potions[1]` back to `potions[0]`.
+
+## Keep vs Trash
+
+Keep temporarily:
 
 ```js
 const firstPotion = potions[0];
 
-potionList.innerHTML = `
-  <li>${firstPotion.name}</li>
-`;
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
 ```
 
-<HandbookChallenge
-  title="Render one potion name"
-  hints={[
-    "Use potions[0] to get the first object.",
-    "Use ${firstPotion.name} inside a template literal.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const firstPotion = potions[0];
+These lines will be refactored soon, but they are the right shape for now.
 
-potionList.innerHTML = \`
-  <li>\${firstPotion.name}</li>
-\`;
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Keep the `potions` variable.</li>
-    <li>Create a variable named `firstPotion`.</li>
-    <li>Store `potions[0]` in `firstPotion`.</li>
-    <li>Set `potionList.innerHTML` to one `<li>`.</li>
-    <li>Inside the `<li>`, render `firstPotion.name`.</li>
-    <li>Refresh and confirm one potion appears.</li>
-    <li>Change `potions[0]` to `potions[1]`, refresh, and confirm a different potion appears.</li>
-    <li>Change it back to `potions[0]`.</li>
-  </ul>
-</HandbookChallenge>
-
-## Keep vs Trash
-
-Keep the idea:
+Trash if it is still in your file:
 
 ```js
-`<li>${potion.name}</li>`
+console.log(potions);
 ```
 
-Trash the `firstPotion` approach on the next page, because the app needs every potion.
+The log helped us inspect the data.
 
----
+Now we are using the data on the page.
+
+Also trash the temporary test change after you finish checking it:
+
+```js
+const firstPotion = potions[1];
+```
+
+Change it back to:
+
+```js
+const firstPotion = potions[0];
+```
 
 ## Flow Update
 
-Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+Add these lines after the potion array is returned:
 
 ```mermaid
-  Main->>Main: read first potion from potions array
+  Main->>Main: store potions[0] in firstPotion
+  Main->>Main: build one li string
   Main->>DOM: set potionList.innerHTML
 ```
 
-Then answer:
+These first two lines stay inside `main.js` because JavaScript is working with values it already has.
 
-- Why does the first step point from `Main` to `Main`?
-- Which step sends visible HTML to the DOM?
+The DOM only gets involved when `main.js` updates `potionList.innerHTML`.
 
-Not every step is communication between files. Some steps are internal work inside `main.js`.
+## Flow Questions
+
+* What object is stored in `firstPotion`?
+* Why does `potions[0]` give us the first potion?
+* What property are we reading from `firstPotion`?
+* Which line changes what the user sees?
+* Does this code render every potion in the array yet?
+* What happened when you changed `potions[0]` to `potions[1]`?
+
+## What You Should Notice
+
+This is the first time Potion Shelf displays real potion data on the page.
+
+Before this, the app could access the data, but the user could not see it.
+
+Now one potion name appears inside the list.
+
+That means we have connected the data to the DOM.
+
+The important pattern is:
+
+```txt
+object → property → HTML string → innerHTML
+```
+
+First, `firstPotion` stores one object from the array.
+
+Then `firstPotion.name` reads one property from that object.
+
+Then the template literal turns that property into an `<li>` string.
+
+Then `potionList.innerHTML` places that string into the DOM.
+
+This is the next major idea in the section:
+
+> Rendering data starts with turning one object into one piece of HTML.
+
+Once that makes sense, rendering a full list becomes much less mysterious.
+
+It is not a totally different kind of work.
+
+It is this same pattern repeated.
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| dot notation | Reading a property with `object.property` |
-| template literal | A backtick string that can insert values with `${}` |
-| interpolation | Inserting a value into a string |
-| index | A number used to access an array item |
+| Term             | Meaning                                                               |
+| ---------------- | --------------------------------------------------------------------- |
+| render           | To turn data into something the user can see on the page              |
+| index            | A number that identifies an item’s position in an array               |
+| zero-based index | A counting system where the first item is at index `0`                |
+| `potions[0]`     | The first item in the `potions` array                                 |
+| `firstPotion`    | A variable that stores one potion object                              |
+| dot notation     | Syntax for reading a property from an object, like `firstPotion.name` |
+| `<li>`           | An HTML element used for one item in a list                           |
+| HTML string      | A string that contains HTML markup                                    |
+| template literal | A string written with backticks that can insert values with `${}`     |
+
+## Wrapping Up
+
+Potion Shelf finally has potion data on the page.
+
+Not all of it yet.
+
+Just one potion.
+
+But that one potion matters.
+
+You selected a DOM target, got an object from an array, read a property from that object, built an HTML string, and placed that string into the DOM.
+
+That is real rendering.
+
+Right now, the code only works for one potion at a time.
+
+Next, we will clean up that one-object-to-one-list-item pattern by moving it into a reusable function.
+
+That function will receive one potion object and return one `<li>` string.
+
+Because if we are going to repeat this pattern, we should give the pattern a name.

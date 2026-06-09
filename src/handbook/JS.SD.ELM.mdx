@@ -12,9 +12,9 @@ short: Select and update the DOM intentionally.
 
 **Project:** Potion Shelf
 
-**Final chapter outcome:** Students render a list of potion names from data into the DOM.
+**Final chapter outcome:** Students render a list of potion names from data into the DOM and group the DOM update inside a `render()` function.
 
-By the end of Chapter 1, the app displays a simple Potion Shelf page:
+The final UI displays:
 
 ```html
 <header>
@@ -25,10 +25,11 @@ By the end of Chapter 1, the app displays a simple Potion Shelf page:
 <main>
   <section>
     <h2>Available Potions</h2>
-    <ul>
+    <ul id="potion-list">
       <li>Mender's Sip</li>
       <li>Ember Tonic</li>
       <li>Glacier Draught</li>
+      <!-- more potions -->
     </ul>
   </section>
 </main>
@@ -59,9 +60,11 @@ For this chapter, students build the first rendering pipeline:
 - select nested list
 - get array data
 - turn one object into one HTML string
+- name the one-object pattern with `PotionItem`
 - map all objects into HTML strings
 - join strings
-- set `innerHTML`
+- update `innerHTML`
+- group the full render pipeline in `render()`
 
 Work through the sidebar pages in order. Each page adds one small move and tells you what to keep before moving on.
 

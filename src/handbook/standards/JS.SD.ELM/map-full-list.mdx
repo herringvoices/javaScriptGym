@@ -1,98 +1,602 @@
 ---
 id: JS.SD.ELM.MAP_FULL_LIST
-title: Full List Render · map() Turns Data Into HTML
-short: Use map to transform potion objects into li strings.
+title: Full List Render ? map() Turns Data Into HTML
+short: Use map to turn every potion into an HTML string.
 ---
 
-# Full List Render · map() Turns Data Into HTML
+# Full List Render: `map()` Turns Data Into HTML
 
-`PotionItem(potions[0])` proves the component works, but the shelf needs every potion.
+Potion Shelf can now turn one potion object into one `<li>` string.
 
-> We have an array of potion objects, but the DOM needs one HTML string.
+That is a big deal.
 
-## Concepts
+We gave that pattern a name:
 
-- `map()` runs once per item.
-- `map()` can call `PotionItem` for each potion.
-- The result is an array of HTML strings.
-- The array is not ready for `innerHTML` yet.
+```js
+PotionItem
+```
 
-## Code
+Now `PotionItem` can receive any potion object and return the HTML string for that potion.
+
+So this works:
+
+```js
+PotionItem(potions[0])
+```
+
+And this works too:
+
+```js
+PotionItem(potions[1])
+```
+
+Same function.
+
+Different object.
+
+Different `<li>` string.
+
+Beautiful.
+
+But Orborb does not want to display one potion at a time like some kind of extremely slow wizard vending machine.
+
+They want the full list.
+
+So now we need to run `PotionItem` for every potion in the array.
+
+Not by writing the function call over and over by hand.
+
+That would be messy work.
+
+Instead, we are going to use `map()`.
+
+## We Have One Function and Many Objects
+
+At this point, your code should look like this:
+
+```js
+import { getPotions } from "./database.js";
+
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+const potions = getPotions();
+
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+That last line renders one potion:
+
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+It works because `PotionItem(potions[0])` returns one `<li>` string.
+
+But the `potions` array has more than one object.
+
+So what we really want is not this:
+
+```txt
+one potion object → one li string
+```
+
+We want this:
+
+```txt
+array of potion objects → array of li strings
+```
+
+That is exactly the kind of transformation `map()` is built for.
+
+## What `map()` Does
+
+`map()` is an array method.
+
+That means it belongs to arrays and can be used to create a new array.
+
+The job of `map()` is:
+
+> Take every item in an array, do the same thing to each item, and return a new array with the results.
+
+In our case, we want to take every potion object and turn it into an `<li>` string.
+
+That means this:
+
+```txt
+potion object → PotionItem → li string
+```
+
+needs to happen for every object in the array.
+
+So the bigger transformation looks like this:
+
+```txt
+potions array → map with PotionItem → array of li strings
+```
+
+`map()` does not update the DOM.
+
+`map()` does not change the page.
+
+`map()` does not put anything inside `potionList`.
+
+It only creates a new array.
+
+That is the main idea for this page.
+
+## Use `map()` with `PotionItem`
+
+Remove this line:
+
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+Replace it with this:
 
 ```js
 const potionHTMLArray = potions.map(PotionItem);
+```
+
+Then log the result:
+
+```js
 console.log(potionHTMLArray);
 ```
 
-<HandbookChallenge
-  title="Map potions into HTML strings"
-  hints={[
-    "Use potions.map(PotionItem).",
-    "Do not set innerHTML to the array yet.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const potionHTMLArray = potions.map(PotionItem);
+Your new code should look like this:
+
+```js
+const potions = getPotions();
+
+const potionHTMLArray = potions.map(PotionItem);
+
 console.log(potionHTMLArray);
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Keep the `PotionItem` function.</li>
-    <li>Keep the `potions` array.</li>
-    <li>Create a variable named `potionHTMLArray`.</li>
-    <li>Set it equal to `potions.map(PotionItem)`.</li>
-    <li>Log `potionHTMLArray`.</li>
-    <li>Refresh and open DevTools.</li>
-    <li>Confirm `potionHTMLArray` is an array.</li>
-    <li>Confirm each item in the array is an `<li>` string.</li>
-    <li>Do not set `innerHTML` to `potionHTMLArray`.</li>
-  </ul>
-</HandbookChallenge>
+```
+
+Let’s slow that down.
+
+| Code              | Meaning                                                      |
+| ----------------- | ------------------------------------------------------------ |
+| `potions`         | The array of potion objects                                  |
+| `.map()`          | Create a new array by transforming each item                 |
+| `PotionItem`      | The function that should run for each potion object          |
+| `potionHTMLArray` | A variable that stores the new array of HTML strings         |
+| `console.log()`   | Print the new array so we can inspect it before rendering it |
+
+This line:
+
+```js
+const potionHTMLArray = potions.map(PotionItem);
+```
+
+means:
+
+> Go through the `potions` array. For each potion object, pass that object into `PotionItem`. Store all the returned `<li>` strings in a new array named `potionHTMLArray`.
+
+That is a lot of work in one line.
+
+Tiny line. Big cauldron.
+
+## `map()` Calls the Function For You
+
+This part is easy to miss.
+
+When we write this:
+
+```js
+potions.map(PotionItem)
+```
+
+we are not writing this:
+
+```js
+potions.map(PotionItem())
+```
+
+Do not add the parentheses after `PotionItem` here.
+
+Why?
+
+Because we do not want to call `PotionItem` one time right now.
+
+We want to hand the `PotionItem` function to `map()` so `map()` can call it once for each potion object.
+
+So this:
+
+```js
+potions.map(PotionItem)
+```
+
+means:
+
+> Here is the `PotionItem` function. Use it on each item in the `potions` array.
+
+Behind the scenes, `map()` will do something like this:
+
+```js
+PotionItem(potions[0]);
+PotionItem(potions[1]);
+PotionItem(potions[2]);
+```
+
+The exact number of calls depends on how many potion objects are in the array.
+
+But the pattern is the same.
+
+For each object, `map()` passes that object into `PotionItem`.
+
+Then it collects the returned strings into a new array.
+
+## Inspect the New Array
+
+After adding the log:
+
+```js
+console.log(potionHTMLArray);
+```
+
+refresh the preview and open the console.
+
+You should see an array.
+
+But this time, it is not an array of potion objects.
+
+It should be an array of strings.
+
+Each string should look like an `<li>` element:
+
+```js
+[
+  "<li>Healing Potion</li>",
+  "<li>Invisibility Potion</li>",
+  "<li>Mana Potion</li>"
+]
+```
+
+Your potion names may be different.
+
+That is fine.
+
+The important part is the shape of the data.
+
+Before `map()`, we had this:
+
+```txt
+array of potion objects
+```
+
+After `map()`, we have this:
+
+```txt
+array of li strings
+```
+
+That is progress.
+
+The data is closer to something the DOM can use.
+
+But it is not ready for `innerHTML` yet.
+
+## Do Not Set `innerHTML` Yet
+
+This is the part where we pause.
+
+It may be tempting to write this:
+
+```js
+potionList.innerHTML = potionHTMLArray;
+```
+
+Do not do that yet.
+
+Not because it will summon a browser demon.
+
+Probably.
+
+But because `potionHTMLArray` is still an array.
+
+`innerHTML` expects one string of HTML.
+
+Right now, `potionHTMLArray` is many strings inside an array.
+
+That difference matters.
+
+This page is only about the `map()` step:
+
+```txt
+array of potion objects → array of li strings
+```
+
+The next page will handle the missing step:
+
+```txt
+array of li strings → one HTML string
+```
+
+For now, we are stopping on purpose.
+
+This is one of those times where “almost done” is the actual lesson.
+
+## Why the Page Does Not Show Every Potion Yet
+
+After you remove the old one-potion render line, the page may not show a potion name in the list anymore.
+
+That is okay.
+
+The app shell should still appear.
+
+The **Available Potions** section should still exist.
+
+But the list itself may be empty again.
+
+That is expected because this page does not update `potionList.innerHTML`.
+
+Instead, this page creates and inspects a new value:
+
+```js
+potionHTMLArray
+```
+
+That value is not visible on the page yet.
+
+It is visible in the console.
+
+So if you refresh and think:
+
+> Wait, where did the potion go?
+
+Good question.
+
+The answer is:
+
+> We stopped rendering one potion so we could inspect the full array of HTML strings before rendering it.
+
+That pause matters.
+
+We want to understand what `map()` returns before we hand that value to the DOM.
+
+## Code Target
+
+```js
+import { getPotions } from "./database.js";
+
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+const potions = getPotions();
+
+const potionHTMLArray = potions.map(PotionItem);
+
+console.log(potionHTMLArray);
+```
+
+## Challenge Checklist
+
+* Keep the `getPotions` import at the top of `/scripts/main.js`.
+* Keep the `PotionItem` function.
+* Keep the `app` variable.
+* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
+* Keep the `potionList` variable below the `app.innerHTML` block.
+* Keep the `potions` variable that stores the result of `getPotions()`.
+* Remove the old one-potion render line.
+* Create a variable named `potionHTMLArray`.
+* Set `potionHTMLArray` equal to `potions.map(PotionItem)`.
+* Log `potionHTMLArray` to the console.
+* Refresh the preview.
+* Open DevTools.
+* Confirm that `potionHTMLArray` is an array.
+* Confirm that each item in the array is an `<li>` string.
+* Do not set `potionList.innerHTML` to `potionHTMLArray` yet.
 
 ## Keep vs Trash
 
 Keep:
 
 ```js
-potions.map(PotionItem)
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
 ```
+
+Keep:
+
+```js
+const potions = getPotions();
+```
+
+Keep temporarily:
+
+```js
+const potionHTMLArray = potions.map(PotionItem);
+
+console.log(potionHTMLArray);
+```
+
+These lines help us inspect the result of `map()`.
+
+The `console.log()` line is temporary, but it is useful right now.
 
 Trash:
 
 ```js
-console.log(potionHTMLArray);
+potionList.innerHTML = PotionItem(potions[0]);
 ```
 
----
+That line rendered one potion.
+
+Now we are building the array of HTML strings for all potions.
+
+Also do not add this yet:
+
+```js
+potionList.innerHTML = potionHTMLArray;
+```
+
+That is not the right final shape because `potionHTMLArray` is still an array.
+
+We need one more transformation before updating the DOM.
 
 ## Flow Update
 
-Your code changed the program flow. In `/sequenceDiagram.mmd`, replace the one-potion function call lines:
+Replace the previous one-item rendering lines:
 
 ```mermaid
-  Main->>Main: read first potion from potions array
-  Main->>Main: call PotionItem(firstPotion)
-  Main->>Main: receive one li string
+  Main->>Main: call PotionItem with potions[0]
+  Main->>Main: return one li string
+  Main->>DOM: set potionList.innerHTML
 ```
 
 with these lines:
 
 ```mermaid
-  Main->>Main: map potions with PotionItem()
-  Main->>Main: create array of li strings
+  Main->>Main: map potions with PotionItem
+  Main->>Main: store array of li strings in potionHTMLArray
 ```
 
-Then answer:
+There is no new DOM update for the potion items yet.
 
-- What does `map()` do once for each potion?
-- Why is the result not ready for `innerHTML` yet?
+That is important.
 
-The diagram now tracks the data transformation: array of potion objects to array of `<li>` strings.
+`map()` happens inside `main.js`.
+
+It creates a new array.
+
+The DOM will not receive the full potion HTML until the next step.
+
+## Flow Questions
+
+* What array does `map()` start with?
+* What function does `map()` use on each potion object?
+* What does `PotionItem` return each time it runs?
+* What kind of value is stored in `potionHTMLArray`?
+* Does `map()` update the DOM by itself?
+* Why should we not set `potionList.innerHTML` to `potionHTMLArray` yet?
+* Where can you inspect the result of `map()` on this page?
+
+## What You Should Notice
+
+This page is a transformation step.
+
+It does not finish rendering the full list yet.
+
+Instead, it changes the shape of the data.
+
+Before this page, we could render one potion with this pattern:
+
+```txt
+one potion object → PotionItem → one li string
+```
+
+Now we can use that same function across the whole array:
+
+```txt
+array of potion objects → map with PotionItem → array of li strings
+```
+
+That gives us the next major idea in this section:
+
+> `map()` transforms one array into a new array.
+
+In this case, `map()` transforms an array of potion objects into an array of HTML strings.
+
+That array is useful.
+
+It is close to what we need.
+
+But it is not the final value for `innerHTML`.
+
+`innerHTML` needs one string.
+
+Right now, we have an array of strings.
+
+So Potion Shelf is almost ready to render the full list, but not quite.
+
+The next step is to combine those strings into one big HTML string.
+
+That is where `join("")` comes in.
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| `map()` | Creates a new array by transforming each item |
-| callback | A function passed into another function |
-| transform | Change one kind of value into another kind of value |
+| Term              | Meaning                                                               |
+| ----------------- | --------------------------------------------------------------------- |
+| `map()`           | An array method that creates a new array by transforming each item    |
+| array method      | A function that belongs to arrays                                     |
+| transform         | To turn a value into a different version of that value                |
+| callback function | A function passed into another function to be used later              |
+| original array    | The array you started with before calling `map()`                     |
+| returned array    | The new array created by `map()`                                      |
+| `potionHTMLArray` | A variable that stores the array of `<li>` strings                    |
+| HTML string       | A string that contains HTML markup                                    |
+| console           | The browser tool where we can inspect values that are not on the page |
+
+## Wrapping Up
+
+Potion Shelf still does not render the full potion list on the page.
+
+That is on purpose.
+
+This page focused on one important step:
+
+```txt
+array of potion objects → array of li strings
+```
+
+You used `map()` to run `PotionItem` for every potion object in the array.
+
+Each call to `PotionItem` returned one `<li>` string.
+
+Then `map()` collected those strings into a new array.
+
+That means we are much closer to a full list render.
+
+But `potionHTMLArray` is still an array.
+
+Before the DOM can use it cleanly, we need to turn that array into one string.
+
+Next, we will use `join("")` to combine the array of `<li>` strings into one HTML string.
+
+Then Potion Shelf will finally show every potion in the list.
+
+Orborb can stop tapping their wizard foot.
+
+Probably.

@@ -241,7 +241,11 @@ export const handbookStructure = {
 
   'JS.SD.ELM': {
     chapters: [
-
+      {
+        id: 'flow-diagrams',
+        title: 'Flow Diagrams \u00b7 Tracking What Happens First',
+        load: () => import('./standards/JS.SD.ELM/flow-diagrams.mdx'),
+      },
       {
         id: 'dom-basics',
         title: 'DOM Basics \u00b7 The Page as Objects',

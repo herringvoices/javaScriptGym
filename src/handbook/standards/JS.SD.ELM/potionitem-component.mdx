@@ -1,102 +1,558 @@
 ---
-id: JS.SD.ELM.POTIONITEM_COMPONENT
-title: PotionItem · A Function That Returns HTML
-short: Extract one-potion rendering into a reusable component function.
+id: JS.SD.ELM.POTION_ITEM
+title: PotionItem ? A Function That Returns HTML
+short: Give the one-object rendering pattern a name.
 ---
 
-# PotionItem · A Function That Returns HTML
+# PotionItem: A Function That Returns HTML
 
-Rendering one potion directly works, but the app will need to render many potions.
+Potion Shelf can now render one real potion name on the page.
 
-> If we write the `<li>` by hand every time, we repeat ourselves.
+Not all of them yet.
 
-## Concepts
+Just one.
 
-- A component is a function that returns an HTML string.
-- Components are capitalized by convention.
-- A parameter lets the function work with any potion.
-- `return` sends the HTML string back.
+But that one potion was a big deal.
 
-## Code
+We took one object from the `potions` array, read its `name` property, built one `<li>` string, and placed that string inside the DOM.
+
+That gave us this pattern:
+
+```txt
+one object → one HTML string → DOM
+```
+
+Excellent.
+
+But right now, that pattern is trapped inside one line of code.
 
 ```js
-const PotionItem = (potion) => {
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+That works, but it does not give the pattern a name.
+
+And if we are going to use this same idea again, we should probably stop making JavaScript squint at one giant line and guess what we meant.
+
+So now we are going to move the one-object-to-one-list-item pattern into a reusable function.
+
+We will call that function `PotionItem`.
+
+## The Pattern Works, But It Is Not Reusable Yet
+
+At this point, your code should look like this:
+
+```js
+import { getPotions } from "./database.js";
+
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+const potions = getPotions();
+
+const firstPotion = potions[0];
+
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+This code works.
+
+It shows one potion in the list.
+
+But look closely at these two lines:
+
+```js
+const firstPotion = potions[0];
+
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+Those lines are doing two separate jobs.
+
+| Code                                 | Job                                         |
+| ------------------------------------ | ------------------------------------------- |
+| `const firstPotion = potions[0];`    | Get one potion object from the array        |
+| `` `<li>${firstPotion.name}</li>` `` | Turn that potion object into an HTML string |
+| `potionList.innerHTML = ...`         | Put that HTML string into the DOM           |
+
+That middle job is the one we want to name.
+
+> Turn one potion object into one `<li>` string.
+
+That is what `PotionItem` will do.
+
+## Create a `PotionItem` Function
+
+Near the top of your file, after the import, create this function:
+
+```js
+function PotionItem(potion) {
   return `<li>${potion.name}</li>`;
-};
+}
+```
+
+This function receives one potion object and returns one HTML string.
+
+Let’s slow that down.
+
+| Code                            | Meaning                                            |
+| ------------------------------- | -------------------------------------------------- |
+| `function PotionItem`           | Create a function named `PotionItem`               |
+| `(potion)`                      | Give the function one parameter named `potion`     |
+| `return`                        | Send a value back out of the function              |
+| `` `<li>${potion.name}</li>` `` | Build one list item string using the potion’s name |
+
+The name `PotionItem` is capitalized on purpose.
+
+We are treating this like a small UI-building function.
+
+It represents one visible piece of the page: one potion item.
+
+No framework involved.
+
+No React.
+
+No magic hat.
+
+Just a plain JavaScript function that returns a string.
+
+## The Parameter Is a Placeholder
+
+Inside the function, the parameter is named `potion`.
+
+```js
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+```
+
+That `potion` parameter is a placeholder.
+
+It means:
+
+> Whatever potion object gets passed into this function, use it inside the function body.
+
+So if we call the function with the first potion:
+
+```js
+PotionItem(potions[0])
+```
+
+then inside the function, `potion` refers to `potions[0]`.
+
+If we call it with the second potion:
+
+```js
+PotionItem(potions[1])
+```
+
+then inside the function, `potion` refers to `potions[1]`.
+
+The function does not care which potion object we give it.
+
+It just does the same job every time:
+
+```txt
+potion object → li string
+```
+
+That is what makes it reusable.
+
+## `PotionItem` Does Not Update the DOM
+
+This part is very important.
+
+`PotionItem` does **not** put anything on the page by itself.
+
+It only returns a string.
+
+```js
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+```
+
+There is no `document.querySelector()` inside this function.
+
+There is no `potionList.innerHTML` inside this function.
+
+There is no DOM update inside this function.
+
+That is on purpose.
+
+`PotionItem` has one job:
+
+> Build the HTML string for one potion.
+
+Another line of code will handle putting that string into the DOM.
+
+This gives us a cleaner separation of responsibilities.
+
+| Code                         | Responsibility        |
+| ---------------------------- | --------------------- |
+| `PotionItem(potion)`         | Build one HTML string |
+| `potionList.innerHTML = ...` | Put HTML into the DOM |
+
+Tiny functions with clear jobs are much easier to reuse.
+
+They are also easier to debug because you can ask:
+
+> Did the function build the right string?
+
+and separately:
+
+> Did I put that string in the right DOM element?
+
+That is much better than throwing everything into one cauldron and hoping it does not start whispering.
+
+## Use `PotionItem` to Render One Potion
+
+Now we can replace the old one-off rendering code.
+
+Remove these lines:
+
+```js
+const firstPotion = potions[0];
+
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+Replace them with this:
+
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+This line does two things.
+
+First, it calls `PotionItem` and gives it the first potion object:
+
+```js
+PotionItem(potions[0])
+```
+
+That function call returns one `<li>` string.
+
+Then `potionList.innerHTML` puts that returned string inside the list.
+
+So this line:
+
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+means:
+
+> Turn the first potion into an `<li>` string, then place that string inside the potion list.
+
+Refresh the preview.
+
+You should still see one potion appear under **Available Potions**.
+
+The page should look the same as it did before.
+
+That is okay.
+
+Sometimes better code does not change what the user sees.
+
+Sometimes better code changes how the program is organized.
+
+## Try a Different Potion
+
+Now let’s prove that `PotionItem` works with more than one object.
+
+Change this line:
+
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+to this:
+
+```js
+potionList.innerHTML = PotionItem(potions[1]);
+```
+
+Refresh the preview.
+
+You should see a different potion appear.
+
+Why?
+
+Because we passed a different object into the same function.
+
+The function did not change.
+
+The HTML pattern did not change.
+
+Only the argument changed.
+
+That is the power of the parameter.
+
+`PotionItem` can receive different potion objects and still return the correct `<li>` string for each one.
+
+Now change the line back:
+
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+We only used `potions[1]` as a quick test.
+
+## Why This Still Does Not Render the Whole List
+
+At this point, it may feel like we are very close to rendering every potion.
+
+We are.
+
+Painfully close.
+
+Like, the potion shelf is right there and Orborb is tapping their little wizard foot.
+
+But we are not rendering the whole array yet.
+
+Right now, the goal is to make the one-item rendering pattern reusable.
+
+Before this page, our pattern looked like this:
+
+```txt
+one specific object → one HTML string → DOM
+```
+
+Now the pattern looks like this:
+
+```txt
+any potion object → PotionItem → one HTML string
+```
+
+That is the step we needed.
+
+A full list will come from repeating this function for every potion in the array.
+
+But that repetition is the next lesson.
+
+For now, the win is that we have a reusable function that knows how to turn one potion object into one list item string.
+
+## Code Target
+
+```js
+import { getPotions } from "./database.js";
+
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+const potions = getPotions();
 
 potionList.innerHTML = PotionItem(potions[0]);
 ```
 
-<HandbookChallenge
-  title="Write PotionItem"
-  hints={[
-    "PotionItem should take one parameter named potion.",
-    "Return the li string instead of assigning it inside the function.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const PotionItem = (potion) => {
-  return \`<li>\${potion.name}</li>\`;
-};
+## Challenge Checklist
 
-potionList.innerHTML = PotionItem(potions[0]);
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Above the rendering logic, create a function named `PotionItem`.</li>
-    <li>Give `PotionItem` one parameter named `potion`.</li>
-    <li>Inside the function, return one `<li>` string.</li>
-    <li>Inside the `<li>`, render `potion.name`.</li>
-    <li>Replace the direct `<li>` rendering with `PotionItem(potions[0])`.</li>
-    <li>Refresh and confirm the first potion appears.</li>
-    <li>Change the argument to `potions[1]`, refresh, and confirm the function works with a different potion.</li>
-    <li>Change it back to `potions[0]`.</li>
-  </ul>
-</HandbookChallenge>
+* Keep the `getPotions` import at the top of `/scripts/main.js`.
+* Create a function named `PotionItem`.
+* Give `PotionItem` one parameter named `potion`.
+* Inside the function, return one `<li>` string.
+* Inside the `<li>`, display `potion.name`.
+* Keep the `app` variable.
+* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
+* Keep the `potionList` variable below the `app.innerHTML` block.
+* Keep the `potions` variable that stores the result of `getPotions()`.
+* Remove the temporary `firstPotion` variable.
+* Replace the old direct `<li>` string with a call to `PotionItem(potions[0])`.
+* Set `potionList.innerHTML` equal to the value returned by `PotionItem(potions[0])`.
+* Refresh the preview.
+* Confirm that one potion appears in the list.
+* Change the argument from `potions[0]` to `potions[1]`.
+* Refresh again.
+* Confirm that a different potion appears.
+* Change the argument back to `potions[0]`.
 
 ## Keep vs Trash
 
 Keep:
 
 ```js
-const PotionItem = (potion) => {
+function PotionItem(potion) {
   return `<li>${potion.name}</li>`;
-};
+}
 ```
 
-Trash direct one-off `<li>` rendering outside the component.
+Keep temporarily:
 
----
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
+
+This line will change soon when we render the full list.
+
+Trash:
+
+```js
+const firstPotion = potions[0];
+```
+
+We used `firstPotion` to make the one-object pattern easier to see.
+
+Now `PotionItem` can receive the potion object directly.
+
+Also trash the old direct-rendering line:
+
+```js
+potionList.innerHTML = `<li>${firstPotion.name}</li>`;
+```
+
+The function handles building the `<li>` string now.
+
+And after testing, trash this temporary change:
+
+```js
+potionList.innerHTML = PotionItem(potions[1]);
+```
+
+Change it back to:
+
+```js
+potionList.innerHTML = PotionItem(potions[0]);
+```
 
 ## Flow Update
 
-Your code changed the program flow. In `/sequenceDiagram.mmd`, replace this line:
+Replace the previous one-item rendering lines:
 
 ```mermaid
-  Main->>Main: read first potion from potions array
+  Main->>Main: store potions[0] in firstPotion
+  Main->>Main: build one li string
+  Main->>DOM: set potionList.innerHTML
 ```
 
 with these lines:
 
 ```mermaid
-  Main->>Main: read first potion from potions array
-  Main->>Main: call PotionItem(firstPotion)
-  Main->>Main: receive one li string
+  Main->>Main: call PotionItem with potions[0]
+  Main->>Main: return one li string
+  Main->>DOM: set potionList.innerHTML
 ```
 
-Then answer:
+The first two steps still happen inside `main.js`.
 
-- What does `PotionItem` receive?
-- What does `PotionItem` return?
-- Does `PotionItem` update the DOM by itself?
+`PotionItem` is a function in `main.js`, and it returns a string to `main.js`.
 
-`PotionItem` does not render by itself. It returns a string. Another line sends that string to the DOM.
+The DOM only gets involved when `main.js` sets `potionList.innerHTML`.
+
+## Flow Questions
+
+* What value gets passed into `PotionItem`?
+* What is the parameter name inside the `PotionItem` function?
+* What does `PotionItem` return?
+* Does `PotionItem` update the DOM by itself?
+* Which line actually changes what the user sees?
+* What changed when you passed `potions[1]` instead of `potions[0]`?
+* Does this code render every potion in the array yet?
+
+## What You Should Notice
+
+The page still shows one potion.
+
+That part did not change.
+
+What changed is the shape of the code.
+
+Before this page, the HTML string was built directly inside the DOM update line.
+
+Now that string-building logic lives inside a function named `PotionItem`.
+
+That gives us the next major idea in this section:
+
+> A rendering function can turn one data object into one HTML string.
+
+`PotionItem` does not select anything.
+
+It does not update anything.
+
+It does not know where the string will be used.
+
+It just receives one potion object and returns one `<li>` string.
+
+That separation matters.
+
+`PotionItem` creates the HTML string.
+
+`potionList.innerHTML` puts that string on the page.
+
+Once that distinction makes sense, the next step becomes much easier.
+
+If `PotionItem` can turn one potion object into one `<li>` string, then we need a way to run `PotionItem` for every potion object in the array.
+
+That is where `map()` comes in.
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| component | A function that returns an HTML string |
-| parameter | A named input a function can use |
-| argument | A value passed into a function |
-| `return` | Sends a value out of a function |
+| Term                     | Meaning                                                                  |
+| ------------------------ | ------------------------------------------------------------------------ |
+| function                 | A reusable block of code that performs a specific job                    |
+| parameter                | A placeholder name for a value a function receives                       |
+| argument                 | The actual value passed into a function call                             |
+| `return`                 | A keyword that sends a value back out of a function                      |
+| function call            | Running a function by writing its name followed by parentheses           |
+| `PotionItem`             | A function that receives one potion object and returns one `<li>` string |
+| reusable                 | Able to be used again with different values                              |
+| responsibility           | The specific job a piece of code is supposed to handle                   |
+| component-style function | A function that builds one piece of the user interface                   |
+
+## Wrapping Up
+
+Potion Shelf still renders one potion at a time.
+
+But the code is cleaner now.
+
+Instead of building the `<li>` string directly inside the `innerHTML` assignment, we gave that pattern a name:
+
+```js
+PotionItem
+```
+
+Now we have a function that can receive any potion object and return the HTML string for that potion.
+
+That is exactly the shape we need before rendering the full list.
+
+Next, we will repeat this pattern across the entire `potions` array.
+
+Not by writing the function call over and over by hand.
+
+That would be messy work.
+
+Instead, we will use `map()` to turn an array of potion objects into an array of HTML strings.

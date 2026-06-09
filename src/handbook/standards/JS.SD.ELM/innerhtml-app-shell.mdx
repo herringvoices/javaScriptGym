@@ -1,28 +1,120 @@
 ---
-id: JS.SD.ELM.INNERHTML_APP_SHELL
-title: innerHTML · Render the App Shell
-short: Replace plain text with the Potion Shelf HTML shell.
+id: JS.SD.ELM.INNERHTML_SHELL
+title: innerHTML ? Render the App Shell
+short: Replace plain text with real HTML structure.
 ---
 
-# innerHTML · Render the App Shell
+# innerHTML: Render the App Shell
 
-Plain text proves JavaScript can update the page, but an app needs structure: headings, sections, containers, and lists.
+So we've grabbed an element from the DOM and assigned it to a variable. We've even changed a property on that element to make text appear on the webpage! That's real progress, but it's not enough for our client.
 
-> A real app needs HTML, not just a sentence.
+Let me introduce you to Orborb Brobro. Orborb is a local wizard who wants to display their wares online, and they've decided to hire you to do just that.
 
-## Concepts
+## Meet the Client
 
-- `innerHTML` treats a string as HTML markup.
-- The browser turns that markup into DOM nodes.
-- A shell is the stable structure the app renders into.
+For this project, we are building **Potion Shelf**.
 
-## Code
+Orborb wants a simple page where customers can browse the shop's available potions.
+
+They do not need search, filters, sorting, buttons, or anything fancy yet.
+
+They just want a clean first version of the page: a title, a short bit of descriptive text, and a section where the available potions will appear.
+
+That means the little plain-text message we used a moment ago has done its job.
+
+It proved that JavaScript can update the page.
+
+But Potion Shelf needs more than plain text.
+
+It needs structure.
+
+And that is the problem this part solves.
+
+`textContent` was great when all we needed was text.
+
+But if we want to build the first real version of Potion Shelf, we need a way to create actual HTML structure inside our `#app` element.
+
+For that, we need a new DOM property: `innerHTML`.
+
+## Plain Text Is Not Enough for a Real App
+
+At the end of the last chapter, your code looked like this:
 
 ```js
+const app = document.querySelector("#app");
+
+app.textContent = "Potion Shelf ready.";
+```
+
+That works.
+
+It proves that JavaScript can change what the user sees.
+
+But it only gives us plain text.
+
+And plain text is not enough if we want an actual page layout.
+
+Potion Shelf needs more than a sentence floating in space like it just wandered in and got lost.
+
+We want things like:
+
+- a heading
+- a short description
+- a main content area
+- a list where potion data can go later
+
+`textContent` cannot build that kind of structure.
+
+It can only place text inside an element.
+
+So now we need something more powerful.
+
+## What `innerHTML` Does
+
+Like `textContent`, `innerHTML` is a property on DOM elements.
+
+It lets JavaScript put something inside an element.
+
+But there is one big difference.
+
+`textContent` treats the value as plain text.
+
+`innerHTML` treats the value as HTML.
+
+That means this code:
+
+```js
+app.innerHTML = "<h1>Potion Shelf</h1>";
+```
+
+creates a real heading inside `#app`.
+
+The browser does not show the angle brackets as text.
+
+It reads the value as HTML and builds the corresponding DOM elements.
+
+So now we have an important contrast:
+
+| Property      | What it does           |
+| ------------- | ---------------------- |
+| `textContent` | Inserts plain text     |
+| `innerHTML`   | Inserts HTML structure |
+
+That makes `innerHTML` a much better fit when we want our app to start looking like an app.
+
+## Putting It Together
+
+Now we are going to replace the old `textContent` line with a small HTML shell for the app.
+
+Your code should look like this:
+
+```js
+const app = document.querySelector("#app");
+
 app.innerHTML = `
   <header>
     <h1>Potion Shelf</h1>
-    <p>A tiny catalog for a magical shop.</p>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
   </header>
 
   <main>
@@ -34,19 +126,89 @@ app.innerHTML = `
 `;
 ```
 
-<HandbookChallenge
-  title="Render the Potion Shelf shell"
-  hints={[
-    "Replace app.textContent with app.innerHTML.",
-    "The empty list needs id=\"potion-list\" because you will select it later.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const app = document.querySelector("#app");
+Let’s slow that down.
 
-app.innerHTML = \`
+| Code                         | Meaning                                                  |
+| ---------------------------- | -------------------------------------------------------- |
+| `app.innerHTML`              | Access the HTML content property of the selected element |
+| `=`                          | Set that property to a new value                         |
+| `` `...` ``                  | Use a template literal to write multi-line HTML          |
+| `<header>`                   | Create the top section of the page                       |
+| `<h1>`                       | Show the main title                                      |
+| `<p>`                        | Add a subtitle or short description                      |
+| `<main>`                     | Create the main content area                             |
+| `<section>`                  | Group one section of content                             |
+| `<ul id="potion-list"></ul>` | Create an empty list for potion items later              |
+
+Once this code runs, the page should no longer show only plain text.
+
+It should show actual page structure.
+
+## `innerHTML` Replaces What Was Already There
+
+This part matters.
+
+When you assign a value to `innerHTML`, JavaScript replaces the current contents of that element.
+
+So if `#app` used to contain this:
+
+```txt
+Potion Shelf ready.
+```
+
+and then you run this:
+
+```js
+app.innerHTML = `
   <header>
     <h1>Potion Shelf</h1>
-    <p>A tiny catalog for a magical shop.</p>
+  </header>
+`;
+```
+
+the old text does not stay there.
+
+It gets replaced by the new HTML.
+
+That is why this chapter starts by removing the old `textContent` line.
+
+We are not adding the new structure underneath the old text.
+
+We are replacing the old text with a real app shell.
+
+## The Empty List Is There on Purpose
+
+This line matters more than it may look like at first:
+
+```html
+<ul id="potion-list"></ul>
+```
+
+Right now, the list is empty.
+
+That is okay.
+
+In fact, that is the plan.
+
+We are not rendering potion data yet.
+
+We are only creating the structure of the page.
+
+That empty `<ul>` gives us a place where potion list items can go later.
+
+So even though it is empty right now, it is still doing useful setup work.
+
+It is the future render target for the potion data.
+
+## Code Target
+
+```js
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
   </header>
 
   <main>
@@ -55,55 +217,105 @@ app.innerHTML = \`
       <ul id="potion-list"></ul>
     </section>
   </main>
-\`;
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Keep the `app` variable.</li>
-    <li>Replace `app.textContent` with `app.innerHTML`.</li>
-    <li>Render a `<header>` with an `<h1>` that says `Potion Shelf`.</li>
-    <li>Render a `<p>` subtitle.</li>
-    <li>Render a `<main>` with one `<section>`.</li>
-    <li>Inside the section, render an `<h2>` that says `Available Potions`.</li>
-    <li>Render an empty `<ul id="potion-list"></ul>`.</li>
-    <li>Refresh and confirm the shell exists.</li>
-  </ul>
-</HandbookChallenge>
+`;
+```
+
+## Challenge Checklist
+
+- Keep the `app` variable from the previous chapter.
+- Remove the old `app.textContent = ...` line.
+- Use `app.innerHTML` instead.
+- Render a `<header>`.
+- Add an `<h1>` that says `Potion Shelf`.
+- Add a subtitle paragraph below the heading.
+- Render a `<main>` element.
+- Inside it, render a `<section>`.
+- Add an `<h2>` that says `Available Potions`.
+- Add an empty `<ul id="potion-list"></ul>`.
+- Refresh the preview.
+- Confirm that the page now shows structured content instead of plain text.
 
 ## Keep vs Trash
 
-Keep the app shell. Trash the old `textContent` line.
+Keep:
 
----
+```js
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+```
+
+We will build on this shell in the next chapter.
 
 ## Flow Update
 
-Your code changed the program flow. In `/sequenceDiagram.mmd`, replace this old diagram line:
-
-```mermaid
-  Main->>DOM: set app.textContent
-```
-
-with these lines:
+Add this line:
 
 ```mermaid
   Main->>DOM: set app.innerHTML
-  DOM->>DOM: create header, main, section, and #potion-list
 ```
 
-Then answer:
+## Flow Questions
 
-- Why did we replace the `textContent` step instead of adding a new final step?
-- What new element exists after `app.innerHTML` runs?
+- What changed in the DOM when `innerHTML` ran?
+- Is `#potion-list` part of the DOM after this line runs?
+- Did `main.js` ask `database.js` for potion data yet?
 
-The diagram should match the current program, not every version of the program that ever existed.
+## What You Should Notice
+
+A few important things changed here.
+
+First, your page now has structure instead of just text.
+
+That means JavaScript is not only writing words onto the page anymore. It is building part of the page itself.
+
+Second, `innerHTML` is doing something `textContent` could not do.
+
+It is creating real HTML elements like headings, sections, and a list.
+
+Third, the empty list now exists in the DOM.
+
+That matters because later chapters will need to select that list and put potion items inside it.
+
+This is the next major DOM idea in the section:
+
+> JavaScript can use `innerHTML` to create the structure that later rendering code will build on.
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| `innerHTML` | A property that sets or reads HTML inside an element |
-| markup | HTML written as text |
-| app shell | The basic page structure the app renders into |
-| container | An element that holds other elements |
+| Term             | Meaning                                                             |
+| ---------------- | ------------------------------------------------------------------- |
+| `innerHTML`      | A property that sets or reads the HTML inside an element            |
+| HTML structure   | Nested elements like headings, paragraphs, sections, and lists      |
+| app shell        | The stable page structure of an app before dynamic content is added |
+| render target    | An element where JavaScript will place content later                |
+| template literal | A string written with backticks that can span multiple lines        |
+| replace          | To overwrite old content with new content                           |
+
+## Wrapping Up
+
+A little earlier in this section, JavaScript proved it could change the page by adding plain text.
+
+In this chapter, it did something more powerful.
+
+It built the first real structure of the app.
+
+Potion Shelf now has a heading, a section, and an empty list waiting for content.
+
+Next, we are going to run into a very common beginner bug.
+
+We can only select `#potion-list` after it exists.
+
+So next, we will look at what happens when JavaScript tries to select an element too early.

@@ -1,39 +1,287 @@
 ---
 id: JS.SD.ELM.RENDER_FUNCTION
-title: Render Function · Put the DOM Update in One Place
-short: Refactor the working Potion Shelf into a render function.
+title: Render Function ? Put the DOM Update in One Place
+short: Group the DOM update pipeline inside render().
 ---
 
-# Render Function · Put the DOM Update in One Place
+# Render Function: Put the DOM Update in One Place
 
-The page works, but the rendering logic is spread out.
+Potion Shelf works.
 
-> When code that updates the screen is scattered everywhere, it becomes harder to re-run later.
+That is worth pausing on for a second.
 
-This prepares you for later chapters, where events and state changes will need to call render logic again.
+The page can get potion data, turn each potion object into an `<li>` string, combine those strings into one HTML string, and place that HTML into the DOM.
 
-## Concepts
+That is the full render pipeline:
 
-- A render function groups DOM update logic.
-- `render()` can be called once when the page loads.
-- Later chapters can reuse this structure.
+```txt
+data → HTML string → DOM
+```
 
-## Final Code Shape
+Or, more specifically:
+
+```txt
+potions → map(PotionItem) → join("") → potionList.innerHTML
+```
+
+That is real app behavior.
+
+Orborb has potions on the shelf.
+
+Customers can see them.
+
+The console is no longer doing all the work while the webpage stands around looking decorative.
+
+Excellent.
+
+But now we have a different kind of problem.
+
+The code works, but the rendering process is spread out loose in the file.
+
+So in this part, we are not going to make Potion Shelf look different.
+
+We are going to make the code easier to reuse.
+
+That means it is time to refactor.
+
+## The App Works, But the Render Logic Is Loose
+
+At this point, your code should look like this:
 
 ```js
 import { getPotions } from "./database.js";
 
-const PotionItem = (potion) => {
+function PotionItem(potion) {
   return `<li>${potion.name}</li>`;
-};
+}
 
-const render = () => {
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+const potions = getPotions();
+
+const potionHTML = potions.map(PotionItem).join("");
+
+potionList.innerHTML = potionHTML;
+```
+
+This code works.
+
+It renders the Potion Shelf shell.
+
+It selects the potion list.
+
+It gets the potion data.
+
+It turns the potion data into HTML.
+
+It updates the DOM.
+
+That is all good.
+
+But look at where the rendering process lives.
+
+It is just sitting directly in the file, one line after another.
+
+That is not wrong.
+
+But it is not the final shape we want.
+
+Right now, the program renders once because the file runs once.
+
+Later, though, apps often need to render again.
+
+Maybe the data changes.
+
+Maybe the user clicks a button.
+
+Maybe a filter changes.
+
+Maybe Orborb gets bored and reorganizes the shelf by suspiciousness level.
+
+We are not adding any of that yet.
+
+No events.
+
+No buttons.
+
+No filters.
+
+No dropdowns.
+
+Not today. Keep the render flow organized.
+
+But we can still prepare the code shape for the future.
+
+Instead of leaving the render logic loose in the file, we can put it inside one function.
+
+We will call that function `render`.
+
+## What Refactoring Means
+
+Before we write the function, we need one important word:
+
+**refactor**.
+
+To refactor code means:
+
+> Change the structure of the code without changing what the program does.
+
+That is the whole goal of this page.
+
+After this refactor, Potion Shelf should still look the same.
+
+The same heading should appear.
+
+The same subtitle should appear.
+
+The same potion list should appear.
+
+If the page looks different, something went wrong.
+
+That may feel strange at first.
+
+Usually, when we write new code, we expect to see something new on the page.
+
+But refactoring is different.
+
+Refactoring is not about changing the result.
+
+It is about improving the shape of the code that creates the result.
+
+So the success condition for this page is delightfully boring:
+
+> The app should look the same, but the render process should live inside a function.
+
+Boring, but powerful.
+
+Like a well-labeled folder.
+
+Or a wizard who pays invoices on time.
+
+## Create a `render` Function
+
+We already have one rendering function:
+
+```js
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+```
+
+`PotionItem` handles one small piece of rendering:
+
+```txt
+one potion object → one li string
+```
+
+Now we need a larger function that handles the full page render process.
+
+Below the `PotionItem` function, create a new function named `render`:
+
+```js
+function render() {
+
+}
+```
+
+This function does not need any parameters yet.
+
+It will use `getPotions()` to get the data.
+
+It will select the DOM elements it needs.
+
+It will update the page.
+
+The name `render` is common because it describes the job clearly:
+
+> Render the current app onto the page.
+
+Right now, “the current app” is simple.
+
+It is just the Potion Shelf shell and the list of potions.
+
+But even simple apps benefit from having the render process grouped in one place.
+
+## Move the App Shell Into `render`
+
+Start by moving the `#app` selection into the `render` function.
+
+Then move the `app.innerHTML` block underneath it.
+
+Your function should start like this:
+
+```js
+function render() {
   const app = document.querySelector("#app");
 
   app.innerHTML = `
     <header>
       <h1>Potion Shelf</h1>
-      <p>A tiny catalog for a magical shop.</p>
+      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Available Potions</h2>
+        <ul id="potion-list"></ul>
+      </section>
+    </main>
+  `;
+}
+```
+
+This part of the function does the same thing your old top-level code did.
+
+It selects the mount point.
+
+Then it renders the app shell.
+
+Nothing about the visible page has changed.
+
+We just moved those lines inside a named function.
+
+That is refactoring.
+
+## Move the Data and HTML Transformation Into `render`
+
+Next, move the potion data and HTML transformation inside the function too.
+
+That means these lines:
+
+```js
+const potions = getPotions();
+
+const potionHTML = potions.map(PotionItem).join("");
+```
+
+should also live inside `render`.
+
+Now the function should look like this:
+
+```js
+function render() {
+  const app = document.querySelector("#app");
+
+  app.innerHTML = `
+    <header>
+      <h1>Potion Shelf</h1>
+      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
     </header>
 
     <main>
@@ -45,36 +293,57 @@ const render = () => {
   `;
 
   const potions = getPotions();
+
   const potionHTML = potions.map(PotionItem).join("");
-  const potionList = document.querySelector("#potion-list");
-
-  potionList.innerHTML = potionHTML;
-};
-
-render();
+}
 ```
 
-<HandbookChallenge
-  title="Refactor into render()"
-  hints={[
-    "Keep the getPotions import at the top.",
-    "Select #potion-list after the shell is rendered.",
-    "Call render() at the bottom of the file.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`import { getPotions } from "./database.js";
+Now `render` does more of the full rendering process.
 
-const PotionItem = (potion) => {
-  return \`<li>\${potion.name}</li>\`;
-};
+It creates the shell.
 
-const render = () => {
+It gets the data.
+
+It turns the data into one HTML string.
+
+But it still does not put the potion HTML into the list yet.
+
+For that, we need `potionList`.
+
+## Select the List After the Shell Exists
+
+This order still matters.
+
+The `#potion-list` element is created by this line:
+
+```js
+app.innerHTML = `...`;
+```
+
+That means we still need to select `#potion-list` after the shell has been rendered.
+
+Inside `render`, add this line after the `app.innerHTML` block:
+
+```js
+const potionList = document.querySelector("#potion-list");
+```
+
+You can place it before or after the `potions` and `potionHTML` lines.
+
+The most important rule is this:
+
+> Select `#potion-list` after `app.innerHTML` creates it.
+
+For this version, we will select the list after creating the final potion HTML string:
+
+```js
+function render() {
   const app = document.querySelector("#app");
 
-  app.innerHTML = \`
+  app.innerHTML = `
     <header>
       <h1>Potion Shelf</h1>
-      <p>A tiny catalog for a magical shop.</p>
+      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
     </header>
 
     <main>
@@ -83,108 +352,493 @@ const render = () => {
         <ul id="potion-list"></ul>
       </section>
     </main>
-  \`;
+  `;
 
   const potions = getPotions();
+
   const potionHTML = potions.map(PotionItem).join("");
+
+  const potionList = document.querySelector("#potion-list");
+}
+```
+
+Now `render` has:
+
+* the app mount point
+* the app shell
+* the potion data
+* the final potion HTML string
+* the potion list element
+
+Only one step is missing.
+
+We need to update the list.
+
+## Update the List Inside `render`
+
+Add the DOM update line at the end of the function:
+
+```js
+potionList.innerHTML = potionHTML;
+```
+
+Now the full `render` function should look like this:
+
+```js
+function render() {
+  const app = document.querySelector("#app");
+
+  app.innerHTML = `
+    <header>
+      <h1>Potion Shelf</h1>
+      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Available Potions</h2>
+        <ul id="potion-list"></ul>
+      </section>
+    </main>
+  `;
+
+  const potions = getPotions();
+
+  const potionHTML = potions.map(PotionItem).join("");
+
   const potionList = document.querySelector("#potion-list");
 
   potionList.innerHTML = potionHTML;
-};
+}
+```
+
+This function now contains the full render process.
+
+It selects the app.
+
+It renders the shell.
+
+It gets the data.
+
+It transforms the data into HTML.
+
+It selects the list.
+
+It updates the list.
+
+That is the whole pipeline in one named place.
+
+Beautiful.
+
+Suspiciously organized.
+
+## Defining a Function Does Not Run It
+
+There is one very important catch.
+
+Writing this function does not automatically render the page.
+
+This code:
+
+```js
+function render() {
+  // render code here
+}
+```
+
+defines the function.
+
+It tells JavaScript what `render` means.
+
+But it does not run the function yet.
+
+A function declaration is like writing down a recipe.
+
+Very useful.
+
+But the soup does not appear just because the recipe exists.
+
+Tragic, honestly.
+
+To actually run the function, we need to call it.
+
+At the very bottom of the file, add this line:
+
+```js
+render();
+```
+
+That line tells JavaScript:
+
+> Run the render function now.
+
+Once that line runs, all the code inside `render` runs.
+
+That is when the app shell appears and the potion list gets filled.
+
+## Putting It All Together
+
+Your full file should now look like this:
+
+```js
+import { getPotions } from "./database.js";
+
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+
+function render() {
+  const app = document.querySelector("#app");
+
+  app.innerHTML = `
+    <header>
+      <h1>Potion Shelf</h1>
+      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Available Potions</h2>
+        <ul id="potion-list"></ul>
+      </section>
+    </main>
+  `;
+
+  const potions = getPotions();
+
+  const potionHTML = potions.map(PotionItem).join("");
+
+  const potionList = document.querySelector("#potion-list");
+
+  potionList.innerHTML = potionHTML;
+}
 
 render();
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Keep the `getPotions` import at the top.</li>
-    <li>Keep the `PotionItem` function.</li>
-    <li>Create a function named `render`.</li>
-    <li>Move the `#app` selection inside `render`.</li>
-    <li>Move the app shell rendering inside `render`.</li>
-    <li>Move the `getPotions()` call inside `render`.</li>
-    <li>Move the `map()` + `join("")` list rendering inside `render`.</li>
-    <li>Move the `#potion-list` selection inside `render`, after the shell is rendered and before setting its `innerHTML`.</li>
-    <li>Call `render()` at the bottom of the file.</li>
-    <li>Refresh and confirm the page still displays every potion.</li>
-  </ul>
-</HandbookChallenge>
+```
+
+Refresh the preview.
+
+Potion Shelf should still show every potion.
+
+That is the goal.
+
+The page should not look new.
+
+The code should look more organized.
+
+## Why the Page Should Look the Same
+
+This page is a refactor.
+
+That means the visible behavior should stay the same.
+
+Before, the render logic ran because the lines were written directly in the file.
+
+Now, the render logic runs because we call:
+
+```js
+render();
+```
+
+The same work still happens.
+
+It just happens inside a function now.
+
+So if Potion Shelf looks the same after this change, that is not disappointing.
+
+That is success.
+
+The app still renders the full list.
+
+But now the rendering process has a name.
+
+Later, that will matter.
+
+If something changes and we need the page to update again, we will have one clear function responsible for rebuilding the DOM:
+
+```js
+render();
+```
+
+We are not using that power yet.
+
+But we are shaping the code so it is ready.
+
+## Code Target
+
+```js
+import { getPotions } from "./database.js";
+
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+
+function render() {
+  const app = document.querySelector("#app");
+
+  app.innerHTML = `
+    <header>
+      <h1>Potion Shelf</h1>
+      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Available Potions</h2>
+        <ul id="potion-list"></ul>
+      </section>
+    </main>
+  `;
+
+  const potions = getPotions();
+
+  const potionHTML = potions.map(PotionItem).join("");
+
+  const potionList = document.querySelector("#potion-list");
+
+  potionList.innerHTML = potionHTML;
+}
+
+render();
+```
+
+## Challenge Checklist
+
+* Keep the `getPotions` import at the top of `/scripts/main.js`.
+* Keep the `PotionItem` function.
+* Create a function named `render`.
+* Move the `app` variable inside `render`.
+* Move the `app.innerHTML` block inside `render`.
+* Move the `potions` variable inside `render`.
+* Move the `potionHTML` variable inside `render`.
+* Move the `potionList` variable inside `render`.
+* Make sure `potionList` is selected after `app.innerHTML` creates the list.
+* Move `potionList.innerHTML = potionHTML` inside `render`.
+* Call `render()` at the bottom of the file.
+* Refresh the preview.
+* Confirm that every potion still appears in the list.
+* Confirm that the page looks the same as it did before the refactor.
 
 ## Keep vs Trash
 
 Keep:
 
 ```js
-const render = () => {
-  // DOM update logic
-};
+import { getPotions } from "./database.js";
+```
+
+Keep:
+
+```js
+function PotionItem(potion) {
+  return `<li>${potion.name}</li>`;
+}
+```
+
+Keep:
+
+```js
+function render() {
+  const app = document.querySelector("#app");
+
+  app.innerHTML = `
+    <header>
+      <h1>Potion Shelf</h1>
+      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Available Potions</h2>
+        <ul id="potion-list"></ul>
+      </section>
+    </main>
+  `;
+
+  const potions = getPotions();
+
+  const potionHTML = potions.map(PotionItem).join("");
+
+  const potionList = document.querySelector("#potion-list");
+
+  potionList.innerHTML = potionHTML;
+}
 
 render();
 ```
 
-Trash all duplicated rendering logic outside `render()`.
+Move into `render`, instead of leaving loose in the file:
 
----
+```js
+const app = document.querySelector("#app");
+```
+
+```js
+const potionList = document.querySelector("#potion-list");
+```
+
+```js
+const potions = getPotions();
+```
+
+```js
+const potionHTML = potions.map(PotionItem).join("");
+
+potionList.innerHTML = potionHTML;
+```
+
+Trash any duplicate loose code after you have moved it into `render`.
+
+The goal is not to have two render pipelines.
+
+One cauldron is enough.
 
 ## Flow Update
 
-Your code changed the program flow. This is the final Chapter 1 diagram refactor.
+Your program flow is mostly the same, but now the render work happens when `main.js` calls `render()`.
 
-Update `/sequenceDiagram.mmd` so `main.js` calls `render()` before the detailed render steps:
+Add this line before the DOM and data work:
 
 ```mermaid
-sequenceDiagram
-  participant Browser
-  participant Main as main.js
-  participant DB as database.js
-  participant DOM
-
-  Browser->>Main: load module script
   Main->>Main: call render()
+```
+
+Then keep the render steps under that call:
+
+```mermaid
   Main->>DOM: select #app
-  DOM-->>Main: return app element
   Main->>DOM: set app.innerHTML
-  DOM->>DOM: create header, main, section, and #potion-list
-  Main->>DB: getPotions()
+  Main->>DB: call getPotions()
   DB-->>Main: return potions array
-  Main->>Main: map potions with PotionItem()
-  Main->>Main: join li strings into one HTML string
+  Main->>Main: map potions with PotionItem
+  Main->>Main: join li strings into potionHTML
   Main->>DOM: select #potion-list
-  DOM-->>Main: return potionList element
   Main->>DOM: set potionList.innerHTML
 ```
 
-Then answer:
+The important idea is that the same steps still happen.
 
-- Which step starts the render process?
-- Which steps happen inside `render()`?
-- Which step gets data?
-- Which step turns data into HTML?
-- Which step updates the DOM?
+They are just grouped inside the `render` function now.
 
-## Chapter 1 Assessment Target
+## Flow Questions
 
-Students should be able to independently build this flow:
+* What does the `render` function do?
+* Does defining `render` automatically update the page?
+* Which line actually runs the `render` function?
+* Why does `#potion-list` still need to be selected after `app.innerHTML` runs?
+* Did the visible page change after this refactor?
+* What does it mean to refactor code?
+* Why might it be useful to have the render process in one function later?
+
+## What You Should Notice
+
+This page should not make Potion Shelf look different.
+
+That is the point.
+
+Before this refactor, the app already rendered the full potion list.
+
+After this refactor, the app should still render the full potion list.
+
+The difference is the shape of the code.
+
+Before, the render pipeline was loose in the file.
+
+Now, the render pipeline lives inside one function:
+
+```js
+render();
+```
+
+That gives us the final major idea in this section:
+
+> A render function groups the DOM update process into one reusable action.
+
+Inside `render`, the same steps still happen:
 
 ```txt
 select mount point
--> render shell
--> select nested list
--> get array data
--> turn one object into one HTML string
--> map all objects into HTML strings
--> join strings
--> set innerHTML
+→ render shell
+→ get data
+→ turn data into HTML
+→ select nested list
+→ update DOM
 ```
 
-## Not Yet
+Nothing magical changed.
 
-Chapter 1 does not teach `addEventListener()`, `event`, `dataset`, dropdowns, filtering, or transient state. It stops when students can render a clean potion list from data.
+We just gave the process a name.
+
+And that matters because named processes are easier to rerun, easier to debug, and easier to build on later.
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| render function | A function responsible for updating the DOM |
-| refactor | Change code structure without changing behavior |
-| single responsibility | Code should have one clear job |
+| Term                 | Meaning                                                                |
+| -------------------- | ---------------------------------------------------------------------- |
+| `render`             | A function that updates the page based on the current data             |
+| refactor             | To change the structure of code without changing what it does          |
+| function declaration | Code that defines a function so it can be called later                 |
+| function call        | Code that runs a function, like `render()`                             |
+| reusable             | Able to be used again without rewriting the same code                  |
+| render pipeline      | The sequence of steps that turns data into visible DOM content         |
+| loose code           | Code written directly in the file instead of grouped inside a function |
+| behavior             | What the program does from the user’s point of view                    |
+| code structure       | How the code is organized internally                                   |
+
+## Wrapping Up
+
+Potion Shelf now has a complete render pipeline organized inside one function.
+
+That is a strong ending for this section.
+
+We started by selecting one element from the DOM.
+
+Then we changed plain text.
+
+Then we rendered HTML structure.
+
+Then we selected an element created by `innerHTML`.
+
+Then we imported potion data.
+
+Then we rendered one object.
+
+Then we moved that pattern into `PotionItem`.
+
+Then we used `map()` and `join("")` to render the full list.
+
+Now we have grouped the whole DOM update process inside `render`.
+
+That is the final shape:
+
+```txt
+data → HTML string → DOM
+```
+
+The app is still small.
+
+It does not handle clicks yet.
+
+It does not filter potions yet.
+
+It does not track user choices yet.
+
+But it has the structure future interactive pages will need.
+
+Potion Shelf can render itself from data.
+
+And now, whenever we need to rebuild what the user sees, we have one clear function ready to do that work:
+
+```js
+render();
+```
+
+That is a real app pattern.
+
+Orborb’s shelf is stocked.
+
+The render pipeline is organized.
+
+Nobody has to hard-code potion names into the HTML by hand.
+
+Excellent work.

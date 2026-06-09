@@ -1,98 +1,244 @@
 ---
 id: JS.SD.ELM.DOM_BASICS
-title: DOM Basics · The Page as Objects
-short: Select the app mount point and inspect it as a DOM element object.
+title: DOM Basics ? The Page as Objects
+short: Select the mount point and inspect the returned element.
 ---
 
-# DOM Basics · The Page as Objects
+# DOM Basics: The Page as Objects
 
-HTML creates the starting page. The browser turns that HTML into the DOM. JavaScript can select parts of the DOM and change them.
+We have learned a lot so far.
 
-The page currently has this mount point:
+So far, you have practiced how to:
+
+- store values in variables
+- use strings, numbers, booleans, arrays, and objects
+- write functions that organize reusable logic
+- use dot notation to read properties from objects
+- use template literals to build strings with dynamic values
+- import code from another file
+- use the console to inspect what your code is doing
+
+That is a strong foundation.
+
+But there is an important question hanging in the air:
+
+**Weren’t we learning how to make websites?**
+
+So far, most of the work we have done with JavaScript has lived in the console. That is useful. The console is a great place to test ideas, inspect values, and prove that your code is running.
+
+But as lovely as I am sure your console output was, it is not a website.
+
+Eventually, your JavaScript needs to affect the page the user can actually see.
+
+So the big question for this section is:
+
+> How do we use JavaScript to build and update what appears on a webpage?
+
+The good news is that the browser already does a lot of the heavy lifting for us.
+
+The browser turns your HTML into something called the **DOM**, which sounds vaguely mystical and ominous.
+
+Really, it stands for **Document Object Model**.
+
+The DOM is the browser’s live, object-based version of your page.
+
+When the browser creates the DOM, it gives your JavaScript access to it through a built-in object called `document`.
+
+That means JavaScript can use `document` to find elements on the page, inspect them, and eventually update them.
+
+In this chapter, we are going to start with the first step:
+
+**selecting an element from the DOM.**
+
+## The Problem: JavaScript Cannot Change “The Page” Vaguely
+
+When you write HTML, it looks like text in a file.
 
 ```html
 <div id="app"></div>
 ```
 
-But nothing visible appears inside it unless JavaScript puts something there.
+That line is text inside `index.html`.
 
-> Our HTML has a place for the app, but JavaScript has not found it yet.
+But JavaScript does not work with your HTML file as plain text. JavaScript needs something it can inspect, select, and update.
 
-## Concepts
+So when the browser loads your HTML, it does some very helpful work for you.
 
-- The DOM is the browser's live model of the page.
-- `document` represents the page.
-- Elements are objects.
-- To change an element, select it first.
+It reads the HTML file and builds a live object-based version of the page.
 
-## Code
+That live object-based version is called the **Document Object Model**, or the **DOM**.
+
+## What Is the DOM?
+
+The DOM is the browser’s live model of your page.
+
+When the browser reads this HTML:
+
+```html
+<body>
+  <div id="app"></div>
+</body>
+```
+
+It creates objects that represent those elements.
+
+Your `<body>` becomes an object.
+
+Your `<div id="app"></div>` becomes an object.
+
+The whole page becomes something JavaScript can reach into and work with.
+
+That matters because JavaScript cannot update the page by saying:
+
+```js
+change the div please
+```
+
+JavaScript is powerful, but it is not psychic. Tragic.
+
+Instead, JavaScript needs to:
+
+1. find a specific element
+2. store that element in a variable
+3. use that variable to inspect or change the element
+
+In this chapter, we are only doing step one:
+
+**selecting an element from the DOM.**
+
+We are not changing what the user sees yet. First, we need to make contact with the page.
+
+## The `document` Object
+
+The browser gives JavaScript a built-in object named `document`.
+
+The `document` object represents the page.
+
+You can think of `document` as JavaScript’s doorway into the DOM.
+
+If you want JavaScript to find something on the page, you usually start with `document`.
+
+```js
+document
+```
+
+On its own, that does not do much. It just refers to the page document.
+
+To actually find an element, we need to use a method.
+
+## Selecting `#app`
+
+In your HTML, you should see this element:
+
+```html
+<div id="app"></div>
+```
+
+This element is going to be our app’s starting point.
+
+A common name for this kind of element is a **mount point**.
+
+A mount point is an element where your JavaScript app will place content.
+
+Right now, the `<div>` is empty. That is okay. We will use JavaScript to put content inside it later.
+
+For now, we just want JavaScript to find it.
+
+To do that, we can use `document.querySelector()`.
 
 ```js
 const app = document.querySelector("#app");
-console.dir(app);
 ```
 
-<HandbookChallenge
-  title="Select and inspect #app"
-  hints={[
-    "Use document.querySelector(\"#app\").",
-    "console.dir(app) shows the selected element as an object.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const app = document.querySelector("#app");
-console.dir(app);
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Open `/scripts/main.js`.</li>
-    <li>Create a variable named `app`.</li>
-    <li>Use `document.querySelector("#app")` to select the mount point.</li>
-    <li>Use `console.dir(app)` to inspect the selected element.</li>
-    <li>Refresh the preview.</li>
-    <li>Open DevTools.</li>
-    <li>Confirm that `app` is an element object, not a string.</li>
-  </ul>
-</HandbookChallenge>
+Let’s break that down.
 
-## Keep vs Trash
+| Code               | Meaning                                                        |
+| ------------------ | -------------------------------------------------------------- |
+| `const app`        | Create a variable named `app`                                  |
+| `=`                | Store the value on the right inside the variable on the left   |
+| `document`         | The browser’s object that represents the page                  |
+| `.querySelector()` | A method that selects the first matching element               |
+| `"#app"`           | A CSS selector that means “find the element with an id of app” |
 
-Keep:
+The `#` matters.
+
+In CSS, `#app` means “the element with the id of `app`."
+
+JavaScript’s `querySelector()` uses that same selector style.
+
+So this line:
 
 ```js
 const app = document.querySelector("#app");
 ```
 
-Trash:
+means:
+
+> Go into the document, find the element with an id of `app`, and store that element object in a variable named `app`.
+
+## The Selected Element Is Not a String
+
+This part is important.
+
+When we select the element, we are not storing this string:
+
+```html
+"<div id='app'></div>"
+```
+
+We are storing an object that represents the actual DOM element.
+
+That means JavaScript can inspect it and eventually change it.
+
+To prove that, we can use `console.dir()`.
 
 ```js
 console.dir(app);
 ```
 
----
+You have probably used `console.log()` before. `console.dir()` is similar, but it is especially useful when you want to inspect an object.
 
-## Flow Update
+Since DOM elements are objects, `console.dir(app)` lets us explore the selected element in the console.
 
-Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+## Try It
 
-```mermaid
-  Browser->>Main: load module script
-  Main->>DOM: select #app
-  DOM-->>Main: return app element
+Your code should look like this:
+
+```js
+const app = document.querySelector("#app");
+
+console.dir(app);
 ```
 
-Then answer:
+## What You Should Notice
 
-- Which participant represents the JavaScript file?
-- Which participant represents the live page?
-- What does the DOM return to `main.js`?
+When you inspect `app`, you should see an object in the console.
+
+That object represents the `<div id="app"></div>` element from your HTML.
+
+This is the first major DOM idea:
+
+> JavaScript can work with HTML elements because the browser turns those elements into objects.
+
+We have not changed the page yet.
+
+That comes next.
+
+For now, the win is simple but important:
+
+**Your JavaScript successfully found an element in the DOM.**
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| DOM | The browser's live object model of the page |
-| `document` | The JavaScript object that represents the page |
-| element | A DOM object created from an HTML tag |
-| selector | A string used to find an element |
-| mount point | The container where the app renders |
+| Term              | Meaning                                                         |
+| ----------------- | --------------------------------------------------------------- |
+| DOM               | The browser’s live object model of the page                     |
+| `document`        | A built-in object that represents the page in JavaScript        |
+| element           | One piece of HTML, like a `div`, `h1`, or `p`                   |
+| object            | A value with properties and methods                             |
+| method            | A function that belongs to an object                            |
+| `querySelector()` | A method that selects the first element matching a CSS selector |
+| selector          | Text that describes which element you want to find              |
+| `#app`            | A selector that means “the element with an id of app”           |
+| mount point       | An element where JavaScript will place app content              |
+| `console.dir()`   | A console method that helps inspect an object                   |

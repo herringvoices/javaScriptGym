@@ -1,82 +1,268 @@
 ---
 id: JS.SD.ELM.TEXTCONTENT
-title: textContent · Put Plain Text on the Page
-short: Use textContent to make the first visible DOM update.
+title: textContent ? Put Plain Text on the Page
+short: Change visible text after selecting a DOM element.
 ---
 
-# textContent · Put Plain Text on the Page
+# textContent: Put Plain Text on the Page
 
-The app has a selected mount point, but the user still sees nothing.
+## Page Goal
 
-> We found the app container. Now we need to prove we can change what appears inside it.
+Learners make their first visible DOM update.
 
 ## Concepts
 
-- `textContent` changes the plain text inside an element.
+- `textContent` updates plain text.
 - `textContent` does not create HTML.
-- Assignment updates the DOM immediately.
+- Assigning to a DOM property updates the visible page.
 
-## Code
+In the last chapter, your JavaScript found an element in the DOM.
+
+That was an important first step.
+
+But it probably also raised a very reasonable question:
+
+> Cool. We found the element. Now can we actually do something with it?
+
+Yes.
+
+Now that we have selected the `#app` element and stored it in a variable, JavaScript can use that variable to change what the user sees.
+
+In this chapter, we are going to use a property called `textContent`.
+
+`textContent` gives us a simple way to put plain text inside an element.
+
+That means this chapter is our first real “JavaScript changed the page” moment.
+
+## Selecting an Element Is Not the Same as Changing It
+
+At the end of the last chapter, your code looked like this:
+
+```js
+const app = document.querySelector("#app");
+
+console.dir(app);
+```
+
+That code successfully found the element.
+
+But it did not change anything visible on the page.
+
+Why not?
+
+Because selecting an element only gives JavaScript access to it.
+
+It is like pointing at a box and saying:
+
+> There it is.
+
+Helpful. But not very dramatic.
+
+If we want the user to actually see something new, JavaScript has to do more than select the element.
+
+It has to change something about that element.
+
+## What `textContent` Does
+
+Every DOM element has properties that JavaScript can read or change.
+
+One of those properties is `textContent`.
+
+`textContent` represents the plain text inside an element.
+
+That means we can write code like this:
 
 ```js
 app.textContent = "Potion Shelf loading...";
 ```
 
-<HandbookChallenge
-  title="Render a plain text message"
-  hints={[
-    "Keep the app variable from the previous page.",
-    "Assign a string to app.textContent.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const app = document.querySelector("#app");
+This line tells JavaScript:
+
+> Take the element stored in `app` and set its text content to `Potion Shelf loading...`
+
+When the browser runs that line, the text appears on the page.
+
+So now our code can do two different jobs:
+
+- `document.querySelector("#app")` finds the element
+- `app.textContent = ...` changes the text inside the element
+
+That is an important distinction.
+
+First we select. Then we update.
+
+## Putting It Together
+
+Your code should now look like this:
+
+```js
+const app = document.querySelector("#app");
+
+app.textContent = "Potion Shelf loading...";
+```
+
+Let’s slow that down.
+
+| Code                             | Meaning                                              |
+| -------------------------------- | ---------------------------------------------------- |
+| `const app`                      | Create a variable named `app`                        |
+| `document.querySelector("#app")` | Find the element with an id of `app`                 |
+| `app.textContent`                | Access the text content property of that element     |
+| `=`                              | Set the property to a new value                      |
+| `"Potion Shelf loading..."`      | The plain text that should appear inside the element |
+
+Once this code runs, the page should no longer look empty.
+
+It should show this text:
+
+```txt
+Potion Shelf loading...
+```
+
+That is our first visible DOM update.
+
+Not a whole app yet. But definitely progress.
+
+## `textContent` Changes Text, Not HTML
+
+This part matters a lot.
+
+`textContent` is for plain text.
+
+It does **not** create HTML structure.
+
+For example, look at this code:
+
+```js
+app.textContent = "<h1>Potion Shelf</h1>";
+```
+
+You might think that would create a heading.
+
+It will not.
+
+Instead, the browser will show the characters exactly as text:
+
+```txt
+<h1>Potion Shelf</h1>
+```
+
+Why?
+
+Because `textContent` does not interpret HTML tags. It only places plain text inside the element.
+
+That is actually useful.
+
+Sometimes you really do want to show plain text exactly as written.
+
+But for this project, it also shows us a limitation:
+
+If we want headings, lists, and other page structure later, we will need something more powerful than `textContent`.
+
+That comes in the next chapter.
+
+For now, `textContent` is exactly what we need because it gives us the simplest possible way to prove that JavaScript can update the page.
+
+## Code Target
+
+```js
+const app = document.querySelector("#app");
 
 app.textContent = "Potion Shelf ready.";
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Keep the `app` variable from the previous page.</li>
-    <li>Set `app.textContent` to `"Potion Shelf loading..."`.</li>
-    <li>Refresh the preview.</li>
-    <li>Confirm the text appears on the page.</li>
-    <li>Change the message to `"Potion Shelf ready."`.</li>
-    <li>Refresh again.</li>
-    <li>Confirm the visible text changes.</li>
-  </ul>
-</HandbookChallenge>
+```
+
+## Challenge Checklist
+
+- Keep the `app` variable from the previous page.
+- Remove the temporary `console.dir(app)` line.
+- Set `app.textContent` to `"Potion Shelf loading..."`.
+- Refresh the preview.
+- Confirm the text appears on the page.
+- Change the message to `"Potion Shelf ready."`.
+- Refresh again.
+- Confirm the visible text changes.
 
 ## Keep vs Trash
 
-Keep:
+Keep temporarily:
 
 ```js
 app.textContent = "Potion Shelf ready.";
 ```
 
-Trash it on the next page when switching to `innerHTML`.
-
----
+This line will be replaced on the next page.
 
 ## Flow Update
 
-Your code changed the program flow. Add this line to `/sequenceDiagram.mmd`:
+Add this line:
 
 ```mermaid
   Main->>DOM: set app.textContent
 ```
 
-Then answer:
+## Flow Questions
 
 - What changed in the DOM?
 - Did `main.js` ask `database.js` for data yet?
 
-Your diagram should now show that JavaScript can update the DOM, but no potion data is involved yet.
+## What You Should Notice
+
+There are a few important ideas packed into this small example.
+
+First, JavaScript really is changing the page now.
+
+That means the DOM is not just something we inspect in the console. It is something we can update.
+
+Second, the `app` variable matters because it stores the selected element.
+
+That variable is how our code knows *which* part of the page to change.
+
+Third, `textContent` replaces the plain text inside the element.
+
+When you change:
+
+```js
+app.textContent = "Potion Shelf loading...";
+```
+
+to:
+
+```js
+app.textContent = "Potion Shelf ready.";
+```
+
+The old text does not stay there. It gets replaced by the new text.
+
+That is the second major DOM idea in this section:
+
+> Once JavaScript has selected an element, it can change what the user sees.
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| `textContent` | A property that sets or reads plain text inside an element |
-| property | A value stored on an object |
-| assignment | Using `=` to store or replace a value |
+| Term          | Meaning                                                     |
+| ------------- | ----------------------------------------------------------- |
+| `textContent` | A property that represents the plain text inside an element |
+| property      | A value that belongs to an object                           |
+| plain text    | Regular text, not interpreted as HTML structure             |
+| DOM update    | A change JavaScript makes to the page through the DOM       |
+| replace       | To overwrite an old value with a new one                    |
+
+## Wrapping Up
+
+In the last chapter, you made contact with the DOM.
+
+In this chapter, you used that connection to make text appear on the page.
+
+That is a real milestone.
+
+Your app is still very small, but it is no longer just selecting elements and logging them in the console.
+
+It is affecting the page the user can actually see.
+
+Next, we will go one step further.
+
+Plain text is useful, but Potion Shelf needs structure.
+
+We need headings, sections, and a place where potion data can appear later.
+
+For that, we will move from `textContent` to `innerHTML`.

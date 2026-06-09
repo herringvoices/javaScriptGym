@@ -1,57 +1,317 @@
 ---
-id: JS.SD.ELM.SELECTING_RENDERED_ELEMENTS
-title: Selecting Rendered Elements · Find the List
-short: Select the nested list after innerHTML creates it.
+id: JS.SD.ELM.SELECT_RENDERED
+title: Selecting Rendered Elements ? Find the List
+short: Select an element that innerHTML created.
 ---
 
-# Selecting Rendered Elements · Find the List
+# Selecting Rendered Elements: Find the List
 
-The app shell includes:
+Potion Shelf now has a real app shell.
+
+That is a big step up from a plain text message.
+
+The page has a title, a little descriptive text, a main section, and an empty list where Orborb's potions will eventually appear.
+
+That empty list is important.
 
 ```html
 <ul id="potion-list"></ul>
 ```
 
-But JavaScript cannot select that list until after the shell has been rendered.
+Right now, it is just sitting there. Quiet. Patient. Probably glowing a little.
+
+But soon, we will use JavaScript to put potion data inside it.
+
+Before we can do that, JavaScript needs to select the list.
+
+And that is where we are going to meet one of the most common beginner DOM bugs:
 
 > You cannot select an element that does not exist yet.
 
-## Concepts
+## The List Exists Because `innerHTML` Created It
 
-- DOM updates happen in order.
-- If `innerHTML` creates an element, select that element after setting `innerHTML`.
-- `querySelector()` returns `null` when nothing matches.
+At this point, your code should look like this:
 
-## Code
+```js
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+```
+
+The important line for this page is inside the HTML string:
+
+```html
+<ul id="potion-list"></ul>
+```
+
+That list is not written directly in `index.html`.
+
+It is created by JavaScript when this line runs:
+
+```js
+app.innerHTML = `...`;
+```
+
+That means `#potion-list` does not exist right away.
+
+First, the browser loads the page.
+
+Then JavaScript selects `#app`.
+
+Then JavaScript sets `app.innerHTML`.
+
+Only after that does the `<ul id="potion-list"></ul>` exist in the DOM.
+
+So if we want to select that list, we have to do it after the `innerHTML` update.
+
+Order matters here.
+
+Rude, but fair.
+
+## Selecting the Potion List
+
+Now that `app.innerHTML` has created the list, we can select it.
+
+Add this line after the `app.innerHTML` block:
 
 ```js
 const potionList = document.querySelector("#potion-list");
+```
+
+Then inspect it:
+
+```js
 console.dir(potionList);
 ```
 
-<HandbookChallenge
-  title="Select the rendered list"
-  hints={[
-    "Put the potionList selection after the app.innerHTML block.",
-    "Move it above the shell briefly to see why order matters.",
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const potionList = document.querySelector("#potion-list");
+Your code should look like this:
+
+```js
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
 console.dir(potionList);
-`}</pre>
-  }
->
-  <ul className="mt-2 mb-0 list-disc list-inside px-3">
-    <li>Keep the app shell rendering code.</li>
-    <li>After the `app.innerHTML = ...` block, create a variable named `potionList`.</li>
-    <li>Use `document.querySelector("#potion-list")`.</li>
-    <li>Use `console.dir(potionList)`.</li>
-    <li>Refresh and confirm the logged value is the `<ul>` element.</li>
-    <li>Move the `potionList` selection above the `app.innerHTML` block.</li>
-    <li>Refresh and observe that the result is `null`.</li>
-    <li>Move the `potionList` selection back below the `app.innerHTML` block.</li>
-  </ul>
-</HandbookChallenge>
+```
+
+Let’s slow that down.
+
+| Code                                     | Meaning                                                    |
+| ---------------------------------------- | ---------------------------------------------------------- |
+| `const potionList`                       | Create a variable named `potionList`                       |
+| `document.querySelector("#potion-list")` | Search the DOM for the element with an id of `potion-list` |
+| `"#potion-list"`                         | A CSS selector for the list we created with `innerHTML`    |
+| `console.dir(potionList)`                | Inspect the selected list element in the console           |
+
+Refresh the preview and open the console.
+
+You should see the `<ul>` element.
+
+That means JavaScript successfully found the list that it created a moment earlier.
+
+## Now Break It on Purpose
+
+This is one of those bugs that makes way more sense when you see it happen.
+
+Move this line:
+
+```js
+const potionList = document.querySelector("#potion-list");
+```
+
+above the `app.innerHTML` block.
+
+Your code will look like this temporarily:
+
+```js
+const app = document.querySelector("#app");
+
+const potionList = document.querySelector("#potion-list");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+console.dir(potionList);
+```
+
+Refresh the preview and check the console.
+
+This time, you should see:
+
+```txt
+null
+```
+
+That is JavaScript saying:
+
+> I looked for `#potion-list`, but I did not find anything.
+
+And JavaScript is right.
+
+When this line ran:
+
+```js
+const potionList = document.querySelector("#potion-list");
+```
+
+the list had not been created yet.
+
+The list only gets created later, when this line runs:
+
+```js
+app.innerHTML = `...`;
+```
+
+So JavaScript was not being dramatic.
+
+It searched too early.
+
+There was nothing to find.
+
+## What `null` Means
+
+`null` is a special value that means “nothing is here.”
+
+In this case, it means `querySelector()` did not find a matching element.
+
+That is different from selecting the wrong kind of value.
+
+JavaScript did not find a string.
+
+It did not find an empty list.
+
+It did not find a broken element.
+
+It found nothing.
+
+So it returned `null`.
+
+This is why the order of the code matters.
+
+If we select after the list exists, we get the `<ul>` element.
+
+If we select before the list exists, we get `null`.
+
+## Put It Back in the Right Order
+
+Now move the `potionList` selection back below the `app.innerHTML` block.
+
+The correct order is:
+
+1. Select `#app`.
+2. Set `app.innerHTML` to create the app shell.
+3. Select `#potion-list`.
+
+Your code should look like this again:
+
+```js
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+console.dir(potionList);
+```
+
+Refresh the preview.
+
+The console should show the `<ul>` element again.
+
+That is the whole lesson.
+
+Create first.
+
+Select after.
+
+## Code Target
+
+```js
+const app = document.querySelector("#app");
+
+app.innerHTML = `
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+`;
+
+const potionList = document.querySelector("#potion-list");
+
+console.dir(potionList);
+```
+
+## Challenge Checklist
+
+* Keep the `app` variable from the previous part.
+* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
+* After the `app.innerHTML` block, create a `potionList` variable.
+* Use `document.querySelector("#potion-list")` to select the empty list.
+* Use `console.dir(potionList)` to inspect it.
+* Refresh the preview.
+* Confirm that the console shows the `<ul>` element.
+* Move the `potionList` selection above the `app.innerHTML` block.
+* Refresh again.
+* Confirm that the console shows `null`.
+* Move the `potionList` selection back below the `app.innerHTML` block.
+* Refresh one more time.
+* Confirm that the console shows the `<ul>` element again.
 
 ## Keep vs Trash
 
@@ -61,34 +321,90 @@ Keep:
 const potionList = document.querySelector("#potion-list");
 ```
 
-Trash:
+Trash after you have confirmed the selection works:
 
 ```js
 console.dir(potionList);
 ```
 
----
+The `console.dir()` line was useful for checking your work, but we do not need to keep inspecting the same list forever.
+
+The `potionList` variable should stay because we will use it soon.
 
 ## Flow Update
 
-Your code changed the program flow. Add these lines to `/sequenceDiagram.mmd`:
+Add this line after the `app.innerHTML` line:
 
 ```mermaid
   Main->>DOM: select #potion-list
-  DOM-->>Main: return potionList element
 ```
 
-Then answer:
+## Flow Questions
 
-- Why does selecting `#potion-list` happen after setting `app.innerHTML`?
-- What would the DOM return if `main.js` asked for `#potion-list` too early?
+* Why does `Main->>DOM: select #potion-list` need to happen after `Main->>DOM: set app.innerHTML`?
+* What did the console show when `#potion-list` was selected too early?
+* Did `main.js` ask `database.js` for potion data yet?
 
-This makes the order visible: create `#potion-list`, then select `#potion-list`.
+## What You Should Notice
+
+This page did not make Potion Shelf look different.
+
+That is okay.
+
+Sometimes the most important code does not change what the user sees right away.
+
+The important change is that JavaScript now has access to the empty list inside the app shell.
+
+First, `app.innerHTML` created the list.
+
+Then `document.querySelector("#potion-list")` selected the list.
+
+That order matters.
+
+If JavaScript tries to select `#potion-list` before `innerHTML` creates it, the result is `null`.
+
+This is the next major DOM idea in the section:
+
+> JavaScript can only select elements that already exist in the DOM.
+
+That may seem obvious once you see it, but this exact mistake causes a lot of bugs.
+
+So now you know what to look for.
+
+If `querySelector()` gives you `null`, one of the first questions to ask is:
+
+> Did this element exist when my selection code ran?
 
 ## Technical Vocabulary
 
-| Term | Meaning |
-| --- | --- |
-| `null` | A value meaning "nothing was found" |
-| execution order | The order JavaScript runs statements |
-| nested element | An element inside another element |
+| Term             | Meaning                                                                  |
+| ---------------- | ------------------------------------------------------------------------ |
+| `null`           | A value that means nothing was found or no value exists                  |
+| execution order  | The order that code runs in                                              |
+| rendered element | An element that has been created and placed into the DOM                 |
+| `potionList`     | A variable that stores the selected `<ul id="potion-list"></ul>` element |
+| `#potion-list`   | A selector that means “the element with an id of potion-list”            |
+| inspect          | To look closely at a value in the console                                |
+| temporary code   | Code used briefly to test or inspect something before removing it        |
+
+## Wrapping Up
+
+Potion Shelf now has more than an app shell.
+
+Your JavaScript can also find the empty list inside that shell.
+
+That means we have a place to put potion items later.
+
+More importantly, you saw what happens when JavaScript tries to select an element too early.
+
+It gets `null`.
+
+Not because JavaScript is cursed.
+
+Not because Orborb hexed the browser.
+
+Because the element did not exist yet.
+
+Next, we need something to put inside that list.
+
+So we will bring in the potion data and inspect the array that Orborb gave us.
