@@ -223,154 +223,20 @@ export default function HandbookPage() {
                 <div className="not-prose sticky top-[4rem] z-20 mb-2 flex justify-end">
                   <PanelHideButton label="Hide handbook" onClick={() => setShowHandbook(false)} />
                 </div>
-                {chapterId && chapterModule ? (
-                  <div>
-                    {loadingChapter && (
-                      <p className="text-sm text-slate-400">Loading chapter…</p>
-                    )}
-                    {chapterError && (
-                      <p className="text-sm text-red-400">Failed to load chapter: {chapterError.message}</p>
-                    )}
-                    {chapterModule && (
-                      <HandbookMDXProvider>
-                        <chapterModule.default />
-                      </HandbookMDXProvider>
-                    )}
-                  </div>
-                ) : entry && entry.handbookMarkdown ? (
-                  <ReactMarkdown
-                    rehypePlugins={[rehypeSlug]}
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
-                      h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
-                      code: (props) => (
-                        <code
-                          {...props}
-                          className="rounded bg-slate-900 px-1.5 py-0.5 text-xs font-medium text-brand-200"
-                        />
-                      ),
-                      pre: (props) => (
-                        <pre {...props} className="overflow-auto rounded-lg bg-slate-900 p-4 text-sm shadow-inner" />
-                      ),
-                    }}
-                  >
-                    {entry.handbookMarkdown}
-                  </ReactMarkdown>
-                ) : hasMdx ? (
-                  <div>
-                    {loadingMdx && <p className="text-sm text-slate-400">Loading content…</p>}
-                    {mdxError && (
-                      <p className="text-sm text-red-400">Failed to load chapter: {mdxError.message}</p>
-                    )}
-                    {mdxModule && (
-                      <HandbookMDXProvider>
-                        <mdxModule.default />
-                      </HandbookMDXProvider>
-                    )}
-                  </div>
-                ) : meta.bodyMd ? (
-                  <ReactMarkdown
-                    rehypePlugins={[rehypeSlug]}
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
-                      h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
-                      code: (props) => (
-                        <code
-                          {...props}
-                          className="rounded bg-slate-900 px-1.5 py-0.5 text-xs font-medium text-brand-200"
-                        />
-                      ),
-                      pre: (props) => (
-                        <pre {...props} className="overflow-auto rounded-lg bg-slate-900 p-4 text-sm shadow-inner" />
-                      ),
-                    }}
-                  >
-                    {meta.bodyMd}
-                  </ReactMarkdown>
-                ) : loadingEntry ? (
-                  <p className="text-sm text-slate-400">Loading content…</p>
-                ) : (
-                  <p className="text-sm text-slate-400">Content coming soon…</p>
-                )}
-
-                {/* Chapter footer navigation */}
-                {(() => {
-                  // Build global ordered sequence across all standards using standardOrder.
-                  // Each standard contributes its intro (chapterId=null) followed by its chapters (if any).
-                  const globalSequence = standardOrder.flatMap((sid) => {
-                    const metaForSid = standards[sid];
-                    if (!metaForSid) return [];
-                    const chapters = getChaptersForStandard(sid);
-                    const base = [{ standardId: sid, id: null, title: metaForSid.title, isIntro: true }];
-                    if (!chapters || chapters.length === 0) return base;
-                    return base.concat(
-                      chapters.map((c) => ({ standardId: sid, id: c.id, title: c.title, isIntro: false }))
-                    );
-                  });
-
-                  // Find current node index
-                  const currentIndex = globalSequence.findIndex((node) =>
-                    node.standardId === resolvedId && (chapterId ? node.id === chapterId : node.id === null)
-                  );
-                  if (currentIndex === -1) return null; // Shouldn't happen
-                  const prev = currentIndex > 0 ? globalSequence[currentIndex - 1] : null;
-                  const next = currentIndex < globalSequence.length - 1 ? globalSequence[currentIndex + 1] : null;
-
-                  const makeHref = (node) =>
-                    !node || node.isIntro || !node.id
-                      ? `/handbook/${node.standardId}`
-                      : `/handbook/${node.standardId}/${node.id}`;
-
-                  const btnClass =
-                    "inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70";
-                  const inactiveClass = "opacity-40 cursor-not-allowed";
-                  const prevClass = "bg-slate-900/60 text-slate-200 border-slate-700 hover:bg-slate-800";
-                  const nextClass = "bg-brand-600 text-white border-brand-600 hover:bg-brand-500";
-
-                  return (
-                    <nav aria-label="Chapter navigation" className="mt-10 flex flex-col gap-4 border-t border-slate-700 pt-6">
-                      <div className="flex justify-between gap-4">
-                        {prev ? (
-                          <Link to={makeHref(prev)} className={`${btnClass} ${prevClass}`}>
-                            <span className="text-lg" aria-hidden="true">←</span>
-                            <span className="flex flex-col text-left">
-                              <span className="text-xs uppercase tracking-wide text-brand-300">Previous</span>
-                              {prev.isIntro ? `${standards[prev.standardId]?.title || "Intro"}` : prev.title}
-                            </span>
-                          </Link>
-                        ) : (
-                          <span className={`${btnClass} ${inactiveClass}`} aria-disabled>
-                            <span className="text-lg" aria-hidden="true">←</span>
-                            <span className="flex flex-col text-left">
-                              <span className="text-xs uppercase tracking-wide">Previous</span>
-                              —
-                            </span>
-                          </span>
-                        )}
-
-                        {next ? (
-                          <Link to={makeHref(next)} className={`${btnClass} ${nextClass}`}>
-                            <span className="flex flex-col text-right">
-                              <span className="text-xs uppercase tracking-wide text-brand-200">Next</span>
-                              {next.isIntro ? `${standards[next.standardId]?.title || "Intro"}` : next.title}
-                            </span>
-                            <span className="text-lg" aria-hidden="true">→</span>
-                          </Link>
-                        ) : (
-                          <span className={`${btnClass} ${inactiveClass}`} aria-disabled>
-                            <span className="flex flex-col text-right">
-                              <span className="text-xs uppercase tracking-wide">Next</span>
-                              —
-                            </span>
-                            <span className="text-lg" aria-hidden="true">→</span>
-                          </span>
-                        )}
-                      </div>
-                    </nav>
-                  );
-                })()}
+                <HandbookArticleBody
+                  chapterId={chapterId}
+                  chapterModule={chapterModule}
+                  chapterError={chapterError}
+                  loadingChapter={loadingChapter}
+                  entry={entry}
+                  hasMdx={hasMdx}
+                  mdxModule={mdxModule}
+                  mdxError={mdxError}
+                  loadingMdx={loadingMdx}
+                  meta={meta}
+                  loadingEntry={loadingEntry}
+                  resolvedId={resolvedId}
+                />
               </article>
 
               <div className="contents">
@@ -394,67 +260,28 @@ export default function HandbookPage() {
             </div>
         ) : (
           <div className="space-y-3">
-            <MobileAccordion title="Contents" eyebrow="Handbook">
+            <MobileAccordion title="Contents" eyebrow="Handbook" stickyHeader>
               <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
             </MobileAccordion>
 
-            <MobileAccordion title="Handbook" eyebrow={meta.title} defaultOpen contentClassName="prose prose-invert max-w-none">
-              {chapterId && chapterModule ? (
-                <div>
-                  {loadingChapter && <p className="text-sm text-slate-400">Loading chapter...</p>}
-                  {chapterError && (
-                    <p className="text-sm text-red-400">Failed to load chapter: {chapterError.message}</p>
-                  )}
-                  {chapterModule && (
-                    <HandbookMDXProvider>
-                      <chapterModule.default />
-                    </HandbookMDXProvider>
-                  )}
-                </div>
-              ) : entry && entry.handbookMarkdown ? (
-                <ReactMarkdown
-                  rehypePlugins={[rehypeSlug]}
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
-                    h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
-                    code: (props) => (
-                      <code
-                        {...props}
-                        className="rounded bg-slate-900 px-1.5 py-0.5 text-xs font-medium text-brand-200"
-                      />
-                    ),
-                    pre: (props) => (
-                      <pre {...props} className="overflow-auto rounded-lg bg-slate-900 p-4 text-sm shadow-inner" />
-                    ),
-                  }}
-                >
-                  {entry.handbookMarkdown}
-                </ReactMarkdown>
-              ) : hasMdx ? (
-                <div>
-                  {loadingMdx && <p className="text-sm text-slate-400">Loading content...</p>}
-                  {mdxError && (
-                    <p className="text-sm text-red-400">Failed to load chapter: {mdxError.message}</p>
-                  )}
-                  {mdxModule && (
-                    <HandbookMDXProvider>
-                      <mdxModule.default />
-                    </HandbookMDXProvider>
-                  )}
-                </div>
-              ) : meta.bodyMd ? (
-                <ReactMarkdown rehypePlugins={[rehypeSlug]} remarkPlugins={[remarkGfm]}>
-                  {meta.bodyMd}
-                </ReactMarkdown>
-              ) : loadingEntry ? (
-                <p className="text-sm text-slate-400">Loading content...</p>
-              ) : (
-                <p className="text-sm text-slate-400">Content coming soon...</p>
-              )}
+            <MobileAccordion title="Handbook" eyebrow={meta.title} defaultOpen stickyHeader contentClassName="prose prose-invert max-w-none">
+              <HandbookArticleBody
+                chapterId={chapterId}
+                chapterModule={chapterModule}
+                chapterError={chapterError}
+                loadingChapter={loadingChapter}
+                entry={entry}
+                hasMdx={hasMdx}
+                mdxModule={mdxModule}
+                mdxError={mdxError}
+                loadingMdx={loadingMdx}
+                meta={meta}
+                loadingEntry={loadingEntry}
+                resolvedId={resolvedId}
+              />
             </MobileAccordion>
 
-            <MobileAccordion title="Workspace" eyebrow="Code" defaultOpen>
+            <MobileAccordion title="Workspace" eyebrow="Code" defaultOpen stickyHeader>
               {entryError ? (
                 <div className="rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">
                   Failed to load entry: {entryError.message}
@@ -474,5 +301,214 @@ export default function HandbookPage() {
         )}
       </div>
     </div>
+  );
+}
+
+const markdownComponents = {
+  h2: (props) => <h2 {...props} className="text-2xl font-semibold" />,
+  h3: (props) => <h3 {...props} className="text-xl font-semibold" />,
+  code: (props) => (
+    <code
+      {...props}
+      className="rounded bg-slate-900 px-1.5 py-0.5 text-xs font-medium text-brand-200"
+    />
+  ),
+  pre: (props) => (
+    <pre {...props} className="overflow-auto rounded-lg bg-slate-900 p-4 text-sm shadow-inner" />
+  ),
+};
+
+function HandbookArticleBody({
+  chapterId,
+  chapterModule,
+  chapterError,
+  loadingChapter,
+  entry,
+  hasMdx,
+  mdxModule,
+  mdxError,
+  loadingMdx,
+  meta,
+  loadingEntry,
+  resolvedId,
+}) {
+  return (
+    <>
+      <HandbookContent
+        chapterId={chapterId}
+        chapterModule={chapterModule}
+        chapterError={chapterError}
+        loadingChapter={loadingChapter}
+        entry={entry}
+        hasMdx={hasMdx}
+        mdxModule={mdxModule}
+        mdxError={mdxError}
+        loadingMdx={loadingMdx}
+        meta={meta}
+        loadingEntry={loadingEntry}
+      />
+      <HandbookChapterNavigation resolvedId={resolvedId} chapterId={chapterId} />
+    </>
+  );
+}
+
+function HandbookContent({
+  chapterId,
+  chapterModule,
+  chapterError,
+  loadingChapter,
+  entry,
+  hasMdx,
+  mdxModule,
+  mdxError,
+  loadingMdx,
+  meta,
+  loadingEntry,
+}) {
+  if (chapterId && chapterModule) {
+    const Chapter = chapterModule.default;
+
+    return (
+      <div>
+        {loadingChapter && <p className="text-sm text-slate-400">Loading chapter...</p>}
+        {chapterError && (
+          <p className="text-sm text-red-400">Failed to load chapter: {chapterError.message}</p>
+        )}
+        {Chapter && (
+          <HandbookMDXProvider>
+            <Chapter />
+          </HandbookMDXProvider>
+        )}
+      </div>
+    );
+  }
+
+  if (entry && entry.handbookMarkdown) {
+    return (
+      <ReactMarkdown
+        rehypePlugins={[rehypeSlug]}
+        remarkPlugins={[remarkGfm]}
+        components={markdownComponents}
+      >
+        {entry.handbookMarkdown}
+      </ReactMarkdown>
+    );
+  }
+
+  if (hasMdx) {
+    const LegacyChapter = mdxModule?.default;
+
+    return (
+      <div>
+        {loadingMdx && <p className="text-sm text-slate-400">Loading content...</p>}
+        {mdxError && (
+          <p className="text-sm text-red-400">Failed to load chapter: {mdxError.message}</p>
+        )}
+        {LegacyChapter && (
+          <HandbookMDXProvider>
+            <LegacyChapter />
+          </HandbookMDXProvider>
+        )}
+      </div>
+    );
+  }
+
+  if (meta.bodyMd) {
+    return (
+      <ReactMarkdown
+        rehypePlugins={[rehypeSlug]}
+        remarkPlugins={[remarkGfm]}
+        components={markdownComponents}
+      >
+        {meta.bodyMd}
+      </ReactMarkdown>
+    );
+  }
+
+  if (loadingEntry) {
+    return <p className="text-sm text-slate-400">Loading content...</p>;
+  }
+
+  return <p className="text-sm text-slate-400">Content coming soon...</p>;
+}
+
+function HandbookChapterNavigation({ resolvedId, chapterId }) {
+  const globalSequence = standardOrder.flatMap((sid) => {
+    const metaForSid = standards[sid];
+    if (!metaForSid) return [];
+
+    const chapters = getChaptersForStandard(sid);
+    const base = [{ standardId: sid, id: null, title: metaForSid.title, isIntro: true }];
+    if (!chapters || chapters.length === 0) return base;
+
+    return base.concat(
+      chapters.map((chapter) => ({
+        standardId: sid,
+        id: chapter.id,
+        title: chapter.title,
+        isIntro: false,
+      }))
+    );
+  });
+
+  const currentIndex = globalSequence.findIndex((node) =>
+    node.standardId === resolvedId && (chapterId ? node.id === chapterId : node.id === null)
+  );
+
+  if (currentIndex === -1) return null;
+
+  const prev = currentIndex > 0 ? globalSequence[currentIndex - 1] : null;
+  const next = currentIndex < globalSequence.length - 1 ? globalSequence[currentIndex + 1] : null;
+  const makeHref = (node) =>
+    !node || node.isIntro || !node.id
+      ? `/handbook/${node.standardId}`
+      : `/handbook/${node.standardId}/${node.id}`;
+
+  const btnClass =
+    "inline-flex min-w-0 items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70";
+  const inactiveClass = "opacity-40 cursor-not-allowed";
+  const prevClass = "bg-slate-900/60 text-slate-200 border-slate-700 hover:bg-slate-800";
+  const nextClass = "bg-brand-600 text-white border-brand-600 hover:bg-brand-500";
+
+  return (
+    <nav aria-label="Chapter navigation" className="mt-10 border-t border-slate-700 pt-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
+        {prev ? (
+          <Link to={makeHref(prev)} className={`${btnClass} ${prevClass} sm:max-w-[48%]`}>
+            <span className="text-lg" aria-hidden="true">←</span>
+            <span className="flex min-w-0 flex-col text-left">
+              <span className="text-xs uppercase tracking-wide text-brand-300">Previous</span>
+              <span className="truncate">{prev.isIntro ? `${standards[prev.standardId]?.title || "Intro"}` : prev.title}</span>
+            </span>
+          </Link>
+        ) : (
+          <span className={`${btnClass} ${inactiveClass}`} aria-disabled>
+            <span className="text-lg" aria-hidden="true">←</span>
+            <span className="flex flex-col text-left">
+              <span className="text-xs uppercase tracking-wide">Previous</span>
+              -
+            </span>
+          </span>
+        )}
+
+        {next ? (
+          <Link to={makeHref(next)} className={`${btnClass} ${nextClass} justify-end sm:max-w-[48%] sm:ml-auto`}>
+            <span className="flex min-w-0 flex-col text-right">
+              <span className="text-xs uppercase tracking-wide text-brand-200">Next</span>
+              <span className="truncate">{next.isIntro ? `${standards[next.standardId]?.title || "Intro"}` : next.title}</span>
+            </span>
+            <span className="text-lg" aria-hidden="true">→</span>
+          </Link>
+        ) : (
+          <span className={`${btnClass} ${inactiveClass} justify-end sm:ml-auto`} aria-disabled>
+            <span className="flex flex-col text-right">
+              <span className="text-xs uppercase tracking-wide">Next</span>
+              -
+            </span>
+            <span className="text-lg" aria-hidden="true">→</span>
+          </span>
+        )}
+      </div>
+    </nav>
   );
 }

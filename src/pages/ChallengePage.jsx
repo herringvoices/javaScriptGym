@@ -643,7 +643,7 @@ function ChallengeSandboxUI({
       </div>
       ) : (
         <div className="space-y-3">
-          <MobileAccordion title="Details" eyebrow="Challenge" defaultOpen>
+          <MobileAccordion title="Details" eyebrow="Challenge" defaultOpen stickyHeader>
             <article className="prose prose-invert max-w-none text-slate-300">
               <div className="not-prose mb-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
@@ -694,7 +694,7 @@ function ChallengeSandboxUI({
             </article>
           </MobileAccordion>
 
-          <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen contentClassName="p-0">
+          <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen stickyHeader contentClassName="p-0">
             <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
@@ -730,7 +730,7 @@ function ChallengeSandboxUI({
             </section>
           </MobileAccordion>
 
-          <MobileAccordion title="Preview" eyebrow="Run" contentClassName="p-0">
+          <MobileAccordion title="Preview" eyebrow="Run" stickyHeader contentClassName="p-0">
             <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <button

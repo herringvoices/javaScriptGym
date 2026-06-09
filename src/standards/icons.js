@@ -1,4 +1,4 @@
-import { FaCube, FaCode, FaProjectDiagram, FaCogs, FaListOl, FaExchangeAlt, FaBug, FaDatabase, FaBolt, FaLayerGroup } from "react-icons/fa";
+import { FaCube, FaCode, FaProjectDiagram, FaListOl, FaExchangeAlt, FaBug, FaDatabase, FaBolt, FaLayerGroup } from "react-icons/fa";
 
 export const standardsIcons = {
   "variables-data-types": FaCube,

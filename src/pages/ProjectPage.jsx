@@ -193,11 +193,11 @@ export default function ProjectPage() {
           </div>
           ) : (
             <div className="space-y-3">
-              <MobileAccordion title="Steps" eyebrow="Project" defaultOpen>
+              <MobileAccordion title="Steps" eyebrow="Project" defaultOpen stickyHeader>
                 <ProjectSidebar project={meta} currentStepId={currentStepId} />
               </MobileAccordion>
 
-              <MobileAccordion title="Instructions" eyebrow="Step" defaultOpen contentClassName="prose prose-invert max-w-none">
+              <MobileAccordion title="Instructions" eyebrow="Step" defaultOpen stickyHeader contentClassName="prose prose-invert max-w-none">
                 {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
                 {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
                 {stepModule ? (
@@ -209,7 +209,7 @@ export default function ProjectPage() {
                 )}
               </MobileAccordion>
 
-              <MobileAccordion title="Workspace" eyebrow="Code" defaultOpen>
+              <MobileAccordion title="Workspace" eyebrow="Code" defaultOpen stickyHeader>
                 {entryError ? (
                   <div className="rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">
                     Failed to load files: {entryError.message}
