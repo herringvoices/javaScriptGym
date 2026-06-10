@@ -74,6 +74,7 @@ const DesktopPanel = forwardRef(function DesktopPanel({
             <button
               type="button"
               onClick={handleHide}
+              data-toc-toggle
               onMouseEnter={() => {
                 signalRailPreview(true);
               }}

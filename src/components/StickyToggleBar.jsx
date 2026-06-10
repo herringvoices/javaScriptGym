@@ -23,6 +23,7 @@ export default function StickyToggleBar({
 }) {
   const [ghostPanel, setGhostPanel] = useState(null);
   const [landingPanelKey, setLandingPanelKey] = useState(null);
+  const [activeRestoreKey, setActiveRestoreKey] = useState(null);
   const tocMeta = getPanelMeta("toc", { tocKind });
   const panelItems = useMemo(
     () =>
@@ -141,8 +142,27 @@ export default function StickyToggleBar({
   const handleRestore = (item) => {
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("desktop-panel-rail-preview", { detail: null }));
+      window.dispatchEvent(new CustomEvent("desktop-panel-restore-preview", { detail: null }));
     }
     item.onClick();
+  };
+
+  const activateRestorePreview = (item) => {
+    setActiveRestoreKey(item.key);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("desktop-panel-restore-preview", {
+          detail: { panelKey: item.key },
+        })
+      );
+    }
+  };
+
+  const clearRestorePreview = (item) => {
+    setActiveRestoreKey((key) => (key === item.key ? null : key));
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("desktop-panel-restore-preview", { detail: null }));
+    }
   };
 
   return (
@@ -154,7 +174,8 @@ export default function StickyToggleBar({
         {railItems.map((item) => (
           <span
             key={`${item.key}-${item.ghost ? "ghost" : "real"}`}
-            className={`min-h-8 flex-1 ${item.colorClass} ${item.ghost ? "desktop-rail-ghost-spine" : ""} ${landingPanelKey === item.key ? "desktop-rail-spine--landing" : ""}`}
+            className={`desktop-rail-spine min-h-8 flex-1 ${item.colorClass} ${item.ghost ? "desktop-rail-ghost-spine" : ""} ${landingPanelKey === item.key ? "desktop-rail-spine--landing" : ""} ${activeRestoreKey === item.key ? "desktop-rail-spine--active" : ""}`}
+            style={{ "--rail-item-rgb": item.rgb }}
             aria-hidden="true"
           />
         ))}
@@ -177,10 +198,21 @@ export default function StickyToggleBar({
                 key={item.key}
                 type="button"
                 onClick={() => handleRestore(item)}
+                onPointerDown={(event) => event.stopPropagation()}
+                onMouseEnter={() => activateRestorePreview(item)}
+                onMouseOver={() => activateRestorePreview(item)}
+                onMouseMove={() => activateRestorePreview(item)}
+                onMouseLeave={() => clearRestorePreview(item)}
+                onPointerEnter={() => activateRestorePreview(item)}
+                onPointerMove={() => activateRestorePreview(item)}
+                onPointerLeave={() => clearRestorePreview(item)}
+                onFocus={() => activateRestorePreview(item)}
+                onBlur={() => clearRestorePreview(item)}
                 className={`desktop-rail-item pointer-events-auto flex h-9 min-w-9 items-center gap-2 rounded-md border px-2 text-sm transition-colors ${item.buttonClass} ${landingPanelKey === item.key ? "desktop-rail-item--landing" : ""}`}
+                style={{ "--rail-item-rgb": item.rgb }}
                 title={item.label}
                 aria-label={item.label}
-                data-toc-toggle={item.key === "toc" || item.key === "details" ? "" : undefined}
+                data-toc-toggle
               >
                 <FontAwesomeIcon icon={item.icon} className="h-4 w-4 shrink-0" />
                 <span className="whitespace-nowrap pr-1">{item.shortLabel || item.label.replace(/^Show\s+/i, "")}</span>

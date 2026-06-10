@@ -10,8 +10,10 @@ import HandbookWorkbench from "../components/HandbookWorkbench";
 import HandbookSidebar from "../components/HandbookSidebar";
 import StickyToggleBar from "../components/StickyToggleBar";
 import DesktopPanel from "../components/DesktopPanel";
+import DesktopRestorePreview from "../components/DesktopRestorePreview";
 import MobileAccordion from "../components/MobileAccordion";
 import useMediaQuery from "../hooks/useMediaQuery";
+import useDesktopRestorePreview from "../hooks/useDesktopRestorePreview";
 
 // Removed page-level heading TOC ("On this page"); keep file lean.
 
@@ -28,6 +30,7 @@ export default function HandbookPage() {
   const [showConsole, setShowConsole] = useState(false);
   const tocRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const restorePreviewKey = useDesktopRestorePreview();
 
   // New-style entry loader (preferred)
   const [entry, setEntry] = useState(null);
@@ -153,11 +156,20 @@ export default function HandbookPage() {
   const gridTemplate = useMemo(() => {
     const columns = [];
     if (showTOC) columns.push("minmax(220px,0.75fr)");
+    else if (restorePreviewKey === "toc") columns.push("10px");
     if (showHandbook) columns.push("minmax(280px,1fr)");
+    else if (restorePreviewKey === "handbook") columns.push("10px");
     if (showEditor) columns.push("minmax(0,2fr)");
+    else if (restorePreviewKey === "editor") columns.push("10px");
     if (showConsole) columns.push("minmax(320px,1.2fr)");
+    else if (restorePreviewKey === "console") columns.push("10px");
     return columns.length ? columns.join(" ") : "minmax(0,1fr)";
-  }, [showTOC, showHandbook, showEditor, showConsole]);
+  }, [restorePreviewKey, showTOC, showHandbook, showEditor, showConsole]);
+
+  const hideWithTOC = (hidePanel) => {
+    setShowTOC(false);
+    hidePanel(false);
+  };
 
   // No per-page TOC; sidebar now focuses on standards and chapters.
 
@@ -224,6 +236,8 @@ export default function HandbookPage() {
                 >
                   <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
                 </DesktopPanel>
+              ) : restorePreviewKey === "toc" ? (
+                <DesktopRestorePreview panelKey="toc" />
               ) : null}
 
               {showHandbook ? (
@@ -232,7 +246,7 @@ export default function HandbookPage() {
                   panelKey="handbook"
                   eyebrow="JavaScript Handbook"
                   title={meta.title}
-                  onHide={() => setShowHandbook(false)}
+                  onHide={() => hideWithTOC(setShowHandbook)}
                   variant="plain"
                   className="prose prose-invert max-w-none"
                   bodyClassName="pt-4"
@@ -252,8 +266,15 @@ export default function HandbookPage() {
                     resolvedId={resolvedId}
                   />
                 </DesktopPanel>
+              ) : restorePreviewKey === "handbook" ? (
+                <DesktopRestorePreview panelKey="handbook" />
               ) : null}
 
+              {showEditor ? null : restorePreviewKey === "editor" ? (
+                <DesktopRestorePreview panelKey="editor" />
+              ) : null}
+
+              {showEditor || showConsole ? (
               <div className="contents">
                 {entryError ? (
                   <div className={showEditor ? "rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300" : "hidden"}>
@@ -267,11 +288,16 @@ export default function HandbookPage() {
                     showEditor={showEditor}
                     showRunner={showConsole}
                     onShowRunnerChange={setShowConsole}
-                    onHideEditor={() => setShowEditor(false)}
-                    onHideRunner={() => setShowConsole(false)}
+                    onHideEditor={() => hideWithTOC(setShowEditor)}
+                    onHideRunner={() => hideWithTOC(setShowConsole)}
                   />
                 )}
               </div>
+              ) : null}
+
+              {showConsole ? null : restorePreviewKey === "console" ? (
+                <DesktopRestorePreview panelKey="console" />
+              ) : null}
             </div>
         ) : (
           <div className="space-y-3">

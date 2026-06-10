@@ -6,8 +6,10 @@ import ProjectSidebar from "../components/ProjectSidebar";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import StickyToggleBar from "../components/StickyToggleBar";
 import DesktopPanel from "../components/DesktopPanel";
+import DesktopRestorePreview from "../components/DesktopRestorePreview";
 import MobileAccordion from "../components/MobileAccordion";
 import useMediaQuery from "../hooks/useMediaQuery";
+import useDesktopRestorePreview from "../hooks/useDesktopRestorePreview";
 
 export default function ProjectPage() {
   const { projectId, stepId } = useParams();
@@ -29,6 +31,7 @@ export default function ProjectPage() {
   const [showConsole, setShowConsole] = useState(true);
   const tocRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const restorePreviewKey = useDesktopRestorePreview();
 
   useEffect(() => {
     let cancelled = false;
@@ -113,11 +116,20 @@ export default function ProjectPage() {
   const gridTemplate = useMemo(() => {
     const columns = [];
     if (showTOC) columns.push("minmax(220px,0.75fr)");
+    else if (restorePreviewKey === "toc") columns.push("10px");
     if (showHandbook) columns.push("minmax(280px,1fr)");
+    else if (restorePreviewKey === "handbook") columns.push("10px");
     if (showEditor) columns.push("minmax(0,2fr)");
+    else if (restorePreviewKey === "editor") columns.push("10px");
     if (showConsole) columns.push("minmax(320px,1.2fr)");
+    else if (restorePreviewKey === "console") columns.push("10px");
     return columns.length ? columns.join(" ") : "minmax(0,1fr)";
-  }, [showTOC, showHandbook, showEditor, showConsole]);
+  }, [restorePreviewKey, showTOC, showHandbook, showEditor, showConsole]);
+
+  const hideWithTOC = (hidePanel) => {
+    setShowTOC(false);
+    hidePanel(false);
+  };
 
   return (
     <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
@@ -160,6 +172,8 @@ export default function ProjectPage() {
               >
                 <ProjectSidebar project={meta} currentStepId={currentStepId} />
               </DesktopPanel>
+            ) : restorePreviewKey === "toc" ? (
+              <DesktopRestorePreview panelKey="toc" />
             ) : null}
 
             {showHandbook ? (
@@ -168,7 +182,7 @@ export default function ProjectPage() {
                 panelKey="handbook"
                 eyebrow="Step"
                 title="Instructions"
-                onHide={() => setShowHandbook(false)}
+                onHide={() => hideWithTOC(setShowHandbook)}
                 variant="plain"
                 className="prose prose-invert max-w-none"
                 bodyClassName="pt-4"
@@ -183,8 +197,15 @@ export default function ProjectPage() {
                   <p className="text-sm text-slate-400">Step content coming soon...</p>
                 )}
               </DesktopPanel>
+            ) : restorePreviewKey === "handbook" ? (
+              <DesktopRestorePreview panelKey="handbook" />
             ) : null}
 
+            {showEditor ? null : restorePreviewKey === "editor" ? (
+              <DesktopRestorePreview panelKey="editor" />
+            ) : null}
+
+            {showEditor || showConsole ? (
             <div className="contents">
               {entryError ? (
                 <div className={showEditor ? "rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300" : "hidden"}>
@@ -200,11 +221,16 @@ export default function ProjectPage() {
                   showEditor={showEditor}
                   showRunner={showConsole}
                   onShowRunnerChange={setShowConsole}
-                  onHideEditor={() => setShowEditor(false)}
-                  onHideRunner={() => setShowConsole(false)}
+                  onHideEditor={() => hideWithTOC(setShowEditor)}
+                  onHideRunner={() => hideWithTOC(setShowConsole)}
                 />
               )}
             </div>
+            ) : null}
+
+            {showConsole ? null : restorePreviewKey === "console" ? (
+              <DesktopRestorePreview panelKey="console" />
+            ) : null}
           </div>
           ) : (
             <div className="space-y-3">

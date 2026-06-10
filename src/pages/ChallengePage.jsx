@@ -12,12 +12,14 @@ import MonacoWorkspace from "../components/MonacoWorkspace";
 import ConsolePanel from "../components/ConsolePanel";
 import DiagramPanel from "../components/DiagramPanel";
 import DesktopPanel from "../components/DesktopPanel";
+import DesktopRestorePreview from "../components/DesktopRestorePreview";
 import StickyToggleBar from "../components/StickyToggleBar";
 import MobileAccordion from "../components/MobileAccordion";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
 import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
 import useMediaQuery from "../hooks/useMediaQuery";
+import useDesktopRestorePreview from "../hooks/useDesktopRestorePreview";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const difficultyLabel = (value) => {
@@ -304,6 +306,7 @@ function ChallengeSandboxUI({
   const descriptionCopy = challenge.description || challenge.summary || "Description coming soon.";
   const diagramFiles = useMemo(() => getDiagramFiles(files), [files]);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const restorePreviewKey = useDesktopRestorePreview();
 
   const handleRun = () => {
     try {
@@ -355,10 +358,13 @@ function ChallengeSandboxUI({
   const gridTemplate = useMemo(() => {
     const columns = [];
     if (showDetailsColumn) columns.push("minmax(280px,1fr)");
+    else if (restorePreviewKey === "details") columns.push("10px");
     if (showEditorColumn) columns.push("minmax(0,2fr)");
+    else if (restorePreviewKey === "editor") columns.push("10px");
     if (showRunnerColumn) columns.push("minmax(320px,1.2fr)");
+    else if (restorePreviewKey === "console") columns.push("10px");
     return columns.length ? columns.join(" ") : "minmax(0,1fr)";
-  }, [showDetailsColumn, showEditorColumn, showRunnerColumn]);
+  }, [restorePreviewKey, showDetailsColumn, showEditorColumn, showRunnerColumn]);
 
   const toggleClass = (active) =>
     `rounded-full border px-3 py-1 text-xs font-semibold transition ${
@@ -503,6 +509,8 @@ function ChallengeSandboxUI({
                 </div>
               ) : null}
             </DesktopPanel>
+          ) : restorePreviewKey === "details" ? (
+            <DesktopRestorePreview panelKey="toc" tocKind="details" />
           ) : null}
 
           {showEditorColumn ? (
@@ -543,6 +551,8 @@ function ChallengeSandboxUI({
                 }}
               />
             </DesktopPanel>
+          ) : restorePreviewKey === "editor" ? (
+            <DesktopRestorePreview panelKey="editor" />
           ) : null}
 
           {showRunnerColumn ? (
@@ -646,8 +656,10 @@ function ChallengeSandboxUI({
                     source={dbmlToMermaidEr(diagramFiles.erd?.code || "")}
                     emptyMessage="Add /erd.dbml to this challenge to render an ERD."
                   />
-                </div>
+              </div>
             </DesktopPanel>
+          ) : restorePreviewKey === "console" ? (
+            <DesktopRestorePreview panelKey="console" />
           ) : null}
         </div>
       </div>
