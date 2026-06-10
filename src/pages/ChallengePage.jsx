@@ -11,7 +11,7 @@ import { loadMastered, saveMastered } from "../lib/mastery";
 import MonacoWorkspace from "../components/MonacoWorkspace";
 import ConsolePanel from "../components/ConsolePanel";
 import DiagramPanel from "../components/DiagramPanel";
-import PanelHideButton from "../components/PanelHideButton";
+import DesktopPanel from "../components/DesktopPanel";
 import StickyToggleBar from "../components/StickyToggleBar";
 import MobileAccordion from "../components/MobileAccordion";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
@@ -445,11 +445,17 @@ function ChallengeSandboxUI({
           style={{ "--challenge-grid-template": gridTemplate }}
         >
           {showDetailsColumn ? (
-            <article className="prose prose-invert max-w-none animate-fade-in text-slate-300">
-              <div className="not-prose sticky top-[4rem] z-20 mb-2 flex justify-end">
-                <PanelHideButton label="Hide details" onClick={() => setShowDetailsColumn(false)} />
-              </div>
-
+            <DesktopPanel
+              as="article"
+              panelKey="toc"
+              tocKind="details"
+              eyebrow="Challenge"
+              title="Details"
+              onHide={() => setShowDetailsColumn(false)}
+              variant="plain"
+              className="prose prose-invert max-w-none text-slate-300"
+              bodyClassName="pt-4"
+            >
               <div className="not-prose mb-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
                 <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
@@ -496,17 +502,17 @@ function ChallengeSandboxUI({
                   </ul>
                 </div>
               ) : null}
-            </article>
+            </DesktopPanel>
           ) : null}
 
           {showEditorColumn ? (
-            <section className="flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 lg:sticky lg:top-[4rem]">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
-                </div>
+            <DesktopPanel
+              panelKey="editor"
+              eyebrow="Workspace"
+              title="Editor"
+              onHide={() => setShowEditorColumn(false)}
+              actions={
                 <div className="flex items-center gap-2">
-                  <PanelHideButton label="Hide editor" onClick={() => setShowEditorColumn(false)} />
                   <button
                     type="button"
                     onClick={() => setShowExplorer((value) => !value)}
@@ -519,77 +525,82 @@ function ChallengeSandboxUI({
                     {showExplorer ? "Hide file tree" : "Show file tree"}
                   </button>
                 </div>
-              </div>
-              <div className="min-h-0 grow">
-                <MonacoWorkspace
-                  files={files}
-                  onChange={onFileChange}
-                  onActiveChange={setActiveFile}
-                  showExplorer={showExplorer}
-                  className="h-full"
-                  onEditorMount={(ed) => {
-                    editorRef.current = ed;
-                    try {
-                      ed.layout();
-                    } catch (e) {
-                      void e;
-                    }
-                  }}
-                />
-              </div>
-            </section>
+              }
+            >
+              <MonacoWorkspace
+                files={files}
+                onChange={onFileChange}
+                onActiveChange={setActiveFile}
+                showExplorer={showExplorer}
+                className="h-full"
+                onEditorMount={(ed) => {
+                  editorRef.current = ed;
+                  try {
+                    ed.layout();
+                  } catch (e) {
+                    void e;
+                  }
+                }}
+              />
+            </DesktopPanel>
           ) : null}
 
           {showRunnerColumn ? (
-            <section className="flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 lg:sticky lg:top-[4rem]">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <PanelHideButton label="Hide preview" onClick={() => setShowRunnerColumn(false)} />
-                  <button
-                    type="button"
-                    onClick={handleRun}
-                    className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
-                    title="Build and load the preview"
-                  >
-                    Run preview
-                  </button>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-400">
-                  <button
-                    type="button"
-                    onClick={() => setRightPanel(DIAGRAM_PANEL.PREVIEW)}
-                    className={toggleClass(rightPanel === DIAGRAM_PANEL.PREVIEW)}
-                  >
-                    Preview
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRightPanel(DIAGRAM_PANEL.CONSOLE)}
-                    className={toggleClass(rightPanel === DIAGRAM_PANEL.CONSOLE)}
-                  >
-                    Console
-                  </button>
-                  {diagramFiles.hasSequence ? (
+            <DesktopPanel
+              panelKey="console"
+              eyebrow="Run"
+              title="Preview"
+              onHide={() => setShowRunnerColumn(false)}
+              bodyClassName="relative"
+              actions={
+                <>
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setRightPanel(DIAGRAM_PANEL.SEQUENCE)}
-                      className={toggleClass(rightPanel === DIAGRAM_PANEL.SEQUENCE)}
+                      onClick={handleRun}
+                      className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+                      title="Build and load the preview"
                     >
-                      Sequence Diagram
+                      Run preview
                     </button>
-                  ) : null}
-                  {diagramFiles.hasErd ? (
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
                     <button
                       type="button"
-                      onClick={() => setRightPanel(DIAGRAM_PANEL.ERD)}
-                      className={toggleClass(rightPanel === DIAGRAM_PANEL.ERD)}
+                      onClick={() => setRightPanel(DIAGRAM_PANEL.PREVIEW)}
+                      className={toggleClass(rightPanel === DIAGRAM_PANEL.PREVIEW)}
                     >
-                      ERD
+                      Preview
                     </button>
-                  ) : null}
-                </div>
-              </div>
-              <div className="min-h-0 grow relative">
+                    <button
+                      type="button"
+                      onClick={() => setRightPanel(DIAGRAM_PANEL.CONSOLE)}
+                      className={toggleClass(rightPanel === DIAGRAM_PANEL.CONSOLE)}
+                    >
+                      Console
+                    </button>
+                    {diagramFiles.hasSequence ? (
+                      <button
+                        type="button"
+                        onClick={() => setRightPanel(DIAGRAM_PANEL.SEQUENCE)}
+                        className={toggleClass(rightPanel === DIAGRAM_PANEL.SEQUENCE)}
+                      >
+                        Sequence Diagram
+                      </button>
+                    ) : null}
+                    {diagramFiles.hasErd ? (
+                      <button
+                        type="button"
+                        onClick={() => setRightPanel(DIAGRAM_PANEL.ERD)}
+                        className={toggleClass(rightPanel === DIAGRAM_PANEL.ERD)}
+                      >
+                        ERD
+                      </button>
+                    ) : null}
+                  </div>
+                </>
+              }
+            >
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.PREVIEW ? "z-10" : "z-0 invisible"}`}>
                   {srcDoc ? (
                     <div style={{ position: "relative", height: "100%", width: "100%" }}>
@@ -636,8 +647,7 @@ function ChallengeSandboxUI({
                     emptyMessage="Add /erd.dbml to this challenge to render an ERD."
                   />
                 </div>
-              </div>
-            </section>
+            </DesktopPanel>
           ) : null}
         </div>
       </div>

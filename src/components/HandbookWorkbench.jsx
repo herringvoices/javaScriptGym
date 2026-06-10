@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MonacoWorkspace from "./MonacoWorkspace";
 import ConsolePanel from "./ConsolePanel";
 import DiagramPanel from "./DiagramPanel";
-import PanelHideButton from "./PanelHideButton";
+import DesktopPanel from "./DesktopPanel";
 import MobileAccordion from "./MobileAccordion";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
@@ -201,95 +201,173 @@ export default function HandbookWorkbench({
     );
   }
 
-  const editorPanel = (
-    <section className={isDesktop ? "sticky top-[4rem] flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in" : "flex h-[70vh] min-h-[420px] flex-col overflow-hidden"}>
+  const editorActions = (
+    <>
+      <button
+        type="button"
+        onClick={() => setShowFiles((value) => !value)}
+        className={toggleClass(showFiles)}
+      >
+        {showFiles ? "Hide" : "Show"} files
+      </button>
+      <button
+        type="button"
+        onClick={handleRun}
+        className="rounded-full border border-emerald-500/40 px-3 py-1 text-emerald-300 transition hover:bg-emerald-500/10"
+        title="Build and run the preview"
+      >
+        Run
+      </button>
+    </>
+  );
+
+  const editorContent = (
+    <MonacoWorkspace
+      files={filesState}
+      onChange={onChange}
+      onActiveChange={(path) => setActiveFile(path)}
+      showExplorer={showFiles}
+      className="h-full flex-1"
+      onEditorMount={(editor) => {
+        editorRef.current = editor;
+        try {
+          editor.layout();
+        } catch (error) {
+          void error;
+        }
+      }}
+    />
+  );
+
+  const runnerActions = (
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onClick={() => setBottomPanel(DIAGRAM_PANEL.PREVIEW)}
+        className={toggleClass(bottomPanel === DIAGRAM_PANEL.PREVIEW)}
+      >
+        Preview
+      </button>
+      <button
+        type="button"
+        onClick={() => setBottomPanel(DIAGRAM_PANEL.CONSOLE)}
+        className={toggleClass(bottomPanel === DIAGRAM_PANEL.CONSOLE)}
+      >
+        Console
+      </button>
+      {diagramFiles.hasSequence ? (
+        <button
+          type="button"
+          onClick={() => setBottomPanel(DIAGRAM_PANEL.SEQUENCE)}
+          className={toggleClass(bottomPanel === DIAGRAM_PANEL.SEQUENCE)}
+        >
+          Sequence Diagram
+        </button>
+      ) : null}
+      {diagramFiles.hasErd ? (
+        <button
+          type="button"
+          onClick={() => setBottomPanel(DIAGRAM_PANEL.ERD)}
+          className={toggleClass(bottomPanel === DIAGRAM_PANEL.ERD)}
+        >
+          ERD
+        </button>
+      ) : null}
+    </div>
+  );
+
+  const editorPanel = isDesktop ? (
+    <DesktopPanel
+      panelKey="editor"
+      eyebrow="Workspace"
+      title="Editor"
+      onHide={onHideEditor}
+      actions={editorActions}
+    >
+      {editorContent}
+    </DesktopPanel>
+  ) : (
+    <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
         <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
-        <div className="flex items-center gap-2">
-          {onHideEditor ? (
-            <PanelHideButton label="Hide editor" onClick={onHideEditor} />
-          ) : null}
-          <button
-            type="button"
-            onClick={() => setShowFiles((value) => !value)}
-            className={toggleClass(showFiles)}
-          >
-            {showFiles ? "Hide" : "Show"} files
-          </button>
-          <button
-            type="button"
-            onClick={handleRun}
-            className="rounded-full border border-emerald-500/40 px-3 py-1 text-emerald-300 transition hover:bg-emerald-500/10"
-            title="Build and run the preview"
-          >
-            Run
-          </button>
-        </div>
+        <div className="flex items-center gap-2">{editorActions}</div>
       </div>
-      <div className="min-h-0 grow">
-        <MonacoWorkspace
-          files={filesState}
-          onChange={onChange}
-          onActiveChange={(path) => setActiveFile(path)}
-          showExplorer={showFiles}
-          className="h-full flex-1"
-          onEditorMount={(editor) => {
-            editorRef.current = editor;
-            try {
-              editor.layout();
-            } catch (error) {
-              void error;
-            }
-          }}
-        />
-      </div>
+      <div className="min-h-0 grow">{editorContent}</div>
     </section>
   );
 
   const runnerPanel = runnerVisible ? (
-    <section className={isDesktop ? "sticky top-[4rem] flex h-[calc(100vh-8rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in" : "flex h-[70vh] min-h-[420px] flex-col overflow-hidden"}>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
-        {onHideRunner ? (
-          <PanelHideButton label="Hide console" onClick={onHideRunner} />
-        ) : (
-          <span />
-        )}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setBottomPanel(DIAGRAM_PANEL.PREVIEW)}
-            className={toggleClass(bottomPanel === DIAGRAM_PANEL.PREVIEW)}
-          >
-            Preview
-          </button>
-          <button
-            type="button"
-            onClick={() => setBottomPanel(DIAGRAM_PANEL.CONSOLE)}
-            className={toggleClass(bottomPanel === DIAGRAM_PANEL.CONSOLE)}
-          >
-            Console
-          </button>
-          {diagramFiles.hasSequence ? (
-            <button
-              type="button"
-              onClick={() => setBottomPanel(DIAGRAM_PANEL.SEQUENCE)}
-              className={toggleClass(bottomPanel === DIAGRAM_PANEL.SEQUENCE)}
-            >
-              Sequence Diagram
-            </button>
-          ) : null}
-          {diagramFiles.hasErd ? (
-            <button
-              type="button"
-              onClick={() => setBottomPanel(DIAGRAM_PANEL.ERD)}
-              className={toggleClass(bottomPanel === DIAGRAM_PANEL.ERD)}
-            >
-              ERD
-            </button>
-          ) : null}
+    isDesktop ? (
+      <DesktopPanel
+        panelKey="console"
+        eyebrow="Run"
+        title="Preview"
+        onHide={onHideRunner}
+        actions={runnerActions}
+        bodyClassName="relative overflow-hidden"
+      >
+        <RunnerBody
+          bottomPanel={bottomPanel}
+          srcDoc={srcDoc}
+          previewFullScreen={previewFullScreen}
+          setPreviewFullScreen={setPreviewFullScreen}
+          iframeRef={iframeRef}
+          consoleKey={consoleKey}
+          diagramFiles={diagramFiles}
+        />
+      </DesktopPanel>
+    ) : (
+      <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
+        <div className="flex flex-wrap items-center justify-end gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
+          {runnerActions}
         </div>
-      </div>
-      <div className="relative min-h-0 grow overflow-hidden">
+        <div className="relative min-h-0 grow overflow-hidden">
+          <RunnerBody
+            bottomPanel={bottomPanel}
+            srcDoc={srcDoc}
+            previewFullScreen={previewFullScreen}
+            setPreviewFullScreen={setPreviewFullScreen}
+            iframeRef={iframeRef}
+            consoleKey={consoleKey}
+            diagramFiles={diagramFiles}
+          />
+        </div>
+      </section>
+    )
+  ) : null;
+
+  return !isDesktop ? (
+    <div className="space-y-3">
+      <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen contentClassName="p-0">
+        {editorPanel}
+      </MobileAccordion>
+      <MobileAccordion title="Preview" eyebrow="Run" contentClassName="p-0">
+        {runnerPanel || (
+          <div className="px-4 py-6 text-sm text-slate-400">
+            Run the editor to open the preview.
+          </div>
+        )}
+      </MobileAccordion>
+    </div>
+  ) : (
+    <>
+      {showEditor ? editorPanel : null}
+      {runnerPanel}
+    </>
+  );
+}
+
+function RunnerBody({
+  bottomPanel,
+  srcDoc,
+  previewFullScreen,
+  setPreviewFullScreen,
+  iframeRef,
+  consoleKey,
+  diagramFiles,
+}) {
+  return (
+    <>
         <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.PREVIEW ? "z-10" : "z-0 invisible"}`}>
           {srcDoc ? (
             <div style={{ position: "relative", height: "100%", width: "100%" }}>
@@ -336,31 +414,6 @@ export default function HandbookWorkbench({
             emptyMessage="Add /erd.dbml to this workspace to render an ERD."
           />
         </div>
-      </div>
-    </section>
-  ) : null;
-
-  if (!isDesktop) {
-    return (
-      <div className="space-y-3">
-        <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen contentClassName="p-0">
-          {editorPanel}
-        </MobileAccordion>
-        <MobileAccordion title="Preview" eyebrow="Run" contentClassName="p-0">
-          {runnerPanel || (
-            <div className="px-4 py-6 text-sm text-slate-400">
-              Run the editor to open the preview.
-            </div>
-          )}
-        </MobileAccordion>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      {editorPanel}
-      {runnerPanel}
     </>
   );
 }

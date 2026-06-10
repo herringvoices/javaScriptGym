@@ -9,7 +9,7 @@ import HandbookMDXProvider from "../handbook/MDXProvider";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import HandbookSidebar from "../components/HandbookSidebar";
 import StickyToggleBar from "../components/StickyToggleBar";
-import PanelHideButton from "../components/PanelHideButton";
+import DesktopPanel from "../components/DesktopPanel";
 import MobileAccordion from "../components/MobileAccordion";
 import useMediaQuery from "../hooks/useMediaQuery";
 
@@ -212,32 +212,47 @@ export default function HandbookPage() {
               className="grid grid-cols-1 gap-6 lg:[grid-template-columns:var(--handbook-grid-template)]"
               style={{ "--handbook-grid-template": gridTemplate }}
             >
-              <aside
-                ref={tocRef}
-                className={showTOC ? "space-y-6 sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto animate-fade-in" : "hidden"}
-              >
-                <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
-              </aside>
+              {showTOC ? (
+                <DesktopPanel
+                  ref={tocRef}
+                  as="aside"
+                  panelKey="toc"
+                  eyebrow="Handbook"
+                  title="Contents"
+                  onHide={() => setShowTOC(false)}
+                  bodyClassName="overflow-auto"
+                >
+                  <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
+                </DesktopPanel>
+              ) : null}
 
-              <article className={`prose prose-invert max-w-none ${showHandbook ? "block animate-fade-in" : "hidden"}`}>
-                <div className="not-prose sticky top-[4rem] z-20 mb-2 flex justify-end">
-                  <PanelHideButton label="Hide handbook" onClick={() => setShowHandbook(false)} />
-                </div>
-                <HandbookArticleBody
-                  chapterId={chapterId}
-                  chapterModule={chapterModule}
-                  chapterError={chapterError}
-                  loadingChapter={loadingChapter}
-                  entry={entry}
-                  hasMdx={hasMdx}
-                  mdxModule={mdxModule}
-                  mdxError={mdxError}
-                  loadingMdx={loadingMdx}
-                  meta={meta}
-                  loadingEntry={loadingEntry}
-                  resolvedId={resolvedId}
-                />
-              </article>
+              {showHandbook ? (
+                <DesktopPanel
+                  as="article"
+                  panelKey="handbook"
+                  eyebrow="JavaScript Handbook"
+                  title={meta.title}
+                  onHide={() => setShowHandbook(false)}
+                  variant="plain"
+                  className="prose prose-invert max-w-none"
+                  bodyClassName="pt-4"
+                >
+                  <HandbookArticleBody
+                    chapterId={chapterId}
+                    chapterModule={chapterModule}
+                    chapterError={chapterError}
+                    loadingChapter={loadingChapter}
+                    entry={entry}
+                    hasMdx={hasMdx}
+                    mdxModule={mdxModule}
+                    mdxError={mdxError}
+                    loadingMdx={loadingMdx}
+                    meta={meta}
+                    loadingEntry={loadingEntry}
+                    resolvedId={resolvedId}
+                  />
+                </DesktopPanel>
+              ) : null}
 
               <div className="contents">
                 {entryError ? (

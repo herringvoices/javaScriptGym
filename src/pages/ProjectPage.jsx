@@ -5,7 +5,7 @@ import { getProject, getProjectSteps, getStepLoader, loadProjectEntry } from "..
 import ProjectSidebar from "../components/ProjectSidebar";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import StickyToggleBar from "../components/StickyToggleBar";
-import PanelHideButton from "../components/PanelHideButton";
+import DesktopPanel from "../components/DesktopPanel";
 import MobileAccordion from "../components/MobileAccordion";
 import useMediaQuery from "../hooks/useMediaQuery";
 
@@ -148,27 +148,42 @@ export default function ProjectPage() {
             className="grid grid-cols-1 gap-6 lg:[grid-template-columns:var(--project-grid-template)]"
             style={{ "--project-grid-template": gridTemplate }}
           >
-            <aside
-              ref={tocRef}
-              className={showTOC ? "space-y-6 sticky top-[4rem] self-start max-h-[calc(100vh-8rem)] overflow-auto animate-fade-in" : "hidden"}
-            >
-              <ProjectSidebar project={meta} currentStepId={currentStepId} />
-            </aside>
+            {showTOC ? (
+              <DesktopPanel
+                ref={tocRef}
+                as="aside"
+                panelKey="toc"
+                eyebrow="Project"
+                title="Steps"
+                onHide={() => setShowTOC(false)}
+                bodyClassName="overflow-auto"
+              >
+                <ProjectSidebar project={meta} currentStepId={currentStepId} />
+              </DesktopPanel>
+            ) : null}
 
-            <article className={`prose prose-invert max-w-none ${showHandbook ? "block animate-fade-in" : "hidden"}`}>
-              <div className="not-prose sticky top-[4rem] z-20 mb-2 flex justify-end">
-                <PanelHideButton label="Hide instructions" onClick={() => setShowHandbook(false)} />
-              </div>
-              {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
-              {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
-              {stepModule ? (
-                <HandbookMDXProvider>
-                  <stepModule.default />
-                </HandbookMDXProvider>
-              ) : (
-                <p className="text-sm text-slate-400">Step content coming soon...</p>
-              )}
-            </article>
+            {showHandbook ? (
+              <DesktopPanel
+                as="article"
+                panelKey="handbook"
+                eyebrow="Step"
+                title="Instructions"
+                onHide={() => setShowHandbook(false)}
+                variant="plain"
+                className="prose prose-invert max-w-none"
+                bodyClassName="pt-4"
+              >
+                {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
+                {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
+                {stepModule ? (
+                  <HandbookMDXProvider>
+                    <stepModule.default />
+                  </HandbookMDXProvider>
+                ) : (
+                  <p className="text-sm text-slate-400">Step content coming soon...</p>
+                )}
+              </DesktopPanel>
+            ) : null}
 
             <div className="contents">
               {entryError ? (
