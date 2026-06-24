@@ -6,6 +6,7 @@ import challenges from "../data/challenges";
 import standards from "../data/standards";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
+import { useVirtualWorkspace } from "../lib/virtualWorkspace";
 import Callout from "../components/Callout";
 import { loadMastered, saveMastered } from "../lib/mastery";
 import MonacoWorkspace from "../components/MonacoWorkspace";
@@ -27,20 +28,6 @@ const difficultyLabel = (value) => {
   const n = Number(value) || 0;
   return "★".repeat(n) || "-";
 };
-
-function getOriginalChallengeFileCode(challenge, path) {
-  const files = challenge.files;
-
-  if (!files) return undefined;
-
-  if (Array.isArray(files)) {
-    const match = files.find((file) => file.path === path);
-    return match ? String(match.code ?? match.content ?? "") : undefined;
-  }
-
-  const match = files[path];
-  return match ? String(match.code ?? match.content ?? "") : undefined;
-}
 
 export default function ChallengePage() {
   const { challengeId } = useParams();
@@ -76,9 +63,6 @@ export default function ChallengePage() {
 
 function ChallengeWorkspace({ challenge }) {
   const storageKey = `playground:${challenge.id}:files`;
-  const [savedFiles, setSavedFiles, resetSavedFiles] = useLocalStorage(storageKey, {});
-  const [initialFiles, setInitialFiles] = useState(savedFiles ?? {});
-  const previousIdRef = useRef(challenge.id);
   // Completion tracking shared key across app (same as ChallengesPage)
   const [completedIds, setCompletedIds] = useLocalStorage("completedChallenges", []);
   const isCompleted = completedIds.includes(challenge.id);
@@ -119,17 +103,8 @@ function ChallengeWorkspace({ challenge }) {
     setIsMastered(primaryStandard ? loadMastered().has(primaryStandard) : false);
   }, [primaryStandard, challenge.id]);
 
-  useEffect(() => {
-    if (previousIdRef.current !== challenge.id) {
-      previousIdRef.current = challenge.id;
-      setInitialFiles(savedFiles ?? {});
-    }
-  }, [challenge.id, savedFiles]);
-
-  // Always use new adapter (other challenge types removed)
   const setup = useMemo(() => {
-    const savedObj = initialFiles ?? {};
-    const files = toSandpackFiles(challenge, savedObj, { challengeId: challenge.id });
+    const files = toSandpackFiles(challenge, {}, { challengeId: challenge.id });
     const visibleFiles = Object.keys(files).filter((p) => !files[p].hidden);
     const activeFile = visibleFiles.find((p) => files[p].active) || visibleFiles[0];
     Object.keys(files).forEach((p) => { files[p].active = p === activeFile; });
@@ -140,73 +115,24 @@ function ChallengeWorkspace({ challenge }) {
       visibleFiles,
       activeFile,
     };
-  }, [challenge, initialFiles]);
+  }, [challenge]);
 
-  const [filesState, setFilesState] = useState(setup.files);
+  const virtualWorkspace = useVirtualWorkspace(setup.files, storageKey);
+  const filesState = virtualWorkspace.workspace.files;
   const [, setActiveFile] = useState(setup.activeFile);
   const [srcDoc, setSrcDoc] = useState("");
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
   const iframeRef = useRef(null);
 
   useEffect(() => {
-    setFilesState(setup.files);
     setActiveFile(setup.activeFile);
     // Do not auto-run on challenge change; keep preview idle until user clicks Run
     setSrcDoc("");
   }, [setup.files, setup.activeFile]);
 
-  const pendingSaveRef = useRef({});
-  const saveTimerRef = useRef(null);
-
-  const flushSave = useCallback(() => {
-    clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = null;
-    if (Object.keys(pendingSaveRef.current).length === 0) return;
-    const batch = pendingSaveRef.current;
-    pendingSaveRef.current = {};
-    setSavedFiles((prev) => {
-      const next = { ...prev };
-      for (const [p, entry] of Object.entries(batch)) {
-        if (entry === null) delete next[p];
-        else next[p] = entry;
-      }
-      return next;
-    });
-  }, [setSavedFiles]);
-
-  // Flush pending saves on unmount or when flushSave identity changes
-  useEffect(() => {
-    return () => {
-      clearTimeout(saveTimerRef.current);
-      // Write directly to localStorage on unmount since setSavedFiles won't process
-      const batch = pendingSaveRef.current;
-      if (Object.keys(batch).length === 0) return;
-      try {
-        const raw = window.localStorage.getItem(storageKey);
-        const current = raw ? JSON.parse(raw) : {};
-        for (const [p, entry] of Object.entries(batch)) {
-          if (entry === null) delete current[p];
-          else current[p] = entry;
-        }
-        window.localStorage.setItem(storageKey, JSON.stringify(current));
-      } catch { /* ignore */ }
-      pendingSaveRef.current = {};
-    };
-  }, [storageKey]);
-
   const handleFileChange = useCallback((path, code) => {
-    if (path.startsWith("/.playground")) return;
-    const original = getOriginalChallengeFileCode(challenge, path);
-    setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
-    // Queue save (null means "delete this key" when code matches original)
-    if (original !== undefined && original === code) {
-      pendingSaveRef.current[path] = null;
-    } else {
-      pendingSaveRef.current[path] = { code };
-    }
-    clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(flushSave, 500);
-  }, [challenge, flushSave]);
+    virtualWorkspace.setFileCode(path, code);
+  }, [virtualWorkspace]);
 
   const handleResetStorage = useCallback(() => {
     // Clear mock API DB for this challenge if available
@@ -218,10 +144,8 @@ function ChallengeWorkspace({ challenge }) {
         void e;
       }
     }
-    resetSavedFiles();
-    setInitialFiles({});
-    setFilesState(challenge.files);
-  }, [resetSavedFiles, challenge.files]);
+    virtualWorkspace.reset();
+  }, [virtualWorkspace]);
 
   useEffect(() => {
     function handleMsg(e) {
@@ -250,9 +174,15 @@ function ChallengeWorkspace({ challenge }) {
       <ChallengeSandboxUI
         challenge={challenge}
         files={filesState}
+        folders={virtualWorkspace.workspace.folders}
+        resetKey={virtualWorkspace.revision}
         entry={setup.entry}
         setActiveFile={setActiveFile}
         onFileChange={handleFileChange}
+        onCreateFile={virtualWorkspace.createFile}
+        onCreateFolder={virtualWorkspace.createFolder}
+        onRename={virtualWorkspace.rename}
+        onDelete={virtualWorkspace.remove}
         onResetStorage={handleResetStorage}
         isCompleted={isCompleted}
         markComplete={markComplete}
@@ -274,9 +204,15 @@ function ChallengeWorkspace({ challenge }) {
 function ChallengeSandboxUI({
   challenge,
   files,
+  folders,
+  resetKey,
   entry,
   setActiveFile,
   onFileChange,
+  onCreateFile,
+  onCreateFolder,
+  onRename,
+  onDelete,
   onResetStorage,
   isCompleted,
   markComplete,
@@ -537,7 +473,13 @@ function ChallengeSandboxUI({
             >
               <MonacoWorkspace
                 files={files}
+                folders={folders}
+                resetKey={resetKey}
                 onChange={onFileChange}
+                onCreateFile={onCreateFile}
+                onCreateFolder={onCreateFolder}
+                onRename={onRename}
+                onDelete={onDelete}
                 onActiveChange={setActiveFile}
                 showExplorer={showExplorer}
                 className="h-full"
@@ -735,7 +677,13 @@ function ChallengeSandboxUI({
               <div className="min-h-0 grow">
                 <MonacoWorkspace
                   files={files}
+                  folders={folders}
+                  resetKey={resetKey}
                   onChange={onFileChange}
+                  onCreateFile={onCreateFile}
+                  onCreateFolder={onCreateFolder}
+                  onRename={onRename}
+                  onDelete={onDelete}
                   onActiveChange={setActiveFile}
                   showExplorer={showExplorer}
                   className="h-full"
