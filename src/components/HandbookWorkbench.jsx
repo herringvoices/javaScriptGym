@@ -5,6 +5,7 @@ import DiagramPanel from "./DiagramPanel";
 import DesktopPanel from "./DesktopPanel";
 import MobileAccordion from "./MobileAccordion";
 import { toSandpackFiles } from "../lib/sandpackAdapter";
+import { useVirtualWorkspace } from "../lib/virtualWorkspace";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
 import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
@@ -22,34 +23,6 @@ export default function HandbookWorkbench({
   const [showFiles, setShowFiles] = useState(false);
   const [bottomPanel, setBottomPanel] = useState(entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE);
   const storageKey = entry ? (entry.standard ? `handbook:${entry.standard}:${entry.id}` : `project:${entry.id}`) : null;
-  const [savedSnapshot, setSavedSnapshot] = useState({});
-
-  useEffect(() => {
-    if (!storageKey) {
-      setSavedSnapshot({});
-      return;
-    }
-    try {
-      const raw = localStorage.getItem(storageKey);
-      const parsed = raw ? JSON.parse(raw) : {};
-      const obj = {};
-      Object.entries(parsed || {}).forEach(([path, value]) => {
-        obj[path] = String(value && typeof value === "object" && "code" in value ? value.code ?? "" : value ?? "");
-      });
-      setSavedSnapshot(obj);
-    } catch {
-      setSavedSnapshot({});
-    }
-  }, [storageKey]);
-
-  const savedFilesForEntry = useMemo(() => {
-    const mapped = {};
-    Object.entries(savedSnapshot).forEach(([path, code]) => {
-      mapped[path] = { code: String(code ?? "") };
-    });
-    return mapped;
-  }, [savedSnapshot]);
-
   const model = useMemo(() => {
     if (!entry) return null;
     const fileMap = {};
@@ -71,7 +44,7 @@ export default function HandbookWorkbench({
       tags: entry.mock ? ["mock-fetch"] : [],
     };
 
-    const files = toSandpackFiles(challengeLike, savedFilesForEntry, {
+    const files = toSandpackFiles(challengeLike, {}, {
       challengeId: challengeLike.id,
       apiSeed: challengeLike.mock?.apiSeed,
       mockNet: challengeLike.mock?.mockNet,
@@ -82,9 +55,10 @@ export default function HandbookWorkbench({
       files[path].active = path === activeFile;
     });
     return { files, entry: challengeLike.entry, activeFile };
-  }, [entry, savedFilesForEntry]);
+  }, [entry]);
 
-  const [filesState, setFilesState] = useState(model?.files || {});
+  const virtualWorkspace = useVirtualWorkspace(model?.files || {}, storageKey);
+  const filesState = virtualWorkspace.workspace.files;
   const [, setActiveFile] = useState(model?.activeFile || null);
   const [srcDoc, setSrcDoc] = useState("");
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
@@ -98,7 +72,6 @@ export default function HandbookWorkbench({
   useEffect(() => {
     if (!model) return;
     const preferredPanel = entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE;
-    setFilesState(model.files);
     setActiveFile(model.activeFile);
     setSrcDoc("");
     setBottomPanel(isValidPanelForFiles(preferredPanel, model.files) ? preferredPanel : DIAGRAM_PANEL.CONSOLE);
@@ -141,34 +114,9 @@ export default function HandbookWorkbench({
     }
   }, [filesState, model, onShowRunnerChange]);
 
-  const pendingSaveRef = useRef({});
-  const saveTimerRef = useRef(null);
-
-  const flushSave = useCallback(() => {
-    clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = null;
-    if (!storageKey || Object.keys(pendingSaveRef.current).length === 0) return;
-    try {
-      const snapshot = JSON.parse(localStorage.getItem(storageKey) || "{}");
-      Object.assign(snapshot, pendingSaveRef.current);
-      localStorage.setItem(storageKey, JSON.stringify(snapshot));
-      const flushed = pendingSaveRef.current;
-      pendingSaveRef.current = {};
-      setSavedSnapshot((prev) => ({ ...prev, ...flushed }));
-    } catch {
-      // Ignore storage errors; edits still live in component state for this session.
-    }
-  }, [storageKey]);
-
-  useEffect(() => flushSave, [flushSave]);
-
   const onChange = useCallback((path, code) => {
-    setFilesState((prev) => ({ ...prev, [path]: { ...prev[path], code } }));
-    if (!storageKey) return;
-    pendingSaveRef.current[path] = code;
-    clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(flushSave, 500);
-  }, [storageKey, flushSave]);
+    virtualWorkspace.setFileCode(path, code);
+  }, [virtualWorkspace]);
 
   useEffect(() => {
     function handleMsg(event) {
@@ -224,7 +172,13 @@ export default function HandbookWorkbench({
   const editorContent = (
     <MonacoWorkspace
       files={filesState}
+      folders={virtualWorkspace.workspace.folders}
+      resetKey={virtualWorkspace.revision}
       onChange={onChange}
+      onCreateFile={virtualWorkspace.createFile}
+      onCreateFolder={virtualWorkspace.createFolder}
+      onRename={virtualWorkspace.rename}
+      onDelete={virtualWorkspace.remove}
       onActiveChange={(path) => setActiveFile(path)}
       showExplorer={showFiles}
       className="h-full flex-1"
