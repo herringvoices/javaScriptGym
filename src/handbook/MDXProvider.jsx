@@ -38,6 +38,26 @@ const components = {
   h3: ({ className = "", ...props }) => (
     <h3 {...props} className={`text-xl font-semibold ${className}`.trim()} />
   ),
+  table: ({ className = "", ...props }) => (
+    <div className="not-prose my-6 overflow-x-auto rounded-md border border-slate-700 bg-slate-950/50">
+      <table
+        {...props}
+        className={`w-full min-w-max border-collapse text-left text-sm text-slate-200 ${className}`.trim()}
+      />
+    </div>
+  ),
+  th: ({ className = "", ...props }) => (
+    <th
+      {...props}
+      className={`border-b border-slate-700 bg-slate-900/80 px-3 py-2 font-semibold text-slate-100 ${className}`.trim()}
+    />
+  ),
+  td: ({ className = "", ...props }) => (
+    <td
+      {...props}
+      className={`border-t border-slate-800 px-3 py-2 align-top text-slate-300 ${className}`.trim()}
+    />
+  ),
   // Only style inline code; let rehype-pretty-code render fenced blocks.
   code: (props) => {
     const className = props?.className || "";
