@@ -13,15 +13,21 @@ import MonacoWorkspace from "../components/MonacoWorkspace";
 import ConsolePanel from "../components/ConsolePanel";
 import DiagramPanel from "../components/DiagramPanel";
 import DesktopPanel from "../components/DesktopPanel";
+import DesktopResizeHandle from "../components/DesktopResizeHandle";
 import DesktopRestorePreview from "../components/DesktopRestorePreview";
-import StickyToggleBar from "../components/StickyToggleBar";
 import MobileAccordion from "../components/MobileAccordion";
 import { buildSrcDoc } from "../lib/buildSrcDoc";
 import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
 import useMediaQuery from "../hooks/useMediaQuery";
-import useDesktopRestorePreview from "../hooks/useDesktopRestorePreview";
+import useResizableDesktopPanels from "../hooks/useResizableDesktopPanels";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
+
+const CHALLENGE_DESKTOP_PANEL_SIZES = [
+  { key: "details", min: 220, defaultWeight: 1, defaultColumn: "minmax(280px,1fr)" },
+  { key: "editor", min: 360, defaultWeight: 2, defaultColumn: "minmax(0,2fr)" },
+  { key: "console", min: 320, defaultWeight: 1.2, defaultColumn: "minmax(320px,1.2fr)" },
+];
 
 const difficultyLabel = (value) => {
   // show "-" when value is missing or 0, otherwise stars for any positive integer
@@ -242,7 +248,6 @@ function ChallengeSandboxUI({
   const descriptionCopy = challenge.description || challenge.summary || "Description coming soon.";
   const diagramFiles = useMemo(() => getDiagramFiles(files), [files]);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const restorePreviewKey = useDesktopRestorePreview();
 
   const handleRun = () => {
     try {
@@ -268,6 +273,41 @@ function ChallengeSandboxUI({
     }
   }, [rightPanel, files, challenge.sandbox?.defaultPanel]);
 
+  const desktopPanelSlots = useMemo(
+    () => [
+      { key: "details", visible: showDetailsColumn, preview: !showDetailsColumn },
+      { key: "editor", visible: showEditorColumn, preview: !showEditorColumn },
+      { key: "console", visible: showRunnerColumn, preview: !showRunnerColumn },
+    ],
+    [showDetailsColumn, showEditorColumn, showRunnerColumn]
+  );
+  const desktopResize = useResizableDesktopPanels({
+    panels: CHALLENGE_DESKTOP_PANEL_SIZES,
+    slots: desktopPanelSlots,
+  });
+  const renderResizeHandleAfter = (key) => {
+    const rightKey = desktopResize.nextVisibleKeyAfter(key);
+    return desktopResize.shouldRenderHandleAfter(key) && rightKey ? (
+      <DesktopResizeHandle
+        key={`${key}-${rightKey}`}
+        {...desktopResize.getHandleProps(key, rightKey)}
+      />
+    ) : null;
+  };
+  const desktopRestoreItemsByKey = {
+    details: {
+      key: "details",
+      panelKey: "toc",
+      tocKind: "details",
+      label: "Show Details",
+      onRestore: () => setShowDetailsColumn(true),
+    },
+    editor: { key: "editor", panelKey: "editor", label: "Show Editor", onRestore: () => setShowEditorColumn(true) },
+    console: { key: "console", panelKey: "console", label: "Show Preview", onRestore: () => setShowRunnerColumn(true) },
+  };
+  const getDesktopRestoreItems = (key) =>
+    desktopResize.getPreviewGroupKeys(key).map((groupKey) => desktopRestoreItemsByKey[groupKey]).filter(Boolean);
+
   useLayoutEffect(() => {
     let raf1 = 0;
     let raf2 = 0;
@@ -289,18 +329,7 @@ function ChallengeSandboxUI({
       if (raf1) cancelAnimationFrame(raf1);
       if (raf2) cancelAnimationFrame(raf2);
     };
-  }, [showExplorer, showDetailsColumn, showEditorColumn, showRunnerColumn]);
-
-  const gridTemplate = useMemo(() => {
-    const columns = [];
-    if (showDetailsColumn) columns.push("minmax(280px,1fr)");
-    else if (restorePreviewKey === "details") columns.push("10px");
-    if (showEditorColumn) columns.push("minmax(0,2fr)");
-    else if (restorePreviewKey === "editor") columns.push("10px");
-    if (showRunnerColumn) columns.push("minmax(320px,1.2fr)");
-    else if (restorePreviewKey === "console") columns.push("10px");
-    return columns.length ? columns.join(" ") : "minmax(0,1fr)";
-  }, [restorePreviewKey, showDetailsColumn, showEditorColumn, showRunnerColumn]);
+  }, [showExplorer, showDetailsColumn, showEditorColumn, showRunnerColumn, desktopResize.resizeSignal]);
 
   const toggleClass = (active) =>
     `rounded-full border px-3 py-1 text-xs font-semibold transition ${
@@ -312,23 +341,6 @@ function ChallengeSandboxUI({
   return (
     <div className="min-h-0 flex-1 flex-col space-y-2 w-full">
       <div className="flex flex-col gap-4 lg:flex-row w-full justify-between">
-        <StickyToggleBar
-          showTOC={showDetailsColumn}
-          showHandbook={true}
-          showEditor={showEditorColumn}
-          showConsole={showRunnerColumn}
-          onToggleTOC={() => setShowDetailsColumn((value) => !value)}
-          onToggleHandbook={() => {}}
-          onToggleEditor={() => setShowEditorColumn((value) => !value)}
-          onToggleConsole={() => setShowRunnerColumn((value) => !value)}
-          tocOffLabel="Show details"
-          tocShortLabel="Details"
-          tocKind="details"
-          editorOffLabel="Show editor"
-          editorShortLabel="Editor"
-          consoleOffLabel="Show preview"
-          consoleShortLabel="Preview"
-        />
         <div className="flex flex-col justify-center">
           <h2 className="text-2xl font-semibold text-white">{challenge.title}</h2>
         </div>
@@ -381,178 +393,204 @@ function ChallengeSandboxUI({
       </div>
 
       {isDesktop ? (
-      <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
+      <div className="-mx-4 overflow-x-clip sm:-mx-6">
         <div
-          className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 lg:[grid-template-columns:var(--challenge-grid-template)]"
-          style={{ "--challenge-grid-template": gridTemplate }}
+          ref={desktopResize.containerRef}
+          className="resizable-desktop-grid grid grid-cols-1 gap-0 -mx-3 px-4 sm:px-6 lg:px-8 lg:[grid-template-columns:var(--challenge-grid-template)]"
+          data-resizing={desktopResize.isResizing ? "true" : "false"}
+          style={{ "--challenge-grid-template": desktopResize.gridTemplate }}
         >
           {showDetailsColumn ? (
-            <DesktopPanel
-              as="article"
-              panelKey="toc"
-              tocKind="details"
-              eyebrow="Challenge"
-              title="Details"
-              onHide={() => setShowDetailsColumn(false)}
-              variant="plain"
-              className="prose prose-invert max-w-none text-slate-300"
-              bodyClassName="pt-4"
-            >
-              <div className="not-prose mb-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
-                <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
-                <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
-                  Difficulty {difficultyLabel(challenge.difficulty)}
-                </span>
-                {isCompleted ? (
-                  <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
-                    Completed
+            <div {...desktopResize.panelSlotProps("details")}>
+              <DesktopPanel
+                as="article"
+                panelKey="toc"
+                tocKind="details"
+                eyebrow="Challenge"
+                title="Details"
+                onHide={() => setShowDetailsColumn(false)}
+                variant="plain"
+                className="prose prose-invert max-w-none text-slate-300"
+                bodyClassName="pt-4"
+              >
+                <div className="not-prose mb-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
+                  <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">{challenge.id}</span>
+                  <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-slate-200">
+                    Difficulty {difficultyLabel(challenge.difficulty)}
                   </span>
+                  {isCompleted ? (
+                    <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-600/40">
+                      Completed
+                    </span>
+                  ) : null}
+                </div>
+
+                <div className="mb-5 space-y-2">
+                  <p className="not-prose text-xs uppercase tracking-widest text-brand-300">Challenge</p>
+                  <h2>{challenge.title}</h2>
+                </div>
+
+                <div className="not-prose mb-5">
+                  <StandardsBadges standards={challenge.standards} size="sm" />
+                </div>
+
+                <Markdown className="text-slate-300">
+                  {descriptionCopy}
+                </Markdown>
+
+                {Array.isArray(challenge.userStories) && challenge.userStories.length > 0 ? (
+                  <div className="mt-6">
+                    <h3>User stories</h3>
+                    <ul>
+                      {challenge.userStories.map((story, idx) => (
+                        <li key={idx}>{story}</li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : null}
-              </div>
 
-              <div className="mb-5 space-y-2">
-                <p className="not-prose text-xs uppercase tracking-widest text-brand-300">Challenge</p>
-                <h2>{challenge.title}</h2>
-              </div>
-
-              <div className="not-prose mb-5">
-                <StandardsBadges standards={challenge.standards} size="sm" />
-              </div>
-
-              <Markdown className="text-slate-300">
-                {descriptionCopy}
-              </Markdown>
-
-              {Array.isArray(challenge.userStories) && challenge.userStories.length > 0 ? (
-                <div className="mt-6">
-                  <h3>User stories</h3>
-                  <ul>
-                    {challenge.userStories.map((story, idx) => (
-                      <li key={idx}>{story}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {Array.isArray(challenge.acceptanceCriteria) && challenge.acceptanceCriteria.length > 0 ? (
-                <div className="mt-6">
-                  <h3>Acceptance criteria</h3>
-                  <ul>
-                    {challenge.acceptanceCriteria.map((rule, idx) => (
-                      <li key={idx}>{rule}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-            </DesktopPanel>
-          ) : restorePreviewKey === "details" ? (
-            <DesktopRestorePreview panelKey="toc" tocKind="details" />
-          ) : null}
+                {Array.isArray(challenge.acceptanceCriteria) && challenge.acceptanceCriteria.length > 0 ? (
+                  <div className="mt-6">
+                    <h3>Acceptance criteria</h3>
+                    <ul>
+                      {challenge.acceptanceCriteria.map((rule, idx) => (
+                        <li key={idx}>{rule}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </DesktopPanel>
+            </div>
+          ) : (
+            <div {...desktopResize.previewSlotProps("details")}>
+              <DesktopRestorePreview
+                panelKey="toc"
+                tocKind="details"
+                label="Show Details"
+                onRestore={() => setShowDetailsColumn(true)}
+                expandDirection={desktopResize.getPreviewExpandDirection("details")}
+                items={getDesktopRestoreItems("details")}
+              />
+            </div>
+          )}
+          {renderResizeHandleAfter("details")}
 
           {showEditorColumn ? (
-            <DesktopPanel
-              panelKey="editor"
-              eyebrow="Workspace"
-              title="Editor"
-              onHide={() => setShowEditorColumn(false)}
-              actions={
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowExplorer((value) => !value)}
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                      showExplorer
-                        ? "border-brand-400 bg-brand-500/20 text-brand-200"
-                        : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
-                    }`}
-                  >
-                    {showExplorer ? "Hide file tree" : "Show file tree"}
-                  </button>
-                </div>
-              }
-            >
-              <MonacoWorkspace
-                files={files}
-                folders={folders}
-                resetKey={resetKey}
-                onChange={onFileChange}
-                onCreateFile={onCreateFile}
-                onCreateFolder={onCreateFolder}
-                onRename={onRename}
-                onDelete={onDelete}
-                onActiveChange={setActiveFile}
-                showExplorer={showExplorer}
-                className="h-full"
-                onEditorMount={(ed) => {
-                  editorRef.current = ed;
-                  try {
-                    ed.layout();
-                  } catch (e) {
-                    void e;
-                  }
-                }}
+            <div {...desktopResize.panelSlotProps("editor")}>
+              <DesktopPanel
+                panelKey="editor"
+                eyebrow="Workspace"
+                title="Editor"
+                onHide={() => setShowEditorColumn(false)}
+                actions={
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowExplorer((value) => !value)}
+                      className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                        showExplorer
+                          ? "border-brand-400 bg-brand-500/20 text-brand-200"
+                          : "border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white"
+                      }`}
+                    >
+                      {showExplorer ? "Hide file tree" : "Show file tree"}
+                    </button>
+                  </div>
+                }
+              >
+                <MonacoWorkspace
+                  files={files}
+                  folders={folders}
+                  resetKey={resetKey}
+                  onChange={onFileChange}
+                  onCreateFile={onCreateFile}
+                  onCreateFolder={onCreateFolder}
+                  onRename={onRename}
+                  onDelete={onDelete}
+                  onActiveChange={setActiveFile}
+                  showExplorer={showExplorer}
+                  className="h-full"
+                  onEditorMount={(ed) => {
+                    editorRef.current = ed;
+                    try {
+                      ed.layout();
+                    } catch (e) {
+                      void e;
+                    }
+                  }}
+                />
+              </DesktopPanel>
+            </div>
+          ) : (
+            <div {...desktopResize.previewSlotProps("editor")}>
+              <DesktopRestorePreview
+                panelKey="editor"
+                label="Show Editor"
+                onRestore={() => setShowEditorColumn(true)}
+                expandDirection={desktopResize.getPreviewExpandDirection("editor")}
+                items={getDesktopRestoreItems("editor")}
               />
-            </DesktopPanel>
-          ) : restorePreviewKey === "editor" ? (
-            <DesktopRestorePreview panelKey="editor" />
-          ) : null}
+            </div>
+          )}
+          {renderResizeHandleAfter("editor")}
 
           {showRunnerColumn ? (
-            <DesktopPanel
-              panelKey="console"
-              eyebrow="Run"
-              title="Preview"
-              onHide={() => setShowRunnerColumn(false)}
-              bodyClassName="relative"
-              actions={
-                <>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={handleRun}
-                      className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
-                      title="Build and load the preview"
-                    >
-                      Run preview
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <button
-                      type="button"
-                      onClick={() => setRightPanel(DIAGRAM_PANEL.PREVIEW)}
-                      className={toggleClass(rightPanel === DIAGRAM_PANEL.PREVIEW)}
-                    >
-                      Preview
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setRightPanel(DIAGRAM_PANEL.CONSOLE)}
-                      className={toggleClass(rightPanel === DIAGRAM_PANEL.CONSOLE)}
-                    >
-                      Console
-                    </button>
-                    {diagramFiles.hasSequence ? (
+            <div {...desktopResize.panelSlotProps("console")}>
+              <DesktopPanel
+                panelKey="console"
+                eyebrow="Run"
+                title="Preview"
+                onHide={() => setShowRunnerColumn(false)}
+                bodyClassName="relative"
+                actions={
+                  <>
+                    <div className="flex flex-wrap items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => setRightPanel(DIAGRAM_PANEL.SEQUENCE)}
-                        className={toggleClass(rightPanel === DIAGRAM_PANEL.SEQUENCE)}
+                        onClick={handleRun}
+                        className="inline-flex items-center rounded-full border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+                        title="Build and load the preview"
                       >
-                        Sequence Diagram
+                        Run preview
                       </button>
-                    ) : null}
-                    {diagramFiles.hasErd ? (
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
                       <button
                         type="button"
-                        onClick={() => setRightPanel(DIAGRAM_PANEL.ERD)}
-                        className={toggleClass(rightPanel === DIAGRAM_PANEL.ERD)}
+                        onClick={() => setRightPanel(DIAGRAM_PANEL.PREVIEW)}
+                        className={toggleClass(rightPanel === DIAGRAM_PANEL.PREVIEW)}
                       >
-                        ERD
+                        Preview
                       </button>
-                    ) : null}
-                  </div>
-                </>
-              }
-            >
+                      <button
+                        type="button"
+                        onClick={() => setRightPanel(DIAGRAM_PANEL.CONSOLE)}
+                        className={toggleClass(rightPanel === DIAGRAM_PANEL.CONSOLE)}
+                      >
+                        Console
+                      </button>
+                      {diagramFiles.hasSequence ? (
+                        <button
+                          type="button"
+                          onClick={() => setRightPanel(DIAGRAM_PANEL.SEQUENCE)}
+                          className={toggleClass(rightPanel === DIAGRAM_PANEL.SEQUENCE)}
+                        >
+                          Sequence Diagram
+                        </button>
+                      ) : null}
+                      {diagramFiles.hasErd ? (
+                        <button
+                          type="button"
+                          onClick={() => setRightPanel(DIAGRAM_PANEL.ERD)}
+                          className={toggleClass(rightPanel === DIAGRAM_PANEL.ERD)}
+                        >
+                          ERD
+                        </button>
+                      ) : null}
+                    </div>
+                  </>
+                }
+              >
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.PREVIEW ? "z-10" : "z-0 invisible"}`}>
                   {srcDoc ? (
                     <div style={{ position: "relative", height: "100%", width: "100%" }}>
@@ -599,10 +637,19 @@ function ChallengeSandboxUI({
                     emptyMessage="Add /erd.dbml to this challenge to render an ERD."
                   />
               </div>
-            </DesktopPanel>
-          ) : restorePreviewKey === "console" ? (
-            <DesktopRestorePreview panelKey="console" />
-          ) : null}
+              </DesktopPanel>
+            </div>
+          ) : (
+            <div {...desktopResize.previewSlotProps("console")}>
+              <DesktopRestorePreview
+                panelKey="console"
+                label="Show Preview"
+                onRestore={() => setShowRunnerColumn(true)}
+                expandDirection={desktopResize.getPreviewExpandDirection("console")}
+                items={getDesktopRestoreItems("console")}
+              />
+            </div>
+          )}
         </div>
       </div>
       ) : (

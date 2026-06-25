@@ -18,31 +18,14 @@ const DesktopPanel = forwardRef(function DesktopPanel({
 }, ref) {
   const meta = useMemo(() => getPanelMeta(panelKey, { tocKind }), [panelKey, tocKind]);
 
-  const signalRailPreview = (active) => {
-    if (typeof window === "undefined") return;
-    window.dispatchEvent(
-      new CustomEvent("desktop-panel-rail-preview", {
-        detail: active ? { panelKey: meta.key, title, eyebrow } : null,
-      })
-    );
-  };
-
   const handleHide = () => {
     if (!onHide) return;
-    signalRailPreview(false);
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent("desktop-panel-rail-land", {
-          detail: { panelKey: meta.key },
-        })
-      );
-    }
     onHide();
   };
 
   const rootClassName =
     variant === "framed"
-      ? "desktop-panel flex h-screen min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in lg:sticky lg:top-0"
+      ? "desktop-panel flex h-[calc(100dvh-1rem)] min-h-[480px] flex-col self-start overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/80 animate-fade-in lg:sticky lg:top-0"
       : "desktop-panel self-start animate-fade-in";
   const bodyClass =
     variant === "framed"
@@ -75,24 +58,6 @@ const DesktopPanel = forwardRef(function DesktopPanel({
               type="button"
               onClick={handleHide}
               data-toc-toggle
-              onMouseEnter={() => {
-                signalRailPreview(true);
-              }}
-              onMouseLeave={() => {
-                signalRailPreview(false);
-              }}
-              onPointerEnter={() => {
-                signalRailPreview(true);
-              }}
-              onPointerLeave={() => {
-                signalRailPreview(false);
-              }}
-              onFocus={() => {
-                signalRailPreview(true);
-              }}
-              onBlur={() => {
-                signalRailPreview(false);
-              }}
               className={`desktop-panel-hide-button inline-flex items-center gap-2 rounded-md border bg-slate-950/35 px-2.5 py-1.5 text-xs font-medium text-slate-200 shadow-lg shadow-slate-950/20 backdrop-blur transition hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70 ${meta.borderClass}`}
               aria-label={`Hide ${title}`}
               title={`Hide ${title}`}

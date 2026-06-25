@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import AppLayout from "../layouts/AppLayout";
+import ErrorPage from "../pages/ErrorPage";
 
 const LandingPage = lazy(() => import("../pages/LandingPage"));
 const ChallengesPage = lazy(() => import("../pages/ChallengesPage"));
@@ -13,6 +14,7 @@ const StandardsPage = lazy(() => import("../pages/StandardsPage"));
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",

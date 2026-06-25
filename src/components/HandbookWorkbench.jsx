@@ -19,6 +19,9 @@ export default function HandbookWorkbench({
   onShowRunnerChange,
   onHideEditor,
   onHideRunner,
+  resizeSignal = 0,
+  getDesktopPanelSlotProps,
+  renderDesktopResizeHandleAfter,
 }) {
   const [showFiles, setShowFiles] = useState(false);
   const [bottomPanel, setBottomPanel] = useState(entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE);
@@ -100,7 +103,7 @@ export default function HandbookWorkbench({
       if (raf1) cancelAnimationFrame(raf1);
       if (raf2) cancelAnimationFrame(raf2);
     };
-  }, [showEditor, runnerVisible, showFiles]);
+  }, [showEditor, runnerVisible, showFiles, resizeSignal]);
 
   const handleRun = useCallback(() => {
     if (!model) return;
@@ -231,15 +234,17 @@ export default function HandbookWorkbench({
   );
 
   const editorPanel = isDesktop ? (
-    <DesktopPanel
-      panelKey="editor"
-      eyebrow="Workspace"
-      title="Editor"
-      onHide={onHideEditor}
-      actions={editorActions}
-    >
-      {editorContent}
-    </DesktopPanel>
+    <div {...getDesktopPanelSlotProps?.("editor")} className="min-w-0 px-3">
+      <DesktopPanel
+        panelKey="editor"
+        eyebrow="Workspace"
+        title="Editor"
+        onHide={onHideEditor}
+        actions={editorActions}
+      >
+        {editorContent}
+      </DesktopPanel>
+    </div>
   ) : (
     <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
@@ -252,24 +257,26 @@ export default function HandbookWorkbench({
 
   const runnerPanel = runnerVisible ? (
     isDesktop ? (
-      <DesktopPanel
-        panelKey="console"
-        eyebrow="Run"
-        title="Preview"
-        onHide={onHideRunner}
-        actions={runnerActions}
-        bodyClassName="relative overflow-hidden"
-      >
-        <RunnerBody
-          bottomPanel={bottomPanel}
-          srcDoc={srcDoc}
-          previewFullScreen={previewFullScreen}
-          setPreviewFullScreen={setPreviewFullScreen}
-          iframeRef={iframeRef}
-          consoleKey={consoleKey}
-          diagramFiles={diagramFiles}
-        />
-      </DesktopPanel>
+      <div {...getDesktopPanelSlotProps?.("console")} className="min-w-0 px-3">
+        <DesktopPanel
+          panelKey="console"
+          eyebrow="Run"
+          title="Preview"
+          onHide={onHideRunner}
+          actions={runnerActions}
+          bodyClassName="relative overflow-hidden"
+        >
+          <RunnerBody
+            bottomPanel={bottomPanel}
+            srcDoc={srcDoc}
+            previewFullScreen={previewFullScreen}
+            setPreviewFullScreen={setPreviewFullScreen}
+            iframeRef={iframeRef}
+            consoleKey={consoleKey}
+            diagramFiles={diagramFiles}
+          />
+        </DesktopPanel>
+      </div>
     ) : (
       <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
         <div className="flex flex-wrap items-center justify-end gap-3 border-b border-slate-800 px-4 py-3 text-xs text-slate-400">
@@ -306,6 +313,7 @@ export default function HandbookWorkbench({
   ) : (
     <>
       {showEditor ? editorPanel : null}
+      {renderDesktopResizeHandleAfter?.("editor")}
       {runnerPanel}
     </>
   );

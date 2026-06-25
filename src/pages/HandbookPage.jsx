@@ -8,14 +8,21 @@ import { handbookChapters, loadHandbookEntry, getChapterLoader, getChaptersForSt
 import HandbookMDXProvider from "../handbook/MDXProvider";
 import HandbookWorkbench from "../components/HandbookWorkbench";
 import HandbookSidebar from "../components/HandbookSidebar";
-import StickyToggleBar from "../components/StickyToggleBar";
 import DesktopPanel from "../components/DesktopPanel";
+import DesktopResizeHandle from "../components/DesktopResizeHandle";
 import DesktopRestorePreview from "../components/DesktopRestorePreview";
 import MobileAccordion from "../components/MobileAccordion";
 import useMediaQuery from "../hooks/useMediaQuery";
-import useDesktopRestorePreview from "../hooks/useDesktopRestorePreview";
+import useResizableDesktopPanels from "../hooks/useResizableDesktopPanels";
 
 // Removed page-level heading TOC ("On this page"); keep file lean.
+
+const DESKTOP_PANEL_SIZES = [
+  { key: "toc", min: 220, defaultWeight: 0.75, defaultColumn: "minmax(220px,0.75fr)" },
+  { key: "handbook", min: 280, defaultWeight: 1, defaultColumn: "minmax(280px,1fr)" },
+  { key: "editor", min: 360, defaultWeight: 2, defaultColumn: "minmax(0,2fr)" },
+  { key: "console", min: 320, defaultWeight: 1.2, defaultColumn: "minmax(320px,1.2fr)" },
+];
 
 export default function HandbookPage() {
   const { standardId, chapterId } = useParams();
@@ -30,7 +37,6 @@ export default function HandbookPage() {
   const [showConsole, setShowConsole] = useState(false);
   const tocRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const restorePreviewKey = useDesktopRestorePreview();
 
   // New-style entry loader (preferred)
   const [entry, setEntry] = useState(null);
@@ -153,29 +159,40 @@ export default function HandbookPage() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [showTOC]);
 
-  const gridTemplate = useMemo(() => {
-    const columns = [];
-    if (showTOC) columns.push("minmax(220px,0.75fr)");
-    else if (restorePreviewKey === "toc") columns.push("10px");
-    if (showHandbook) columns.push("minmax(280px,1fr)");
-    else if (restorePreviewKey === "handbook") columns.push("10px");
-    if (showEditor) columns.push("minmax(0,2fr)");
-    else if (restorePreviewKey === "editor") columns.push("10px");
-    if (showConsole) columns.push("minmax(320px,1.2fr)");
-    else if (restorePreviewKey === "console") columns.push("10px");
-    return columns.length ? columns.join(" ") : "minmax(0,1fr)";
-  }, [restorePreviewKey, showTOC, showHandbook, showEditor, showConsole]);
-
-  const hideWithTOC = (hidePanel) => {
-    setShowTOC(false);
-    hidePanel(false);
+  const desktopPanelSlots = useMemo(
+    () => [
+      { key: "toc", visible: showTOC, preview: !showTOC },
+      { key: "handbook", visible: showHandbook, preview: !showHandbook },
+      { key: "editor", visible: showEditor, preview: !showEditor },
+      { key: "console", visible: showConsole, preview: !showConsole },
+    ],
+    [showTOC, showHandbook, showEditor, showConsole]
+  );
+  const desktopResize = useResizableDesktopPanels({
+    panels: DESKTOP_PANEL_SIZES,
+    slots: desktopPanelSlots,
+  });
+  const renderResizeHandleAfter = (key) => {
+    const rightKey = desktopResize.nextVisibleKeyAfter(key);
+    return desktopResize.shouldRenderHandleAfter(key) && rightKey ? (
+      <DesktopResizeHandle
+        key={`${key}-${rightKey}`}
+        {...desktopResize.getHandleProps(key, rightKey)}
+      />
+    ) : null;
   };
+  const desktopRestoreItemsByKey = {
+    toc: { key: "toc", panelKey: "toc", label: "Show Contents", onRestore: () => setShowTOC(true) },
+    handbook: { key: "handbook", panelKey: "handbook", label: "Show Handbook", onRestore: () => setShowHandbook(true) },
+    editor: { key: "editor", panelKey: "editor", label: "Show Editor", onRestore: () => setShowEditor(true) },
+    console: { key: "console", panelKey: "console", label: "Show Console", onRestore: () => setShowConsole(true) },
+  };
+  const getDesktopRestoreItems = (key) =>
+    desktopResize.getPreviewGroupKeys(key).map((groupKey) => desktopRestoreItemsByKey[groupKey]).filter(Boolean);
 
   // No per-page TOC; sidebar now focuses on standards and chapters.
 
   // Legacy standardNav retained for potential future use (e.g., breadcrumbs). Removed from rendering.
-
-  // Button class logic moved into StickyToggleBar for reuse
 
   if (!meta) {
     return (
@@ -189,8 +206,8 @@ export default function HandbookPage() {
   }
 
   return (
-    // Full-bleed wrapper to span entire viewport width even inside AppLayout's max-w container
-    <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
+    // Full-bleed wrapper to span the app shell without introducing 100vw scrollbar overflow.
+    <div className="-mx-4 overflow-x-clip sm:-mx-6">
       <div className="space-y-4 px-4 sm:px-6 lg:px-8">
         {/* Header with toggles */}
         <div className="rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
@@ -198,106 +215,129 @@ export default function HandbookPage() {
           <h1 className="mt-0 text-2xl font-semibold">{meta.title}</h1>
         </div>
 
-        {/* Sticky toggle controls bar */}
-        <StickyToggleBar
-          showTOC={showTOC}
-          showHandbook={showHandbook}
-          showEditor={showEditor}
-          showConsole={showConsole}
-          onToggleTOC={() => setShowTOC((v) => !v)}
-          onToggleHandbook={() => setShowHandbook((v) => !v)}
-          onToggleEditor={() => setShowEditor((v) => !v)}
-          onToggleConsole={() => setShowConsole((v) => !v)}
-          tocOnLabel="Hide Table of Contents"
-          tocOffLabel="Show Table of Contents"
-          handbookOnLabel="Hide handbook"
-          handbookOffLabel="Show handbook"
-          editorOnLabel="Hide editor"
-          editorOffLabel="Show editor"
-          consoleOnLabel="Hide console"
-          consoleOffLabel="Show console"
-        />
-
         {/* Body columns are weighted like challenges, with TOC as an extra optional column. */}
         {isDesktop ? (
             <div
-              className="grid grid-cols-1 gap-6 lg:[grid-template-columns:var(--handbook-grid-template)]"
-              style={{ "--handbook-grid-template": gridTemplate }}
+              ref={desktopResize.containerRef}
+              className="resizable-desktop-grid grid grid-cols-1 gap-0 -mx-3 lg:[grid-template-columns:var(--handbook-grid-template)]"
+              data-resizing={desktopResize.isResizing ? "true" : "false"}
+              style={{ "--handbook-grid-template": desktopResize.gridTemplate }}
             >
               {showTOC ? (
-                <DesktopPanel
-                  ref={tocRef}
-                  as="aside"
-                  panelKey="toc"
-                  eyebrow="Handbook"
-                  title="Contents"
-                  onHide={() => setShowTOC(false)}
-                  bodyClassName="overflow-auto"
-                >
-                  <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
-                </DesktopPanel>
-              ) : restorePreviewKey === "toc" ? (
-                <DesktopRestorePreview panelKey="toc" />
-              ) : null}
+                <div {...desktopResize.panelSlotProps("toc")}>
+                  <DesktopPanel
+                    ref={tocRef}
+                    as="aside"
+                    panelKey="toc"
+                    eyebrow="Handbook"
+                    title="Contents"
+                    onHide={() => setShowTOC(false)}
+                    bodyClassName="overflow-auto"
+                  >
+                    <HandbookSidebar currentStandardId={resolvedId} currentChapterId={chapterId} />
+                  </DesktopPanel>
+                </div>
+              ) : (
+                <div {...desktopResize.previewSlotProps("toc")}>
+                  <DesktopRestorePreview
+                    panelKey="toc"
+                    label="Show Contents"
+                    onRestore={() => setShowTOC(true)}
+                    expandDirection={desktopResize.getPreviewExpandDirection("toc")}
+                    items={getDesktopRestoreItems("toc")}
+                  />
+                </div>
+              )}
+              {renderResizeHandleAfter("toc")}
 
               {showHandbook ? (
-                <DesktopPanel
-                  as="article"
-                  panelKey="handbook"
-                  eyebrow="JavaScript Handbook"
-                  title={meta.title}
-                  onHide={() => hideWithTOC(setShowHandbook)}
-                  variant="plain"
-                  className="prose prose-invert max-w-none"
-                  bodyClassName="pt-4"
-                >
-                  <HandbookArticleBody
-                    chapterId={chapterId}
-                    chapterModule={chapterModule}
-                    chapterError={chapterError}
-                    loadingChapter={loadingChapter}
-                    entry={entry}
-                    hasMdx={hasMdx}
-                    mdxModule={mdxModule}
-                    mdxError={mdxError}
-                    loadingMdx={loadingMdx}
-                    meta={meta}
-                    loadingEntry={loadingEntry}
-                    resolvedId={resolvedId}
+                <div {...desktopResize.panelSlotProps("handbook")}>
+                  <DesktopPanel
+                    as="article"
+                    panelKey="handbook"
+                    eyebrow="JavaScript Handbook"
+                    title={meta.title}
+                    onHide={() => setShowHandbook(false)}
+                    variant="plain"
+                    className="prose prose-invert max-w-none"
+                    bodyClassName="pt-4"
+                  >
+                    <HandbookArticleBody
+                      chapterId={chapterId}
+                      chapterModule={chapterModule}
+                      chapterError={chapterError}
+                      loadingChapter={loadingChapter}
+                      entry={entry}
+                      hasMdx={hasMdx}
+                      mdxModule={mdxModule}
+                      mdxError={mdxError}
+                      loadingMdx={loadingMdx}
+                      meta={meta}
+                      loadingEntry={loadingEntry}
+                      resolvedId={resolvedId}
+                    />
+                  </DesktopPanel>
+                </div>
+              ) : (
+                <div {...desktopResize.previewSlotProps("handbook")}>
+                  <DesktopRestorePreview
+                    panelKey="handbook"
+                    label="Show Handbook"
+                    onRestore={() => setShowHandbook(true)}
+                    expandDirection={desktopResize.getPreviewExpandDirection("handbook")}
+                    items={getDesktopRestoreItems("handbook")}
                   />
-                </DesktopPanel>
-              ) : restorePreviewKey === "handbook" ? (
-                <DesktopRestorePreview panelKey="handbook" />
-              ) : null}
+                </div>
+              )}
+              {renderResizeHandleAfter("handbook")}
 
-              {showEditor ? null : restorePreviewKey === "editor" ? (
-                <DesktopRestorePreview panelKey="editor" />
-              ) : null}
+              {showEditor ? null : (
+                <div {...desktopResize.previewSlotProps("editor")}>
+                  <DesktopRestorePreview
+                    panelKey="editor"
+                    label="Show Editor"
+                    onRestore={() => setShowEditor(true)}
+                    expandDirection={desktopResize.getPreviewExpandDirection("editor")}
+                    items={getDesktopRestoreItems("editor")}
+                  />
+                </div>
+              )}
 
               {showEditor || showConsole ? (
               <div className="contents">
                 {entryError ? (
-                  <div className={showEditor ? "rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300" : "hidden"}>
+                  <div {...desktopResize.panelSlotProps("editor")} className={showEditor ? "min-w-0 px-3 rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300" : "hidden"}>
                     Failed to load entry: {entryError.message}
                   </div>
                 ) : loadingEntry && !entry ? (
-                  <div className={showEditor ? "rounded border border-slate-800 p-3 text-sm text-slate-300" : "hidden"}>Loading editor…</div>
+                  <div {...desktopResize.panelSlotProps("editor")} className={showEditor ? "min-w-0 px-3 rounded border border-slate-800 p-3 text-sm text-slate-300" : "hidden"}>Loading editor…</div>
                 ) : (
                   <HandbookWorkbench
                     entry={entry}
                     showEditor={showEditor}
                     showRunner={showConsole}
+                    resizeSignal={desktopResize.resizeSignal}
+                    getDesktopPanelSlotProps={desktopResize.panelSlotProps}
+                    renderDesktopResizeHandleAfter={renderResizeHandleAfter}
                     onShowRunnerChange={setShowConsole}
-                    onHideEditor={() => hideWithTOC(setShowEditor)}
-                    onHideRunner={() => hideWithTOC(setShowConsole)}
+                    onHideEditor={() => setShowEditor(false)}
+                    onHideRunner={() => setShowConsole(false)}
                   />
                 )}
               </div>
               ) : null}
 
-              {showConsole ? null : restorePreviewKey === "console" ? (
-                <DesktopRestorePreview panelKey="console" />
-              ) : null}
+              {showConsole ? null : (
+                <div {...desktopResize.previewSlotProps("console")}>
+                  <DesktopRestorePreview
+                    panelKey="console"
+                    label="Show Console"
+                    onRestore={() => setShowConsole(true)}
+                    expandDirection={desktopResize.getPreviewExpandDirection("console")}
+                    items={getDesktopRestoreItems("console")}
+                  />
+                </div>
+              )}
             </div>
         ) : (
           <div className="space-y-3">

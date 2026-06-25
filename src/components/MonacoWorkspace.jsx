@@ -10,6 +10,7 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
   const [draft, setDraft] = React.useState(null);
   const [error, setError] = React.useState("");
   const [monacoApi, setMonacoApi] = React.useState(null);
+  const editorRef = React.useRef(null);
   const filesRef = React.useRef(files);
   const activePathRef = React.useRef(activePath);
   filesRef.current = files;
@@ -64,7 +65,28 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
     if (!monaco.languages.getLanguages().some((language) => language.id === "mermaid")) monaco.languages.register({ id: "mermaid" });
     monaco.editor.defineTheme("dracula", { base: "vs-dark", inherit: true, rules: [{ token: "", foreground: "F8F8F2", background: "282A36" }, { token: "comment", foreground: "6272A4" }], colors: { "editor.background": "#282A36", "editor.foreground": "#F8F8F2", "editor.selectionBackground": "#44475A", "editor.lineHighlightBackground": "#44475A44", "editorCursor.foreground": "#F8F8F2", "editorLineNumber.foreground": "#6272A4" } });
   }, []);
-  const mount = React.useCallback((editor, monaco) => { setMonacoApi(monaco); onEditorMount?.(editor, monaco); }, [onEditorMount]);
+  const mount = React.useCallback((editor, monaco) => {
+    editorRef.current = editor;
+    setMonacoApi(monaco);
+    onEditorMount?.(editor, monaco);
+  }, [onEditorMount]);
+  const handOffWheelAtEditorBoundary = React.useCallback((event) => {
+    const editor = editorRef.current;
+    if (!editor || event.defaultPrevented || !event.deltaY) return;
+
+    const layout = editor.getLayoutInfo();
+    const scrollTop = editor.getScrollTop();
+    const maxScrollTop = Math.max(0, editor.getScrollHeight() - layout.height);
+    const atTop = scrollTop <= 1;
+    const atBottom = scrollTop >= maxScrollTop - 1;
+    const shouldHandOff = event.deltaY < 0 ? atTop : atBottom;
+    if (!shouldHandOff) return;
+
+    const multiplier = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+    event.preventDefault();
+    event.stopPropagation();
+    window.scrollBy({ top: event.deltaY * multiplier, left: event.deltaX * multiplier, behavior: "auto" });
+  }, []);
   const visibleTabs = [...openPaths].filter((path) => !files[path]?.hidden);
 
   return <div className={`flex w-full min-h-0 grow flex-col lg:flex-row ${className}`}>
@@ -83,7 +105,7 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
       </ul>
     </aside>}
     <div className="flex min-w-0 min-h-0 grow flex-col"><div className="flex min-h-9 items-center gap-1 overflow-x-auto border-b border-slate-800 bg-slate-950/70 px-2">{visibleTabs.map((path) => <div key={path} className={`flex items-center gap-1 rounded px-2 py-1 text-sm ${path === activePath ? "bg-slate-800 text-white" : "text-slate-300 hover:bg-slate-800/50"}`}><button type="button" onClick={() => select(path)} title={path}>{basename(path)}</button><button type="button" className="text-slate-500 hover:text-white" aria-label={`Close ${basename(path)}`} onClick={() => setOpenPaths((prev) => { const next = new Set(prev); next.delete(path); if (path === activePath) setActivePath([...next][0] || firstVisibleFile(files)); return next; })}><VscClose /></button></div>)}</div>
-      <div className="min-h-0 grow">{activeFile ? <Editor path={activeFile.path} value={activeFile.code} language={languageFor(activeFile.path)} theme="dracula" beforeMount={beforeMount} onMount={mount} onChange={(value) => onChange?.(activeFile.path, value ?? "")} options={{ readOnly: Boolean(activeFile.readOnly), fontSize: 16, minimap: { enabled: false }, scrollBeyondLastLine: false, wordWrap: "on" }} height="100%" /> : <div className="p-4 text-slate-400">No file selected.</div>}</div>
+      <div className="min-h-0 grow" onWheelCapture={handOffWheelAtEditorBoundary}>{activeFile ? <Editor path={activeFile.path} value={activeFile.code} language={languageFor(activeFile.path)} theme="dracula" beforeMount={beforeMount} onMount={mount} onChange={(value) => onChange?.(activeFile.path, value ?? "")} options={{ readOnly: Boolean(activeFile.readOnly), fontSize: 16, minimap: { enabled: false }, scrollBeyondLastLine: false, wordWrap: "on" }} height="100%" /> : <div className="p-4 text-slate-400">No file selected.</div>}</div>
     </div>
   </div>;
 }

@@ -4,12 +4,19 @@ import HandbookMDXProvider from "../handbook/MDXProvider";
 import { getProject, getProjectSteps, getStepLoader, loadProjectEntry } from "../projects/manifest";
 import ProjectSidebar from "../components/ProjectSidebar";
 import HandbookWorkbench from "../components/HandbookWorkbench";
-import StickyToggleBar from "../components/StickyToggleBar";
 import DesktopPanel from "../components/DesktopPanel";
+import DesktopResizeHandle from "../components/DesktopResizeHandle";
 import DesktopRestorePreview from "../components/DesktopRestorePreview";
 import MobileAccordion from "../components/MobileAccordion";
 import useMediaQuery from "../hooks/useMediaQuery";
-import useDesktopRestorePreview from "../hooks/useDesktopRestorePreview";
+import useResizableDesktopPanels from "../hooks/useResizableDesktopPanels";
+
+const DESKTOP_PANEL_SIZES = [
+  { key: "toc", min: 220, defaultWeight: 0.75, defaultColumn: "minmax(220px,0.75fr)" },
+  { key: "handbook", min: 280, defaultWeight: 1, defaultColumn: "minmax(280px,1fr)" },
+  { key: "editor", min: 360, defaultWeight: 2, defaultColumn: "minmax(0,2fr)" },
+  { key: "console", min: 320, defaultWeight: 1.2, defaultColumn: "minmax(320px,1.2fr)" },
+];
 
 export default function ProjectPage() {
   const { projectId, stepId } = useParams();
@@ -31,7 +38,6 @@ export default function ProjectPage() {
   const [showConsole, setShowConsole] = useState(true);
   const tocRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const restorePreviewKey = useDesktopRestorePreview();
 
   useEffect(() => {
     let cancelled = false;
@@ -113,106 +119,136 @@ export default function ProjectPage() {
     return { ...entry, files };
   }, [entry, currentStepId]);
 
-  const gridTemplate = useMemo(() => {
-    const columns = [];
-    if (showTOC) columns.push("minmax(220px,0.75fr)");
-    else if (restorePreviewKey === "toc") columns.push("10px");
-    if (showHandbook) columns.push("minmax(280px,1fr)");
-    else if (restorePreviewKey === "handbook") columns.push("10px");
-    if (showEditor) columns.push("minmax(0,2fr)");
-    else if (restorePreviewKey === "editor") columns.push("10px");
-    if (showConsole) columns.push("minmax(320px,1.2fr)");
-    else if (restorePreviewKey === "console") columns.push("10px");
-    return columns.length ? columns.join(" ") : "minmax(0,1fr)";
-  }, [restorePreviewKey, showTOC, showHandbook, showEditor, showConsole]);
-
-  const hideWithTOC = (hidePanel) => {
-    setShowTOC(false);
-    hidePanel(false);
+  const desktopPanelSlots = useMemo(
+    () => [
+      { key: "toc", visible: showTOC, preview: !showTOC },
+      { key: "handbook", visible: showHandbook, preview: !showHandbook },
+      { key: "editor", visible: showEditor, preview: !showEditor },
+      { key: "console", visible: showConsole, preview: !showConsole },
+    ],
+    [showTOC, showHandbook, showEditor, showConsole]
+  );
+  const desktopResize = useResizableDesktopPanels({
+    panels: DESKTOP_PANEL_SIZES,
+    slots: desktopPanelSlots,
+  });
+  const renderResizeHandleAfter = (key) => {
+    const rightKey = desktopResize.nextVisibleKeyAfter(key);
+    return desktopResize.shouldRenderHandleAfter(key) && rightKey ? (
+      <DesktopResizeHandle
+        key={`${key}-${rightKey}`}
+        {...desktopResize.getHandleProps(key, rightKey)}
+      />
+    ) : null;
   };
+  const desktopRestoreItemsByKey = {
+    toc: { key: "toc", panelKey: "toc", label: "Show Steps", onRestore: () => setShowTOC(true) },
+    handbook: { key: "handbook", panelKey: "handbook", label: "Show Instructions", onRestore: () => setShowHandbook(true) },
+    editor: { key: "editor", panelKey: "editor", label: "Show Editor", onRestore: () => setShowEditor(true) },
+    console: { key: "console", panelKey: "console", label: "Show Console", onRestore: () => setShowConsole(true) },
+  };
+  const getDesktopRestoreItems = (key) =>
+    desktopResize.getPreviewGroupKeys(key).map((groupKey) => desktopRestoreItemsByKey[groupKey]).filter(Boolean);
 
   return (
-    <div className="w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]">
+    <div className="-mx-4 overflow-x-clip sm:-mx-6">
       <div className="space-y-4 px-4 sm:px-6 lg:px-8">
         <div className="rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
           <p className="text-sm uppercase tracking-widest text-brand-300">Project</p>
           <h1 className="mt-0 text-2xl font-semibold">{meta ? meta.title : "Not found"}</h1>
         </div>
 
-        <StickyToggleBar
-          showTOC={showTOC}
-          showHandbook={showHandbook}
-          showEditor={showEditor}
-          showConsole={showConsole}
-          onToggleTOC={() => setShowTOC((value) => !value)}
-          onToggleHandbook={() => setShowHandbook((value) => !value)}
-          onToggleEditor={() => setShowEditor((value) => !value)}
-          onToggleConsole={() => setShowConsole((value) => !value)}
-          tocOffLabel="Show Steps"
-          handbookOffLabel="Show instructions"
-          editorOffLabel="Show editor"
-          consoleOffLabel="Show console"
-        />
-
         {meta ? (
           isDesktop ? (
           <div
-            className="grid grid-cols-1 gap-6 lg:[grid-template-columns:var(--project-grid-template)]"
-            style={{ "--project-grid-template": gridTemplate }}
+            ref={desktopResize.containerRef}
+            className="resizable-desktop-grid grid grid-cols-1 gap-0 -mx-3 lg:[grid-template-columns:var(--project-grid-template)]"
+            data-resizing={desktopResize.isResizing ? "true" : "false"}
+            style={{ "--project-grid-template": desktopResize.gridTemplate }}
           >
             {showTOC ? (
-              <DesktopPanel
-                ref={tocRef}
-                as="aside"
-                panelKey="toc"
-                eyebrow="Project"
-                title="Steps"
-                onHide={() => setShowTOC(false)}
-                bodyClassName="overflow-auto"
-              >
-                <ProjectSidebar project={meta} currentStepId={currentStepId} />
-              </DesktopPanel>
-            ) : restorePreviewKey === "toc" ? (
-              <DesktopRestorePreview panelKey="toc" />
-            ) : null}
+              <div {...desktopResize.panelSlotProps("toc")}>
+                <DesktopPanel
+                  ref={tocRef}
+                  as="aside"
+                  panelKey="toc"
+                  eyebrow="Project"
+                  title="Steps"
+                  onHide={() => setShowTOC(false)}
+                  bodyClassName="overflow-auto"
+                >
+                  <ProjectSidebar project={meta} currentStepId={currentStepId} />
+                </DesktopPanel>
+              </div>
+            ) : (
+              <div {...desktopResize.previewSlotProps("toc")}>
+                <DesktopRestorePreview
+                  panelKey="toc"
+                  label="Show Steps"
+                  onRestore={() => setShowTOC(true)}
+                  expandDirection={desktopResize.getPreviewExpandDirection("toc")}
+                  items={getDesktopRestoreItems("toc")}
+                />
+              </div>
+            )}
+            {renderResizeHandleAfter("toc")}
 
             {showHandbook ? (
-              <DesktopPanel
-                as="article"
-                panelKey="handbook"
-                eyebrow="Step"
-                title="Instructions"
-                onHide={() => hideWithTOC(setShowHandbook)}
-                variant="plain"
-                className="prose prose-invert max-w-none"
-                bodyClassName="pt-4"
-              >
-                {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
-                {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
-                {stepModule ? (
-                  <HandbookMDXProvider>
-                    <stepModule.default />
-                  </HandbookMDXProvider>
-                ) : (
-                  <p className="text-sm text-slate-400">Step content coming soon...</p>
-                )}
-              </DesktopPanel>
-            ) : restorePreviewKey === "handbook" ? (
-              <DesktopRestorePreview panelKey="handbook" />
-            ) : null}
+              <div {...desktopResize.panelSlotProps("handbook")}>
+                <DesktopPanel
+                  as="article"
+                  panelKey="handbook"
+                  eyebrow="Step"
+                  title="Instructions"
+                  onHide={() => setShowHandbook(false)}
+                  variant="plain"
+                  className="prose prose-invert max-w-none"
+                  bodyClassName="pt-4"
+                >
+                  {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
+                  {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
+                  {stepModule ? (
+                    <HandbookMDXProvider>
+                      <stepModule.default />
+                    </HandbookMDXProvider>
+                  ) : (
+                    <p className="text-sm text-slate-400">Step content coming soon...</p>
+                  )}
+                </DesktopPanel>
+              </div>
+            ) : (
+              <div {...desktopResize.previewSlotProps("handbook")}>
+                <DesktopRestorePreview
+                  panelKey="handbook"
+                  label="Show Instructions"
+                  onRestore={() => setShowHandbook(true)}
+                  expandDirection={desktopResize.getPreviewExpandDirection("handbook")}
+                  items={getDesktopRestoreItems("handbook")}
+                />
+              </div>
+            )}
+            {renderResizeHandleAfter("handbook")}
 
-            {showEditor ? null : restorePreviewKey === "editor" ? (
-              <DesktopRestorePreview panelKey="editor" />
-            ) : null}
+            {showEditor ? null : (
+              <div {...desktopResize.previewSlotProps("editor")}>
+                <DesktopRestorePreview
+                  panelKey="editor"
+                  label="Show Editor"
+                  onRestore={() => setShowEditor(true)}
+                  expandDirection={desktopResize.getPreviewExpandDirection("editor")}
+                  items={getDesktopRestoreItems("editor")}
+                />
+              </div>
+            )}
 
             {showEditor || showConsole ? (
             <div className="contents">
               {entryError ? (
-                <div className={showEditor ? "rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300" : "hidden"}>
+                <div {...desktopResize.panelSlotProps("editor")} className={showEditor ? "min-w-0 px-3 rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300" : "hidden"}>
                   Failed to load files: {entryError.message}
                 </div>
               ) : loadingEntry && !entryForStep ? (
-                <div className={showEditor ? "rounded border border-slate-800 p-3 text-sm text-slate-300" : "hidden"}>
+                <div {...desktopResize.panelSlotProps("editor")} className={showEditor ? "min-w-0 px-3 rounded border border-slate-800 p-3 text-sm text-slate-300" : "hidden"}>
                   Loading editor...
                 </div>
               ) : (
@@ -220,17 +256,28 @@ export default function ProjectPage() {
                   entry={entryForStep}
                   showEditor={showEditor}
                   showRunner={showConsole}
+                  resizeSignal={desktopResize.resizeSignal}
+                  getDesktopPanelSlotProps={desktopResize.panelSlotProps}
+                  renderDesktopResizeHandleAfter={renderResizeHandleAfter}
                   onShowRunnerChange={setShowConsole}
-                  onHideEditor={() => hideWithTOC(setShowEditor)}
-                  onHideRunner={() => hideWithTOC(setShowConsole)}
+                  onHideEditor={() => setShowEditor(false)}
+                  onHideRunner={() => setShowConsole(false)}
                 />
               )}
             </div>
             ) : null}
 
-            {showConsole ? null : restorePreviewKey === "console" ? (
-              <DesktopRestorePreview panelKey="console" />
-            ) : null}
+            {showConsole ? null : (
+              <div {...desktopResize.previewSlotProps("console")}>
+                <DesktopRestorePreview
+                  panelKey="console"
+                  label="Show Console"
+                  onRestore={() => setShowConsole(true)}
+                  expandDirection={desktopResize.getPreviewExpandDirection("console")}
+                  items={getDesktopRestoreItems("console")}
+                />
+              </div>
+            )}
           </div>
           ) : (
             <div className="space-y-3">
