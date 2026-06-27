@@ -3,13 +3,45 @@ import { Suspense, lazy } from "react";
 import AppLayout from "../layouts/AppLayout";
 import ErrorPage from "../pages/ErrorPage";
 
-const LandingPage = lazy(() => import("../pages/LandingPage"));
-const ChallengesPage = lazy(() => import("../pages/ChallengesPage"));
-const ChallengePage = lazy(() => import("../pages/ChallengePage"));
-const HandbookPage = lazy(() => import("../pages/HandbookPage"));
-const ProjectsPage = lazy(() => import("../pages/ProjectsPage"));
-const ProjectPage = lazy(() => import("../pages/ProjectPage"));
-const StandardsPage = lazy(() => import("../pages/StandardsPage"));
+const STALE_CHUNK_RELOAD_KEY = "javascriptgym:stale-chunk-reload";
+
+function lazyWithStaleChunkReload(load) {
+  return lazy(() =>
+    load().catch((error) => {
+      const message = String(error?.message || error || "");
+      const isChunkLoadFailure =
+        message.includes("Failed to fetch dynamically imported module") ||
+        message.includes("Importing a module script failed") ||
+        message.includes("error loading dynamically imported module");
+
+      if (isChunkLoadFailure && typeof window !== "undefined") {
+        const alreadyReloaded = window.sessionStorage.getItem(STALE_CHUNK_RELOAD_KEY);
+
+        if (!alreadyReloaded) {
+          window.sessionStorage.setItem(STALE_CHUNK_RELOAD_KEY, "true");
+          window.location.reload();
+          return new Promise(() => {});
+        }
+      }
+
+      throw error;
+    }).then((module) => {
+      if (typeof window !== "undefined") {
+        window.sessionStorage.removeItem(STALE_CHUNK_RELOAD_KEY);
+      }
+
+      return module;
+    })
+  );
+}
+
+const LandingPage = lazyWithStaleChunkReload(() => import("../pages/LandingPage"));
+const ChallengesPage = lazyWithStaleChunkReload(() => import("../pages/ChallengesPage"));
+const ChallengePage = lazyWithStaleChunkReload(() => import("../pages/ChallengePage"));
+const HandbookPage = lazyWithStaleChunkReload(() => import("../pages/HandbookPage"));
+const ProjectsPage = lazyWithStaleChunkReload(() => import("../pages/ProjectsPage"));
+const ProjectPage = lazyWithStaleChunkReload(() => import("../pages/ProjectPage"));
+const StandardsPage = lazyWithStaleChunkReload(() => import("../pages/StandardsPage"));
 
 const router = createBrowserRouter([
   {
