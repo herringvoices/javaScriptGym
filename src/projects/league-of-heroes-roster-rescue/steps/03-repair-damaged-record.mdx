@@ -13,39 +13,34 @@ The CSV apparently looked at a perfectly normal JavaScript object and thought, "
 
 Bold vision. Terrible data management.
 
-In Chapter 2, you created a clean hero record for `crimsonPhoenix`. That object is now your reference point. In this chapter, you will repair a second hero record so both objects use the same kind of structure.
+In Chapter 2, you created a clean hero record for `crimsonPhoenix`. That object is now your reference point. In this chapter, you will test a damaged record, repair it, and prove that the same console logs work for both heroes.
 
-This matters more than it may seem.
+## Learning Goal
 
-Imagine a website that shows information for the currently logged-in user. The page might need to display the user's name, check their account id, or show whether their account is active.
+By the end of this chapter, you will be able to inspect a damaged object and repair property names, value types, and missing values so it matches an existing clean object structure.
+
+## Why This Matters
+
+Imagine a website that shows information for the currently logged-in user.
+
+The page might need to display the user's name, check their account ID, or show whether the account is active.
 
 That code only works smoothly if the data is predictable.
 
-If one user has `userId`, another has `userid`, another has `idNumber`, and one unlucky person's id is stored as the string `"42"` instead of the number `42`, your code has to do detective work before it can do its actual job.
+If one user has `userId`, another has `userid`, another has `idNumber`, and one unlucky person's ID is stored as the string `"42"` instead of the number `42`, your code has to do detective work before it can do its actual job.
 
 That is exhausting. Computers are fast, but they are not chill.
 
 Clean data means the same kind of record uses the same property names and the same data types every time.
 
-## Learning Goal
-
-By the end of this chapter, you will be able to inspect a damaged object and repair basic data problems so it matches an existing clean object structure.
-
 ## Starter Record
 
-Copy this damaged object into `main.js` below your `crimsonPhoenix` object:
+Find the damaged import in `main.js`.
+
+It starts like this:
 
 ```js
-const damagedHero = {
-    heroName: "Neon Volt",
-    civilianName: "Maya Chen",
-    powerlevel: "87",
-    isActive: "yes",
-    primaryAbility: "Electro-kinesis",
-    homeCity: "Metroburg",
-    team: "North Squad",
-    secretBase: ""
-};
+const damagedHeroImport = {
 ```
 
 This object represents **Neon Volt**, but some of the data does not match the clean structure you created in Chapter 2.
@@ -58,13 +53,14 @@ Go back to the console logs you wrote in Chapter 2.
 
 Those logs used information from `crimsonPhoenix`.
 
-Now swap the variable name from `crimsonPhoenix` to `damagedHero` in those same logs.
+Now swap the variable name from `crimsonPhoenix` to `damagedHeroImport` in those same logs.
 
 Run the code before making any repairs.
 
 Your individual value logs should show:
 
 ```txt
+2
 Neon Volt
 undefined
 yes
@@ -82,15 +78,18 @@ That is the sneaky part about damaged data: broken records do not always explode
 
 ## Your Task
 
-Repair `damagedHero` so it follows the same property naming pattern and data type pattern as `crimsonPhoenix`.
+Repair the damaged hero record so it follows the same property naming pattern and data type pattern as `crimsonPhoenix`.
 
 Do not replace the whole object with a fresh one. Practice repairing the existing object.
+
+You can keep the variable name `damagedHeroImport`, or you can rename it to `damagedHero` after it is repaired. Either way, your logs should point at the repaired object.
 
 ## Repair Notes
 
 The League sent these corrections:
 
 ```txt
+ID: 2
 Hero name: Neon Volt
 Civilian name: Maya Chen
 Power level: 87
@@ -98,13 +97,14 @@ Active status: active
 Primary ability: Electro-kinesis
 Home city: Metroburg
 Team assignment: North Squad
-Secret base: unknown
+Secret base: private; do not include in the public roster record
 ```
 
 For League hero records, the data types should be:
 
 | Information | Correct type |
 | --- | --- |
+| ID | number |
 | hero name | string |
 | civilian name | string |
 | power level | number |
@@ -112,7 +112,6 @@ For League hero records, the data types should be:
 | primary ability | string |
 | home city | string |
 | team assignment | string |
-| secret base | null when unknown |
 
 Compare the damaged object to:
 
@@ -126,23 +125,25 @@ Then fix the damaged record.
 
 Look for problems like:
 
+- an ID stored as text instead of a number
 - a property name that does not match your clean object
 - a number stored as text
 - a yes/no value stored as a word instead of a boolean
-- an unknown value stored as an empty string
+- a private field that does not belong in the public roster record
 - leftover damaged data after the corrected data exists
 
 The goal is not just to make Neon Volt's data readable. The goal is to make both hero records predictable enough that future code could use either one without special exceptions.
 
 ## Checkpoint
 
-After repairing `damagedHero`, run the same Chapter 2 logs again with `damagedHero`.
+After repairing the object, run the same Chapter 2 logs again with the repaired Neon Volt record.
 
 The code structure should not need to change. The object should now work in the same places where `crimsonPhoenix` worked.
 
 Your individual value logs should now show:
 
 ```txt
+2
 Neon Volt
 87
 true
@@ -161,12 +162,12 @@ That is the whole point of consistent object shape: the same code can work with 
 You are ready for Chapter 4 when:
 
 - you tested the damaged object before repairing it
-- `damagedHero` still represents Neon Volt
-- `damagedHero` follows the same property naming pattern as `crimsonPhoenix`
+- the repaired object still represents Neon Volt
+- the repaired object follows the same property naming pattern as `crimsonPhoenix`
 - matching pieces of information use matching data types in both objects
 - the damaged import no longer contains duplicate or leftover incorrect data
-- unknown secret base information is represented with `null`
-- your Chapter 2 console logs work correctly when you swap in `damagedHero`
+- private secret base information is not part of the public roster object
+- your Chapter 2 console logs work correctly when you swap in the repaired Neon Volt object
 - only the hero information changes when you swap objects, not the code structure
 
 If your object has both the damaged property and the corrected property, congratulations: you have invented duplicate paperwork. The League already has enough of that. Keep the clean version.

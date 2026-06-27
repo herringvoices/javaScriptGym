@@ -19,12 +19,14 @@ No brand-new tricks this time.
 
 This is the chapter where you use the tools you have already practiced:
 
+- primitive value choices
 - object access
 - object updates
 - array indexes
 - array methods
 - string cleanup
-- number conversion
+- number parsing
+- object utilities
 - careful console checks
 
 In other words: programming, but with a clipboard.
@@ -55,52 +57,7 @@ Both are fair.
 
 ## Starter Audit Roster
 
-Copy this damaged final roster into `main.js` after your Chapter 6 data check:
-
-```js
-const finalAuditRoster = [
-    {
-        id: 2,
-        heroName: "Neon Volt",
-        civilianName: "Maya Chen",
-        powerLevel: "87",
-        isActive: true,
-        primaryAbility: "Electro-kinesis",
-        homeCity: "Metroburg",
-        team: "Vanguard"
-    },
-    {
-        id: 1,
-        heroName: "Crimson Phoenix",
-        civilianName: "Avery Stone",
-        powerLevel: 91,
-        isActive: true,
-        primaryAbility: "Plasma flight",
-        homeCity: "Sunspire",
-        team: "Vanguard"
-    },
-    {
-        id: 4,
-        heroName: " echo nova ",
-        civilianName: "Jordan Vale",
-        powerlevel: 82,
-        isActive: true,
-        primaryAbility: "Sound bending",
-        homeCity: "Harbor City",
-        team: "Night Watch"
-    },
-    {
-        id: 5,
-        heroName: "Quantum Quill",
-        civilianName: "Priya Nair",
-        powerLevel: 79,
-        isActive: true,
-        primaryAbility: "Probability ink",
-        homeCity: "Ledger Bay",
-        team: "Archive Unit"
-    }
-];
-```
+Find `finalAuditRoster` in `main.js` after your Chapter 6 data check.
 
 This roster is close.
 
@@ -182,10 +139,12 @@ Use the right kind of tool for each kind of problem.
 For this audit, you should need:
 
 - an array method to add the missing hero
-- an array method to fix the roster order
+- array methods to fix the roster order
 - direct object updates to fix record details
-- a string method to clean the messy hero name
-- number conversion to fix the imported power level
+- a string method to clean messy spacing
+- a string method to remove or replace the dash in a hero name
+- number parsing to fix the imported power level
+- an object utility to confirm the final object shape
 - targeted console logs to prove the repairs worked
 
 If you need a refresher, use the handbook:
@@ -203,7 +162,8 @@ The damaged final roster includes several problems you have already practiced fi
 - the roster starts in the wrong order
 - one property name has the wrong capitalization
 - one number is stored as text
-- one hero name has messy spacing and capitalization
+- one hero name has messy spacing
+- one hero name has a dash where the final display name needs a space
 - one team assignment is outdated
 
 Use the requirements to decide what needs to change.
@@ -221,6 +181,7 @@ Your console should show these exact values:
 ```txt
 Final Roster Audit
 5
+id,heroName,civilianName,powerLevel,isActive,primaryAbility,homeCity,team
 1 Crimson Phoenix - 91 - Vanguard
 2 Neon Volt - 87 - Vanguard
 3 Star Sentinel - 88 - Vanguard
@@ -235,7 +196,8 @@ At the bottom of `main.js`, add a short comment block that identifies:
 
 - one object you created or repaired
 - one roster change you made with an array method
-- one string or number cleanup you completed
+- one string cleanup you completed
+- one number parsing fix you completed
 - one data issue you found and corrected
 - confirmation that your final roster audit output matches the checkpoint
 
@@ -254,66 +216,19 @@ You are finished when:
 - every `powerLevel` value is a number
 - every hero object uses the same property naming pattern
 - you used string cleanup where text was messy
-- you used number conversion where a number was stored as text
+- you used number parsing where a number was stored as text
 - you used array methods for roster-level changes
+- you used an object utility to verify the final shape
 - the final audit output matches the checkpoint exactly
 - your final comment block explains your work clearly
 
-If the roster is almost correct, the roster is not correct. This is the final press version, not a casserole recipe where "close enough" still tastes fine.
-
 ## Optional Stretch Goals
 
-These are optional. Do not let them block the required final audit.
+Only try these after the required final audit works.
 
-### Add a Headquarters Object
+- Add a `headquarters` object with a building name and city.
+- Add a `specialties` array to one hero.
+- Create a `reserveRoster` array with one reserve hero.
+- Create a `publicProfile` object that uses only the information the press team is allowed to share.
 
-Add a `headquarters` object to one hero record.
-
-It could include:
-
-```txt
-building name
-city
-isPublic
-```
-
-This gives you practice putting an object inside another object.
-
-### Add a Specialties Array
-
-Add a `specialties` array to one hero record.
-
-It could include a few strings that describe what the hero is known for.
-
-This gives you practice putting an array inside an object.
-
-### Create a Press-Safe Public Profile
-
-Create a `publicProfile` object for one hero that includes only information safe for the press.
-
-For example, it might include the hero name, primary ability, home city, and team, but not the civilian name.
-
-The League strongly prefers not to dox its own heroes. A rare moment of institutional wisdom.
-```js
-console.log("Final audit roster:", auditRoster)
-console.log("Roster Ready: The League can proceed with the press event.")
-```
-
-## Final Submission
-
-Submit your completed `main.js` file with a short comment block identifying:
-
-- one object you created or repaired
-- one roster change you made
-- one data issue you found and corrected
-- console output showing the final roster audit passed
-
-## Optional Stretch Goals
-
-These are optional and should not block your core submission:
-
-- Add a `headquarters` object to one hero record.
-- Add a `specialties` array to one hero record.
-- Create a separate `reserveRoster` array.
-- Add a `publicProfile` object containing only information safe for the press.
-- Invent one additional data-quality problem and write a comment explaining how it was fixed.
+These are stretch goals because they go beyond the core audit. The required project is complete when the final checkpoint matches.

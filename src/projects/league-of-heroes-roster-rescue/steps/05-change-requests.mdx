@@ -13,7 +13,7 @@ This is normal client behavior. A client will look directly at the thing they ap
 
 The good news: your heroes are already organized in `leagueRoster`.
 
-The better news: arrays come with built-in methods that let you add, remove, and replace items without rebuilding the whole roster from scratch.
+The better news: arrays come with built-in methods that let you add and remove items without rebuilding the whole roster from scratch.
 
 Today, you are the roster desk.
 
@@ -80,14 +80,17 @@ That order matters because JavaScript only knows about the data that has already
 
 For these requests, use array methods to change `leagueRoster`.
 
-You may need:
+You will need:
 
 - `push`
 - `unshift`
+- `pop`
 - `shift`
 - `splice`
 
-If those feel rusty, review the handbook chapter on [array end controls](/handbook/JS.VDT.MTH/JS.VDT.COL.ARR_ENDS) before continuing.
+If the first four feel rusty, review the handbook chapter on [array end controls](/handbook/JS.VDT.MTH/JS.VDT.COL.ARR_ENDS) before continuing.
+
+`splice` is the one extra roster-desk tool in this project. It can remove or replace an item at a specific index, which is useful when a record in the middle of an array needs attention.
 
 The point of this chapter is not just getting the final roster right. The point is practicing how code changes an existing array after the program is already running.
 
@@ -112,9 +115,9 @@ Process these League requests in order.
 
 The League approved a new hero named **Quantum Quill**.
 
-Create a hero object from this profile sheet. Then use an array method to add that object to the end of `leagueRoster`.
+Create a hero object from this profile sheet and add it to the end of `leagueRoster`.
 
-Do not manually add Quantum Quill inside the original roster array from Chapter 4. This request happens after the starting roster already exists.
+Use an array method. Do not manually add Quantum Quill inside the original roster array from Chapter 4. This request happens after the starting roster already exists.
 
 ```txt
 ID: 5
@@ -127,7 +130,29 @@ Home city: Ledger Bay
 Team assignment: Archive Unit
 ```
 
-### Request 2: Add an emergency substitute to the beginning
+### Request 2: Remove the last hero for a quick badge check
+
+The badge printer needs Quantum Quill's record for one quick inspection.
+
+Use an array method to remove the last hero from `leagueRoster`.
+
+Store the removed record in a variable so the data does not disappear into the dramatic fog.
+
+Then log the removed hero's name.
+
+Your console should show:
+
+```txt
+Quantum Quill
+```
+
+### Request 3: Return the badge-checked hero to the end
+
+The badge printer survived.
+
+Use an array method to add the removed Quantum Quill record back to the end of `leagueRoster`.
+
+### Request 4: Add an emergency substitute to the beginning
 
 A substitute hero needs to appear at the beginning of the roster while the director checks the stage schedule.
 
@@ -144,7 +169,7 @@ Home city: Clipboard City
 Team assignment: Substitute Bench
 ```
 
-### Request 3: Remove the emergency substitute
+### Request 5: Remove the emergency substitute
 
 The director has checked the schedule.
 
@@ -152,7 +177,7 @@ The substitute is no longer needed.
 
 Use an array method to remove **Placeholder Paladin** from the beginning of `leagueRoster`.
 
-### Request 4: Replace a hero who changed their public identity
+### Request 6: Replace a hero who changed their public identity
 
 Echo Eclipse has updated their public identity and team assignment.
 
@@ -173,7 +198,7 @@ The ID stays the same because this is the same person. Only the public hero reco
 
 That is one reason IDs matter: names can change, but the ID still points to the same record.
 
-### Request 5: Update one hero's team assignment
+### Request 7: Update one hero's team assignment
 
 Neon Volt has been moved from **North Squad** to **Vanguard**.
 
@@ -185,7 +210,7 @@ This request changes one property inside one object. It does not add, remove, or
 
 ## Checkpoint
 
-After all five requests are complete, log evidence that the roster has the correct length, order, names, and team assignments.
+After all seven requests are complete, log evidence that the roster has the correct length, order, names, and team assignments.
 
 Your console should show these exact values:
 
@@ -213,7 +238,7 @@ You are ready for Chapter 6 when:
 - `leagueRoster` contains exactly five hero objects
 - Placeholder Paladin is no longer in the roster
 - Quantum Quill was added with an array method
-- Quantum Quill appears at the end of the roster
+- Quantum Quill was removed from the end with an array method and then added back
 - Placeholder Paladin was added and removed with array methods
 - Echo Eclipse has been replaced by Echo Nova
 - Echo Nova keeps ID `4`

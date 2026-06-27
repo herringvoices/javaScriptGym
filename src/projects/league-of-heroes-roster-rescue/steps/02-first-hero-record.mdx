@@ -15,7 +15,7 @@ Good enough. We begin.
 
 In Chapter 1, you stored separate pieces of information using primitive values. That worked because each fact stood alone.
 
-A hero profile is different. The facts belong together. A hero name, a civilian name, a power level, a city, a team, and an active status are not random loose facts. They describe one person.
+A hero profile is different. A hero name, a civilian name, a power level, a city, a team, and an active status all describe one person.
 
 That is exactly what an **object** is for.
 
@@ -23,7 +23,7 @@ An object lets you group related information into one record.
 
 ## Learning Goal
 
-By the end of this chapter, you will be able to model one real-world record as a JavaScript object with meaningful property names and appropriate value types.
+By the end of this chapter, you will be able to model one real-world record as a JavaScript object with meaningful property names, appropriate value types, and a stable numeric ID.
 
 ## Your Task
 
@@ -33,6 +33,7 @@ Assign it an object that represents the League's newly approved hero: **Crimson 
 
 Your object must use these property names:
 
+- `id`
 - `heroName`
 - `civilianName`
 - `powerLevel`
@@ -48,6 +49,7 @@ The League is picky about property names. So is JavaScript. Use those names exac
 The League sent this profile sheet:
 
 ```txt
+ID: 1
 Hero name: Crimson Phoenix
 Civilian name: Avery Stone
 Power level: 91
@@ -59,20 +61,28 @@ Team assignment: Vanguard
 
 Turn that profile sheet into one JavaScript object.
 
-You decide which values should be strings, numbers, or booleans.
+Use these data types:
 
-## Think Like a Data Specialist
+| Information | Correct type |
+| --- | --- |
+| ID | number |
+| hero name | string |
+| civilian name | string |
+| power level | number |
+| active status | boolean |
+| primary ability | string |
+| home city | string |
+| team assignment | string |
 
-Before you type the object, pause for a second and ask:
+## Why IDs Matter
 
-- Which values are words or labels?
-- Which value should JavaScript treat like a number?
-- Which value describes a yes/no state?
-- Which client labels need to become cleaner JavaScript property names?
+Every hero record needs an `id`.
 
-For example, the client says **Team assignment**, but the required property name is `team`.
+Names can change. Teams can change. Array positions can change. Two records might even have similar names because apparently the League's branding department owns exactly one thesaurus.
 
-That is part of the job: translating human paperwork into clean JavaScript data.
+An ID gives the app one stable way to recognize the exact record it is working with.
+
+For this project, IDs should be numbers.
 
 ## Checkpoint
 
@@ -81,6 +91,7 @@ When your object is finished, log a few individual values from the record.
 Your console should show these exact values:
 
 ```txt
+1
 Crimson Phoenix
 91
 true
@@ -99,10 +110,12 @@ Crimson Phoenix protects Sunspire with Plasma flight.
 You are ready for Chapter 3 when:
 
 - `crimsonPhoenix` is one object
-- the object uses all seven required property names
-- each value uses a sensible primitive type
+- the object uses all eight required property names
+- `id` is a number
+- `powerLevel` is a number
+- `isActive` is a boolean
+- the text values are strings
 - your console shows the exact individual values listed in the checkpoint
 - your console shows the exact profile sentence listed in the checkpoint
-- the output is readable to a human, not just technically correct
 
 If your console says `undefined`, JavaScript is not mad. It is simply very literal. Tiny spelling differences matter. The computer has never once said, "eh, close enough."

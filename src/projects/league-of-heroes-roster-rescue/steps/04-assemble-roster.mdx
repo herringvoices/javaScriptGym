@@ -19,7 +19,7 @@ Welcome to the dramatic and extremely administrative world of **arrays of object
 
 ## Learning Goal
 
-By the end of this chapter, you will be able to organize multiple related objects into an array and access object information by using an item's position in that array.
+By the end of this chapter, you will be able to organize multiple related objects into an array, access records by index, and use `.length` to inspect the collection.
 
 ## Why This Matters
 
@@ -49,31 +49,6 @@ It contains the hero records in public lineup order.
 
 That is much easier for future code to use.
 
-## Add Stable IDs
-
-Before you build the roster, make sure every hero object has an `id`.
-
-An `id` is a stable identifier for one record.
-
-That matters because names and positions can change.
-
-A hero might change their public identity. A roster might get sorted, filtered, or rearranged. Two heroes might even have similar names because apparently branding consultants are booked solid.
-
-An `id` gives each record one reliable value that code can use to recognize it later.
-
-For this project, use numbers for IDs.
-
-Your hero records should use these IDs:
-
-```txt
-Crimson Phoenix: 1
-Neon Volt: 2
-Star Sentinel: 3
-Echo Eclipse: 4
-```
-
-If your earlier hero objects do not have an `id` yet, add one to each object before building the roster.
-
 ## Your Task
 
 In `main.js`, create an array named `leagueRoster`.
@@ -85,10 +60,7 @@ The array should contain four hero objects in this exact order:
 3. Star Sentinel
 4. Echo Eclipse
 
-You already created and repaired the first two records:
-
-- `crimsonPhoenix`
-- `damagedHero`
+You already created and repaired the first two records.
 
 Now create two more hero objects from the profile sheets below.
 
@@ -139,6 +111,22 @@ Index 3: Echo Eclipse
 
 This is one of those JavaScript things that feels suspicious at first. The first item being index `0` is not a typo. It is tradition. Ancient, weird tradition.
 
+## Use Length Like a Developer
+
+The roster should have four heroes.
+
+The last hero is not at index `4`. The last hero is at index `3`.
+
+Why? Because the first hero is at index `0`.
+
+When you need the last item in an array, use the array's `.length` property to help:
+
+```txt
+last index = array length - 1
+```
+
+That pattern matters because real arrays change size. Hard-coding the last index works only until the roster changes, which it will, because the League director has access to email.
+
 ## Checkpoint
 
 When `leagueRoster` is finished, log evidence that the roster exists, has the correct length, stores heroes in the correct order, and keeps each hero's ID attached to the right record.
@@ -151,7 +139,10 @@ Your console should show these exact values:
 2 Neon Volt
 3 Star Sentinel
 4 Echo Eclipse
+Echo Eclipse
 ```
+
+The final line should come from accessing the last hero by using the roster length, not by hard-coding index `3`.
 
 Then log a readable roster summary.
 
@@ -173,6 +164,7 @@ You are ready for Chapter 5 when:
 - every hero object uses the same property naming pattern
 - matching pieces of information use matching data types
 - you can access a hero's information using its position in the array
+- you used `.length` to help access the final hero
 - your console output matches the checkpoint
 
 If your first hero is not Crimson Phoenix, the press event has already become confusing. The League owns one fog machine and absolutely no crisis communication strategy. Keep the lineup clean.
