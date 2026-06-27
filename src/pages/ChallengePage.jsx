@@ -241,7 +241,7 @@ function ChallengeSandboxUI({
   const [showDetailsColumn, setShowDetailsColumn] = useState(true);
   const [showEditorColumn, setShowEditorColumn] = useState(true);
   const [showRunnerColumn, setShowRunnerColumn] = useState(
-    challenge.sandbox?.showRightPanel !== undefined ? challenge.sandbox.showRightPanel : true
+    challenge.sandbox?.showRightPanel !== undefined ? challenge.sandbox.showRightPanel : false
   );
   const [consoleKey, setConsoleKey] = useState(0);
   const editorRef = useRef(null);

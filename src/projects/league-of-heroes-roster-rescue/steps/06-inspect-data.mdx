@@ -1,0 +1,132 @@
+---
+id: 06-inspect-data
+title: Inspect the League's Data
+---
+
+# Chapter 6 - Inspect the League's Data
+
+The League roster is updated.
+
+Nobody has screamed.
+
+The spreadsheet printer is quiet.
+
+These are all encouraging signs.
+
+But before the League sends this roster to the press team, they want one more thing: evidence.
+
+Not vibes. Not "I think it works." Not "the data looked fine when I glanced at it while eating crackers."
+
+Evidence.
+
+In this chapter, you will use basic JavaScript properties and methods to inspect the roster, clean a small piece of imported text, convert an imported number, and prove that the data is ready to use.
+
+## Learning Goal
+
+By the end of this chapter, you will be able to use basic JavaScript properties and methods to inspect, clean, and verify data in objects and arrays.
+
+## Why This Matters
+
+Real data work is not only creating and changing records.
+
+A lot of the job is checking what you actually have.
+
+Before a website displays account information, submits an order, filters a product list, or sends a report, the code needs to know that the data is in the shape it expects.
+
+Is the array the right length?
+
+Does this object have the properties we expect?
+
+Is this imported number actually a number?
+
+Does this imported text need extra spaces removed?
+
+These are small checks, but they prevent bigger headaches later.
+
+The League calls this a **data check** because "please make sure the roster is not secretly nonsense" did not fit on the form.
+
+## Methods and Properties You May Need
+
+For this chapter, keep the work direct and inspectable.
+
+You may need:
+
+- `.length`
+- `Object.keys()`
+- string methods such as `.trim()`, `.toLowerCase()`, or `.toUpperCase()`
+- number conversion with `Number()`
+- direct access through objects and arrays
+
+If any of those feel rusty, review the handbook chapters for [object utilities](/handbook/JS.VDT.MTH/JS.VDT.MTH.OBJ_UTIL), [string methods](/handbook/JS.VDT.MTH/JS.VDT.MTH.STR), and [number parsing](/handbook/JS.VDT.MTH/JS.VDT.MTH.NUM_PARSE).
+
+Do not use loops or higher-order array methods for this chapter. Those are useful tools, but this checkpoint is about direct inspection.
+
+## Imported Cleanup Values
+
+Add these imported values to `main.js` after your Chapter 5 change requests:
+
+```js
+const importedCodename = "  star sentinel  ";
+const importedPowerLevel = "88";
+```
+
+These represent data that came in from another system.
+
+The codename has messy spacing and capitalization.
+
+The power level looks like a number, but it arrived as text.
+
+Your job is to clean and convert them before logging your evidence.
+
+## Your Task
+
+Create a **League Data Check** section in `main.js`.
+
+Your data check should prove:
+
+- the roster contains the expected number of heroes
+- one hero record has the expected property names
+- the first, middle, and last heroes can be accessed by position
+- the imported codename can be cleaned into display-ready text
+- the imported power level can be converted into a number
+- a specific hero has the expected team assignment after the Chapter 5 updates
+
+## Exact Evidence Needed
+
+When your data check is complete, your console should show these exact values:
+
+```txt
+League Data Check
+5
+id,heroName,civilianName,powerLevel,isActive,primaryAbility,homeCity,team
+Crimson Phoenix
+Star Sentinel
+Quantum Quill
+Star Sentinel
+88
+number
+Neon Volt is assigned to Vanguard.
+```
+
+A few notes:
+
+- The property-name line should come from inspecting one hero object.
+- The cleaned codename should display as `Star Sentinel`.
+- The converted power level should display as `88`.
+- The converted power level's type should display as `number`.
+- The final sentence should use the updated Neon Volt team assignment from Chapter 5.
+
+## Success Criteria
+
+You are ready for Chapter 7 when:
+
+- your data check starts with `League Data Check`
+- the roster count is `5`
+- your property-name check confirms the expected hero object shape
+- your position checks show Crimson Phoenix, Star Sentinel, and Quantum Quill
+- your cleaned codename displays as `Star Sentinel`
+- your converted power level behaves like a number
+- your final team-assignment sentence confirms Neon Volt is assigned to Vanguard
+- you used direct object and array access, not loops or higher-order array methods
+
+If your imported power level logs as `88` but its type is still `string`, JavaScript is politely holding up a tiny sign that says, "Looks can be deceiving."

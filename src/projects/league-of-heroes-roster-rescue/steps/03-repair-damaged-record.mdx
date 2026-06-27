@@ -1,0 +1,172 @@
+---
+id: 03-repair-damaged-record
+title: Repair a Damaged Record
+---
+
+# Chapter 3 - Repair a Damaged Hero Record
+
+The League has located another hero record.
+
+Unfortunately, this one came directly from the damaged import.
+
+The CSV apparently looked at a perfectly normal JavaScript object and thought, "What if this was worse?"
+
+Bold vision. Terrible data management.
+
+In Chapter 2, you created a clean hero record for `crimsonPhoenix`. That object is now your reference point. In this chapter, you will repair a second hero record so both objects use the same kind of structure.
+
+This matters more than it may seem.
+
+Imagine a website that shows information for the currently logged-in user. The page might need to display the user's name, check their account id, or show whether their account is active.
+
+That code only works smoothly if the data is predictable.
+
+If one user has `userId`, another has `userid`, another has `idNumber`, and one unlucky person's id is stored as the string `"42"` instead of the number `42`, your code has to do detective work before it can do its actual job.
+
+That is exhausting. Computers are fast, but they are not chill.
+
+Clean data means the same kind of record uses the same property names and the same data types every time.
+
+## Learning Goal
+
+By the end of this chapter, you will be able to inspect a damaged object and repair basic data problems so it matches an existing clean object structure.
+
+## Starter Record
+
+Copy this damaged object into `main.js` below your `crimsonPhoenix` object:
+
+```js
+const damagedHero = {
+    heroName: "Neon Volt",
+    civilianName: "Maya Chen",
+    powerlevel: "87",
+    isActive: "yes",
+    primaryAbility: "Electro-kinesis",
+    homeCity: "Metroburg",
+    team: "North Squad",
+    secretBase: ""
+};
+```
+
+This object represents **Neon Volt**, but some of the data does not match the clean structure you created in Chapter 2.
+
+Do not repair it yet. First, make the problem visible.
+
+## Before You Repair It
+
+Go back to the console logs you wrote in Chapter 2.
+
+Those logs used information from `crimsonPhoenix`.
+
+Now swap the variable name from `crimsonPhoenix` to `damagedHero` in those same logs.
+
+Run the code before making any repairs.
+
+Your individual value logs should show:
+
+```txt
+Neon Volt
+undefined
+yes
+```
+
+Your profile sentence should show:
+
+```txt
+Neon Volt protects Metroburg with Electro-kinesis.
+```
+
+Some of that output looks fine. Some of it does not.
+
+That is the sneaky part about damaged data: broken records do not always explode dramatically. Sometimes they quietly give you one wrong value and then stroll away whistling.
+
+## Your Task
+
+Repair `damagedHero` so it follows the same property naming pattern and data type pattern as `crimsonPhoenix`.
+
+Do not replace the whole object with a fresh one. Practice repairing the existing object.
+
+## Repair Notes
+
+The League sent these corrections:
+
+```txt
+Hero name: Neon Volt
+Civilian name: Maya Chen
+Power level: 87
+Active status: active
+Primary ability: Electro-kinesis
+Home city: Metroburg
+Team assignment: North Squad
+Secret base: unknown
+```
+
+For League hero records, the data types should be:
+
+| Information | Correct type |
+| --- | --- |
+| hero name | string |
+| civilian name | string |
+| power level | number |
+| active status | boolean |
+| primary ability | string |
+| home city | string |
+| team assignment | string |
+| secret base | null when unknown |
+
+Compare the damaged object to:
+
+- the repair notes
+- your clean `crimsonPhoenix` object
+- the data type table above
+
+Then fix the damaged record.
+
+## What to Watch For
+
+Look for problems like:
+
+- a property name that does not match your clean object
+- a number stored as text
+- a yes/no value stored as a word instead of a boolean
+- an unknown value stored as an empty string
+- leftover damaged data after the corrected data exists
+
+The goal is not just to make Neon Volt's data readable. The goal is to make both hero records predictable enough that future code could use either one without special exceptions.
+
+## Checkpoint
+
+After repairing `damagedHero`, run the same Chapter 2 logs again with `damagedHero`.
+
+The code structure should not need to change. The object should now work in the same places where `crimsonPhoenix` worked.
+
+Your individual value logs should now show:
+
+```txt
+Neon Volt
+87
+true
+```
+
+Your profile sentence should still show:
+
+```txt
+Neon Volt protects Metroburg with Electro-kinesis.
+```
+
+That is the whole point of consistent object shape: the same code can work with either hero record.
+
+## Success Criteria
+
+You are ready for Chapter 4 when:
+
+- you tested the damaged object before repairing it
+- `damagedHero` still represents Neon Volt
+- `damagedHero` follows the same property naming pattern as `crimsonPhoenix`
+- matching pieces of information use matching data types in both objects
+- the damaged import no longer contains duplicate or leftover incorrect data
+- unknown secret base information is represented with `null`
+- your Chapter 2 console logs work correctly when you swap in `damagedHero`
+- only the hero information changes when you swap objects, not the code structure
+
+If your object has both the damaged property and the corrected property, congratulations: you have invented duplicate paperwork. The League already has enough of that. Keep the clean version.

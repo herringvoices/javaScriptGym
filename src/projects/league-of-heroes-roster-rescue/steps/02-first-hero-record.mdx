@@ -1,0 +1,108 @@
+---
+id: 02-first-hero-record
+title: Create the First Hero Record
+---
+
+# Chapter 2 - Create the First Hero Record
+
+The League has found one hero profile that survived The CSV's attack mostly intact.
+
+Mostly.
+
+It was printed, laminated, dropped behind a filing cabinet, discovered by an intern, and described as "probably important because it has a cape doodle on it."
+
+Good enough. We begin.
+
+In Chapter 1, you stored separate pieces of information using primitive values. That worked because each fact stood alone.
+
+A hero profile is different. The facts belong together. A hero name, a civilian name, a power level, a city, a team, and an active status are not random loose facts. They describe one person.
+
+That is exactly what an **object** is for.
+
+An object lets you group related information into one record.
+
+## Learning Goal
+
+By the end of this chapter, you will be able to model one real-world record as a JavaScript object with meaningful property names and appropriate value types.
+
+## Your Task
+
+In `main.js`, create a variable named `crimsonPhoenix`.
+
+Assign it an object that represents the League's newly approved hero: **Crimson Phoenix**.
+
+Your object must use these property names:
+
+- `heroName`
+- `civilianName`
+- `powerLevel`
+- `isActive`
+- `primaryAbility`
+- `homeCity`
+- `team`
+
+The League is picky about property names. So is JavaScript. Use those names exactly.
+
+## Client Profile Sheet
+
+The League sent this profile sheet:
+
+```txt
+Hero name: Crimson Phoenix
+Civilian name: Avery Stone
+Power level: 91
+Active status: active
+Primary ability: Plasma flight
+Home city: Sunspire
+Team assignment: Vanguard
+```
+
+Turn that profile sheet into one JavaScript object.
+
+You decide which values should be strings, numbers, or booleans.
+
+## Think Like a Data Specialist
+
+Before you type the object, pause for a second and ask:
+
+- Which values are words or labels?
+- Which value should JavaScript treat like a number?
+- Which value describes a yes/no state?
+- Which client labels need to become cleaner JavaScript property names?
+
+For example, the client says **Team assignment**, but the required property name is `team`.
+
+That is part of the job: translating human paperwork into clean JavaScript data.
+
+## Checkpoint
+
+When your object is finished, log a few individual values from the record.
+
+Your console should show these exact values:
+
+```txt
+Crimson Phoenix
+91
+true
+```
+
+Then create and log one readable profile sentence that combines the hero name, home city, and primary ability.
+
+Your console should show this exact sentence:
+
+```txt
+Crimson Phoenix protects Sunspire with Plasma flight.
+```
+
+## Success Criteria
+
+You are ready for Chapter 3 when:
+
+- `crimsonPhoenix` is one object
+- the object uses all seven required property names
+- each value uses a sensible primitive type
+- your console shows the exact individual values listed in the checkpoint
+- your console shows the exact profile sentence listed in the checkpoint
+- the output is readable to a human, not just technically correct
+
+If your console says `undefined`, JavaScript is not mad. It is simply very literal. Tiny spelling differences matter. The computer has never once said, "eh, close enough."

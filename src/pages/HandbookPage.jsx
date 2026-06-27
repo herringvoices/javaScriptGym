@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
@@ -35,7 +35,6 @@ export default function HandbookPage() {
   const [showHandbook, setShowHandbook] = useState(true);
   const [showEditor, setShowEditor] = useState(true);
   const [showConsole, setShowConsole] = useState(false);
-  const tocRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   // New-style entry loader (preferred)
@@ -146,19 +145,6 @@ export default function HandbookPage() {
     }
   }, [resolvedId, chapterId]);
 
-  useEffect(() => {
-    if (!showTOC || typeof document === "undefined") return undefined;
-
-    const handlePointerDown = (event) => {
-      if (tocRef.current?.contains(event.target)) return;
-      if (event.target.closest("[data-toc-toggle]")) return;
-      setShowTOC(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [showTOC]);
-
   const desktopPanelSlots = useMemo(
     () => [
       { key: "toc", visible: showTOC, preview: !showTOC },
@@ -226,7 +212,6 @@ export default function HandbookPage() {
               {showTOC ? (
                 <div {...desktopResize.panelSlotProps("toc")}>
                   <DesktopPanel
-                    ref={tocRef}
                     as="aside"
                     panelKey="toc"
                     eyebrow="Handbook"
@@ -566,13 +551,13 @@ function HandbookChapterNavigation({ resolvedId, chapterId }) {
       : `/handbook/${node.standardId}/${node.id}`;
 
   const btnClass =
-    "inline-flex min-w-0 items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70";
+    "inline-flex min-w-0 items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium no-underline transition-colors hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70";
   const inactiveClass = "opacity-40 cursor-not-allowed";
   const prevClass = "bg-slate-900/60 text-slate-200 border-slate-700 hover:bg-slate-800";
   const nextClass = "bg-brand-600 text-white border-brand-600 hover:bg-brand-500";
 
   return (
-    <nav aria-label="Chapter navigation" className="mt-10 border-t border-slate-700 pt-6">
+    <nav aria-label="Chapter navigation" className="not-prose mt-10 border-t border-slate-700 pt-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
         {prev ? (
           <Link to={makeHref(prev)} className={`${btnClass} ${prevClass} sm:max-w-[48%]`}>

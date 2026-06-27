@@ -1,0 +1,88 @@
+---
+id: 01-open-case-file
+title: Open the Case File
+---
+
+# Chapter 1 - Open the Case File
+
+Bad news: the League of Heroes has been hit by a data breach.
+
+Worse news: the villain responsible calls themselves **The CSV**, which is somehow both extremely boring and deeply threatening.
+
+Their attack left the League's roster incomplete, inconsistent, and just embarrassing enough that nobody wants it shown at the annual **Definitely Not a Parade of Dangerous People** press event.
+
+That is where you come in.
+
+Before you repair hero records, you need to create a few starter variables that describe the League's current situation. These are small pieces of information, so this chapter focuses on **primitive values**: strings, numbers, booleans, and `null`.
+
+## Learning Goal
+
+By the end of this chapter, you will be able to choose appropriate primitive value types for basic client information and combine those values in a readable status message.
+
+## Your Task
+
+In `main.js`, create variables for the League's case file.
+
+You need:
+
+- `leagueName` - the public name of the organization
+- `activeHeroCount` - the current number of active heroes
+- `emergencyRosterEnabled` - whether the emergency roster is turned on
+- `missingCoordinator` - the name of the missing roster coordinator
+- `meetingLocation` - the currently unknown meeting location
+
+Choose a value type that fits each piece of information.
+
+For example:
+
+- names should be strings
+- counts should be numbers
+- yes/no settings should be booleans
+- unknown-but-intentionally-empty information should be `null`
+
+## Client Note
+
+The League sent this intake note:
+
+```txt
+Organization: League of Heroes
+Active heroes: 7
+Emergency roster: enabled
+Missing coordinator: Dana Cipher
+Meeting location: unknown
+```
+
+Turn that note into JavaScript variables.
+
+## Checkpoint
+
+Create a status message using a template literal and log it to the console.
+
+Your message should include at least:
+
+- the League name
+- the number of active heroes
+- whether the emergency roster is enabled
+- the missing coordinator's name
+
+Example shape:
+
+```js
+const caseStatus = `${leagueName} has ${activeHeroCount} active heroes. Emergency roster enabled: ${emergencyRosterEnabled}.`
+console.log(caseStatus)
+```
+
+Your exact wording can be different. The important part is that your variables hold the right kinds of values.
+
+## Success Criteria
+
+You are ready for Chapter 2 when:
+
+- `leagueName` is a string
+- `activeHeroCount` is a number
+- `emergencyRosterEnabled` is a boolean
+- `missingCoordinator` is a string
+- `meetingLocation` is `null`
+- your `console.log()` prints a readable case status message
+
+If your console says something like `undefined has undefined active heroes`, congratulations: you have met JavaScript, and JavaScript is being honest with you. Check your variable names carefully.

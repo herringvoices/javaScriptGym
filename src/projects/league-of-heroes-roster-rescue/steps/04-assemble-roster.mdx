@@ -1,0 +1,178 @@
+---
+id: 04-assemble-roster
+title: Assemble the League Roster
+---
+
+# Chapter 4 - Assemble the League Roster
+
+Excellent news: the League now has two usable hero records.
+
+Less excellent news: two heroes do not make a roster. That is just a buddy system with branding.
+
+The press event needs an official public lineup. The League director does not want "a few hero objects floating around somewhere in the file." The director wants one ordered collection that represents the active roster.
+
+That is what an **array** is for.
+
+An array lets you store multiple related values in one ordered list. In this case, each value in the list will be a hero object.
+
+Welcome to the dramatic and extremely administrative world of **arrays of objects**.
+
+## Learning Goal
+
+By the end of this chapter, you will be able to organize multiple related objects into an array and access object information by using an item's position in that array.
+
+## Why This Matters
+
+In Chapter 3, you saw why matching object shapes matter.
+
+Now imagine a website that needs to display every active hero on a roster page.
+
+If each hero is trapped in a separate variable, the page has no single collection to work with. The code would need to know every individual variable name ahead of time, which is not realistic once the League grows.
+
+A roster array solves that problem.
+
+Instead of thinking:
+
+```txt
+Here is one hero.
+Here is another hero.
+Here is another hero.
+Please remember all of them individually forever.
+```
+
+You can think:
+
+```txt
+Here is the League roster.
+It contains the hero records in public lineup order.
+```
+
+That is much easier for future code to use.
+
+## Add Stable IDs
+
+Before you build the roster, make sure every hero object has an `id`.
+
+An `id` is a stable identifier for one record.
+
+That matters because names and positions can change.
+
+A hero might change their public identity. A roster might get sorted, filtered, or rearranged. Two heroes might even have similar names because apparently branding consultants are booked solid.
+
+An `id` gives each record one reliable value that code can use to recognize it later.
+
+For this project, use numbers for IDs.
+
+Your hero records should use these IDs:
+
+```txt
+Crimson Phoenix: 1
+Neon Volt: 2
+Star Sentinel: 3
+Echo Eclipse: 4
+```
+
+If your earlier hero objects do not have an `id` yet, add one to each object before building the roster.
+
+## Your Task
+
+In `main.js`, create an array named `leagueRoster`.
+
+The array should contain four hero objects in this exact order:
+
+1. Crimson Phoenix
+2. Neon Volt
+3. Star Sentinel
+4. Echo Eclipse
+
+You already created and repaired the first two records:
+
+- `crimsonPhoenix`
+- `damagedHero`
+
+Now create two more hero objects from the profile sheets below.
+
+## Additional Profile Sheets
+
+Create a hero record for **Star Sentinel**:
+
+```txt
+ID: 3
+Hero name: Star Sentinel
+Civilian name: Omar Reyes
+Power level: 88
+Active status: active
+Primary ability: Stellar shield
+Home city: Orbit Falls
+Team assignment: Vanguard
+```
+
+Create a hero record for **Echo Eclipse**:
+
+```txt
+ID: 4
+Hero name: Echo Eclipse
+Civilian name: Jordan Vale
+Power level: 82
+Active status: active
+Primary ability: Sound bending
+Home city: Harbor City
+Team assignment: Night Watch
+```
+
+Use the same property names and data type choices you used for your earlier clean hero records.
+
+## Public Lineup Order
+
+The order matters.
+
+Arrays use positions called **indexes**. The first item is at index `0`, the second item is at index `1`, and so on.
+
+That means the League's public lineup should work like this:
+
+```txt
+Index 0: Crimson Phoenix
+Index 1: Neon Volt
+Index 2: Star Sentinel
+Index 3: Echo Eclipse
+```
+
+This is one of those JavaScript things that feels suspicious at first. The first item being index `0` is not a typo. It is tradition. Ancient, weird tradition.
+
+## Checkpoint
+
+When `leagueRoster` is finished, log evidence that the roster exists, has the correct length, stores heroes in the correct order, and keeps each hero's ID attached to the right record.
+
+Your console should show these exact values:
+
+```txt
+4
+1 Crimson Phoenix
+2 Neon Volt
+3 Star Sentinel
+4 Echo Eclipse
+```
+
+Then log a readable roster summary.
+
+Your console should show this exact sentence:
+
+```txt
+The League roster starts with Crimson Phoenix and ends with Echo Eclipse.
+```
+
+## Success Criteria
+
+You are ready for Chapter 5 when:
+
+- `leagueRoster` is one array
+- the array contains four hero objects
+- each hero object has a numeric `id`
+- each hero's `id` matches the ID listed in the chapter
+- the heroes are in the exact public lineup order
+- every hero object uses the same property naming pattern
+- matching pieces of information use matching data types
+- you can access a hero's information using its position in the array
+- your console output matches the checkpoint
+
+If your first hero is not Crimson Phoenix, the press event has already become confusing. The League owns one fog machine and absolutely no crisis communication strategy. Keep the lineup clean.

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import HandbookMDXProvider from "../handbook/MDXProvider";
 import { getProject, getProjectSteps, getStepLoader, loadProjectEntry } from "../projects/manifest";
 import ProjectSidebar from "../components/ProjectSidebar";
@@ -35,8 +35,7 @@ export default function ProjectPage() {
   const [showTOC, setShowTOC] = useState(true);
   const [showHandbook, setShowHandbook] = useState(true);
   const [showEditor, setShowEditor] = useState(true);
-  const [showConsole, setShowConsole] = useState(true);
-  const tocRef = useRef(null);
+  const [showConsole, setShowConsole] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
@@ -92,17 +91,10 @@ export default function ProjectPage() {
   }, [projectId]);
 
   useEffect(() => {
-    if (!showTOC || typeof document === "undefined") return undefined;
-
-    const handlePointerDown = (event) => {
-      if (tocRef.current?.contains(event.target)) return;
-      if (event.target.closest("[data-toc-toggle]")) return;
-      setShowTOC(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [showTOC]);
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, [projectId, currentStepId]);
 
   const entryForStep = useMemo(() => {
     if (!entry) return null;
@@ -169,7 +161,6 @@ export default function ProjectPage() {
             {showTOC ? (
               <div {...desktopResize.panelSlotProps("toc")}>
                 <DesktopPanel
-                  ref={tocRef}
                   as="aside"
                   panelKey="toc"
                   eyebrow="Project"
@@ -205,15 +196,14 @@ export default function ProjectPage() {
                   className="prose prose-invert max-w-none"
                   bodyClassName="pt-4"
                 >
-                  {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
-                  {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
-                  {stepModule ? (
-                    <HandbookMDXProvider>
-                      <stepModule.default />
-                    </HandbookMDXProvider>
-                  ) : (
-                    <p className="text-sm text-slate-400">Step content coming soon...</p>
-                  )}
+                  <ProjectStepContent
+                    loadingStep={loadingStep}
+                    stepError={stepError}
+                    stepModule={stepModule}
+                    projectId={projectId}
+                    steps={steps}
+                    currentStepId={currentStepId}
+                  />
                 </DesktopPanel>
               </div>
             ) : (
@@ -286,15 +276,14 @@ export default function ProjectPage() {
               </MobileAccordion>
 
               <MobileAccordion title="Instructions" eyebrow="Step" defaultOpen stickyHeader contentClassName="prose prose-invert max-w-none">
-                {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
-                {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
-                {stepModule ? (
-                  <HandbookMDXProvider>
-                    <stepModule.default />
-                  </HandbookMDXProvider>
-                ) : (
-                  <p className="text-sm text-slate-400">Step content coming soon...</p>
-                )}
+                <ProjectStepContent
+                  loadingStep={loadingStep}
+                  stepError={stepError}
+                  stepModule={stepModule}
+                  projectId={projectId}
+                  steps={steps}
+                  currentStepId={currentStepId}
+                />
               </MobileAccordion>
 
               <MobileAccordion title="Workspace" eyebrow="Code" defaultOpen stickyHeader>
@@ -334,5 +323,80 @@ export default function ProjectPage() {
         )}
       </div>
     </div>
+  );
+}
+
+function ProjectStepContent({ loadingStep, stepError, stepModule, projectId, steps, currentStepId }) {
+  const Step = stepModule?.default;
+
+  return (
+    <>
+      {loadingStep && <p className="text-sm text-slate-400">Loading step...</p>}
+      {stepError && <p className="text-sm text-red-400">Failed to load step: {stepError.message}</p>}
+      {Step ? (
+        <HandbookMDXProvider>
+          <Step />
+        </HandbookMDXProvider>
+      ) : (
+        <p className="text-sm text-slate-400">Step content coming soon...</p>
+      )}
+      <ProjectStepNavigation projectId={projectId} steps={steps} currentStepId={currentStepId} />
+    </>
+  );
+}
+
+function ProjectStepNavigation({ projectId, steps, currentStepId }) {
+  const currentIndex = steps.findIndex((step) => step.id === currentStepId);
+  if (currentIndex === -1) return null;
+
+  const prev = currentIndex > 0 ? steps[currentIndex - 1] : null;
+  const next = currentIndex < steps.length - 1 ? steps[currentIndex + 1] : null;
+  const makeHref = (step) => `/project/${projectId}/${step.id}`;
+  const btnClass =
+    "inline-flex min-w-0 items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium no-underline transition-colors hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70";
+  const inactiveClass = "opacity-40 cursor-not-allowed";
+  const prevClass = "bg-slate-900/60 text-slate-200 border-slate-700 hover:bg-slate-800";
+  const nextClass = "bg-brand-600 text-white border-brand-600 hover:bg-brand-500";
+
+  return (
+    <nav aria-label="Project step navigation" className="not-prose mt-10 border-t border-slate-700 pt-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
+        {prev ? (
+          <Link to={makeHref(prev)} className={`${btnClass} ${prevClass} sm:max-w-[48%]`}>
+            <span className="text-lg" aria-hidden="true">←</span>
+            <span className="flex min-w-0 flex-col text-left">
+              <span className="text-xs uppercase tracking-wide text-brand-300">Previous</span>
+              <span className="truncate">{prev.title}</span>
+            </span>
+          </Link>
+        ) : (
+          <span className={`${btnClass} ${inactiveClass}`} aria-disabled>
+            <span className="text-lg" aria-hidden="true">←</span>
+            <span className="flex flex-col text-left">
+              <span className="text-xs uppercase tracking-wide">Previous</span>
+              -
+            </span>
+          </span>
+        )}
+
+        {next ? (
+          <Link to={makeHref(next)} className={`${btnClass} ${nextClass} justify-end sm:max-w-[48%] sm:ml-auto`}>
+            <span className="flex min-w-0 flex-col text-right">
+              <span className="text-xs uppercase tracking-wide text-brand-200">Next</span>
+              <span className="truncate">{next.title}</span>
+            </span>
+            <span className="text-lg" aria-hidden="true">→</span>
+          </Link>
+        ) : (
+          <span className={`${btnClass} ${inactiveClass} justify-end sm:ml-auto`} aria-disabled>
+            <span className="flex flex-col text-right">
+              <span className="text-xs uppercase tracking-wide">Next</span>
+              -
+            </span>
+            <span className="text-lg" aria-hidden="true">→</span>
+          </span>
+        )}
+      </div>
+    </nav>
   );
 }

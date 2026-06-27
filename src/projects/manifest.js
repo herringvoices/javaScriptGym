@@ -47,6 +47,21 @@ const projects = [
 			{ id: "07-stretch", title: "Stretch Goals" },
 		],
 	},
+	{
+		id: "league-of-heroes-roster-rescue",
+		title: "League of Heroes: Roster Rescue",
+		summary: "Repair a superhero roster after a messy data breach by modeling records, organizing arrays of objects, making direct updates, and running a final data audit.",
+		standards: ["JS.VDT.PRM", "JS.VDT.COL", "JS.VDT.MTH"],
+		steps: [
+			{ id: "01-open-case-file", title: "Open the Case File" },
+			{ id: "02-first-hero-record", title: "Create the First Hero Record" },
+			{ id: "03-repair-damaged-record", title: "Repair a Damaged Record" },
+			{ id: "04-assemble-roster", title: "Assemble the League Roster" },
+			{ id: "05-change-requests", title: "Process Change Requests" },
+			{ id: "06-inspect-data", title: "Inspect the League's Data" },
+			{ id: "07-final-audit", title: "Final Roster Audit" },
+		],
+	},
 ];
 
 function getProject(projectId) {
@@ -84,6 +99,15 @@ const projectStepLoaders = {
         "06-receipt-printer": () => import("./nathan-claus-toy-drive/steps/06-receipt-printer.mdx"),
         "07-stretch": () => import("./nathan-claus-toy-drive/steps/07-stretch.mdx"),
     },
+	"league-of-heroes-roster-rescue": {
+		"01-open-case-file": () => import("./league-of-heroes-roster-rescue/steps/01-open-case-file.mdx"),
+		"02-first-hero-record": () => import("./league-of-heroes-roster-rescue/steps/02-first-hero-record.mdx"),
+		"03-repair-damaged-record": () => import("./league-of-heroes-roster-rescue/steps/03-repair-damaged-record.mdx"),
+		"04-assemble-roster": () => import("./league-of-heroes-roster-rescue/steps/04-assemble-roster.mdx"),
+		"05-change-requests": () => import("./league-of-heroes-roster-rescue/steps/05-change-requests.mdx"),
+		"06-inspect-data": () => import("./league-of-heroes-roster-rescue/steps/06-inspect-data.mdx"),
+		"07-final-audit": () => import("./league-of-heroes-roster-rescue/steps/07-final-audit.mdx"),
+	},
 };
 
 function getStepLoader(projectId, stepId) {
@@ -97,6 +121,7 @@ const projectEntries = {
 	"landers-zoo": () => import("./entries/landers-zoo.js").then((m) => m.default),
     "love-on-the-lawn": () => import("./entries/love-on-the-lawn.js").then((m) => m.default),
 	"nathan-claus-toy-drive": () => import("./entries/nathan-claus-toy-drive.js").then((m) => m.default),
+	"league-of-heroes-roster-rescue": () => import("./entries/league-of-heroes-roster-rescue.js").then((m) => m.default),
 };
 
 async function loadProjectEntry(projectId) {
@@ -120,4 +145,3 @@ export {
 	projectEntries,
 	loadProjectEntry,
 };
-

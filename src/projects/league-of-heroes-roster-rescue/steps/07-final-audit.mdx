@@ -1,0 +1,319 @@
+---
+id: 07-final-audit
+title: Final Roster Audit
+---
+
+# Chapter 7 - Final Roster Audit
+
+The League director has one final request.
+
+This sentence has never improved anyone's afternoon.
+
+The press team is almost ready. The fog machine has been tested. The podium has been polished. Someone has taped a sign over the breakroom microwave that says, "Do not heat fish during hero announcements."
+
+All that remains is the final roster audit.
+
+In this chapter, you will inspect a damaged final roster, repair several planted data issues, and produce one final confirmation that the League can safely proceed with the press event.
+
+No brand-new tricks this time.
+
+This is the chapter where you use the tools you have already practiced:
+
+- object access
+- object updates
+- array indexes
+- array methods
+- string cleanup
+- number conversion
+- careful console checks
+
+In other words: programming, but with a clipboard.
+
+## Learning Goal
+
+By the end of this chapter, you will be able to audit an array of objects against written requirements and repair issues involving property names, value types, missing records, order, and inconsistent text.
+
+## Why This Matters
+
+In real applications, data problems rarely arrive wearing a little name tag that says, "Hello, I am the bug."
+
+They hide inside records.
+
+One property name is slightly wrong. One number is stored as text. One record is missing. One item is in the wrong position. One value has inconsistent capitalization. One team assignment is outdated.
+
+Any one of those might be small.
+
+Together, they make data harder to trust.
+
+A final audit is where you slow down, compare the data to the requirements, and prove that the collection is ready for use.
+
+The League calls this "quality assurance."
+
+The director calls it "please do not let the podium explode."
+
+Both are fair.
+
+## Starter Audit Roster
+
+Copy this damaged final roster into `main.js` after your Chapter 6 data check:
+
+```js
+const finalAuditRoster = [
+    {
+        id: 2,
+        heroName: "Neon Volt",
+        civilianName: "Maya Chen",
+        powerLevel: "87",
+        isActive: true,
+        primaryAbility: "Electro-kinesis",
+        homeCity: "Metroburg",
+        team: "Vanguard"
+    },
+    {
+        id: 1,
+        heroName: "Crimson Phoenix",
+        civilianName: "Avery Stone",
+        powerLevel: 91,
+        isActive: true,
+        primaryAbility: "Plasma flight",
+        homeCity: "Sunspire",
+        team: "Vanguard"
+    },
+    {
+        id: 4,
+        heroName: " echo nova ",
+        civilianName: "Jordan Vale",
+        powerlevel: 82,
+        isActive: true,
+        primaryAbility: "Sound bending",
+        homeCity: "Harbor City",
+        team: "Night Watch"
+    },
+    {
+        id: 5,
+        heroName: "Quantum Quill",
+        civilianName: "Priya Nair",
+        powerLevel: 79,
+        isActive: true,
+        primaryAbility: "Probability ink",
+        homeCity: "Ledger Bay",
+        team: "Archive Unit"
+    }
+];
+```
+
+This roster is close.
+
+Close is not enough.
+
+The press team is wearing headsets now.
+
+## Audit Requirements
+
+Repair `finalAuditRoster` so it satisfies every requirement below.
+
+### Required Final Roster Order
+
+The final roster should be in this order:
+
+```txt
+1 Crimson Phoenix
+2 Neon Volt
+3 Star Sentinel
+4 Echo Nova
+5 Quantum Quill
+```
+
+### Required Hero Data
+
+The final roster must contain these five heroes:
+
+```txt
+ID: 1
+Hero name: Crimson Phoenix
+Civilian name: Avery Stone
+Power level: 91
+Active status: active
+Primary ability: Plasma flight
+Home city: Sunspire
+Team assignment: Vanguard
+
+ID: 2
+Hero name: Neon Volt
+Civilian name: Maya Chen
+Power level: 87
+Active status: active
+Primary ability: Electro-kinesis
+Home city: Metroburg
+Team assignment: Vanguard
+
+ID: 3
+Hero name: Star Sentinel
+Civilian name: Omar Reyes
+Power level: 88
+Active status: active
+Primary ability: Stellar shield
+Home city: Orbit Falls
+Team assignment: Vanguard
+
+ID: 4
+Hero name: Echo Nova
+Civilian name: Jordan Vale
+Power level: 82
+Active status: active
+Primary ability: Sound bending
+Home city: Harbor City
+Team assignment: Vanguard
+
+ID: 5
+Hero name: Quantum Quill
+Civilian name: Priya Nair
+Power level: 79
+Active status: active
+Primary ability: Probability ink
+Home city: Ledger Bay
+Team assignment: Archive Unit
+```
+
+## Required Tools
+
+Use the right kind of tool for each kind of problem.
+
+For this audit, you should need:
+
+- an array method to add the missing hero
+- an array method to fix the roster order
+- direct object updates to fix record details
+- a string method to clean the messy hero name
+- number conversion to fix the imported power level
+- targeted console logs to prove the repairs worked
+
+If you need a refresher, use the handbook:
+
+- [Array methods: add and remove items](/handbook/JS.VDT.MTH/JS.VDT.COL.ARR_ENDS)
+- [String methods: clean and normalize text](/handbook/JS.VDT.MTH/JS.VDT.MTH.STR)
+- [Number parsers: from strings to numbers](/handbook/JS.VDT.MTH/JS.VDT.MTH.NUM_PARSE)
+- [Object utilities: peek and shape](/handbook/JS.VDT.MTH/JS.VDT.MTH.OBJ_UTIL)
+
+## What to Watch For
+
+The damaged final roster includes several problems you have already practiced fixing:
+
+- one hero is missing
+- the roster starts in the wrong order
+- one property name has the wrong capitalization
+- one number is stored as text
+- one hero name has messy spacing and capitalization
+- one team assignment is outdated
+
+Use the requirements to decide what needs to change.
+
+Do not guess. Audit.
+
+Very glamorous. Extremely clipboard-forward.
+
+## Checkpoint
+
+When the final audit is repaired, log evidence that the roster is ready.
+
+Your console should show these exact values:
+
+```txt
+Final Roster Audit
+5
+1 Crimson Phoenix - 91 - Vanguard
+2 Neon Volt - 87 - Vanguard
+3 Star Sentinel - 88 - Vanguard
+4 Echo Nova - 82 - Vanguard
+5 Quantum Quill - 79 - Archive Unit
+Roster Ready: The League can proceed with the press event.
+```
+
+## Final Submission Note
+
+At the bottom of `main.js`, add a short comment block that identifies:
+
+- one object you created or repaired
+- one roster change you made with an array method
+- one string or number cleanup you completed
+- one data issue you found and corrected
+- confirmation that your final roster audit output matches the checkpoint
+
+This note does not need to be long. It just needs to show that you understand what you changed.
+
+## Success Criteria
+
+You are finished when:
+
+- `finalAuditRoster` contains exactly five hero objects
+- the heroes are in the required final order
+- Star Sentinel has been added
+- Echo Nova's name is cleaned
+- Echo Nova's team is corrected
+- every hero uses `powerLevel` with the same capitalization
+- every `powerLevel` value is a number
+- every hero object uses the same property naming pattern
+- you used string cleanup where text was messy
+- you used number conversion where a number was stored as text
+- you used array methods for roster-level changes
+- the final audit output matches the checkpoint exactly
+- your final comment block explains your work clearly
+
+If the roster is almost correct, the roster is not correct. This is the final press version, not a casserole recipe where "close enough" still tastes fine.
+
+## Optional Stretch Goals
+
+These are optional. Do not let them block the required final audit.
+
+### Add a Headquarters Object
+
+Add a `headquarters` object to one hero record.
+
+It could include:
+
+```txt
+building name
+city
+isPublic
+```
+
+This gives you practice putting an object inside another object.
+
+### Add a Specialties Array
+
+Add a `specialties` array to one hero record.
+
+It could include a few strings that describe what the hero is known for.
+
+This gives you practice putting an array inside an object.
+
+### Create a Press-Safe Public Profile
+
+Create a `publicProfile` object for one hero that includes only information safe for the press.
+
+For example, it might include the hero name, primary ability, home city, and team, but not the civilian name.
+
+The League strongly prefers not to dox its own heroes. A rare moment of institutional wisdom.
+```js
+console.log("Final audit roster:", auditRoster)
+console.log("Roster Ready: The League can proceed with the press event.")
+```
+
+## Final Submission
+
+Submit your completed `main.js` file with a short comment block identifying:
+
+- one object you created or repaired
+- one roster change you made
+- one data issue you found and corrected
+- console output showing the final roster audit passed
+
+## Optional Stretch Goals
+
+These are optional and should not block your core submission:
+
+- Add a `headquarters` object to one hero record.
+- Add a `specialties` array to one hero record.
+- Create a separate `reserveRoster` array.
+- Add a `publicProfile` object containing only information safe for the press.
+- Invent one additional data-quality problem and write a comment explaining how it was fixed.

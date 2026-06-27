@@ -1,0 +1,225 @@
+---
+id: 05-change-requests
+title: Process Change Requests
+---
+
+# Chapter 5 - Process the Roster Change Requests
+
+The League director has reviewed the public lineup.
+
+Naturally, this means the lineup is no longer correct.
+
+This is normal client behavior. A client will look directly at the thing they approved yesterday and say, "Perfect. Now change it."
+
+The good news: your heroes are already organized in `leagueRoster`.
+
+The better news: arrays come with built-in methods that let you add, remove, and replace items without rebuilding the whole roster from scratch.
+
+Today, you are the roster desk.
+
+Please stamp forms responsibly.
+
+## Learning Goal
+
+By the end of this chapter, you will be able to update an array of objects by adding, removing, replacing, and editing records while keeping the collection in the correct order.
+
+## Why This Matters
+
+Real application data changes constantly.
+
+A user signs up. Another user deletes an account. Someone updates their display name. A product goes out of stock. A support ticket gets reassigned.
+
+If your data lives in an array, you need to know how to change that array without losing track of what each item represents.
+
+Think about a social media feed.
+
+That feed is basically an array of post objects. When a user creates a new post, the app adds a new object to the feed. Nobody opens the source code, scrolls to the original array, and manually types that post into the starting data.
+
+That would be horrible.
+
+Also, every social media company would need one tired employee per user, armed with coffee and regret.
+
+Instead, the app creates a new object when the user submits the form, then uses JavaScript to add that object to the existing array.
+
+That is what you are practicing here.
+
+## Top to Bottom Matters
+
+JavaScript reads your file from top to bottom, one line at a time.
+
+That means there is an important difference between:
+
+```txt
+Building the original roster array
+```
+
+and
+
+```txt
+Changing the roster later with array methods
+```
+
+In Chapter 4, you created the starting roster.
+
+In this chapter, do not go back and manually type the new heroes into the original `leagueRoster` array.
+
+Make the changes **after** the starting roster exists.
+
+Your script should tell the story in order:
+
+```txt
+1. Create the original hero objects.
+2. Create the starting leagueRoster array.
+3. Process the new change requests.
+4. Check the updated roster.
+```
+
+That order matters because JavaScript only knows about the data that has already been created.
+
+## Array Methods Refresher
+
+For these requests, use array methods to change `leagueRoster`.
+
+You may need:
+
+- `push`
+- `unshift`
+- `shift`
+- `splice`
+
+If those feel rusty, review the handbook chapter on [array end controls](/handbook/JS.VDT.MTH/JS.VDT.COL.ARR_ENDS) before continuing.
+
+The point of this chapter is not just getting the final roster right. The point is practicing how code changes an existing array after the program is already running.
+
+## Starting Roster
+
+At the start of this chapter, your roster should contain these heroes in this order:
+
+```txt
+1 Crimson Phoenix
+2 Neon Volt
+3 Star Sentinel
+4 Echo Eclipse
+```
+
+If your roster does not match that order yet, fix Chapter 4 before moving on. The roster desk is powerful, but it is not magic. It cannot reorganize chaos while also wearing this tiny visor.
+
+## Change Requests
+
+Process these League requests in order.
+
+### Request 1: Add a new hero to the end
+
+The League approved a new hero named **Quantum Quill**.
+
+Create a hero object from this profile sheet. Then use an array method to add that object to the end of `leagueRoster`.
+
+Do not manually add Quantum Quill inside the original roster array from Chapter 4. This request happens after the starting roster already exists.
+
+```txt
+ID: 5
+Hero name: Quantum Quill
+Civilian name: Priya Nair
+Power level: 79
+Active status: active
+Primary ability: Probability ink
+Home city: Ledger Bay
+Team assignment: Archive Unit
+```
+
+### Request 2: Add an emergency substitute to the beginning
+
+A substitute hero needs to appear at the beginning of the roster while the director checks the stage schedule.
+
+Create a hero object from this profile sheet. Then use an array method to add that object to the beginning of `leagueRoster`.
+
+```txt
+ID: 99
+Hero name: Placeholder Paladin
+Civilian name: Temporary Terry
+Power level: 12
+Active status: active
+Primary ability: Standing in line
+Home city: Clipboard City
+Team assignment: Substitute Bench
+```
+
+### Request 3: Remove the emergency substitute
+
+The director has checked the schedule.
+
+The substitute is no longer needed.
+
+Use an array method to remove **Placeholder Paladin** from the beginning of `leagueRoster`.
+
+### Request 4: Replace a hero who changed their public identity
+
+Echo Eclipse has updated their public identity and team assignment.
+
+Create an updated hero object from this profile sheet. Then use an array method to replace the existing Echo Eclipse record in `leagueRoster`.
+
+```txt
+ID: 4
+Hero name: Echo Nova
+Civilian name: Jordan Vale
+Power level: 82
+Active status: active
+Primary ability: Sound bending
+Home city: Harbor City
+Team assignment: Vanguard
+```
+
+The ID stays the same because this is the same person. Only the public hero record changed.
+
+That is one reason IDs matter: names can change, but the ID still points to the same record.
+
+### Request 5: Update one hero's team assignment
+
+Neon Volt has been moved from **North Squad** to **Vanguard**.
+
+Update only Neon Volt's team assignment.
+
+Do not replace the whole Neon Volt object. Only change the team value.
+
+This request changes one property inside one object. It does not add, remove, or replace an item in the array.
+
+## Checkpoint
+
+After all five requests are complete, log evidence that the roster has the correct length, order, names, and team assignments.
+
+Your console should show these exact values:
+
+```txt
+5
+1 Crimson Phoenix - Vanguard
+2 Neon Volt - Vanguard
+3 Star Sentinel - Vanguard
+4 Echo Nova - Vanguard
+5 Quantum Quill - Archive Unit
+```
+
+Then log a readable summary of the final change-request result.
+
+Your console should show this exact sentence:
+
+```txt
+The updated roster has 5 heroes, starts with Crimson Phoenix, and ends with Quantum Quill.
+```
+
+## Success Criteria
+
+You are ready for Chapter 6 when:
+
+- `leagueRoster` contains exactly five hero objects
+- Placeholder Paladin is no longer in the roster
+- Quantum Quill was added with an array method
+- Quantum Quill appears at the end of the roster
+- Placeholder Paladin was added and removed with array methods
+- Echo Eclipse has been replaced by Echo Nova
+- Echo Nova keeps ID `4`
+- Neon Volt's team is now `Vanguard`
+- every hero object still uses the same property naming pattern
+- matching pieces of information still use matching data types
+- your console output matches the checkpoint
+
+If Placeholder Paladin is still in the roster, please thank them for their service and escort them out of the data structure.
