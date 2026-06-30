@@ -1,0 +1,260 @@
+---
+id: 08-the-breach-strikes-back
+title: Respond to a New Breach
+---
+
+# Chapter 8 - Respond to a New Breach
+
+The press event was a success.
+
+The fog machine behaved itself. Nobody heated fish. Scuba Driver gave a short speech that was mostly about the importance of accessible public pools.
+
+The League's roster audit worked.
+
+Then Dr. Breach sent one final message:
+
+> “Nice spreadsheet. Shame if something happened to it.”
+
+He did not attach a virus.
+
+He attached a **change request**.
+
+<Callout type="danger" title="One last job">
+  You have completed the guided repair work.
+
+  This chapter gives you a new situation and the requirements for a solution. It does not tell you exactly which method or expression to use for every step.
+
+  That is intentional. You already know the tools.
+</Callout>
+
+## The Situation
+
+The League is sending a small emergency response team to investigate a suspicious breach at the Museum of Extremely Normal Artifacts.
+
+They need a new array called `emergencyRoster`.
+
+The emergency roster should begin as a copy of the current League roster information, but it will need its own changes.
+
+Create an `emergencyRoster` array with these heroes in this order:
+
+```txt
+1. Solar Flare
+2. Scuba Driver
+3. Neon Volt
+```
+
+Each hero should still use the same record shape as the heroes in your main `roster`:
+
+- `id`
+- `heroName`
+- `isActive`
+- `powerLevel`
+- `age`
+- `power`
+- `secretIdentity`
+- `city`
+
+<Callout type="warn" title="Do not move the real roster">
+  Keep your original `roster` array unchanged.
+
+  The League still needs its normal roster after the emergency team leaves. Create separate hero objects for `emergencyRoster` rather than pulling heroes out of the original array with `.shift()` or `.pop()`.
+</Callout>
+
+## Emergency Update 1: Add a Specialist
+
+The Museum has a hallway that appears to be whispering in Morse code.
+
+The League decides this is probably an Echo Fang situation.
+
+Create an `echoFang` object using the information from Chapter 4, then add Echo Fang to the **end** of `emergencyRoster`.
+
+Afterward, your emergency roster should contain four heroes:
+
+```txt
+1. Solar Flare
+2. Scuba Driver
+3. Neon Volt
+4. Echo Fang
+```
+
+<HandbookChallenge
+  title="Build the Emergency Team"
+  hints={[
+    "Start with an array containing Solar Flare, Scuba Driver, and Neon Volt.",
+    "Each emergency-roster hero still needs the same properties as every other hero record.",
+    "Echo Fang joins after the starting team has been created."
+  ]}
+>
+  Create `emergencyRoster`, then add Echo Fang to the end.
+</HandbookChallenge>
+
+## Emergency Update 2: Change the Lead Responder
+
+The League director gets a call from the museum.
+
+Apparently, the suspicious breach is underwater.
+
+This has become less suspicious and more Scuba Driver-shaped.
+
+Move Scuba Driver to the **front** of `emergencyRoster`.
+
+Do not rebuild the whole array by hand. Use the array methods you have practiced.
+
+Your emergency roster should now be ordered like this:
+
+```txt
+1. Scuba Driver
+2. Solar Flare
+3. Neon Volt
+4. Echo Fang
+```
+
+<PracticeCard
+  prompt="What two array operations could move Scuba Driver from index 1 to the front without rewriting the entire array?"
+  answer="Remove Scuba Driver from their current position, then add them to the beginning. There is more than one valid way to think through the exact code."
+/>
+
+<Callout type="tip" title="Check after each move">
+  Log the emergency roster's hero names after you change the order.
+
+  A correct-looking final array is useful. Being able to see when it became correct is better.
+</Callout>
+
+## Emergency Update 3: Clean the Dispatch Message
+
+The museum's automated dispatch system sends this message:
+
+```js
+const importedMuseumMessage = "  breach detected: gallery-7  ";
+```
+
+The League needs it displayed like this:
+
+```txt
+BREACH DETECTED: GALLERY 7
+```
+
+Create a variable called `cleanMuseumMessage`.
+
+Use the string methods you need to:
+
+1. remove extra spaces
+2. replace the dash with a space
+3. convert the message to uppercase
+
+Then log the cleaned message.
+
+<HandbookChallenge
+  title="Clean the Dispatch Message"
+  hints={[
+    "The spaces at the beginning and end are part of the string.",
+    "The dash needs to become a regular space.",
+    "The final message should be uppercase."
+  ]}
+>
+  Create and log `cleanMuseumMessage`.
+</HandbookChallenge>
+
+## Emergency Update 4: Parse the Threat Level
+
+The museum also sends this value:
+
+```js
+const importedThreatLevel = "73%";
+```
+
+Create a variable called `threatLevel`.
+
+Convert the imported value into a number, then log:
+
+1. the parsed threat level
+2. its type
+3. whether it is greater than Solar Flare's power level
+
+Your console should show:
+
+```txt
+73
+number
+true
+```
+
+<Callout type="note" title="Data from outside your program needs checking">
+  Your code did not create the imported threat level, so it cannot assume the value is already the type it needs.
+
+  That is why parsing matters. Other systems are frequently weird in ways that feel personal.
+</Callout>
+
+## Create the Emergency Dispatch Report
+
+Now create one final report for the emergency response team.
+
+Use values from your `emergencyRoster`, `cleanMuseumMessage`, and `threatLevel`.
+
+Your report should show:
+
+```txt
+Emergency Dispatch Report
+
+Alert: BREACH DETECTED: GALLERY 7
+Threat level: 73
+Lead responder: Scuba Driver
+Support team size: 3
+Last assigned hero: Echo Fang
+```
+
+A few notes:
+
+- The lead responder is the first hero in `emergencyRoster`.
+- The last assigned hero is the last hero in `emergencyRoster`.
+- The support team size is everyone **except** the lead responder.
+- Do not hardcode the names or numbers into the report.
+
+<HandbookChallenge
+  title="Send the Dispatch Report"
+  hints={[
+    "The lead responder is the first item in the emergency roster.",
+    "The last assigned hero can be found with `.length - 1`.",
+    "The support-team size is the total roster length minus one.",
+    "Use one template literal to build the report."
+  ]}
+>
+  Create and log the complete Emergency Dispatch Report.
+</HandbookChallenge>
+
+## Final Checkpoint
+
+Your console should show:
+
+```txt
+Emergency Dispatch Report
+
+Alert: BREACH DETECTED: GALLERY 7
+Threat level: 73
+Lead responder: Scuba Driver
+Support team size: 3
+Last assigned hero: Echo Fang
+```
+
+You are finished when:
+
+- your original `roster` still contains its original four heroes in the original order
+- `emergencyRoster` contains Scuba Driver, Solar Flare, Neon Volt, and Echo Fang
+- Scuba Driver is first in the emergency roster
+- Echo Fang is last in the emergency roster
+- your museum message is cleaned with string methods
+- your threat level is parsed into a number
+- your report derives its values from variables and arrays
+- you did not hardcode the final names or counts into the report
+
+<Callout type="note" title="Roster Rescue complete">
+  You started with a few disconnected facts about one hero.
+
+  You built records, repaired data, organized a roster, processed changes, inspected values, created an audit, and handled a fresh request using the same JavaScript tools in a new situation.
+
+  That is the part that matters.
+
+  Not memorizing every method. Not making the console look pretty by accident. Looking at a problem, deciding what data you have, deciding what data you need, and using your tools to get there.
+
+  Also, the museum is fine. Probably.
+</Callout>
