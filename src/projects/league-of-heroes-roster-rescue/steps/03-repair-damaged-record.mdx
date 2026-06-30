@@ -1,173 +1,159 @@
 ---
 id: 03-repair-damaged-record
-title: Repair a Damaged Record
+title: Update Stale Data
 ---
 
-# Chapter 3 - Repair a Damaged Hero Record
+# Chapter 3 - Update Stale Data
 
-The League has located another hero record.
+Scuba Driver's profile is finally organized.
 
-Unfortunately, this one came directly from the damaged import.
+Which is when the League realizes the information they sent you was old.
 
-The CSV apparently looked at a perfectly normal JavaScript object and thought, "What if this was worse?"
+Naturally.
 
-Bold vision. Terrible data management.
+<Callout type="warn" title="Incoming correction">
+  The League did not send you bad data on purpose.
 
-In Chapter 2, you created a clean hero record for `crimsonPhoenix`. That object is now your reference point. In this chapter, you will test a damaged record, repair it, and prove that the same console logs work for both heroes.
+  They just apparently update records with the same urgency most people use to update their emergency contacts.
+</Callout>
 
-## Learning Goal
+In Chapter 2, you created one `scubaDriver` object. Now you are going to update information inside that existing object.
 
-By the end of this chapter, you will be able to inspect a damaged object and repair property names, value types, and missing values so it matches an existing clean object structure.
+That matters because real data changes over time. People move. Names change. Stats go up. Sometimes a hero discovers they have been calling themselves **The Scuba Driver** when everyone else has just been calling them **Scuba Driver**.
 
-## Why This Matters
+You do not need to create a brand-new object every time one piece of information changes.
 
-Imagine a website that shows information for the currently logged-in user.
+## The Change Request
 
-The page might need to display the user's name, check their account ID, or show whether the account is active.
-
-That code only works smoothly if the data is predictable.
-
-If one user has `userId`, another has `userid`, another has `idNumber`, and one unlucky person's ID is stored as the string `"42"` instead of the number `42`, your code has to do detective work before it can do its actual job.
-
-That is exhausting. Computers are fast, but they are not chill.
-
-Clean data means the same kind of record uses the same property names and the same data types every time.
-
-## Starter Record
-
-Find the damaged import in `main.js`.
-
-It starts like this:
-
-```js
-const damagedHeroImport = {
-```
-
-This object represents **Neon Volt**, but some of the data does not match the clean structure you created in Chapter 2.
-
-Do not repair it yet. First, make the problem visible.
-
-## Before You Repair It
-
-Go back to the console logs you wrote in Chapter 2.
-
-Those logs used information from `crimsonPhoenix`.
-
-Now swap the variable name from `crimsonPhoenix` to `damagedHeroImport` in those same logs.
-
-Run the code before making any repairs.
-
-Your individual value logs should show:
+The League has sent these updates:
 
 ```txt
-2
-Neon Volt
-undefined
-yes
+Hero name: Scuba Driver
+Age: 21
+Power level: 10
+City: Old York
 ```
 
-Your profile sentence should show:
-
-```txt
-Neon Volt protects Metroburg with Electro-kinesis.
-```
-
-Some of that output looks fine. Some of it does not.
-
-That is the sneaky part about damaged data: broken records do not always explode dramatically. Sometimes they quietly give you one wrong value and then stroll away whistling.
+Everything else in Scuba Driver's profile should stay the same.
 
 ## Your Task
 
-Repair the damaged hero record so it follows the same property naming pattern and data type pattern as `crimsonPhoenix`.
+Update the existing `scubaDriver` object so its data matches the League's corrections.
 
-Do not replace the whole object with a fresh one. Practice repairing the existing object.
+Use assignment operators where they make sense:
 
-You can keep the variable name `damagedHeroImport`, or you can rename it to `damagedHero` after it is repaired. Either way, your logs should point at the repaired object.
+- Use `=` when replacing a value.
+- Use `+=` when increasing a value by a known amount.
+- Use `++` when increasing a value by exactly `1`.
 
-## Repair Notes
+<HandbookChallenge
+  title="Process the Change Request"
+  hints={[
+    "Use dot notation to reach the property you want to update.",
+    "Scuba Driver's age increases by exactly one year.",
+    "His power level increases from 5 to 10. You can replace the value, or add 5 to the existing value."
+  ]}
+>
+  Update Scuba Driver's name, age, power level, and city without creating a new object.
+</HandbookChallenge>
 
-The League sent these corrections:
+<Callout type="note" title="Why update instead of rewriting?">
+  In a real application, the original object often comes from a database, an API, or a form submission.
+
+  You would not open the database file and manually rewrite the whole person every time they move. Your application would update the specific data that changed.
+</Callout>
+
+## Before and After
+
+Before you make any updates, copy your Chapter 2 profile `console.log()` and run it once.
+
+Then run the same profile message again after your changes.
+
+Your console should show both versions:
 
 ```txt
-ID: 2
-Hero name: Neon Volt
-Civilian name: Maya Chen
-Power level: 87
-Active status: active
-Primary ability: Electro-kinesis
-Home city: Metroburg
-Team assignment: North Squad
-Secret base: private; do not include in the public roster record
+The Scuba Driver has the power of Underwater Transportation with a power level of 5.
+Scuba Driver has the power of Underwater Transportation with a power level of 10.
 ```
 
-For League hero records, the data types should be:
+Notice what changed:
 
-| Information | Correct type |
-| --- | --- |
-| ID | number |
-| hero name | string |
-| civilian name | string |
-| power level | number |
-| active status | boolean |
-| primary ability | string |
-| home city | string |
-| team assignment | string |
+- The word `"The"` disappeared from the hero name.
+- The power level increased.
+- The power itself stayed the same.
 
-Compare the damaged object to:
+The League does not need you to announce every field in the object each time. It just needs to know that the updated values actually made it into the record.
 
-- the repair notes
-- your clean `crimsonPhoenix` object
-- the data type table above
+<PracticeCard
+  prompt="Which update changes Scuba Driver's age from 20 to 21 without writing the number 21 directly?"
+  answer="`scubaDriver.age++`"
+ />
 
-Then fix the damaged record.
+## Check the Updated Values
 
-## What to Watch For
+Add console logs for the properties that changed.
 
-Look for problems like:
-
-- an ID stored as text instead of a number
-- a property name that does not match your clean object
-- a number stored as text
-- a yes/no value stored as a word instead of a boolean
-- a private field that does not belong in the public roster record
-- leftover damaged data after the corrected data exists
-
-The goal is not just to make Neon Volt's data readable. The goal is to make both hero records predictable enough that future code could use either one without special exceptions.
-
-## Checkpoint
-
-After repairing the object, run the same Chapter 2 logs again with the repaired Neon Volt record.
-
-The code structure should not need to change. The object should now work in the same places where `crimsonPhoenix` worked.
-
-Your individual value logs should now show:
+Your console should show:
 
 ```txt
-2
-Neon Volt
-87
+Scuba Driver
+21
+10
+Old York
+```
+
+Then check that the information that did **not** change is still there:
+
+```txt
+true
+Underwater Transportation
 true
 ```
 
-Your profile sentence should still show:
+Those values should represent:
 
-```txt
-Neon Volt protects Metroburg with Electro-kinesis.
+1. whether Scuba Driver is active
+2. Scuba Driver's power
+3. whether `secretIdentity` is still `null`
+
+<details>
+<summary>One possible set of checks</summary>
+
+```js
+console.log(scubaDriver.heroName);
+console.log(scubaDriver.age);
+console.log(scubaDriver.powerLevel);
+console.log(scubaDriver.city);
+
+console.log(scubaDriver.isActive);
+console.log(scubaDriver.power);
+console.log(scubaDriver.secretIdentity === null);
 ```
 
-That is the whole point of consistent object shape: the same code can work with either hero record.
+</details>
 
-## Success Criteria
+<Callout type="tip" title="Inspect after every change">
+  When you update data, log the part you changed.
 
-You are ready for Chapter 4 when:
+  A typo like `scubaDriver.powerlevel` does not update `powerLevel`. It creates a new property with a slightly different name. JavaScript will let you do that with the calm confidence of someone handing you the wrong package at the post office.
+</Callout>
 
-- you tested the damaged object before repairing it
-- the repaired object still represents Neon Volt
-- the repaired object follows the same property naming pattern as `crimsonPhoenix`
-- matching pieces of information use matching data types in both objects
-- the damaged import no longer contains duplicate or leftover incorrect data
-- private secret base information is not part of the public roster object
-- your Chapter 2 console logs work correctly when you swap in the repaired Neon Volt object
-- only the hero information changes when you swap objects, not the code structure
+## Checkpoint
 
-If your object has both the damaged property and the corrected property, congratulations: you have invented duplicate paperwork. The League already has enough of that. Keep the clean version.
+Before you move on, your `scubaDriver` object should contain:
+
+| Property | Expected value |
+| --- | --- |
+| `heroName` | `"Scuba Driver"` |
+| `isActive` | `true` |
+| `powerLevel` | `10` |
+| `age` | `21` |
+| `power` | `"Underwater Transportation"` |
+| `secretIdentity` | `null` |
+| `city` | `"Old York"` |
+
+<Callout type="note" title="One record is not a roster">
+  Scuba Driver's profile is organized and up to date.
+
+  Great work. Unfortunately, one hero does not make a League. Next, you will use Scuba Driver's record as the first entry in the League's roster.
+</Callout>
