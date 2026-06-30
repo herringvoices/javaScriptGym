@@ -36,8 +36,7 @@ const MAIN_JS = `// League of Heroes: Roster Rescue
 
 // CHAPTER 4: Assemble the League Roster
 // Add id: 1 to scubaDriver.
-// Create solarFlare and echoFang objects, then create roster with:
-// Scuba Driver, Solar Flare, and Echo Fang.
+// Create a roster containing Scuba Driver, Solar Flare, and Echo Fang.
 
 
 
@@ -65,7 +64,7 @@ const importedBadgeScore = "91.5";
 
 
 // CHAPTER 8: Respond to a New Breach
-// Create a separate emergencyRoster using existing hero objects.
+// Create a separate emergencyRoster using hero objects from roster.
 // Do not change the original roster.
 
 const importedMuseumMessage = "  breach detected: gallery-7  ";
