@@ -5,7 +5,7 @@ title: Create the First Hero Record
 
 # Chapter 2 - Create the First Hero Record
 
-In Chapter 1, you created separate variables for Scuba Driver's information.
+In Chapter 1, you created separate variables for The Scuba Driver's information.
 
 That worked. JavaScript now knows his name, power level, city, secret identity situation, and deeply confusing power.
 
@@ -20,7 +20,7 @@ The League's old database kept each hero's information together in one self-cont
 <Callout type="note" title="Why objects?">
   Objects group related information together using named properties.
 
-  Scuba Driver's name, power level, home city, and active status all describe the same hero, so they belong in the same object.
+  The Scuba Driver's name, power level, home city, and active status all describe the same hero, so they belong in the same object.
 </Callout>
 
 ## Your Task
@@ -33,7 +33,7 @@ Use these property names exactly:
 
 | Property | What it should store |
 | --- | --- |
-| `heroName` | Scuba Driver's hero name |
+| `heroName` | The Scuba Driver's hero name |
 | `isActive` | whether he is currently active |
 | `powerLevel` | his current power level |
 | `age` | his age |
@@ -53,16 +53,54 @@ Use these property names exactly:
 </HandbookChallenge>
 
 <Callout type="tip" title="Keep your old variables for now">
-  Do not delete your Chapter 1 variables yet.
-
-  You are about to prove that the object contains the same information. Once you know it does, those separate variables will have served their purpose.
+  Do not delete your Chapter 1 variables yet. You are about to prove that the object contains the same information.
 </Callout>
 
 ## Read from the Record
 
-Now update your profile sentence so it gets its information from `scubaDriver` instead of the separate variables.
+Your `profileMessage` still uses the separate Chapter 1 variables.
 
-Use dot notation to access the values you need.
+Change the template literal so it uses the object properties instead:
+
+- `scubaDriver.heroName`
+- `scubaDriver.power`
+- `scubaDriver.powerLevel`
+
+Keep `profileMessage` and `console.log(profileMessage)` exactly where they are for now. Then run your code.
+
+<HandbookChallenge
+  title="Try It Before You Fix It"
+  hints={[
+    "Only replace the values inside the existing template literal.",
+    "Do not move any code yet.",
+    "Run the file after you make the replacements."
+  ]}
+>
+  Update `profileMessage` to use `scubaDriver` properties, leave it in its Chapter 1 location, and run the code.
+</HandbookChallenge>
+
+You should see an error that starts something like this:
+
+```txt
+ReferenceError: Cannot access 'scubaDriver' before initialization
+```
+
+Why is JavaScript trying to use `scubaDriver` before it knows what `scubaDriver` is?
+
+What can you change so the object exists before `profileMessage` tries to read from it?
+
+Figure it out. Go back to the handbook if you need to.
+
+<details>
+<summary>Reveal the fix</summary>
+
+JavaScript runs your file from top to bottom.
+
+`profileMessage` is still above the new `scubaDriver` object, so JavaScript reaches `scubaDriver.heroName` before the object has been created.
+
+Move both `profileMessage` and `console.log(profileMessage)` below the `scubaDriver` object. Then run the code again.
+
+</details>
 
 Your console should show:
 
@@ -71,20 +109,9 @@ The Scuba Driver has the power of Underwater Transportation with a power level o
 ```
 
 <PracticeCard
-  prompt="Which expression gets Scuba Driver's power level from the object?"
-  answer="`scubaDriver.powerLevel`"
- />
-
-<HandbookChallenge
-  title="Print the Hero Profile"
-  hints={[
-    "Use the object name first: `scubaDriver`.",
-    "Then use a dot and the property name.",
-    "Your template literal should use values from the object, not the old standalone variables."
-  ]}
->
-  Rewrite your profile `console.log()` so it uses `scubaDriver`.
-</HandbookChallenge>
+  prompt="Why did moving `profileMessage` below `scubaDriver` fix the error?"
+  answer="JavaScript runs the file from top to bottom. The object has to be created before code can read its properties."
+/>
 
 <Callout type="warn" title="Do not confuse property names with variable names">
   `scubaDriver.powerLevel` means “get the value stored in the `powerLevel` property on the `scubaDriver` object.”
@@ -101,7 +128,7 @@ The Scuba Driver has the power of Underwater Transportation with a power level o
 ```
 
 <Callout type="note" title="One profile, one record">
-  Scuba Driver's information now lives together in one object.
+  The Scuba Driver's information now lives together in one object.
 
   Unfortunately, the League has just noticed that some of the information they sent you is outdated. Naturally, they noticed this after you finished organizing it.
 </Callout>
