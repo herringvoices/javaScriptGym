@@ -5,116 +5,130 @@ title: Open the Case File
 
 # Chapter 1 - Open the Case File
 
-Bad news: the League of Heroes has been hit by a data breach.
+You've learned a lot in your JavaScript journey.
 
-Worse news: the villain responsible calls themselves **The CSV**, which is somehow both deeply boring and immediately suspicious.
+- [ ] You can **declare, assign, and update variables** using `let` and `const`
+- [ ] You can **store and choose appropriate primitive values**, including strings, numbers, booleans, `null`, and `undefined`
+- [ ] You can **combine, calculate, and compare values** using operators, expressions, and template literals
+- [ ] You can **create and use objects** to group related data with key-value pairs
+- [ ] You can **create and use arrays** to store ordered lists of values
+- [ ] You can **work with arrays of objects** to represent structured records like books, users, or API results
+- [ ] You can **access and update data** using dot notation, bracket notation, indexes, and nested paths
+- [ ] You can **add, remove, and reorder array items** with methods like `.push()`, `.pop()`, `.shift()`, and `.unshift()`
+- [ ] You can **use common properties and methods** to inspect, clean, format, convert, and reshape strings, numbers, arrays, and objects
+- [ ] You can **choose an appropriate data type or data structure** for the kind of information your program needs
 
-Their attack left the League's roster incomplete, inconsistent, and just embarrassing enough that nobody wants it shown at the annual **Definitely Not a Parade of Dangerous People** press event.
+Once you wrote it all out, you started to feel pretty proud of yourself and promptly signed up for the **League of Heroes** superhero team.
 
-That is where you come in.
+Unsurprisingly, they let you join immediately and gave you the hero name **Free-Lancer**. You asked about getting a lance, but they said they wanted the emphasis to be on the "free" part.
 
-Before you repair hero records, you need to open the case file. The case file starts with small pieces of information: names, counts, yes/no settings, and values that are not known yet.
+And you couldn't have come at a better time. The dreaded **Dr. Breach** has completely wrecked the League's roster data.
 
-That means this chapter is about **primitive values**.
-
-## Learning Goal
-
-By the end of this chapter, you will be able to choose useful primitive value types, decide when to use `const` or `let`, and combine those values in a readable status message.
-
-## Your Task
-
-In `main.js`, create variables for the League's case file.
-
-You need:
-
-- `leagueName` - the public name of the organization
-- `activeHeroCount` - the current number of active heroes
-- `emergencyRosterEnabled` - whether the emergency roster is turned on
-- `missingCoordinator` - the name of the missing roster coordinator
-- `meetingLocation` - the currently unknown meeting location
-- `backupMeetingLocation` - a location the League chooses after the file opens
-
-Choose a value type that fits each piece of information.
-
-Use `const` for values that should not change during this chapter.
-
-Use `let` for a value that starts unknown and gets updated later.
-
-## Client Note
-
-The League sent this intake note:
+The League still has an audit report it needs before it can send heroes out on missions. Right now, though, the report is about as useful as a Bat-Signal in broad daylight.
 
 ```txt
-Organization: League of Heroes
-Active heroes: 7
-Emergency roster: enabled
-Missing coordinator: Dana Cipher
-Meeting location: unknown
-Backup meeting location selected later: Rooftop Annex
+League of Heroes Roster Audit
+
+Heroes on roster: 4
+Average power level: 63
+First responder: Scuba Driver
+Newest recruit: Neon Volt
+Audit status: Ready for review
 ```
 
-Turn that note into JavaScript variables.
+By the end of this project, you will rebuild the League's data until it can produce a report like that using real information from the roster.
 
-The meeting location is intentionally unknown at first. That is a good use for `null`.
+<Callout type="note" title="Your mission">
+  You have already learned every JavaScript tool you will need for this project.
 
-After your starter variables exist, update the meeting location to use the backup meeting location. This is the one value in the chapter that should be reassigned.
+  This is not about remembering every method perfectly without help. It is about looking at a problem, deciding what kind of data you need, and choosing the right tool to work with it.
+</Callout>
 
-## Watch the Types
+Along the way, you'll use `console.log()` to inspect your work and make sure the League's data is actually doing what it is supposed to do.
 
-The League's forms are dramatic, but JavaScript is picky in a quieter way.
+## Step 1: Primitives
 
-- Names and locations should be strings.
-- Counts should be numbers.
-- Enabled/disabled settings should be booleans.
-- Intentionally unknown information should start as `null`.
+The League has sent you some information on one of their members to get your feet wet:
 
-Do not store the active hero count as `"7"`. That is text wearing a number costume.
+> His name is The Scuba Driver. He is currently active. His power level is 5. His age is 20. His power is "Underwater Transportation" (whatever that is), and he doesn't have a secret identity. He just *is* Scuba Driver. He's based out of "New Atlantis."
 
-Do not store the emergency roster as `"enabled"`. Your future code wants a real yes/no value.
+To start, create variables for:
 
-## Checkpoint
+- `name`
+- `isActive`
+- `powerLevel`
+- `age`
+- `power`
+- `secretIdentity`
+- `city`
 
-Create console logs that prove your case file is holding the right values.
+Think carefully about what data type each variable should contain.
 
-Your console should show these exact values:
+Then use your variables and string interpolation to `console.log()` this sentence with the correct information:
 
 ```txt
-League of Heroes
-7
+______ has the power of ______ with a power level of ____.
+```
+
+<HandbookChallenge
+  title="League Intake Form"
+  hints={[
+    "Every piece of information in the League's message needs its own variable for now.",
+    "A missing secret identity is not the same thing as an empty string.",
+    "Use a template literal for the final sentence."
+  ]}
+>
+  Create the variables for Scuba Driver's profile, then log the requested sentence.
+</HandbookChallenge>
+
+<Callout type="tip" title="Use the handbook like a developer">
+  Do not remember whether `null` is the right choice for a missing value? Look it up.
+
+  Real developers do not keep every method and edge case in their heads. They recognize the kind of problem they have, then use their resources.
+</Callout>
+
+## Run a Data Scan
+
+Now that you have created Scuba Driver's profile, ask JavaScript what data types you chose:
+
+```js
+console.log(typeof name);
+console.log(typeof age);
+console.log(typeof powerLevel);
+console.log(typeof isActive);
+console.log(typeof power);
+console.log(typeof city);
+console.log(secretIdentity === null);
+```
+
+Do not open the scanner results yet. Run your code first and look at your console.
+
+<PracticeCard
+  prompt="Before you run the scan, what do you expect the final line to print?"
+  answer="It should print `true`, because `secretIdentity` should be set to `null`."
+/>
+
+<details>
+<summary>Expected data scan</summary>
+
+```txt
+string
+number
+number
+boolean
+string
+string
 true
-Dana Cipher
-null
-Rooftop Annex
 ```
 
-Then create one readable status message using the variables.
+If your last line says `true`, that means `secretIdentity` is correctly set to `null`.
 
-Your console should show this exact sentence:
+JavaScript quirk: we check `secretIdentity === null` instead of `typeof secretIdentity` because `typeof null` returns `"object"`.
 
-```txt
-League of Heroes has 7 active heroes. Emergency roster enabled: true. Dana Cipher is missing.
-```
+</details>
 
-Finally, log the meeting location after you update it.
+<Callout type="note" title="One hero down">
+  Scuba Driver's information is correct, but it is currently spread across several separate variables.
 
-Your console should show:
-
-```txt
-Meeting location confirmed: Rooftop Annex
-```
-
-## Success Criteria
-
-You are ready for Chapter 2 when:
-
-- `leagueName` is a string
-- `activeHeroCount` is a number
-- `emergencyRosterEnabled` is a boolean
-- `missingCoordinator` is a string
-- `meetingLocation` starts as `null`
-- `meetingLocation` is later reassigned to the backup location
-- you used `const` for values that stay the same
-- you used `let` for the value that changes
-- your console output matches the checkpoint
-
-If your console says `undefined has undefined active heroes`, congratulations: JavaScript has entered the room and immediately started taking attendance. Check your variable names carefully.
+  The League is going to need a better way to keep one hero's related information together.
+</Callout>
