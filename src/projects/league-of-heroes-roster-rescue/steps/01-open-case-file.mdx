@@ -45,11 +45,11 @@ By the end of this project, you will rebuild the League's data until it can prod
 
 The League has sent you this information about one of their members:
 
-> His name is The Scuba Driver. He is currently active. His power level is 5. His age is 20. His power is "Underwater Transportation" (whatever that is), and he doesn't have a secret identity. He just *is* Scuba Driver. He's based out of "New Atlantis."
+> His name is The Scuba Driver. He is currently active. His power level is 5. His age is 20. His power is "Underwater Transportation" (whatever that is), and he doesn't have a secret identity. He just *is* The Scuba Driver. He's based out of "New Atlantis."
 
 Create variables for:
 
-- `name`
+- `heroName`
 - `isActive`
 - `powerLevel`
 - `age`
@@ -64,7 +64,7 @@ Think carefully about the value each variable needs.
 
 | Variable | Expected value type |
 | --- | --- |
-| `name` | string |
+| `heroName` | string |
 | `isActive` | boolean |
 | `powerLevel` | number |
 | `age` | number |
@@ -74,21 +74,25 @@ Think carefully about the value each variable needs.
 
 </details>
 
-Then use your variables and a template literal to log this sentence with the correct information:
+## Step 2: Build the Profile Message
+
+Create a variable called `profileMessage`. Assign it a template literal that uses the variables you just created:
 
 ```txt
-______ has the power of ______ with a power level of ____.
+The Scuba Driver has the power of Underwater Transportation with a power level of 5.
 ```
+
+Then log `profileMessage`.
 
 <HandbookChallenge
   title="League Intake Form"
   hints={[
     "Every piece of information in the League's message needs its own variable for now.",
     "A missing secret identity is not the same thing as an empty string.",
-    "Use a template literal for the final sentence."
+    "Assign the template literal to `profileMessage` before you log it."
   ]}
 >
-  Create the variables for Scuba Driver's profile, then log the requested sentence.
+  Create The Scuba Driver's profile variables, then create and log `profileMessage`.
 </HandbookChallenge>
 
 <Callout type="tip" title="Use the handbook like a developer">
@@ -98,7 +102,7 @@ ______ has the power of ______ with a power level of ____.
 </Callout>
 
 <Callout type="note" title="One hero down">
-  Scuba Driver's information is correct, but it is currently spread across several separate variables.
+  The Scuba Driver's information is correct, but it is currently spread across several separate variables.
 
   The League is going to need a better way to keep one hero's related information together.
 </Callout>
