@@ -64,6 +64,21 @@ To start, create variables for:
 
 Think carefully about what data type each variable should contain.
 
+<details>
+<summary>Reveal the expected value types</summary>
+
+| Variable | Expected value type |
+| --- | --- |
+| `name` | string |
+| `isActive` | boolean |
+| `powerLevel` | number |
+| `age` | number |
+| `power` | string |
+| `secretIdentity` | `null` |
+| `city` | string |
+
+</details>
+
 Then use your variables and string interpolation to `console.log()` this sentence with the correct information:
 
 ```txt
@@ -86,46 +101,6 @@ ______ has the power of ______ with a power level of ____.
 
   Real developers do not keep every method and edge case in their heads. They recognize the kind of problem they have, then use their resources.
 </Callout>
-
-## Run a Data Scan
-
-Now that you have created Scuba Driver's profile, ask JavaScript what data types you chose:
-
-```js
-console.log(typeof name);
-console.log(typeof age);
-console.log(typeof powerLevel);
-console.log(typeof isActive);
-console.log(typeof power);
-console.log(typeof city);
-console.log(secretIdentity === null);
-```
-
-Do not open the scanner results yet. Run your code first and look at your console.
-
-<PracticeCard
-  prompt="Before you run the scan, what do you expect the final line to print?"
-  answer="It should print `true`, because `secretIdentity` should be set to `null`."
-/>
-
-<details>
-<summary>Expected data scan</summary>
-
-```txt
-string
-number
-number
-boolean
-string
-string
-true
-```
-
-If your last line says `true`, that means `secretIdentity` is correctly set to `null`.
-
-JavaScript quirk: we check `secretIdentity === null` instead of `typeof secretIdentity` because `typeof null` returns `"object"`.
-
-</details>
 
 <Callout type="note" title="One hero down">
   Scuba Driver's information is correct, but it is currently spread across several separate variables.
