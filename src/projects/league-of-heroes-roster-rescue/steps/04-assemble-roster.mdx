@@ -1,170 +1,230 @@
 ---
 id: 04-assemble-roster
-title: Assemble the League Roster
+title: Assemble the Roster
 ---
 
-# Chapter 4 - Assemble the League Roster
+# Chapter 4 - Assemble the Roster
 
-Excellent news: the League now has two usable hero records.
+Scuba Driver's record is organized. It is current. It is beautiful.
 
-Less excellent news: two heroes do not make a roster. That is just a buddy system with branding.
+It is also one hero.
 
-The press event needs an official public lineup. The League director does not want "a few hero objects floating around somewhere in the file." The director wants one ordered collection that represents the active roster.
+The League of Heroes has checked the rulebook and confirmed that one hero does not, in fact, make a League.
 
-That is what an **array** is for.
+To build a roster, the League needs an ordered collection of hero records.
 
-An array lets you store multiple related values in one ordered list. In this case, each value in the list will be a hero object.
+You know what JavaScript uses for ordered collections:
 
-Welcome to the dramatic and extremely administrative world of **arrays of objects**.
+**arrays.**
 
-## Learning Goal
+<Callout type="note" title="The roster plan">
+  Each hero will be an object.
 
-By the end of this chapter, you will be able to organize multiple related objects into an array, access records by index, and use `.length` to inspect the collection.
+  The `roster` will be an array that stores those hero objects in order.
+</Callout>
 
-## Why This Matters
+## Clean Up Your Console
 
-In Chapter 3, you saw why matching object shapes matter.
+Before you begin, delete the profile sentence and data-scan `console.log()` calls from the earlier chapters.
 
-Now imagine a website that needs to display every active hero on a roster page.
+You already used those to confirm that Scuba Driver's data was correct. Keeping every old test forever would make your console harder to read than it needs to be.
 
-If each hero is trapped in a separate variable, the page has no single collection to work with. The code would need to know every individual variable name ahead of time, which is not realistic once the League grows.
+You can also update the `scubaDriver` object directly now. You have already practiced using assignment operators in Chapter 3.
 
-A roster array solves that problem.
+## Give Scuba Driver an ID
 
-Instead of thinking:
+Before Scuba Driver joins the roster, add an `id` property to the `scubaDriver` object.
 
-```txt
-Here is one hero.
-Here is another hero.
-Here is another hero.
-Please remember all of them individually forever.
-```
-
-You can think:
+Set the value to `1`.
 
 ```txt
-Here is the League roster.
-It contains the hero records in public lineup order.
+ID: 1
 ```
 
-That is much easier for future code to use.
+<Callout type="tip" title="An ID is not an array index">
+  An ID identifies a particular hero record.
 
-## Your Task
+  An array index identifies a record's current position in the roster.
 
-In `main.js`, create an array named `leagueRoster`.
+  Scuba Driver can have an ID of `1` while living at index `0`. JavaScript is not being difficult. Those numbers answer different questions.
+</Callout>
 
-The array should contain four hero objects in this exact order:
+## Create the Roster
 
-1. Crimson Phoenix
-2. Neon Volt
-3. Star Sentinel
-4. Echo Eclipse
+Create an array called `roster` directly above your `console.log()` calls.
 
-You already created and repaired the first two records.
+Put the `scubaDriver` object inside it.
 
-Now create two more hero objects from the profile sheets below.
+```txt
+roster
+└── scubaDriver
+```
 
-## Additional Profile Sheets
+Then update your console message so it gets its information from the array instead of directly from `scubaDriver`.
 
-Create a hero record for **Star Sentinel**:
+Your console should show:
+
+```txt
+Hero number 1 is Scuba Driver.
+```
+
+Remember: arrays are zero-indexed.
+
+<HandbookChallenge
+  title="Start the Roster"
+  hints={[
+    "Create the array with square brackets: `[]`.",
+    "Put `scubaDriver` inside the array.",
+    "Scuba Driver is the first item in the array, so their index is `0`.",
+    "The hero's ID and the hero's array index are not the same thing."
+  ]}
+>
+  Add Scuba Driver to a `roster` array, then log the requested sentence using the array.
+</HandbookChallenge>
+
+<PracticeCard
+  prompt="What expression gets the first hero object from the `roster` array?"
+  answer="`roster[0]`"
+ />
+
+## Add Two More Heroes
+
+The League has sent you information on two more heroes.
+
+Create an object for each hero, then add both objects directly inside the `roster` array declaration.
+
+Every hero record should use the same properties as Scuba Driver's record:
+
+- `id`
+- `heroName`
+- `isActive`
+- `powerLevel`
+- `age`
+- `power`
+- `secretIdentity`
+- `city`
+
+### Hero Profile: Solar Flare
+
+```txt
+ID: 2
+Hero name: Solar Flare
+Active: true
+Power level: 18
+Age: 34
+Power: Heat and Light Control
+Secret identity: Cameron Vale
+City: Old York
+```
+
+### Hero Profile: Echo Fang
 
 ```txt
 ID: 3
-Hero name: Star Sentinel
-Civilian name: Omar Reyes
-Power level: 88
-Active status: active
-Primary ability: Stellar shield
-Home city: Orbit Falls
-Team assignment: Vanguard
+Hero name: Echo Fang
+Active: true
+Power level: 14
+Age: 29
+Power: Sound Tracking
+Secret identity: Riley Parks
+City: Bridgeport
 ```
 
-Create a hero record for **Echo Eclipse**:
+<HandbookChallenge
+  title="Fill Out the Roster"
+  hints={[
+    "Each hero needs their own object inside the `roster` array.",
+    "Separate the hero objects with commas.",
+    "Use the same property names that Scuba Driver uses, even when a value is different."
+  ]}
+>
+  Create Solar Flare and Echo Fang as objects, then add them to the `roster` array after Scuba Driver.
+</HandbookChallenge>
+
+<Callout type="warn" title="Consistency matters">
+  Do not give one hero a `name` property and another hero a `heroName` property.
+
+  Do not give one hero a `location` property and another hero a `city` property.
+
+  A roster works best when every record follows the same structure. Future code should be able to ask any hero for `heroName` without first checking what that hero decided to call it.
+</Callout>
+
+## Read from the Roster
+
+Now create a console message for each hero.
+
+Use the array to get the correct hero, then use the object's properties to build the message.
+
+Your console should show:
 
 ```txt
-ID: 4
-Hero name: Echo Eclipse
-Civilian name: Jordan Vale
-Power level: 82
-Active status: active
-Primary ability: Sound bending
-Home city: Harbor City
-Team assignment: Night Watch
+Hero number 1 is Scuba Driver.
+Hero number 2 is Solar Flare.
+Hero number 3 is Echo Fang.
 ```
 
-Use the same property names and data type choices you used for your earlier clean hero records.
+For the second and third heroes, use bracket notation to access the correct item in the array.
 
-## Public Lineup Order
+<details>
+<summary>What bracket notation means here</summary>
 
-The order matters.
+`roster[1]` gets the second hero object.
 
-Arrays use positions called **indexes**. The first item is at index `0`, the second item is at index `1`, and so on.
+`roster[2]` gets the third hero object.
 
-That means the League's public lineup should work like this:
+From there, you can use dot notation to access a property:
 
-```txt
-Index 0: Crimson Phoenix
-Index 1: Neon Volt
-Index 2: Star Sentinel
-Index 3: Echo Eclipse
+```js
+roster[1].heroName
 ```
 
-This is one of those JavaScript things that feels suspicious at first. The first item being index `0` is not a typo. It is tradition. Ancient, weird tradition.
+That means:
 
-## Use Length Like a Developer
+> Get the second object from `roster`, then get that object's `heroName`.
 
-The roster should have four heroes.
+</details>
 
-The last hero is not at index `4`. The last hero is at index `3`.
-
-Why? Because the first hero is at index `0`.
-
-When you need the last item in an array, use the array's `.length` property to help:
-
-```txt
-last index = array length - 1
-```
-
-That pattern matters because real arrays change size. Hard-coding the last index works only until the roster changes, which it will, because the League director has access to email.
+<PracticeCard
+  prompt="Which expression gets Echo Fang's city?"
+  answer="`roster[2].city`"
+ />
 
 ## Checkpoint
 
-When `leagueRoster` is finished, log evidence that the roster exists, has the correct length, stores heroes in the correct order, and keeps each hero's ID attached to the right record.
+Before you move on, your roster should contain three hero objects.
 
-Your console should show these exact values:
-
-```txt
-4
-1 Crimson Phoenix
-2 Neon Volt
-3 Star Sentinel
-4 Echo Eclipse
-Echo Eclipse
-```
-
-The final line should come from accessing the last hero by using the roster length, not by hard-coding index `3`.
-
-Then log a readable roster summary.
-
-Your console should show this exact sentence:
+Your console should show:
 
 ```txt
-The League roster starts with Crimson Phoenix and ends with Echo Eclipse.
+Hero number 1 is Scuba Driver.
+Hero number 2 is Solar Flare.
+Hero number 3 is Echo Fang.
 ```
 
-## Success Criteria
+You should also be able to log these values:
 
-You are ready for Chapter 5 when:
+```txt
+1
+Old York
+2
+Solar Flare
+3
+Sound Tracking
+```
 
-- `leagueRoster` is one array
-- the array contains four hero objects
-- each hero object has a numeric `id`
-- each hero's `id` matches the ID listed in the chapter
-- the heroes are in the exact public lineup order
-- every hero object uses the same property naming pattern
-- matching pieces of information use matching data types
-- you can access a hero's information using its position in the array
-- you used `.length` to help access the final hero
-- your console output matches the checkpoint
+Those values come from:
 
-If your first hero is not Crimson Phoenix, the press event has already become confusing. The League owns one fog machine and absolutely no crisis communication strategy. Keep the lineup clean.
+```js
+console.log(roster[0].id);
+console.log(roster[0].city);
+console.log(roster[1].id);
+console.log(roster[1].heroName);
+console.log(roster[2].id);
+console.log(roster[2].power);
+```
+
+<Callout type="note" title="A real roster">
+  The League now has a structured collection of hero records.
+
+  Next, the roster will start changing. Heroes join, leave, and occasionally need to be moved to the front because a giant robot is doing something deeply inconvenient.
+</Callout>
