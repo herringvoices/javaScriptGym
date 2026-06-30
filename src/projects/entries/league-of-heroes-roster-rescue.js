@@ -17,19 +17,21 @@ const MAIN_JS = `// League of Heroes: Roster Rescue
 // Dr. Breach wrecked the League's roster data. Repair it one chapter at a time.
 
 // CHAPTER 1: Open the Case File
-// Create separate variables for Scuba Driver's profile:
-// name, isActive, powerLevel, age, power, secretIdentity, city
+// Create separate variables for The Scuba Driver's profile:
+// heroName, isActive, powerLevel, age, power, secretIdentity, city
+// Then create a profileMessage template literal and log it.
 
 
 
 // CHAPTER 2: Create the First Hero Record
 // Create a scubaDriver object using these property names:
 // heroName, isActive, powerLevel, age, power, secretIdentity, city
+// Then update profileMessage to use the object's properties.
 
 
 
 // CHAPTER 3: Update Stale Data
-// Update Scuba Driver's existing object with the League's corrections.
+// Update The Scuba Driver's existing object with the League's corrections.
 // Do not recreate the whole object.
 
 
