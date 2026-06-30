@@ -3,13 +3,14 @@ import React from "react";
 import Callout from "../components/Callout";
 import PracticeCard from "../components/PracticeCard";
 import HandbookChallenge from "../components/HandbookChallenge";
+import { Checklist, ChecklistItem } from "../components/Checklist";
 // Removed MiniSandpack and Playground (deprecated)
 
 function Note(props) {
   return (
     <div className="rounded-md border border-brand-500/40 bg-brand-500/10 p-4 text-sm text-slate-200">
-		  <div className="m-0 font-medium tracking-wide text-brand-300">Note</div>
-		  <div className="mt-1 leading-relaxed">{props.children}</div>
+	  <div className="m-0 font-medium tracking-wide text-brand-300">Note</div>
+	  <div className="mt-1 leading-relaxed">{props.children}</div>
     </div>
   );
 }
@@ -17,8 +18,8 @@ function Note(props) {
 function Tip(props) {
   return (
     <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-slate-200">
-		  <div className="m-0 font-medium tracking-wide text-emerald-300">Tip</div>
-		  <div className="mt-1 leading-relaxed">{props.children}</div>
+	  <div className="m-0 font-medium tracking-wide text-emerald-300">Tip</div>
+	  <div className="mt-1 leading-relaxed">{props.children}</div>
     </div>
   );
 }
@@ -27,6 +28,8 @@ const components = {
   Callout,
   PracticeCard,
   HandbookChallenge,
+  Checklist,
+  ChecklistItem,
   Note,
   Tip,
   // Let MDX render real paragraphs; block components are responsible
