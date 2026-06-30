@@ -50,16 +50,17 @@ const projects = [
 	{
 		id: "league-of-heroes-roster-rescue",
 		title: "League of Heroes: Roster Rescue",
-		summary: "Repair a superhero roster after a messy data breach by modeling records, organizing arrays of objects, making direct updates, and running a final data audit.",
+		summary: "Repair a superhero roster by modeling hero records, organizing arrays of objects, processing roster changes, inspecting imported values, and producing reports from real roster data.",
 		standards: ["JS.VDT.PRM", "JS.VDT.COL", "JS.VDT.MTH"],
 		steps: [
 			{ id: "01-open-case-file", title: "Open the Case File" },
 			{ id: "02-first-hero-record", title: "Create the First Hero Record" },
-			{ id: "03-repair-damaged-record", title: "Repair a Damaged Record" },
+			{ id: "03-repair-damaged-record", title: "Update Stale Data" },
 			{ id: "04-assemble-roster", title: "Assemble the League Roster" },
-			{ id: "05-change-requests", title: "Process Change Requests" },
+			{ id: "05-change-requests", title: "Process Roster Changes" },
 			{ id: "06-inspect-data", title: "Inspect the League's Data" },
 			{ id: "07-final-audit", title: "Final Roster Audit" },
+			{ id: "08-the-breach-strikes-back", title: "Respond to a New Breach" },
 		],
 	},
 ];
@@ -107,6 +108,7 @@ const projectStepLoaders = {
 		"05-change-requests": () => import("./league-of-heroes-roster-rescue/steps/05-change-requests.mdx"),
 		"06-inspect-data": () => import("./league-of-heroes-roster-rescue/steps/06-inspect-data.mdx"),
 		"07-final-audit": () => import("./league-of-heroes-roster-rescue/steps/07-final-audit.mdx"),
+		"08-the-breach-strikes-back": () => import("./league-of-heroes-roster-rescue/steps/08-the-breach-strikes-back.mdx"),
 	},
 };
 
