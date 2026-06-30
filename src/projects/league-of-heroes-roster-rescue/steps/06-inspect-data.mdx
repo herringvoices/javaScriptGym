@@ -5,41 +5,29 @@ title: Inspect the League's Data
 
 # Chapter 6 - Inspect the League's Data
 
-The League roster is updated.
-
-Nobody has screamed.
-
-The spreadsheet printer is quiet.
+The League roster is updated. Nobody has screamed. The spreadsheet printer is quiet.
 
 These are all encouraging signs.
 
-But before the League uses this roster to create its audit report, they want one more thing: evidence.
+Before the League creates its audit report, it wants evidence. Not vibes. Not “I think it works.” Evidence.
 
-Not vibes. Not “I think it works.” Not “the data looked fine when I glanced at it while eating crackers.”
-
-Evidence.
-
-In this chapter, you will inspect the roster directly, use object utilities to look inside hero records, and clean up a few values imported from another system.
+In this chapter, you will inspect the roster directly, use object utilities to look inside hero records, and clean up values imported from another system.
 
 <Callout type="note" title="What you are practicing">
   The roster already exists. You are not rebuilding it in this chapter.
 
-  You are proving that you can inspect the data inside it, clean text, convert imported values into usable numbers, and access information from the beginning, middle, and end of an array.
+  You are inspecting its data, cleaning text, converting imported values into usable numbers, and accessing information from the beginning, middle, and end of an array.
 </Callout>
 
 ## Start a League Data Check
 
-At the bottom of your `main.js` file, create a new section for this chapter.
-
-Start by logging a heading:
+At the bottom of `main.js`, create a new section and log a heading:
 
 ```js
 console.log("League Data Check");
 ```
 
-Then log the number of heroes currently in the roster.
-
-Your console should begin like this:
+Then log the number of heroes currently in `roster`.
 
 ```txt
 League Data Check
@@ -63,52 +51,38 @@ League Data Check
 
 ## Inspect One Hero Record
 
-The League wants to make sure every hero record still has the expected structure.
-
 Use `Object.keys()` with Scuba Driver's object to inspect the property names in the first roster record.
-
-Your console should show:
 
 ```txt
 id,heroName,isActive,powerLevel,age,power,secretIdentity,city
 ```
 
-Then use `Object.values()` with the same hero record.
-
-Your console should show:
+Then use `Object.values()` with the same record.
 
 ```txt
 1,Scuba Driver,true,10,21,Underwater Transportation,,Old York
 ```
 
-That empty space between the commas represents Scuba Driver's `null` secret identity. It is still there. It is just not much of a conversationalist.
+That blank space between the commas represents Scuba Driver's `null` secret identity. It is still there. It is just not much of a conversationalist.
 
 <HandbookChallenge
   title="Inspect the First Record"
   hints={[
-    "Scuba Driver is still the first hero in `roster`.",
-    "`Object.keys()` gives you an array of property names.",
-    "`Object.values()` gives you an array of the values stored in those properties."
+    "Scuba Driver is the first hero in `roster`.",
+    "`Object.keys()` gives you property names.",
+    "`Object.values()` gives you the values stored in those properties."
   ]}
 >
   Log Scuba Driver's property names and values using object utilities.
 </HandbookChallenge>
 
 <Callout type="tip" title="A consistent shape is useful">
-  Every hero record should use the same property names.
-
-  That way, future code can ask any hero for `heroName`, `powerLevel`, or `city` without needing a separate set of instructions for every person in the roster.
+  Every hero record should use the same property names. That way, future code can ask any hero for `heroName`, `powerLevel`, or `city`.
 </Callout>
 
 ## Inspect a Property and Its Value
 
-The League also wants proof that you can inspect a property/value pair.
-
-Use `Object.entries()` with Scuba Driver's object.
-
-Then log the first entry from the result.
-
-Your console should show:
+Use `Object.entries()` with Scuba Driver's object, then log the first entry from the result.
 
 ```txt
 id,1
@@ -117,30 +91,22 @@ id,1
 <details>
 <summary>What is happening here?</summary>
 
-`Object.entries(roster[0])` creates an array of smaller arrays.
-
-The first one looks like this:
+`Object.entries(roster[0])` creates an array of smaller arrays. The first one is:
 
 ```js
 ["id", 1]
 ```
 
-When JavaScript logs that array, it displays:
-
-```txt
-id,1
-```
+When JavaScript logs that array, it displays `id,1`.
 
 </details>
 
 <PracticeCard
   prompt="Which expression gets the first property/value pair from Scuba Driver's object?"
   answer="`Object.entries(roster[0])[0]`"
- />
+/>
 
 ## Check the Roster Positions
-
-The League audit needs to know who is at the beginning, middle, and end of the roster.
 
 Log these hero names:
 
@@ -148,8 +114,6 @@ Log these hero names:
 - the second hero
 - the last hero using a direct index
 - the last hero using `.length - 1`
-
-Your console should show:
 
 ```txt
 Scuba Driver
@@ -164,23 +128,19 @@ Neon Volt
     "The first hero is at index `0`.",
     "The second hero is at index `1`.",
     "Neon Volt is currently at index `3`.",
-    "The last item in an array can also be found with `array.length - 1`."
+    "The last item can also be found with `array.length - 1`."
   ]}
 >
   Log the requested hero names using both direct indexes and `.length - 1`.
 </HandbookChallenge>
 
 <Callout type="warn" title="Indexes can change">
-  `roster[3]` works right now because Neon Volt is currently the fourth hero.
-
-  `roster[roster.length - 1]` is more flexible when you mean “whoever is last,” even if the roster changes later.
+  `roster[3]` works right now because Neon Volt is fourth. `roster[roster.length - 1]` is more flexible when you mean “whoever is last.”
 </Callout>
 
 ## Clean Imported Text
 
-The League has also recovered a few values from Dr. Breach's extremely questionable backup system.
-
-Add these variables below your roster work:
+The League recovered a few values from Dr. Breach's extremely questionable backup system.
 
 ```js
 const importedCodename = "  neon-volt  ";
@@ -188,59 +148,36 @@ const importedPowerLevel = "21 points";
 const importedBadgeScore = "91.5";
 ```
 
-The press team needs the codename to display like this:
+The press team needs this codename:
 
 ```txt
 NEON VOLT
 ```
 
-Create a new variable called `cleanCodename`.
-
-Use string methods to:
-
-1. remove the extra spaces
-2. replace the dash with a space
-3. convert the result to uppercase
-
-Then log `cleanCodename`.
+Create `cleanCodename`. Use string methods to remove extra spaces, replace the dash with a space, and convert the result to uppercase. Then log it.
 
 <HandbookChallenge
   title="Clean the Codename"
   hints={[
-    "Start by removing extra spaces with `.trim()`.",
+    "Start with `.trim()`.",
     "Use `.replace()` to change the dash into a space.",
-    "Use `.toUpperCase()` after the text is cleaned."
+    "Use `.toUpperCase()` after cleaning the text."
   ]}
 >
   Create and log `cleanCodename` so the imported codename becomes `NEON VOLT`.
 </HandbookChallenge>
 
-<PracticeCard
-  prompt="Why should you trim the imported codename before using it in the audit?"
-  answer="The extra spaces are part of the string. Removing them gives the League a clean, predictable value to display."
-/>
-
 ## Parse Imported Numbers
 
 The imported power level looks like a number, but JavaScript still sees it as text.
 
-Create a variable called `parsedPowerLevel` that uses `parseInt()` to turn the imported power level into a usable number.
-
-Then log:
-
-1. `parsedPowerLevel`
-2. `typeof parsedPowerLevel`
-
-Your console should show:
+Create `parsedPowerLevel` with `parseInt()`, then log it.
 
 ```txt
 21
-number
 ```
 
-Next, create a variable called `parsedBadgeScore` that uses `parseFloat()` to turn the badge score into a number without losing its decimal.
-
-Your console should show:
+Next, create `parsedBadgeScore` with `parseFloat()` so the decimal remains intact.
 
 ```txt
 91.5
@@ -251,25 +188,19 @@ Your console should show:
   hints={[
     "`parseInt()` is useful when you need a whole number from text.",
     "`parseFloat()` is useful when the number may include a decimal.",
-    "Log the type after parsing the power level. The value can look correct while still being a string."
+    "Use the parsed values in the next step instead of the original strings."
   ]}
 >
-  Parse the imported power level and badge score, then log the requested evidence.
+  Parse the imported power level and badge score, then log both parsed values.
 </HandbookChallenge>
 
 <Callout type="note" title="Looks can be deceiving">
-  `"21"` and `21` look almost identical when they print to the console.
-
-  They are not the same type. A string is text. A number can participate in numeric calculations and comparisons.
+  `"21"` and `21` look almost identical when they print to the console. A string is text; a number can participate in numeric calculations and comparisons.
 </Callout>
 
 ## Use a Parsed Value
 
-Finally, use your parsed power level in a comparison.
-
 Check whether the parsed power level is greater than Scuba Driver's power level.
-
-Your console should show:
 
 ```txt
 true
@@ -278,7 +209,7 @@ true
 <HandbookChallenge
   title="Compare the Power Levels"
   hints={[
-    "Scuba Driver's power level is stored in the first object in `roster`.",
+    "Scuba Driver's power level is in the first object in `roster`.",
     "Use the parsed number, not the original imported string.",
     "A comparison expression produces a boolean value."
   ]}
@@ -287,8 +218,6 @@ true
 </HandbookChallenge>
 
 ## Checkpoint
-
-Before you move on, your console should show this evidence:
 
 ```txt
 League Data Check
@@ -302,13 +231,12 @@ Neon Volt
 Neon Volt
 NEON VOLT
 21
-number
 91.5
 true
 ```
 
 <Callout type="note" title="The data is ready to inspect">
-  You can now check an array's size, inspect the structure of an object, access records by position, clean imported text, and convert imported values into real numbers.
+  You can now check an array's size, inspect an object's structure, access records by position, clean imported text, and convert imported values into real numbers.
 
   Next, the League will use that information to build the roster audit it has been asking about since Chapter 1.
 </Callout>
