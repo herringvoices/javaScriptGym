@@ -13,222 +13,234 @@ The press team is almost ready. The fog machine has been tested. The podium has 
 
 All that remains is the final roster audit.
 
-In this chapter, you will inspect a damaged final roster, repair several planted data issues, and produce one final confirmation that the League can safely proceed with the press event.
-
-No brand-new tricks this time.
-
-This is the chapter where you use the tools you have already practiced:
-
-- primitive value choices
-- object access
-- object updates
-- array indexes
-- array methods
-- string cleanup
-- number parsing
-- object utilities
-- careful console checks
-
-In other words: programming, but with a clipboard.
-
-## Learning Goal
-
-By the end of this chapter, you will be able to audit an array of objects against written requirements and repair issues involving property names, value types, missing records, order, and inconsistent text.
-
-## Why This Matters
-
-In real applications, data problems rarely arrive wearing a little name tag that says, "Hello, I am the bug."
-
-They hide inside records.
-
-One property name is slightly wrong. One number is stored as text. One record is missing. One item is in the wrong position. One value has inconsistent capitalization. One team assignment is outdated.
-
-Any one of those might be small.
-
-Together, they make data harder to trust.
-
-A final audit is where you slow down, compare the data to the requirements, and prove that the collection is ready for use.
-
-The League calls this "quality assurance."
-
-The director calls it "please do not let the podium explode."
-
-Both are fair.
-
-## Starter Audit Roster
-
-Find `finalAuditRoster` in `main.js` after your Chapter 6 data check.
-
-This roster is close.
-
-Close is not enough.
-
-The press team is wearing headsets now.
-
-## Audit Requirements
-
-Repair `finalAuditRoster` so it satisfies every requirement below.
-
-### Required Final Roster Order
-
-The final roster should be in this order:
+At the beginning of this project, the League needed a report like this:
 
 ```txt
-1 Crimson Phoenix
-2 Neon Volt
-3 Star Sentinel
-4 Echo Nova
-5 Quantum Quill
+League of Heroes Roster Audit
+
+Heroes on roster: 4
+Average power level: 63.25
+First responder: Scuba Driver
+Newest recruit: Neon Volt
+Audit status: Ready for review
 ```
 
-### Required Hero Data
+At the time, the League did not have reliable data underneath that report.
 
-The final roster must contain these five heroes:
+Now it does.
+
+<Callout type="note" title="No new JavaScript tricks">
+  You have already used every tool you need for this chapter.
+
+  The final audit is about combining the data you built, updated, organized, inspected, and cleaned throughout the project.
+</Callout>
+
+## Clear Out the Old Checks
+
+Before you build the final audit, delete the temporary `console.log()` calls you made for Chapter 6.
+
+You already used them to prove that the roster is in good shape. The final audit should be easy for the League director to read without making them scroll through every diagnostic check you have ever performed.
+
+Keep your `roster` array and hero objects. Keep the imported-value work if you want to refer back to it. Just clean up the console logs that are no longer part of the final report.
+
+## Prepare the Audit Values
+
+The final audit needs five pieces of information:
+
+- the number of heroes on the roster
+- the average power level
+- the first responder
+- the newest recruit
+- the audit status
+
+Create a variable for each value before you build the final report.
+
+### Heroes on Roster
+
+Use the `roster` array to create a variable called `heroCount`.
+
+It should store the number of hero objects in the array.
 
 ```txt
-ID: 1
-Hero name: Crimson Phoenix
-Civilian name: Avery Stone
-Power level: 91
-Active status: active
-Primary ability: Plasma flight
-Home city: Sunspire
-Team assignment: Vanguard
-
-ID: 2
-Hero name: Neon Volt
-Civilian name: Maya Chen
-Power level: 87
-Active status: active
-Primary ability: Electro-kinesis
-Home city: Metroburg
-Team assignment: Vanguard
-
-ID: 3
-Hero name: Star Sentinel
-Civilian name: Omar Reyes
-Power level: 88
-Active status: active
-Primary ability: Stellar shield
-Home city: Orbit Falls
-Team assignment: Vanguard
-
-ID: 4
-Hero name: Echo Nova
-Civilian name: Jordan Vale
-Power level: 82
-Active status: active
-Primary ability: Sound bending
-Home city: Harbor City
-Team assignment: Vanguard
-
-ID: 5
-Hero name: Quantum Quill
-Civilian name: Priya Nair
-Power level: 79
-Active status: active
-Primary ability: Probability ink
-Home city: Ledger Bay
-Team assignment: Archive Unit
+4
 ```
 
-## Required Tools
+### Average Power Level
 
-Use the right kind of tool for each kind of problem.
+Create a variable called `totalPowerLevel`.
 
-For this audit, you should need:
+Add together the power levels of all four heroes currently in the roster.
 
-- an array method to add the missing hero
-- array methods to fix the roster order
-- direct object updates to fix record details
-- a string method to clean messy spacing
-- a string method to remove or replace the dash in a hero name
-- number parsing to fix the imported power level
-- an object utility to confirm the final object shape
-- targeted console logs to prove the repairs worked
+Then create a variable called `averagePowerLevel`.
 
-If you need a refresher, use the handbook:
+Use `totalPowerLevel` and `heroCount` to calculate the average.
 
-- [Array methods: add and remove items](/handbook/JS.VDT.MTH/JS.VDT.COL.ARR_ENDS)
-- [String methods: clean and normalize text](/handbook/JS.VDT.MTH/JS.VDT.MTH.STR)
-- [Number parsers: from strings to numbers](/handbook/JS.VDT.MTH/JS.VDT.MTH.NUM_PARSE)
-- [Object utilities: peek and shape](/handbook/JS.VDT.MTH/JS.VDT.MTH.OBJ_UTIL)
-
-## What to Watch For
-
-The damaged final roster includes several problems you have already practiced fixing:
-
-- one hero is missing
-- the roster starts in the wrong order
-- one property name has the wrong capitalization
-- one number is stored as text
-- one hero name has messy spacing
-- one hero name has a dash where the final display name needs a space
-- one team assignment is outdated
-
-Use the requirements to decide what needs to change.
-
-Do not guess. Audit.
-
-Very glamorous. Extremely clipboard-forward.
-
-## Checkpoint
-
-When the final audit is repaired, log evidence that the roster is ready.
-
-Your console should show these exact values:
+Your console should show:
 
 ```txt
-Final Roster Audit
-5
-id,heroName,civilianName,powerLevel,isActive,primaryAbility,homeCity,team
-1 Crimson Phoenix - 91 - Vanguard
-2 Neon Volt - 87 - Vanguard
-3 Star Sentinel - 88 - Vanguard
-4 Echo Nova - 82 - Vanguard
-5 Quantum Quill - 79 - Archive Unit
-Roster Ready: The League can proceed with the press event.
+63.25
 ```
 
-## Final Submission Note
+<HandbookChallenge
+  title="Calculate the Average"
+  hints={[
+    "Get each hero's `powerLevel` from the `roster` array.",
+    "Add those values together first.",
+    "Divide the total by `heroCount`."
+  ]}
+>
+  Create `totalPowerLevel` and `averagePowerLevel`, then log the average.
+</HandbookChallenge>
 
-At the bottom of `main.js`, add a short comment block that identifies:
+<Callout type="tip" title="Use the data, not the answer">
+  Do not write `63.25` directly into `averagePowerLevel`.
 
-- one object you created or repaired
-- one roster change you made with an array method
-- one string cleanup you completed
-- one number parsing fix you completed
-- one data issue you found and corrected
-- confirmation that your final roster audit output matches the checkpoint
+  The average should come from the actual power levels in your roster. That way, the report would still update if one of the hero records changed later.
+</Callout>
 
-This note does not need to be long. It just needs to show that you understand what you changed.
+### First Responder
 
-## Success Criteria
+The first hero in the roster is the current first responder.
+
+Create a variable called `firstResponder` that stores that hero's name.
+
+Your console should show:
+
+```txt
+Scuba Driver
+```
+
+### Newest Recruit
+
+Neon Volt was the most recently added permanent member of the roster.
+
+Create a variable called `newestRecruit` that stores the name of the last hero in the roster.
+
+Use `.length - 1` instead of a direct index.
+
+Your console should show:
+
+```txt
+Neon Volt
+```
+
+<PracticeCard
+  prompt="Why is `roster[roster.length - 1]` a better choice than `roster[3]` for the newest recruit?"
+  answer="It always gets the last hero in the array, even if the roster gains or loses members later."
+/>
+
+### Audit Status
+
+Create a variable called `auditStatus`.
+
+Set it to:
+
+```txt
+Ready for review
+```
+
+The roster is organized, the data is cleaned, and you have checked the important values. The League may proceed with its extremely normal and definitely fish-free press event.
+
+## Build the Final Report
+
+Now use one template literal to log the final roster audit.
+
+Your report should use the variables you created above. Do not type hero names, counts, or the average directly into the template literal.
+
+Your console should show exactly:
+
+```txt
+League of Heroes Roster Audit
+
+Heroes on roster: 4
+Average power level: 63.25
+First responder: Scuba Driver
+Newest recruit: Neon Volt
+Audit status: Ready for review
+```
+
+<HandbookChallenge
+  title="Publish the Roster Audit"
+  hints={[
+    "Use one template literal inside `console.log()`.",
+    "Put each audit value on its own line.",
+    "Use the variables you created instead of hardcoding the final values."
+  ]}
+>
+  Build and log the complete League of Heroes Roster Audit.
+</HandbookChallenge>
+
+<details>
+<summary>Template-literal reminder</summary>
+
+A template literal uses backticks:
+
+```js
+console.log(`Your text goes here`);
+```
+
+To place a variable's value inside the text, use `${}`:
+
+```js
+console.log(`Heroes on roster: ${heroCount}`);
+```
+
+</details>
+
+## Test the Audit
+
+Before you call it finished, make one small temporary change to the roster.
+
+You could:
+
+- increase one hero's `powerLevel`
+- add another hero to the end of the roster
+- remove the last hero
+- move a hero to the front
+
+Then run the final audit again.
+
+Notice which parts of the report change automatically.
+
+When you are finished testing, undo the temporary change so your final output matches the checkpoint.
+
+<Callout type="note" title="This is why data structures matter">
+  The report does not need to know every hero's name and power level in advance.
+
+  It gets its information from the `roster` array. That is the point of keeping related information organized in objects, then keeping those objects together in an array.
+</Callout>
+
+## Final Checkpoint
+
+Your final console output should be:
+
+```txt
+League of Heroes Roster Audit
+
+Heroes on roster: 4
+Average power level: 63.25
+First responder: Scuba Driver
+Newest recruit: Neon Volt
+Audit status: Ready for review
+```
 
 You are finished when:
 
-- `finalAuditRoster` contains exactly five hero objects
-- the heroes are in the required final order
-- Star Sentinel has been added
-- Echo Nova's name is cleaned
-- Echo Nova's team is corrected
-- every hero uses `powerLevel` with the same capitalization
-- every `powerLevel` value is a number
-- every hero object uses the same property naming pattern
-- you used string cleanup where text was messy
-- you used number parsing where a number was stored as text
-- you used array methods for roster-level changes
-- you used an object utility to verify the final shape
-- the final audit output matches the checkpoint exactly
-- your final comment block explains your work clearly
+- `roster` contains the four correct hero records
+- the roster order is Scuba Driver, Solar Flare, Echo Fang, then Neon Volt
+- `heroCount` comes from `roster.length`
+- `averagePowerLevel` comes from the actual roster data
+- `firstResponder` comes from the first hero in `roster`
+- `newestRecruit` comes from the last hero in `roster`
+- the final report uses a template literal
+- the important values are not hardcoded into the report
 
-## Optional Stretch Goals
+<Callout type="note" title="Roster restored">
+  You started with a handful of disconnected facts about one hero.
 
-Only try these after the required final audit works.
+  You turned those facts into an object, updated stale information, built an array of hero records, processed roster changes, inspected imported data, and used the final roster to create a useful report.
 
-- Add a `headquarters` object with a building name and city.
-- Add a `specialties` array to one hero.
-- Create a `reserveRoster` array with one reserve hero.
-- Create a `publicProfile` object that uses only the information the press team is allowed to share.
+  The League of Heroes has its roster back.
 
-These are stretch goals because they go beyond the core audit. The required project is complete when the final checkpoint matches.
+  Free-Lancer may now enjoy the benefits package, which is mostly capes and a surprisingly complicated dental plan.
+</Callout>
