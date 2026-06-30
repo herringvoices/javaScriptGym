@@ -7,24 +7,21 @@ title: Open the Case File
 
 You've learned a lot in your JavaScript journey.
 
-- [ ] You can **declare, assign, and update variables** using `let` and `const`
-- [ ] You can **store and choose appropriate primitive values**, including strings, numbers, booleans, `null`, and `undefined`
-- [ ] You can **combine, calculate, and compare values** using operators, expressions, and template literals
-- [ ] You can **create and use objects** to group related data with key-value pairs
-- [ ] You can **create and use arrays** to store ordered lists of values
-- [ ] You can **work with arrays of objects** to represent structured records like books, users, or API results
-- [ ] You can **access and update data** using dot notation, bracket notation, indexes, and nested paths
-- [ ] You can **add, remove, and reorder array items** with methods like `.push()`, `.pop()`, `.shift()`, and `.unshift()`
-- [ ] You can **use common properties and methods** to inspect, clean, format, convert, and reshape strings, numbers, arrays, and objects
-- [ ] You can **choose an appropriate data type or data structure** for the kind of information your program needs
+<Checklist>
+  <ChecklistItem>Declare, assign, and update variables with `let` and `const`.</ChecklistItem>
+  <ChecklistItem>Choose appropriate primitive values, including strings, numbers, booleans, `null`, and `undefined`.</ChecklistItem>
+  <ChecklistItem>Combine, calculate, and compare values with operators, expressions, and template literals.</ChecklistItem>
+  <ChecklistItem>Create and use objects to group related data.</ChecklistItem>
+  <ChecklistItem>Create and use arrays, including arrays of objects.</ChecklistItem>
+  <ChecklistItem>Access and update data with dot notation, bracket notation, and indexes.</ChecklistItem>
+  <ChecklistItem>Add, remove, and reorder array items with common methods.</ChecklistItem>
+  <ChecklistItem>Clean, format, convert, and reshape values with common methods.</ChecklistItem>
+  <ChecklistItem>Choose a data type or data structure that fits the information.</ChecklistItem>
+</Checklist>
 
-Once you wrote it all out, you started to feel pretty proud of yourself and promptly signed up for the **League of Heroes** superhero team.
+You promptly signed up for the **League of Heroes** superhero team. They gave you the hero name **Free-Lancer**. You asked about getting a lance; they said the emphasis was on the “free” part.
 
-Unsurprisingly, they let you join immediately and gave you the hero name **Free-Lancer**. You asked about getting a lance, but they said they wanted the emphasis to be on the "free" part.
-
-And you couldn't have come at a better time. The dreaded **Dr. Breach** has completely wrecked the League's roster data.
-
-The League still has an audit report it needs before it can send heroes out on missions. Right now, though, the report is about as useful as a Bat-Signal in broad daylight.
+The dreaded **Dr. Breach** has wrecked the League's roster data. The League needs an audit report before it can send heroes on missions.
 
 ```txt
 League of Heroes Roster Audit
@@ -44,15 +41,13 @@ By the end of this project, you will rebuild the League's data until it can prod
   This is not about remembering every method perfectly without help. It is about looking at a problem, deciding what kind of data you need, and choosing the right tool to work with it.
 </Callout>
 
-Along the way, you'll use `console.log()` to inspect your work and make sure the League's data is actually doing what it is supposed to do.
-
 ## Step 1: Primitives
 
-The League has sent you some information on one of their members to get your feet wet:
+The League has sent you this information about one of their members:
 
 > His name is The Scuba Driver. He is currently active. His power level is 5. His age is 20. His power is "Underwater Transportation" (whatever that is), and he doesn't have a secret identity. He just *is* Scuba Driver. He's based out of "New Atlantis."
 
-To start, create variables for:
+Create variables for:
 
 - `name`
 - `isActive`
@@ -62,7 +57,7 @@ To start, create variables for:
 - `secretIdentity`
 - `city`
 
-Think carefully about what data type each variable should contain.
+Think carefully about the value each variable needs.
 
 <details>
 <summary>Reveal the expected value types</summary>
@@ -79,7 +74,7 @@ Think carefully about what data type each variable should contain.
 
 </details>
 
-Then use your variables and string interpolation to `console.log()` this sentence with the correct information:
+Then use your variables and a template literal to log this sentence with the correct information:
 
 ```txt
 ______ has the power of ______ with a power level of ____.
@@ -97,7 +92,7 @@ ______ has the power of ______ with a power level of ____.
 </HandbookChallenge>
 
 <Callout type="tip" title="Use the handbook like a developer">
-  Do not remember whether `null` is the right choice for a missing value? Look it up.
+  Not sure whether a missing value should be `null`? Check the handbook.
 
   Real developers do not keep every method and edge case in their heads. They recognize the kind of problem they have, then use their resources.
 </Callout>
