@@ -33,7 +33,7 @@ The League is sending a small emergency response team to investigate a suspiciou
 
 They need a new array called `emergencyRoster`.
 
-Create a new array using the hero objects you already built. Do **not** remove heroes from the main `roster`.
+Create a new array using hero objects already inside `roster`. Do **not** remove heroes from the main roster.
 
 The emergency roster begins with these heroes in this order:
 
@@ -43,10 +43,15 @@ The emergency roster begins with these heroes in this order:
 ```
 
 <Callout type="warn" title="A new array, not a second League">
-  `emergencyRoster` is a separate array, but it can use the existing `solarFlare` and `neonVolt` objects.
+  `emergencyRoster` is a separate array, but it can contain references to hero objects from `roster`.
 
-  You are creating a new list for a particular mission. You are not recreating every hero record or removing anyone from the League's main roster.
+  You are creating a new list for one mission. You are not recreating every hero record or removing anyone from the League's main roster.
 </Callout>
+
+<PracticeCard
+  prompt="After Chapter 5, which roster positions hold Solar Flare and Neon Volt?"
+  answer="Solar Flare is at `roster[1]`, and Neon Volt is at `roster[3]`."
+/>
 
 ## Emergency Update 1: Add the Lead Responder
 
@@ -69,7 +74,7 @@ Your emergency roster should now be ordered like this:
 <HandbookChallenge
   title="Choose the Lead Responder"
   hints={[
-    "Scuba Driver already exists as an object from the earlier chapters.",
+    "Scuba Driver is the first hero in the main `roster`.",
     "The lead responder belongs at the beginning of the emergency roster.",
     "Use the array method that adds an item at index `0`."
   ]}
@@ -83,7 +88,7 @@ The Museum has a hallway that appears to be whispering in Morse code.
 
 The League decides this is probably an Echo Fang situation.
 
-Use the existing `echoFang` object and add Echo Fang to the **end** of `emergencyRoster`.
+Add the Echo Fang object from `roster` to the **end** of `emergencyRoster`.
 
 Afterward, your emergency roster should contain four heroes:
 
@@ -97,7 +102,7 @@ Afterward, your emergency roster should contain four heroes:
 <HandbookChallenge
   title="Add the Specialist"
   hints={[
-    "Echo Fang already exists from Chapter 4.",
+    "Echo Fang is the third hero in the main roster.",
     "This hero belongs at the end of the emergency roster.",
     "Use the array method that adds an item to the end."
   ]}
