@@ -36,12 +36,13 @@ const MAIN_JS = `// League of Heroes: Roster Rescue
 
 // CHAPTER 4: Assemble the League Roster
 // Add id: 1 to scubaDriver.
-// Create roster with Scuba Driver, Solar Flare, and Echo Fang.
+// Create solarFlare and echoFang objects, then create roster with:
+// Scuba Driver, Solar Flare, and Echo Fang.
 
 
 
 // CHAPTER 5: Process Roster Changes
-// Create Neon Volt and process the League's change requests with
+// Create neonVolt and process the League's change requests with
 // .push(), .pop(), .unshift(), and .shift().
 
 
@@ -64,8 +65,11 @@ const importedBadgeScore = "91.5";
 
 
 // CHAPTER 8: Respond to a New Breach
-// Build a separate emergencyRoster without changing the original roster.
-// Then clean the imported dispatch data and create the emergency report.
+// Create a separate emergencyRoster using existing hero objects.
+// Do not change the original roster.
+
+const importedMuseumMessage = "  breach detected: gallery-7  ";
+const importedThreatLevel = "73%";
 `;
 
 export default {
