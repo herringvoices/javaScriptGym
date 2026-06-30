@@ -33,62 +33,22 @@ The League is sending a small emergency response team to investigate a suspiciou
 
 They need a new array called `emergencyRoster`.
 
-The emergency roster should begin as a copy of the current League roster information, but it will need its own changes.
+Create a new array using the hero objects you already built. Do **not** remove heroes from the main `roster`.
 
-Create an `emergencyRoster` array with these heroes in this order:
+The emergency roster begins with these heroes in this order:
 
 ```txt
 1. Solar Flare
-2. Scuba Driver
-3. Neon Volt
+2. Neon Volt
 ```
 
-Each hero should still use the same record shape as the heroes in your main `roster`:
+<Callout type="warn" title="A new array, not a second League">
+  `emergencyRoster` is a separate array, but it can use the existing `solarFlare` and `neonVolt` objects.
 
-- `id`
-- `heroName`
-- `isActive`
-- `powerLevel`
-- `age`
-- `power`
-- `secretIdentity`
-- `city`
-
-<Callout type="warn" title="Do not move the real roster">
-  Keep your original `roster` array unchanged.
-
-  The League still needs its normal roster after the emergency team leaves. Create separate hero objects for `emergencyRoster` rather than pulling heroes out of the original array with `.shift()` or `.pop()`.
+  You are creating a new list for a particular mission. You are not recreating every hero record or removing anyone from the League's main roster.
 </Callout>
 
-## Emergency Update 1: Add a Specialist
-
-The Museum has a hallway that appears to be whispering in Morse code.
-
-The League decides this is probably an Echo Fang situation.
-
-Create an `echoFang` object using the information from Chapter 4, then add Echo Fang to the **end** of `emergencyRoster`.
-
-Afterward, your emergency roster should contain four heroes:
-
-```txt
-1. Solar Flare
-2. Scuba Driver
-3. Neon Volt
-4. Echo Fang
-```
-
-<HandbookChallenge
-  title="Build the Emergency Team"
-  hints={[
-    "Start with an array containing Solar Flare, Scuba Driver, and Neon Volt.",
-    "Each emergency-roster hero still needs the same properties as every other hero record.",
-    "Echo Fang joins after the starting team has been created."
-  ]}
->
-  Create `emergencyRoster`, then add Echo Fang to the end.
-</HandbookChallenge>
-
-## Emergency Update 2: Change the Lead Responder
+## Emergency Update 1: Add the Lead Responder
 
 The League director gets a call from the museum.
 
@@ -96,11 +56,36 @@ Apparently, the suspicious breach is underwater.
 
 This has become less suspicious and more Scuba Driver-shaped.
 
-Move Scuba Driver to the **front** of `emergencyRoster`.
-
-Do not rebuild the whole array by hand. Use the array methods you have practiced.
+Add Scuba Driver to the **front** of `emergencyRoster`.
 
 Your emergency roster should now be ordered like this:
+
+```txt
+1. Scuba Driver
+2. Solar Flare
+3. Neon Volt
+```
+
+<HandbookChallenge
+  title="Choose the Lead Responder"
+  hints={[
+    "Scuba Driver already exists as an object from the earlier chapters.",
+    "The lead responder belongs at the beginning of the emergency roster.",
+    "Use the array method that adds an item at index `0`."
+  ]}
+>
+  Add Scuba Driver to the front of `emergencyRoster`.
+</HandbookChallenge>
+
+## Emergency Update 2: Add a Specialist
+
+The Museum has a hallway that appears to be whispering in Morse code.
+
+The League decides this is probably an Echo Fang situation.
+
+Use the existing `echoFang` object and add Echo Fang to the **end** of `emergencyRoster`.
+
+Afterward, your emergency roster should contain four heroes:
 
 ```txt
 1. Scuba Driver
@@ -109,12 +94,18 @@ Your emergency roster should now be ordered like this:
 4. Echo Fang
 ```
 
-<PracticeCard
-  prompt="What two array operations could move Scuba Driver from index 1 to the front without rewriting the entire array?"
-  answer="Remove Scuba Driver from their current position, then add them to the beginning. There is more than one valid way to think through the exact code."
-/>
+<HandbookChallenge
+  title="Add the Specialist"
+  hints={[
+    "Echo Fang already exists from Chapter 4.",
+    "This hero belongs at the end of the emergency roster.",
+    "Use the array method that adds an item to the end."
+  ]}
+>
+  Add Echo Fang to the end of `emergencyRoster`.
+</HandbookChallenge>
 
-<Callout type="tip" title="Check after each move">
+<Callout type="tip" title="Check after each change">
   Log the emergency roster's hero names after you change the order.
 
   A correct-looking final array is useful. Being able to see when it became correct is better.
@@ -136,7 +127,7 @@ BREACH DETECTED: GALLERY 7
 
 Create a variable called `cleanMuseumMessage`.
 
-Use the string methods you need to:
+Use string methods to:
 
 1. remove extra spaces
 2. replace the dash with a space
