@@ -5,117 +5,146 @@ title: Create the First Hero Record
 
 # Chapter 2 - Create the First Hero Record
 
-The League has found one hero profile that survived The CSV's attack mostly intact.
+In Chapter 1, you created separate variables for Scuba Driver's information.
 
-Mostly.
+That worked. JavaScript now knows his name, power level, city, secret identity situation, and deeply confusing power.
 
-It was printed, laminated, dropped behind a filing cabinet, discovered by an intern, and described as "probably important because it has a cape doodle on it."
+But the League has a problem.
 
-Good enough. We begin.
+A hero profile is not really seven unrelated facts. They all belong to one hero.
 
-In Chapter 1, you stored separate pieces of information using primitive values. That worked because each fact stood alone.
+The League's old database kept each hero's information together in one self-contained record. You remember the tool JavaScript gives you for exactly that job:
 
-A hero profile is different. A hero name, a civilian name, a power level, a city, a team, and an active status all describe one person.
+**objects.**
 
-That is exactly what an **object** is for.
+<Callout type="note" title="Why objects?">
+  Objects group related information together using named properties.
 
-An object lets you group related information into one record.
-
-## Learning Goal
-
-By the end of this chapter, you will be able to model one real-world record as a JavaScript object with meaningful property names, appropriate value types, and a stable numeric ID.
+  Scuba Driver's name, power level, home city, and active status all describe the same hero, so they belong in the same object.
+</Callout>
 
 ## Your Task
 
-In `main.js`, create a variable named `crimsonPhoenix`.
+Create a variable called `scubaDriver`.
 
-Assign it an object that represents the League's newly approved hero: **Crimson Phoenix**.
+Assign it an object that contains the same information you created in Chapter 1.
 
-Your object must use these property names:
+Use these property names exactly:
 
-- `id`
-- `heroName`
-- `civilianName`
-- `powerLevel`
-- `isActive`
-- `primaryAbility`
-- `homeCity`
-- `team`
+| Property | What it should store |
+| --- | --- |
+| `heroName` | Scuba Driver's hero name |
+| `isActive` | whether he is currently active |
+| `powerLevel` | his current power level |
+| `age` | his age |
+| `power` | his primary power |
+| `secretIdentity` | his secret identity, if he has one |
+| `city` | the city he is based in |
 
-The League is picky about property names. So is JavaScript. Use those names exactly.
+<HandbookChallenge
+  title="Rebuild the Profile"
+  hints={[
+    "Start with `const scubaDriver = {}`.",
+    "Each property needs a name, a colon, and a value.",
+    "You already chose every value in Chapter 1. You are moving the same information into one object."
+  ]}
+>
+  Create the `scubaDriver` object using the profile information from Chapter 1.
+</HandbookChallenge>
 
-## Client Profile Sheet
+<Callout type="tip" title="Keep your old variables for now">
+  Do not delete your Chapter 1 variables yet.
 
-The League sent this profile sheet:
+  You are about to prove that the object contains the same information. Once you know it does, those separate variables will have served their purpose.
+</Callout>
+
+## Read from the Record
+
+Now update your profile sentence so it gets its information from `scubaDriver` instead of the separate variables.
+
+Use dot notation to access the values you need.
+
+Your console should show:
 
 ```txt
-ID: 1
-Hero name: Crimson Phoenix
-Civilian name: Avery Stone
-Power level: 91
-Active status: active
-Primary ability: Plasma flight
-Home city: Sunspire
-Team assignment: Vanguard
+The Scuba Driver has the power of Underwater Transportation with a power level of 5.
 ```
 
-Turn that profile sheet into one JavaScript object.
+<PracticeCard
+  prompt="Which expression gets Scuba Driver's power level from the object?"
+  answer="`scubaDriver.powerLevel`"
+ />
 
-Use these data types:
+<HandbookChallenge
+  title="Print the Hero Profile"
+  hints={[
+    "Use the object name first: `scubaDriver`.",
+    "Then use a dot and the property name.",
+    "Your template literal should use values from the object, not the old standalone variables."
+  ]}
+>
+  Rewrite your profile `console.log()` so it uses `scubaDriver`.
+</HandbookChallenge>
 
-| Information | Correct type |
-| --- | --- |
-| ID | number |
-| hero name | string |
-| civilian name | string |
-| power level | number |
-| active status | boolean |
-| primary ability | string |
-| home city | string |
-| team assignment | string |
+## Run the Data Scan Again
 
-## Why IDs Matter
+The League's scanner still works. Make sure it can still see the same correct values.
 
-Every hero record needs an `id`.
+Update your data scan so it reads from the object:
 
-Names can change. Teams can change. Array positions can change. Two records might even have similar names because apparently the League's branding department owns exactly one thesaurus.
+```js
+console.log(typeof scubaDriver.heroName);
+console.log(typeof scubaDriver.age);
+console.log(typeof scubaDriver.powerLevel);
+console.log(typeof scubaDriver.isActive);
+console.log(typeof scubaDriver.power);
+console.log(typeof scubaDriver.city);
+console.log(scubaDriver.secretIdentity === null);
+```
 
-An ID gives the app one stable way to recognize the exact record it is working with.
+Run the scan before opening the results.
 
-For this project, IDs should be numbers.
-
-## Checkpoint
-
-When your object is finished, log a few individual values from the record.
-
-Your console should show these exact values:
+<details>
+<summary>Expected data scan</summary>
 
 ```txt
-1
-Crimson Phoenix
-91
+string
+number
+number
+boolean
+string
+string
 true
 ```
 
-Then create and log one readable profile sentence that combines the hero name, home city, and primary ability.
+The results should be the same as Chapter 1. The data did not change. You just gave it a better home.
 
-Your console should show this exact sentence:
+</details>
+
+<Callout type="warn" title="Do not confuse property names with variable names">
+  `scubaDriver.powerLevel` means “get the value stored in the `powerLevel` property on the `scubaDriver` object.”
+
+  `powerLevel` by itself still refers to your separate Chapter 1 variable. JavaScript will not assume you meant the object. It has boundaries.
+</Callout>
+
+## Checkpoint
+
+Before you move on, your console should show:
 
 ```txt
-Crimson Phoenix protects Sunspire with Plasma flight.
+The Scuba Driver has the power of Underwater Transportation with a power level of 5.
+
+string
+number
+number
+boolean
+string
+string
+true
 ```
 
-## Success Criteria
+<Callout type="note" title="One profile, one record">
+  Scuba Driver's information now lives together in one object.
 
-You are ready for Chapter 3 when:
-
-- `crimsonPhoenix` is one object
-- the object uses all eight required property names
-- `id` is a number
-- `powerLevel` is a number
-- `isActive` is a boolean
-- the text values are strings
-- your console shows the exact individual values listed in the checkpoint
-- your console shows the exact profile sentence listed in the checkpoint
-
-If your console says `undefined`, JavaScript is not mad. It is simply very literal. Tiny spelling differences matter. The computer has never once said, "eh, close enough."
+  Unfortunately, the League has just noticed that some of the information they sent you is outdated. Naturally, they noticed this after you finished organizing it.
+</Callout>
