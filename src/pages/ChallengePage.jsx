@@ -261,6 +261,8 @@ function ChallengeSandboxUI({
   };
 
   const handleReset = () => {
+    const confirmed = window.confirm("Reset this editor workspace to the starter files? This will remove files and folders you created.");
+    if (!confirmed) return;
     onResetStorage?.();
     setSrcDoc("");
     setConsoleKey((k) => k + 1);
@@ -379,14 +381,6 @@ function ChallengeSandboxUI({
               </button>
             )}
 
-            <button
-              type="button"
-              onClick={handleReset}
-              className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
-            >
-              Reset files
-            </button>
-
             <span className="text-xs text-slate-400">Edits auto-save to your browser.</span>
           </div>
         </div>
@@ -494,6 +488,13 @@ function ChallengeSandboxUI({
                       }`}
                     >
                       {showExplorer ? "Hide file tree" : "Show file tree"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="rounded-full border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white"
+                    >
+                      Reset files
                     </button>
                   </div>
                 }
@@ -719,6 +720,13 @@ function ChallengeSandboxUI({
                   }`}
                 >
                   {showExplorer ? "Hide files" : "Show files"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="rounded-full border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white"
+                >
+                  Reset files
                 </button>
               </div>
               <div className="min-h-0 grow">

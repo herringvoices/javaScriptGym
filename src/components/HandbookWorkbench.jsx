@@ -117,6 +117,14 @@ export default function HandbookWorkbench({
     }
   }, [filesState, model, onShowRunnerChange]);
 
+  const handleReset = useCallback(() => {
+    const confirmed = window.confirm("Reset this editor workspace to the starter files? This will remove files and folders you created.");
+    if (!confirmed) return;
+    virtualWorkspace.reset();
+    setSrcDoc("");
+    setConsoleKey((key) => key + 1);
+  }, [virtualWorkspace]);
+
   const onChange = useCallback((path, code) => {
     virtualWorkspace.setFileCode(path, code);
   }, [virtualWorkspace]);
@@ -160,6 +168,13 @@ export default function HandbookWorkbench({
         className={toggleClass(showFiles)}
       >
         {showFiles ? "Hide" : "Show"} files
+      </button>
+      <button
+        type="button"
+        onClick={handleReset}
+        className="rounded-full border border-slate-700 px-3 py-1 text-slate-300 transition hover:border-slate-500 hover:text-white"
+      >
+        Reset files
       </button>
       <button
         type="button"
