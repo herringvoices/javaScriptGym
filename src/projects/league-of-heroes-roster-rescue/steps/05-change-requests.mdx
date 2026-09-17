@@ -76,23 +76,35 @@ City: Metroburg
 Then add Neon Volt to the **end** of the roster.
 
 <HandbookChallenge
-  title="Add the New Recruit"
+  title="Add Neon Volt to the end of the roster"
   hints={[
-    "Neon Volt needs to be an object before they can join the roster.",
-    "The roster already exists. Do not edit the original array declaration.",
-    "Which method adds an item to the end of an array?"
+    <>Create the hero record with the same property shape as every existing roster object.</>,
+    <>The original <code>roster</code> declaration stays unchanged; this request happens afterward.</>,
+    <><code>push()</code> adds an item to the end of an existing array.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Neon Volt`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const neonVolt = {
+  id: 4,
+  heroName: "Neon Volt",
+  isActive: true,
+  powerLevel: 21,
+  age: 26,
+  power: "Electro-kinesis",
+  secretIdentity: "Maya Chen",
+  city: "Metroburg",
+};
+
+roster.push(neonVolt);
+console.log(roster[roster.length - 1].heroName);`}</pre>
+  }
 >
-  Create a `neonVolt` object and add it to the end of `roster`.
+  <p className="m-0">
+    Create <code>neonVolt</code> from the profile above and add that object to the end of the existing <code>roster</code> with an array method. Then use <code>roster.length</code> to log the last hero’s name and confirm the new recruit is there.
+  </p>
 </HandbookChallenge>
-
-Afterward, log the last hero in the roster using `.length`.
-
-Your console should show:
-
-```txt
-Neon Volt
-```
 
 <PracticeCard
   prompt="After adding Neon Volt, what expression gets the last hero object from the roster?"
@@ -114,14 +126,23 @@ Neon Volt
 ```
 
 <HandbookChallenge
-  title="Send the Badge Record"
+  title="Remove and save the last hero"
   hints={[
-    "The hero being removed is at the end of the roster.",
-    "One array method removes and returns the last item.",
-    "Store that returned object in `badgeCheckHero`."
+    <>The badge printer needs the object currently at the end of the array.</>,
+    <><code>pop()</code> both removes the last item and returns the removed value.</>,
+    <>Store that return value before reading the hero name from it.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Neon Volt`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const badgeCheckHero = roster.pop();
+console.log(badgeCheckHero.heroName);`}</pre>
+  }
 >
-  Remove Neon Volt from the end of `roster`, save the removed object, and log their hero name.
+  <p className="m-0">
+    Remove the last hero from <code>roster</code>, store the returned object in <code>badgeCheckHero</code>, and log that object’s <code>heroName</code>. The roster should temporarily contain only the original three heroes.
+  </p>
 </HandbookChallenge>
 
 <Callout type="note" title="Removed does not mean destroyed">
@@ -164,23 +185,35 @@ City: Clipboard City
 Add Placeholder Paladin to the **beginning** of the roster.
 
 <HandbookChallenge
-  title="Move the Substitute to the Front"
+  title="Add Placeholder Paladin to the front"
   hints={[
-    "Create a hero object with the same structure as the others.",
-    "This hero belongs at the beginning, not the end.",
-    "Which method adds an item to index `0`?"
+    <>Use the same hero-record property names as the rest of the roster.</>,
+    <>This request changes the beginning of the array rather than the end.</>,
+    <><code>unshift()</code> inserts an item at index <code>0</code>.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Hero number 99 is Placeholder Paladin.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const placeholderPaladin = {
+  id: 99,
+  heroName: "Placeholder Paladin",
+  isActive: true,
+  powerLevel: 12,
+  age: 41,
+  power: "Standing in Line",
+  secretIdentity: "Temporary Terry",
+  city: "Clipboard City",
+};
+
+roster.unshift(placeholderPaladin);
+console.log(\`Hero number \${roster[0].id} is \${roster[0].heroName}.\`);`}</pre>
+  }
 >
-  Create `placeholderPaladin` and add them to the front of `roster`.
+  <p className="m-0">
+    Create <code>placeholderPaladin</code> from the profile above and add that object to the beginning of <code>roster</code>. Log the hero at index <code>0</code> to confirm the substitute is first. Remember that the hero’s id is <code>99</code>; index <code>0</code> is only their current position.
+  </p>
 </HandbookChallenge>
-
-Your console should now show:
-
-```txt
-Hero number 1 is Placeholder Paladin.
-```
-
-Remember: Placeholder Paladin now has ID `99`, but they live at array index `0`.
 
 ## Request 5: The Substitute Is No Longer Needed
 
