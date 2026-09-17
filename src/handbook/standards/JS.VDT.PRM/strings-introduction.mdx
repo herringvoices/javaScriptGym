@@ -38,29 +38,25 @@ console.log(firstName, hometown); // Riley Nashville
 ```
 
 <HandbookChallenge
-title="Add the show & snack"
-hints={[
-"Leave <code>viewerName</code>, <code>currentMood</code>, <code>location</code>, and <code>streamingService</code> in place.",
-"Strings are text in quotes—stick with double quotes for now.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const favoriteShow = "Mystery Manor";
+  title="Add the show and snack"
+  hints={[
+    <>Strings are text values wrapped in quotation marks.</>,
+    <>Use <code>const</code> for the show because this plan treats it as fixed, and <code>let</code> for the snack because it may change.</>,
+    <>Log both variable names together to inspect both stored strings.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Mystery Manor kettle corn`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const favoriteShow = "Mystery Manor";
 let snack = "kettle corn";
-console.log(favoriteShow, snack);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
-let currentMood = "excited";
-const location = "living room";
-const streamingService = "CouchFlix";
 
-const favoriteShow = "Mystery Manor";
-let snack = "kettle corn";
 console.log(favoriteShow, snack);`}</pre>
-}
+  }
 >
-
-	<p className="m-0">
-		Add two more strings to the Movie Night Planner: <code>favoriteShow</code> (use <code>const</code>) and <code>snack</code> (use <code>let</code> so you can change it later). Log both values on one line to confirm they’re ready for later chapters.
-	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`Mystery Manor kettle corn`}</pre>
+  <p className="m-0">
+    Keep the Movie Night Planner variables already in your editor. Add <code>favoriteShow</code> as a <code>const</code> string with the value <code>"Mystery Manor"</code> and <code>snack</code> as a <code>let</code> string with the value <code>"kettle corn"</code>. Log both values on one line.
+  </p>
 </HandbookChallenge>
 
 ---
@@ -80,29 +76,29 @@ const sentence = "The " + animal + " looks " + mood + ".";
 console.log(sentence); // "The otter looks sleepy."
 ```
 
-
 <HandbookChallenge
-title="Glue the invite with +"
-hints={[
-"Reuse <code>viewerName</code>, <code>favoriteShow</code>, <code>location</code>, and <code>snack</code> from earlier.",
-"Add any needed spaces or punctuation inside the quoted chunks.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const inviteLine = "Join " + viewerName + " in the " + location +
+  title="Build the invite with concatenation"
+  hints={[
+    <>Concatenation joins each string and variable in the order you write them.</>,
+    <>Spaces and punctuation are characters too, so include them inside the quoted pieces where needed.</>,
+    <>Use <code>+</code> between each piece of the final sentence.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Join Milo in the living room to stream Mystery Manor with kettle corn.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const inviteLine = "Join " + viewerName + " in the " + location +
   " to stream " + favoriteShow + " with " + snack + ".";
-console.log(inviteLine);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const inviteLine = "Join " + viewerName + " in the " + location +
-  " to stream " + favoriteShow + " with " + snack + ".";
-console.log(inviteLine);`}</pre>
-}
->
 
-	<Callout type="note" title="Starting point">
-		<p className="m-0">Keep <code>viewerName</code>, <code>favoriteShow</code>, <code>snack</code>, and <code>location</code> in your editor.</p>
-	</Callout>
-	<p className="m-0">
-		Create a new variable named <code>inviteLine</code>. Concatenate the existing strings with <code>+</code> to write a one-line invite, then log it.
-	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`Join Milo in the living room to stream Mystery Manor with kettle corn.`}</pre>
+console.log(inviteLine);`}</pre>
+  }
+>
+  <Callout type="note" title="Starting point">
+    <p className="m-0">Keep <code>viewerName</code>, <code>favoriteShow</code>, <code>snack</code>, and <code>location</code> in your editor.</p>
+  </Callout>
+  <p className="m-0">
+    Create <code>inviteLine</code> by concatenating the existing values with quoted text and <code>+</code>. The finished sentence should invite the viewer to the location to stream the favorite show with the chosen snack. Log the result.
+  </p>
 </HandbookChallenge>
 
 <br/>
@@ -133,24 +129,24 @@ Interpolation only works inside <strong>backticks</strong> ( <code>`</code> ). <
 </Callout>
 <br/>
 <HandbookChallenge
-title="Rewrite with interpolation"
-hints={[
-"Switch to backticks so interpolation works.",
-"Reuse your <code>inviteLine</code> idea but store it in a new variable.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const inviteMessage = \`Tonight, $\{viewerName\} is streaming $\{favoriteShow\}
-  in the $\{location\} with $\{snack\} ready on $\{streamingService\}.\`;
-console.log(inviteMessage);`}</pre>,
-	]}
-	answers={     <pre className="m-0 whitespace-pre-wrap">{`const inviteMessage = \`Tonight, $\{viewerName\} is streaming $\{favoriteShow\} in the $\{location\}
-  with $\{snack\} ready on $\{streamingService\}.\`;
-console.log(inviteMessage);`}</pre>
-}
->
+  title="Rewrite the invite with interpolation"
+  hints={[
+    <>Template literals use backticks instead of ordinary quotation marks.</>,
+    <>Interpolation slots insert existing values without breaking the sentence into separate strings.</>,
+    <>A slot follows the pattern <code>${'{'}variableName{'}'}</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Tonight, Milo is streaming Mystery Manor in the living room with kettle corn ready on CouchFlix.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const inviteMessage = \`Tonight, \${viewerName} is streaming \${favoriteShow} in the \${location} with \${snack} ready on \${streamingService}.\`;
 
-	<p className="m-0">
-		Take the sentence you just made with <code>+</code> and rebuild it as a template literal. Store it in <code>inviteMessage</code>, log it, and keep both versions for reference—the planner will reuse this text later.
-	</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`Tonight, Milo is streaming Mystery Manor in the living room with kettle corn ready on CouchFlix.`}</pre>
+console.log(inviteMessage);`}</pre>
+  }
+>
+  <p className="m-0">
+    Rebuild the invite as a template literal named <code>inviteMessage</code>. Include <code>viewerName</code>, <code>favoriteShow</code>, <code>location</code>, <code>snack</code>, and <code>streamingService</code> with interpolation, then log the result. Keep <code>inviteLine</code> in your file so you can compare the two approaches.
+  </p>
 </HandbookChallenge>
 <br/>
 

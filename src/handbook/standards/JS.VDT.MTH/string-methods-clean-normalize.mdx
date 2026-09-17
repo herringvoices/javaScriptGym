@@ -104,18 +104,25 @@ console.log(tidy);  // "615 555-1234" (first dash replaced)
 ## Put it together: author search cleanup
 
 <HandbookChallenge
-  title="Clean and normalize a tiny author search"
-  hints={["Use the examples from each method section to remind yourself how to use them and store them in a variable!"]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`
-    //...other code above
-
-const userInput = " BRandon sanderson   ";
+  title="Normalize an author search"
+  hints={[
+    <>Clean the outside whitespace before comparing the user's text.</>,
+    <>Both strings need the same letter casing for a case-insensitive equality check.</>,
+    <>String methods return new strings, so store each transformed value in a variable.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{` BRandon sanderson   
+BRandon sanderson
+brandon sanderson
+brandon sanderson
+true`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const userInput = " BRandon sanderson   ";
 
 const trimmedInput = userInput.trim();
 const normalizedInput = trimmedInput.toLowerCase();
 const normalizedAuthor = books[0].author.toLowerCase();
-
 const isSameAuthor = normalizedInput === normalizedAuthor;
 
 console.log(userInput);
@@ -125,49 +132,9 @@ console.log(normalizedAuthor);
 console.log(isSameAuthor);`}</pre>
   }
 >
-
   <p className="m-0">
-    Add this string to the bottom of your code in the editor:
+    Add <code>const userInput = " BRandon sanderson   ";</code> to your bookshelf script. Create <code>trimmedInput</code> by removing the extra outside spaces, then <code>normalizedInput</code> by converting that cleaned string to lowercase. Create <code>normalizedAuthor</code> from <code>books[0].author</code> using the same casing. Compare the two normalized strings in <code>isSameAuthor</code>, then log the original input, both cleaned values, the normalized author, and the final boolean.
   </p>
-  <p className="m-0 mt-2">
-`const userInput = " BRandon sanderson   "`
-</p>
-  <p className="m-0 mt-2">
-     This will represent text a user has typed into a search bar on your library's website.
-     We need to make sure that when they hit "search" they get the result they are hoping for, and that means cleaning the input so it will show as `===` to the `.author` property on our books.
-  </p>
- <ul className="mt-2 mb-2">
-  <li>
-    Create a new variable called <code>trimmedInput</code>.
-    It should store <code>userInput</code> after you remove any extra spaces
-    at the beginning and end of the string.
-  </li>
-  <li>
-    Create <code>normalizedInput</code>.
-    It should store the trimmed text, but changed so that its letters all use
-    the same case (for example, all lowercase).
-  </li>
-  <li>
-    Create <code>normalizedAuthor</code> from <code>books[0].author</code>
-    using the same “make the letters the same case” step you used for
-    <code>normalizedInput</code>.
-  </li>
-  <li>
-    Create <code>isSameAuthor</code>.
-    It should compare <code>normalizedInput</code> and <code>normalizedAuthor</code>
-    and store <code>true</code> or <code>false</code> depending on whether they match.
-  </li>
-  <li>
-    Use <code>console.log()</code> after each step so you can see the original text,
-    the cleaned-up versions, and the final true/false result.
-  </li>
-</ul>
-<p className="m-0">
-  In this flow, you take messy user text, clean it, put both strings into the same format,
-  and then compare them. This “clean → normalize → compare” pattern is a common way to
-  turn real user input into something your code can reliably search and match.
-</p>
-
 </HandbookChallenge>
 
 ---

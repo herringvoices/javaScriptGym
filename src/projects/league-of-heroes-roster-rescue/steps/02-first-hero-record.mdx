@@ -42,14 +42,27 @@ Use these property names exactly:
 | `city` | the city he is based in |
 
 <HandbookChallenge
-  title="Rebuild the Profile"
+  title="Group Scuba Driver's profile into an object"
   hints={[
-    "Start with `const scubaDriver = {}`.",
-    "Each property needs a name, a colon, and a value.",
-    "You already chose every value in Chapter 1. You are moving the same information into one object."
+    <>An object groups related values as named properties inside curly braces.</>,
+    <>Use the exact property names from the table so later code can rely on one consistent shape.</>,
+    <>The values are the same ones you already chose in Chapter 1; only their organization changes.</>,
   ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const scubaDriver = {
+  heroName: "The Scuba Driver",
+  isActive: true,
+  powerLevel: 5,
+  age: 20,
+  power: "Underwater Transportation",
+  secretIdentity: null,
+  city: "New Atlantis",
+};`}</pre>
+  }
 >
-  Create the `scubaDriver` object using the profile information from Chapter 1.
+  <p className="m-0">
+    Create <code>scubaDriver</code> as an object containing the seven properties listed above and the same profile values from Chapter 1. Keep the earlier variables for the moment because you are about to compare the two forms.
+  </p>
 </HandbookChallenge>
 
 <Callout type="tip" title="Keep your old variables for now">
@@ -69,38 +82,42 @@ Change the template literal so it uses the object properties instead:
 Keep `profileMessage` and `console.log(profileMessage)` exactly where they are for now. Then run your code.
 
 <HandbookChallenge
-  title="Try It Before You Fix It"
+  title="Read the profile from the new object"
   hints={[
-    "Only replace the values inside the existing template literal.",
-    "Do not move any code yet.",
-    "Run the file after you make the replacements."
+    <>Only change the values interpolated into the existing template literal at first.</>,
+    <>Dot notation reads a named property from an object, such as <code>scubaDriver.heroName</code>.</>,
+    <>If the code errors before the object declaration runs, think about JavaScript's top-to-bottom execution order.</>,
   ]}
+  expected={
+    <p className="m-0">With <code>profileMessage</code> left in its old location, you should first reproduce a <code>ReferenceError</code>. After fixing the execution order, the original profile sentence should print again.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const scubaDriver = {
+  heroName: "The Scuba Driver",
+  isActive: true,
+  powerLevel: 5,
+  age: 20,
+  power: "Underwater Transportation",
+  secretIdentity: null,
+  city: "New Atlantis",
+};
+
+const profileMessage = \`\${scubaDriver.heroName} has the power of \${scubaDriver.power} with a power level of \${scubaDriver.powerLevel}.\`;
+console.log(profileMessage);`}</pre>
+  }
 >
-  Update `profileMessage` to use `scubaDriver` properties, leave it in its Chapter 1 location, and run the code.
+  <p className="m-0">
+    Update <code>profileMessage</code> so it reads the hero name, power, and power level from <code>scubaDriver</code>. Leave the message in its Chapter 1 location and run the file once so you can observe what happens when it reads the object too early. Then fix the execution order so the object exists before <code>profileMessage</code> uses it, and run the code again.
+  </p>
 </HandbookChallenge>
 
-You should see an error that starts something like this:
+You should see an error that starts something like this before the fix:
 
 ```txt
 ReferenceError: Cannot access 'scubaDriver' before initialization
 ```
 
-Why is JavaScript trying to use `scubaDriver` before it knows what `scubaDriver` is?
-
-What can you change so the object exists before `profileMessage` tries to read from it?
-
-Figure it out. Go back to the handbook if you need to.
-
-<details>
-<summary>Reveal the fix</summary>
-
-JavaScript runs your file from top to bottom.
-
-`profileMessage` is still above the new `scubaDriver` object, so JavaScript reaches `scubaDriver.heroName` before the object has been created.
-
-Move both `profileMessage` and `console.log(profileMessage)` below the `scubaDriver` object. Then run the code again.
-
-</details>
+JavaScript runs your file from top to bottom. Move both `profileMessage` and `console.log(profileMessage)` below the `scubaDriver` object. Then run the code again.
 
 Your console should show:
 

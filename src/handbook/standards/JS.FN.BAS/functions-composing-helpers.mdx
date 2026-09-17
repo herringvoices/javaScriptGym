@@ -74,11 +74,14 @@ const initials = (first, last) => {
 These helpers don’t know anything about badges or UI. They just handle names.
 
 <HandbookChallenge
-title="F1-8 · Print a divider and use it in welcome"
-hints={[
-  "Write a `printDivider` function that logs a short line of dashes (for example: `------------------`).",
-  "Update or create a `welcome` function that calls `printDivider()` between each of its `console.log` lines so the output is visually separated.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`function printDivider() {
+  title="Reuse a divider inside welcome"
+  hints={[
+    <>A helper can be called anywhere another function would otherwise repeat the same work.</>,
+    <>Keep <code>printDivider()</code> responsible only for the divider line.</>,
+    <>Inside <code>welcome()</code>, call the helper between the messages instead of repeating its implementation.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function printDivider() {
   console.log("------------------");
 }
 
@@ -90,37 +93,23 @@ function welcome() {
   console.log("Have fun!");
 }
 
-welcome();`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`function printDivider() {
-  console.log("------------------")
-}
-
-function welcome() {
-  console.log("=== Welcome to the App ===")
-  printDivider()
-  console.log("Pick a character to begin.")
-  printDivider()
-  console.log("Have fun!")
-}
-
-welcome()`}</pre> }
+welcome();`}</pre>
+  }
 >
-
   <p className="m-0">
-    Declare a `printDivider()` function that logs a line of dashes. Then ensure your `welcome()` function calls `printDivider()` between each `console.log` line so the welcome block is framed by divider lines.
+    Create <code>printDivider()</code> so it logs a line of dashes. Then create or update <code>welcome()</code> so it calls that helper between its three message logs. Call <code>welcome()</code> once to see the composed output.
   </p>
 </HandbookChallenge>
 
-
----
-
 <HandbookChallenge
-title="F1-9 · Welcome using a user object"
-hints={[
-  "Write a helper named `welcomeUser(user)` that accepts a user object with `firstName` and `lastName` (like the users from the return-values chapter) and **returns** a single welcome string.",
-  "Update your existing `welcome(user, messages)` so it calls `console.log(welcomeUser(user))` and then logs the unread count using `messages.length`.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`const welcomeUser = (user) => {
+  title="Compose a user welcome from a helper"
+  hints={[
+    <>Let the smaller helper handle only the job of turning a user object into a welcome string.</>,
+    <>Because <code>welcomeUser(user)</code> returns a string, its function call can be used directly inside <code>console.log()</code>.</>,
+    <>The higher-level <code>welcome</code> function can combine that returned string with the separate message-count behavior.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const welcomeUser = (user) => {
   return \`=== Welcome, \${user.firstName} \${user.lastName}! ===\`;
 };
 
@@ -130,23 +119,11 @@ const welcome = (user, messages) => {
 };
 
 welcome(userA, messages);
-welcome(userB, []);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const welcomeUser = (user) => {
-  return \`=== Welcome, \${user.firstName} \${user.lastName}! ===\`;
-};
-
-const welcome = (user, messages) => {
-  console.log(welcomeUser(user));
-  console.log(\`You have \${messages.length} unread messages!\`);
-};
-
-welcome(userA, messages);
-welcome(userB, []);`}</pre> }
+welcome(userB, []);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Create a helper function called <code>welcomeUser(user)</code> that expects a user object with <code>firstName</code> and <code>lastName</code> properties (the same shape you used in the return-values chapter) and **returns** the welcome string. Then update your higher-level <code>welcome(user, messages)</code> function so it calls <code>console.log(welcomeUser(user))</code> and logs the unread count using <code>messages.length</code>. Call <code>welcome</code> with different users and message arrays to see how the composed helpers work together.
+    Create <code>welcomeUser(user)</code> so it returns one welcome string built from <code>user.firstName</code> and <code>user.lastName</code>. Then update <code>welcome(user, messages)</code> so it logs the result of <code>welcomeUser(user)</code> and separately logs the unread count from <code>messages.length</code>. Try it with more than one user/message combination.
   </p>
 </HandbookChallenge>
 
@@ -165,5 +142,3 @@ In this chapter, you:
 - Kept each function focused on **one job**, then combined them into a slightly larger job.
 
 Composition is how you avoid “doEverything” functions. You write tiny, testable pieces and let them work together—like stations in a kitchen passing along parts of a dish until it’s ready to serve.
-
-

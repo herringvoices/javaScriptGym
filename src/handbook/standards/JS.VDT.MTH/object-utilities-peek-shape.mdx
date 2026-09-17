@@ -45,7 +45,6 @@ console.log(labels[0]);     // "title"
 console.log(labels.length); // 3
 ```
 
-
 ---
 
 ## 2) `Object.values` — “give me the info”
@@ -58,34 +57,29 @@ console.log(labels.length); // 3
 const book = { title: "Neon Rain", author: "Riza", year: 2024 };
 
 const info = Object.values(book);
-console.log(info);                 // ["Neon Rain", "Riza", 2024]
-console.log(info[0]);              // "Neon Rain"
+console.log(info);                  // ["Neon Rain", "Riza", 2024]
+console.log(info[0]);               // "Neon Rain"
 console.log(info[info.length - 1]); // 2024
 ```
 
 > Notice types can vary: strings, numbers, booleans—whatever you stored.
 
 <HandbookChallenge
-title="Challenge O1: Keys and values of book1"
-hints={[
-"Reuse <code>book1</code> from the earlier chapters.",
-"Create <code>book1Keys</code> with <code>Object.keys(book1)</code> and <code>book1Values</code> with <code>Object.values(book1)</code>.",
-"Log both arrays so you can see the labels and info.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book1Keys = Object.keys(book1);
+  title="Inspect the keys and values of book1"
+  hints={[
+    <><code>Object.keys()</code> and <code>Object.values()</code> both need the object as their argument.</>,
+    <>Store each returned array in its own variable so you can inspect the two shapes side by side.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const book1Keys = Object.keys(book1);
 const book1Values = Object.values(book1);
 
 console.log(book1Keys);
-console.log(book1Values);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const book1Keys = Object.keys(book1);
-const book1Values = Object.values(book1);
-
-console.log(book1Keys);   // ["title","author","pages",...]
-console.log(book1Values); // ["The Way of Kings","Brandon Sanderson",1010,...]`}</pre>
-}
+console.log(book1Values);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Use <code>Object.keys()</code> and <code>Object.values()</code> to make two new arrays: one that holds all the property names (like labels on tabs) for <code>book1</code> and one that holds the matching values (the info on each page). Log both arrays so you can quickly see how the object’s labels line up with its data.
+    Create <code>book1Keys</code> from <code>Object.keys(book1)</code> and <code>book1Values</code> from <code>Object.values(book1)</code>. Log both arrays so you can compare the property labels with the data stored under them.
   </p>
 </HandbookChallenge>
 
@@ -113,20 +107,22 @@ console.log(firstPair[1]); // "Neon Rain"
 > Each pair is just a tiny array of length 2. No new syntax required—plain old indexing works.
 
 <HandbookChallenge
-title="Challenge O2: Entries for book1"
-hints={[
-"Create <code>book1Entries</code> with <code>Object.entries(book1)</code>.",
-"Log the array of pairs.",
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const book1Entries = Object.entries(book1);
+  title="Inspect book1 as key-value pairs"
+  hints={[
+    <><code>Object.entries()</code> returns one array whose items are two-value arrays.</>,
+    <>The first slot of each pair is the property name and the second slot is its value.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const book1Entries = Object.entries(book1);
 console.log(book1Entries);
 
-`}</pre>
-}
+const firstEntry = book1Entries[0];
+console.log(firstEntry[0]);
+console.log(firstEntry[1]);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Use <code>Object.entries()</code> to get a list of small <code>[key, value]</code> pairs for your <code>book1</code>.
+    Create <code>book1Entries</code> with <code>Object.entries(book1)</code> and log the full array. Then store the first pair in <code>firstEntry</code> and log its key and value separately using indexes <code>0</code> and <code>1</code>.
   </p>
 </HandbookChallenge>
 

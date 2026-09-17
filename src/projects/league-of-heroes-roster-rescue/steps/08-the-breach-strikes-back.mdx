@@ -61,25 +61,30 @@ Apparently, the suspicious breach is underwater.
 
 This has become less suspicious and more Scuba Driver-shaped.
 
-Add Scuba Driver to the **front** of `emergencyRoster`.
-
-Your emergency roster should now be ordered like this:
-
-```txt
-1. Scuba Driver
-2. Solar Flare
-3. Neon Volt
-```
-
 <HandbookChallenge
-  title="Choose the Lead Responder"
+  title="Put Scuba Driver at the front of the emergency roster"
   hints={[
-    "Scuba Driver is the first hero in the main `roster`.",
-    "The lead responder belongs at the beginning of the emergency roster.",
-    "Use the array method that adds an item at index `0`."
+    <>Build <code>emergencyRoster</code> from the existing Solar Flare and Neon Volt objects before changing its order.</>,
+    <>Scuba Driver already exists as the first object in the main <code>roster</code>.</>,
+    <>Use the array method that inserts an item at index <code>0</code> without removing it from the original array.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Scuba Driver
+Solar Flare
+Neon Volt`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const emergencyRoster = [roster[1], roster[3]];
+emergencyRoster.unshift(roster[0]);
+
+console.log(emergencyRoster[0].heroName);
+console.log(emergencyRoster[1].heroName);
+console.log(emergencyRoster[2].heroName);`}</pre>
+  }
 >
-  Add Scuba Driver to the front of `emergencyRoster`.
+  <p className="m-0">
+    Create <code>emergencyRoster</code> with Solar Flare followed by Neon Volt, using the existing objects from <code>roster</code>. Then add Scuba Driver to the beginning of that new array without changing the main roster. Log the emergency roster names to confirm the order.
+  </p>
 </HandbookChallenge>
 
 ## Emergency Update 2: Add a Specialist
@@ -88,26 +93,31 @@ The Museum has a hallway that appears to be whispering in Morse code.
 
 The League decides this is probably an Echo Fang situation.
 
-Add the Echo Fang object from `roster` to the **end** of `emergencyRoster`.
-
-Afterward, your emergency roster should contain four heroes:
-
-```txt
-1. Scuba Driver
-2. Solar Flare
-3. Neon Volt
-4. Echo Fang
-```
-
 <HandbookChallenge
-  title="Add the Specialist"
+  title="Add Echo Fang to the emergency team"
   hints={[
-    "Echo Fang is the third hero in the main roster.",
-    "This hero belongs at the end of the emergency roster.",
-    "Use the array method that adds an item to the end."
+    <>Echo Fang is already the third hero object in the main roster.</>,
+    <>The specialist belongs after the three heroes already in <code>emergencyRoster</code>.</>,
+    <>Use the method that adds one item to the end of an array.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Scuba Driver
+Solar Flare
+Neon Volt
+Echo Fang`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`emergencyRoster.push(roster[2]);
+
+console.log(emergencyRoster[0].heroName);
+console.log(emergencyRoster[1].heroName);
+console.log(emergencyRoster[2].heroName);
+console.log(emergencyRoster[3].heroName);`}</pre>
+  }
 >
-  Add Echo Fang to the end of `emergencyRoster`.
+  <p className="m-0">
+    Add the existing Echo Fang object from <code>roster</code> to the end of <code>emergencyRoster</code>. Log the four hero names to confirm that Scuba Driver is first and Echo Fang is last.
+  </p>
 </HandbookChallenge>
 
 <Callout type="tip" title="Check after each change">
@@ -130,25 +140,29 @@ The League needs it displayed like this:
 BREACH DETECTED: GALLERY 7
 ```
 
-Create a variable called `cleanMuseumMessage`.
-
-Use string methods to:
-
-1. remove extra spaces
-2. replace the dash with a space
-3. convert the message to uppercase
-
-Then log the cleaned message.
-
 <HandbookChallenge
-  title="Clean the Dispatch Message"
+  title="Clean the museum dispatch message"
   hints={[
-    "The spaces at the beginning and end are part of the string.",
-    "The dash needs to become a regular space.",
-    "The final message should be uppercase."
+    <>Start by removing only the unwanted whitespace at the beginning and end.</>,
+    <>Replace the dash with a normal space before formatting the final text.</>,
+    <>Apply uppercase conversion after the message has been cleaned.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`BREACH DETECTED: GALLERY 7`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const importedMuseumMessage = "  breach detected: gallery-7  ";
+const cleanMuseumMessage = importedMuseumMessage
+  .trim()
+  .replace("-", " ")
+  .toUpperCase();
+
+console.log(cleanMuseumMessage);`}</pre>
+  }
 >
-  Create and log `cleanMuseumMessage`.
+  <p className="m-0">
+    Create <code>cleanMuseumMessage</code> from <code>importedMuseumMessage</code>. Remove the outside spaces, replace the dash with a space, convert the result to uppercase, and log the cleaned message.
+  </p>
 </HandbookChallenge>
 
 ## Emergency Update 4: Parse the Threat Level
@@ -207,15 +221,45 @@ A few notes:
 - Do not hardcode the names or numbers into the report.
 
 <HandbookChallenge
-  title="Send the Dispatch Report"
+  title="Build the emergency dispatch report"
   hints={[
-    "The lead responder is the first item in the emergency roster.",
-    "The last assigned hero can be found with `.length - 1`.",
-    "The support-team size is the total roster length minus one.",
-    "Use one template literal to build the report."
+    <>Parse the threat level before using it in the report or comparing it with a numeric power level.</>,
+    <>Derive the lead responder from the first emergency-roster item, the last assigned hero from <code>length - 1</code>, and the support count from the roster length minus one.</>,
+    <>Use one multi-line template literal so the report reads from the prepared values rather than hard-coded final answers.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Emergency Dispatch Report
+
+Alert: BREACH DETECTED: GALLERY 7
+Threat level: 73
+Lead responder: Scuba Driver
+Support team size: 3
+Last assigned hero: Echo Fang`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const importedThreatLevel = "73%";
+const threatLevel = parseInt(importedThreatLevel);
+
+console.log(threatLevel);
+console.log(typeof threatLevel);
+console.log(threatLevel > roster[1].powerLevel);
+
+const leadResponder = emergencyRoster[0].heroName;
+const supportTeamSize = emergencyRoster.length - 1;
+const lastAssignedHero = emergencyRoster[emergencyRoster.length - 1].heroName;
+
+console.log(\`Emergency Dispatch Report
+
+Alert: \${cleanMuseumMessage}
+Threat level: \${threatLevel}
+Lead responder: \${leadResponder}
+Support team size: \${supportTeamSize}
+Last assigned hero: \${lastAssignedHero}\`);`}</pre>
+  }
 >
-  Create and log the complete Emergency Dispatch Report.
+  <p className="m-0">
+    Parse <code>importedThreatLevel</code> into the numeric <code>threatLevel</code> and verify its value, type, and comparison with Solar Flare’s power level. Then derive the lead responder, support-team size, and last assigned hero from <code>emergencyRoster</code>. Build and log the complete report above with one template literal using those values and <code>cleanMuseumMessage</code>.
+  </p>
 </HandbookChallenge>
 
 ## Final Checkpoint

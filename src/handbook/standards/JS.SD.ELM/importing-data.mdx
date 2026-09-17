@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.IMPORT_DATA
-title: Importing Data ? Get the Potions
+title: Importing Data · Get the Potions
 short: Import data before rendering list items.
 ---
 
@@ -276,22 +276,31 @@ console.log(books);
 
 The important move is: import a function, call it, store the returned data, and inspect the result before rendering.
 
-<HandbookChallenge title="ELM Challenge 6 · Import and inspect potion data">
+<HandbookChallenge
+  title="Import and inspect the potion data"
+  hints={[
+    <>Importing a function gives this file access to the function; it does not call it yet.</>,
+    <>Call <code>getPotions()</code> and store its returned value before you inspect it.</>,
+    <>The value you are checking for is an array whose items are potion objects with a <code>name</code> property.</>,
+  ]}
+  expected={
+    <p className="m-0">DevTools should show an array of potion objects, and each inspected potion should include a <code>name</code> property.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`import { getPotions } from "./database.js";
 
-* Keep the `app` variable.
-* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
-* Keep the `potionList` variable below the `app.innerHTML` block.
-* At the top of `/scripts/main.js`, import `getPotions` from `./database.js`.
-* After the shell has been rendered, create a `potions` variable.
-* Set `potions` equal to the result of calling `getPotions()`.
-* Log `potions` to the console.
-* Refresh the preview.
-* Open DevTools.
-* Confirm that `potions` is an array.
-* Expand the array.
-* Confirm that each potion is an object.
-* Confirm that each potion object has a `name` property.
+// existing app selection, shell render, and potionList selection stay here
 
+const potions = getPotions();
+console.log(potions);`}</pre>
+  }
+>
+  <Callout type="note" title="Starting point">
+    <p className="m-0">Keep the <code>app</code> selection, the <code>app.innerHTML</code> shell, and the <code>potionList</code> selection from the previous pages.</p>
+  </Callout>
+  <p className="m-0">
+    At the top of <code>/scripts/main.js</code>, import <code>getPotions</code> from <code>./database.js</code>. After the shell and list selection, call <code>getPotions()</code> and store its return value in <code>potions</code>. Log <code>potions</code>, refresh the preview, and inspect the array in DevTools to confirm its shape before you render from it.
+  </p>
 </HandbookChallenge>
 
 ## Keep vs Trash
@@ -320,35 +329,32 @@ But once you know the data is available, you do not need to keep logging the sam
 
 The `potions` variable should stay because we will use it soon.
 
-<HandbookChallenge title="ELM Flow Challenge 6 · Add the data request">
-
-Open `/sequenceDiagram.mmd`.
-
-Add this line near the top of the diagram, after the browser loads `main.js`:
-
-```mermaid
-  Main->>DB: import getPotions
-```
-
-Then add these lines after the DOM list has been selected:
-
-```mermaid
-  Main->>DB: call getPotions()
-  DB-->>Main: return potions array
-```
-
-Preview the diagram.
-
-The diagram should now show `main.js` getting data from `database.js` before rendering potion names.
-
-**Check your diagram:**
-
-* Which file owns the potion data?
-* Which file calls `getPotions()`?
-* What kind of value does `getPotions()` return?
-* Does the potion data appear on the page yet?
-* Why is it useful to inspect the array before rendering it?
-
+<HandbookChallenge
+  title="Add the data request to the flow diagram"
+  hints={[
+    <>The import becomes available near the beginning of <code>main.js</code>, before the script calls the function.</>,
+    <>A function call travels from <code>Main</code> to <code>DB</code>, and the returned array travels back from <code>DB</code> to <code>Main</code>.</>,
+    <>Keep the diagram in the same order as the working program rather than grouping all database arrows together.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>DB: import getPotions
+...
+Main->>DB: call getPotions()
+DB-->>Main: return potions array`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`Browser->>Main: load module script
+Main->>DB: import getPotions
+Main->>DOM: select #app
+Main->>DOM: render app shell
+Main->>DOM: select #potion-list
+Main->>DB: call getPotions()
+DB-->>Main: return potions array`}</pre>
+  }
+>
+  <p className="m-0">
+    Open <code>/sequenceDiagram.mmd</code>. Add <code>Main-&gt;&gt;DB: import getPotions</code> after the browser loads <code>main.js</code>. After the existing list-selection step, add a call from <code>Main</code> to <code>DB</code> for <code>getPotions()</code> and a return arrow carrying the potions array back to <code>Main</code>. Preview the diagram and verify that the data is acquired before any potion names are rendered.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice

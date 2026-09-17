@@ -24,7 +24,6 @@ Set it up to email your grandmother, and—well—she’s going to have question
 
 Iteration is that idea in code: a repeatable process, driven by a clear rule that eventually says, “Alright. Stop.”
 
-
 ---
 
 ## Practice · Spot repetition before loops
@@ -33,65 +32,59 @@ Before we let JavaScript act as the repeating machine for us, you’ll do things
 
 The examples below assume you already have a `heroes` array in your file with several hero objects. You’ll work with that data directly.
 
----
-
 <HandbookChallenge
-title="ITR Challenge 1 · Manual welcomes and a manual hero count"
-hints={[
-"Use bracket access like `heroes[0].name` to reach each hero by position.",
-"Start small: get a single `console.log` working for the first hero, then duplicate it for the others.",
+  title="Welcome every hero by hand"
+  hints={[
+    <>Bracket access lets you choose one hero by position before reading its <code>name</code>.</>,
+    <>Get the message working for one hero first, then repeat the same pattern for each remaining index.</>,
+    <>When the array grows, every manual line and the manually stored count must grow with it.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`// Manual welcomes for the original heroes
+console.log(heroes[0].name + " has arrived!");
+console.log(heroes[1].name + " has arrived!");
+console.log(heroes[2].name + " has arrived!");
 
-"After you add a new hero to the array, make sure you add a new welcome line for them and update your `heroCount` so it still matches the number of heroes.",
+const heroCount = 3;
+console.log("There are " + heroCount + " heroes in the League.");
 
-]}
-answers={
+heroes.push({ id: 4, name: "Aurora Pulse" });
 
-  <pre className="m-0 whitespace-pre-wrap">{"// 1) Manual welcomes for each hero by index\nconsole.log('${heroes[0].name} has arrived!');\nconsole.log('${heroes[1].name} has arrived!');\nconsole.log('${heroes[2].name} has arrived!');\n\n// 2) Manual hero count\nconst heroCount = 3;\nconsole.log('There are ' + heroCount + ' heroes in the League.');\n\n// 3) Add a new hero to the array (one possible example)\nheroes.push({ id: 4, name: 'Aurora Pulse' });\n\n// 4) Update the welcomes and count so they stay correct\nconsole.log('${heroes[0].name} has arrived!');\nconsole.log('${heroes[1].name} has arrived!');\nconsole.log('${heroes[2].name} has arrived!');\nconsole.log('${heroes[3].name} has arrived!');\n\nconst updatedHeroCount = 4;\nconsole.log('There are ' + updatedHeroCount + ' heroes in the League.');"}</pre>
+// The manual version now needs another line and another count.
+console.log(heroes[0].name + " has arrived!");
+console.log(heroes[1].name + " has arrived!");
+console.log(heroes[2].name + " has arrived!");
+console.log(heroes[3].name + " has arrived!");
 
-}
-
+const updatedHeroCount = 4;
+console.log("There are " + updatedHeroCount + " heroes in the League.");`}</pre>
+  }
 >
-
   <p className="m-0">
-    Using your existing <code>heroes</code> array, write one <code>console.log</code> per hero that prints a message like
-    <code>&quot;Crimson Phoenix has arrived!&quot;</code> by accessing <code>heroes[0].name</code>, <code>heroes[1].name</code>, and so on.
-    Then declare a <code>heroCount</code> variable and log how many heroes are in the League. Finally, add a new hero to the <code>heroes</code> array
-    and update all of your logs and <code>heroCount</code> so the output is still correct.
+    Using your existing <code>heroes</code> array, write one <code>console.log()</code> per hero that prints a message like <code>"Crimson Phoenix has arrived!"</code> by accessing each hero by index. Declare <code>heroCount</code> and log the number of heroes. Then push one new hero into the array and manually update both the welcome lines and the count so everything is correct again.
   </p>
 </HandbookChallenge>
 
----
-
 <HandbookChallenge
-title="ITR Challenge 2 · Manually build a heroNames playlist"
-hints={[
-"Start by declaring an empty array: `const heroNames = [];`.",
-"Push each hero's name into the array one at a time using `heroNames.push(heroes[0].name)` and so on.",
+  title="Build the hero names array by hand"
+  hints={[
+    <>Start with an empty array that will collect only the names.</>,
+    <>For each position in <code>heroes</code>, read that hero’s <code>name</code> and add the value to the new array.</>,
+    <><code>push()</code> adds one value to the end of an array.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const heroNames = [];
 
-"When you have pushed each hero's name into the array, log `heroNames` to confirm it contains all of the names in order.",
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`const heroNames = [];
-
-// Manually push each hero's name into the playlist
 heroNames.push(heroes[0].name);
 heroNames.push(heroes[1].name);
 heroNames.push(heroes[2].name);
 heroNames.push(heroes[3].name);
 
-console.log(heroNames);
-// Example output: ["Crimson Phoenix", "Neon Volt", "Star Sentinel", "Aurora Pulse"]`}</pre>
-
-}
-
+console.log(heroNames);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Create a new array called <code>heroNames</code>. Then, without using any loops yet, push each hero's
-    <code>.name</code> into that array one at a time using bracket access. When you're done, log
-    <code>heroNames</code> to see your new &quot;playlist&quot; of hero names.
+    Create an empty array named <code>heroNames</code>. Without using a loop, push each hero’s <code>name</code> into it one at a time with bracket access, then log <code>heroNames</code>.
   </p>
 </HandbookChallenge>
 

@@ -4,8 +4,6 @@ title: Collections · Objects & Arrays (Overview)
 short: Why we bundle values into objects and arrays when single variables start to feel repetitive.
 ---
 
-
-
 # Intro to Collections
 
 So far, you’ve stored values one box at a time—titles, page counts, flags. Real apps need to move **groups** of related values around together. That’s what **collections** are for.
@@ -36,11 +34,20 @@ console.log(book1IsPaperback);
 ```
 
 <HandbookChallenge
-  title="Challenge A1: One book’s data"
+  title="Describe one book with variables"
   hints={[
-    "Declare four separate variables for a single book: title (string), author (string), pages (number), isPaperback (boolean).",
-    "Use clear names like `book1Title` and `book1Pages`—no abbreviations.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book1Title = "The Way of Kings";
+    <>Each variable should hold one primitive piece of information about the same book.</>,
+    <>Titles and authors are strings, page counts are numbers, and paperback status is a boolean.</>,
+    <>Use a consistent <code>book1...</code> naming pattern so the relationship is easy to see.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings
+Brandon Sanderson
+1007
+false`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const book1Title = "The Way of Kings";
 const book1Author = "Brandon Sanderson";
 const book1Pages = 1007;
 const book1IsPaperback = false;
@@ -48,30 +55,12 @@ const book1IsPaperback = false;
 console.log(book1Title);
 console.log(book1Author);
 console.log(book1Pages);
-console.log(book1IsPaperback);`}</pre>,
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const book1Title = "The Way of Kings";
-const book1Author = "Brandon Sanderson";
-const book1Pages = 1007;
-const book1IsPaperback = false;
-
-console.log(book1Title);        // The Way of Kings
-console.log(book1Author);       // Brandon Sanderson
-console.log(book1Pages);        // 1007
-console.log(book1IsPaperback);  // false`}</pre>
+console.log(book1IsPaperback);`}</pre>
   }
 >
   <p className="m-0">
-    Create <code>book1Title</code>, <code>book1Author</code>, <code>book1Pages</code>, and <code>book1IsPaperback</code>, then log each one on its own line.
+    Create <code>book1Title</code>, <code>book1Author</code>, <code>book1Pages</code>, and <code>book1IsPaperback</code> for one book, then log each value on its own line.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">
-  {`The Way of Kings
-Brandon Sanderson
-1007
-false`}
-</pre>
 </HandbookChallenge>
 
 ---
@@ -88,36 +77,29 @@ const book2IsPaperback = false;
 ```
 
 <HandbookChallenge
-  title="Challenge A2: Add a second book"
+  title="Add a second book"
   hints={[
-    "Follow the same pattern as book 1: four variables that start with `book2...`.",
-    "Keep values reasonable: title/author as strings, pages as a number, isPaperback as a boolean.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book2Title = "Words of Radiance";
-const book2Author = "Brandon Sanderson";
-const book2Pages = 1087;
-const book2IsPaperback = false;
-
-console.log(book1Title, "by", book1Author);
-console.log(book2Title, "by", book2Author);`}</pre>,
+    <>The second book needs the same four pieces of information as the first.</>,
+    <>Keep the data types aligned with the first set of variables.</>,
+    <>Use the same naming pattern, but begin each variable with <code>book2</code>.</>,
   ]}
-  answers={
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings by Brandon Sanderson
+Words of Radiance by Brandon Sanderson`}</pre>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const book2Title = "Words of Radiance";
 const book2Author = "Brandon Sanderson";
 const book2Pages = 1087;
 const book2IsPaperback = false;
 
 console.log(book1Title, "by", book1Author);
-console.log(book2Title, "by", book2Author);
-// The Way of Kings by Brandon Sanderson
-// Words of Radiance by Brandon Sanderson`}</pre>
+console.log(book2Title, "by", book2Author);`}</pre>
   }
 >
   <p className="m-0">
     Declare matching <code>book2...</code> variables for a second book, then log both books’ titles and authors on two lines.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings by Brandon Sanderson
-Words of Radiance by Brandon Sanderson`}</pre>
 </HandbookChallenge>
 
 ---
@@ -132,26 +114,26 @@ console.log(book1Pages, book2Pages);
 ```
 
 <HandbookChallenge
-  title="Challenge A3: Spot the pattern"
+  title="Compare the book variables"
   hints={[
-    "Use one log for both titles, another for both page counts.",
-    "Keep the variable names exactly the same as before; don’t rename anything here.",
+    <>A single <code>console.log()</code> can receive more than one value.</>,
+    <>Use the existing title variables together, then do the same with the page-count variables.</>,
   ]}
-  answers={
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings Words of Radiance
+1007 1087`}</pre>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`console.log(book1Title, book2Title);
-console.log(book1Pages, book2Pages);
-// The Way of Kings Words of Radiance
-// 1007 1087`}</pre>
+console.log(book1Pages, book2Pages);`}</pre>
   }
 >
   <p className="m-0">
-    Log both titles on one line, then both page counts on one line. Feel how repetitive and fragile this isforget one <code>2</code> in a name and your logs break.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Discussion:</strong></p>
-  <p className="m-0">
-    This chapter uses only primitives on purpose. In the next chapters, you’ll see how <strong>objects</strong> and <strong>arrays</strong> clean this up by grouping all of a book’s fields and all of your books into collections.
+    Log both titles on one line, then both page counts on one line. Pay attention to how much repeated naming you have to manage.
   </p>
 </HandbookChallenge>
+
+This chapter uses only primitives on purpose. In the next chapters, you’ll see how **objects** and **arrays** clean this up by grouping all of a book’s fields and all of your books into collections.
 
 ---
 

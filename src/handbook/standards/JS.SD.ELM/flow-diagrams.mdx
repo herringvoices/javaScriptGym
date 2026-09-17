@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.FLOW_DIAGRAMS
-title: Flow Diagrams ? Tracking What Happens First
+title: Flow Diagrams · Tracking What Happens First
 short: Track program flow before changing the DOM.
 ---
 
@@ -204,34 +204,29 @@ That is normal.
 
 The goal is not to preserve history. The goal is to explain what the program does now.
 
-<HandbookChallenge title="ELM Flow Challenge 1 · Track the module script">
-
-Open `/sequenceDiagram.mmd`.
-
-Then make sure it looks like this:
-
-```mermaid
-sequenceDiagram
+<HandbookChallenge
+  title="Show the browser loading main.js"
+  hints={[
+    <>Keep all four participants from the starter diagram.</>,
+    <>The first interaction belongs between <code>Browser</code> and <code>Main</code>.</>,
+    <>Sequence diagrams read from top to bottom, so this load step should appear before any data or DOM work.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Browser->>Main: load module script`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`sequenceDiagram
   participant Browser
   participant Main as main.js
   participant DB as database.js
   participant DOM
 
-  Browser->>Main: load module script
-```
-
-Preview the diagram.
-
-You should see the browser pointing to `main.js`.
-
-That arrow represents the browser loading and running the module script.
-
-**Check your diagram:**
-
-- Does the diagram still include all four participants?
-- Does the browser load `main.js` before any DOM or data work appears?
-- Does the arrow label explain what happened in human words?
-
+  Browser->>Main: load module script`}</pre>
+  }
+>
+  <p className="m-0">
+    Open <code>/sequenceDiagram.mmd</code>. Keep the four starter participants and add one interaction showing the browser loading <code>main.js</code>. Preview the diagram and confirm that this is the first action in the flow and that the arrow label explains the step in plain language.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice

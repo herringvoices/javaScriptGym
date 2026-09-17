@@ -31,7 +31,6 @@ Here, `announce` doesn’t know what will happen; it just promises to call `fn`.
 
 I know, in that example callback functions seem pretty useless, but hopefully by the end of this chapter, you'll see how powerful they can be!
 
-
 <Callout type="note" title="Anonymous functions (the () => {} shape)">
 In `announce(() => console.log("Boarblemish calls!"))`, the `() => console.log()` part is an **anonymous function** (a function with no name) being passed in as the callback.
 
@@ -43,7 +42,6 @@ How to read it:
 A lot of callback functions follow that same pattern, so it's good to get familiar with it now.
 
 </Callout>
-
 
 ---
 
@@ -59,7 +57,7 @@ const runForEachStudent = (list, action) => {
 runForEachStudent(students, (s) => console.log(s.firstName));
 ```
 
-`runForEachStudent`  loops over a list and calls your `action` callback once for each student, handing it the current `s`.
+`runForEachStudent` loops over a list and calls your `action` callback once for each student, handing it the current `s`.
 
 ---
 
@@ -93,15 +91,14 @@ Arrow functions have a few handy shortcuts:
 Use the short form when it stays readable; switch to the block form when you need more steps.
 </Callout>
 
----
-
 <HandbookChallenge
-  title="Callback warmup: run code for every student"
+  title="Run a callback for every student"
   hints={[
-    "Look at the tiny runForEachStudent example above if you get stuck.",
-    "Remember: you’re passing the function in, and the helper calls it for each student.",
+    <>The helper owns the loop; the callback owns the action performed for the current student.</>,
+    <>Inside the loop, call the function stored in the <code>action</code> parameter and pass it the current student.</>,
+    <>When you call the helper, an arrow function can be the argument for <code>action</code>.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const runForEachStudent = (list, action) => {
   for (const s of list) {
     action(s);
@@ -111,22 +108,17 @@ Use the short form when it stays readable; switch to the block form when you nee
 runForEachStudent(students, (s) => {
   const fullName = \`\${s.firstName} \${s.lastName}\`;
   console.log(fullName);
+
   if (s.pets > 0) {
     console.log("has pets");
   }
 });`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>This is practice for passing a function into another function.</li>
-      <li>Create a helper named `runForEachStudent(list, action)` that loops with `for...of` and calls `action(s)` for each student.</li>
-      <li>Call it once with the `students` array and a callback that logs each student’s `firstName`.</li>
-      <li>Change the callback so it logs the student’s full name in one string.</li>
-      <li>Add an `if` inside the callback: if `s.pets > 0`, log an extra line like `has pets` underneath their name.</li>
-      <li>Run it again and watch how your single helper function can run **any** callback you pass in.</li>
-      <li>Keep vs Trash: Keep `runForEachStudent` as a reference for callbacks. The specific callback you wrote is just practice.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create <code>runForEachStudent(list, action)</code>. Loop over <code>list</code> with <code>for...of</code> and call <code>action</code> once for each student.</li>
+    <li>Call the helper with <code>students</code> and a callback that logs each student’s full name.</li>
+    <li>Inside that callback, log an extra <code>"has pets"</code> line when <code>s.pets &gt; 0</code>.</li>
+    <li>Keep <code>runForEachStudent</code> as your callback reference. The particular callback is just practice.</li>
+  </ul>
 </HandbookChallenge>

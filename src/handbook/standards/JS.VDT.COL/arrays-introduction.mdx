@@ -46,23 +46,23 @@ console.log(titles);
 ```
 
 <HandbookChallenge
-title="Challenge C1: Titles array"
-hints={[
-"Create a constant named titles that holds three strings: book1.title, book2.title, and a third literal like 'Oathbringer'.",
-"Wrap the values in square brackets [ ... ] with commas between them.",
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`const titles = [book1.title, book2.title, "Oathbringer"];
-console.log(titles);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const titles = [book1.title, book2.title, "Oathbringer"];
-console.log(titles);
-// ["The Way of Kings","Words of Radiance","Oathbringer"]`}</pre>
-}
+  title="Build the titles array"
+  hints={[
+    <>An array stores values in order inside square brackets.</>,
+    <>The first two values can come from the <code>title</code> properties on your existing book objects.</>,
+    <>Separate each array item with a comma.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`["The Way of Kings","Words of Radiance","Oathbringer"]`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const titles = [book1.title, book2.title, "Oathbringer"];
+console.log(titles);`}</pre>
+  }
 >
   <p className="m-0">
-    Build a <code>titles</code> array from your existing book objects plus one extra book, then log the whole array to see all titles at once.
+    Create a <code>titles</code> array containing <code>book1.title</code>, <code>book2.title</code>, and the string <code>"Oathbringer"</code>. Then log the whole array.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`["The Way of Kings","Words of Radiance","Oathbringer"]`}</pre>
 </HandbookChallenge>
 
 ---
@@ -77,22 +77,24 @@ console.log(titles[titles.length - 1]); // last  → "Oathbringer"
 ```
 
 <HandbookChallenge
-title="Challenge C2: Index and log"
-hints={[
-"Use titles[0] to log the first title.",
-"Use titles[titles.length - 1] to log the last title.",
-"Two separate console.log calls: one for the first, one for the last.",
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`console.log(titles[0]);                 // "The Way of Kings"
-console.log(titles[titles.length - 1]); // "Oathbringer"`}</pre>
-}
+  title="Read the first and last titles"
+  hints={[
+    <>Array indexes start at <code>0</code>, so the first item uses the first index.</>,
+    <>The last valid index is always one less than the array’s <code>length</code>.</>,
+    <>Bracket access follows the pattern <code>someArray[index]</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings
+Oathbringer`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(titles[0]);
+console.log(titles[titles.length - 1]);`}</pre>
+  }
 >
   <p className="m-0">
     Log the first and last titles from <code>titles</code> using bracket notation with indexes.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings
-Oathbringer`}</pre>
 </HandbookChallenge>
 
 > <strong>Past the edge</strong><br />
@@ -111,26 +113,27 @@ console.log(titles[1]);                  // updated value
 ```
 
 <HandbookChallenge
-title="Challenge C3: Update an element"
-hints={[
-"Start by logging titles[1] to see the original second title.",
-"Assign a new string to titles[1] to simulate an updated edition.",
-"Log the whole titles array again to see the change in context.",
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`console.log(titles[1]);
-titles[1] = "Words of Radiance (Revised Edition)";
-console.log(titles[1]);
-console.log(titles);
-// ["The Way of Kings","Words of Radiance (Revised Edition)","Oathbringer"]`}</pre>
-}
->
-  <p className="m-0">
-    Log the second title, update that position with a revised name, then log again to confirm the change.
-  </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output (example):</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`Words of Radiance
+  title="Update the second title"
+  hints={[
+    <>The second array item lives at index <code>1</code>.</>,
+    <>You can assign a new value directly to one array position.</>,
+    <>The assignment pattern is <code>someArray[index] = newValue</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Words of Radiance
 Words of Radiance (Revised Edition)
 ["The Way of Kings","Words of Radiance (Revised Edition)","Oathbringer"]`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(titles[1]);
+titles[1] = "Words of Radiance (Revised Edition)";
+console.log(titles[1]);
+console.log(titles);`}</pre>
+  }
+>
+  <p className="m-0">
+    Log the second title, replace it with <code>"Words of Radiance (Revised Edition)"</code>, then log the updated title and the whole array.
+  </p>
 </HandbookChallenge>
 
 ---

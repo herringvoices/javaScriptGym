@@ -75,55 +75,44 @@ console.log(name); // "Ada Lovelace"
 ```
 
 <HandbookChallenge
-title="F1-5 · Create users"
-hints={[
-"Write a `const createUser = (first, last) => { ... }` function that builds and returns an object with `firstName` and `lastName` properties.",
-"Invoke `createUser` three times, store each returned object in a variable, and `console.log` those variables.",
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`const createUser = (first, last) => {
+  title="Return a new user object"
+  hints={[
+    <>A returned value can be stored in a variable after the function call finishes.</>,
+    <>Build the object inside the function from the two parameter values, then return that object.</>,
+    <>The general pattern is <code>return someValue</code>.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const createUser = (first, last) => {
   const newUser = {
     firstName: first,
     lastName: last,
   };
-  return newUser;
-};
 
-const u1 = createUser("Ada", "Lovelace");
-console.log(u1);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const createUser = (first, last) => {
-const newUser = {
-  firstName: first,
-  lastName: last,
-}
-return newUser
+  return newUser;
 };
 
 const userA = createUser("Ada", "Lovelace");
 const userB = createUser("Alan", "Turing");
 const userC = createUser("Grace", "Hopper");
-console.log(userA, userB, userC);`}</pre> }
+
+console.log(userA, userB, userC);`}</pre>
+  }
 >
   <p className="m-0">
-    Create a `createUser(first, last)` function that returns a new user object with `firstName` and `lastName` properties. Call it three times, store each result in a variable, and `console.log` those variables to inspect the objects.
+    Write <code>createUser(first, last)</code>. It should build and return a new object with <code>firstName</code> and <code>lastName</code> properties. Call it three times, store each returned object in a variable, and log those variables.
   </p>
 </HandbookChallenge>
 
----
-
 <HandbookChallenge
-title="F1-6 · Messages array and createMessage"
-hints={[
-  "Declare an array named `messages` and a function `createMessage(msg, userObj)` that returns an object `{ message: msg, user: userObj }`.",
-  "Create several message objects by calling `createMessage` and store them in variables, then `messages.push(...)` to add them to the array.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`const messages = [];
-const createMessage = (msg, userObj) => {
-  return { message: msg, user: userObj };
-};
+  title="Return message objects"
+  hints={[
+    <>The helper should return one object rather than pushing directly into the array.</>,
+    <>Use the two parameters as the values for the returned object’s <code>message</code> and <code>user</code> properties.</>,
+    <>Store each function result first, then add those returned objects to <code>messages</code>.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const messages = [];
 
-const m1 = createMessage("Hello!", userA);
-messages.push(m1);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const messages = [];
 const createMessage = (msg, userObj) => {
   return { message: msg, user: userObj };
 };
@@ -131,41 +120,38 @@ const createMessage = (msg, userObj) => {
 const msg1 = createMessage("Welcome!", userA);
 const msg2 = createMessage("Nice to meet you", userB);
 const msg3 = createMessage("Goodbye!", userC);
+
 messages.push(msg1, msg2, msg3);
-console.log(messages);`}</pre> }
+console.log(messages);`}</pre>
+  }
 >
   <p className="m-0">
-    Create a `messages` array and a `createMessage(msg, userObj)` helper that returns an object with the message text and the user who wrote it. Use the helper to make several message objects, store them in variables, and push them onto the `messages` array.
+    Create an empty <code>messages</code> array and a <code>createMessage(msg, userObj)</code> function. The function should return an object with <code>message</code> and <code>user</code> properties. Use it to create several messages, store the returned objects in variables, push them into <code>messages</code>, and log the array.
   </p>
 </HandbookChallenge>
 
----
-
 <HandbookChallenge
-title="F1-7 · Welcome that uses user and messages"
-hints={[
-  "Change `welcome` so it accepts two parameters: a `user` object and the `messages` array.",
-  "Use dot notation to access `user.firstName` and `user.lastName`, and `messages.length` for the unread count.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`const welcome = (user, messages) => {
-  console.log(\`=== Welcome, \${user.firstName} \${user.lastName}! ===\`)
-  console.log(\`You have \${messages.length} unread messages!\`)
+  title="Welcome a user with their message count"
+  hints={[
+    <>The function receives two complete values: one user object and one messages array.</>,
+    <>Dot notation reads the user’s name; the array’s <code>length</code> property gives the count.</>,
+    <>Use the parameter names inside the function so the same function works with different arguments.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const welcome = (user, messages) => {
+  const full = \`=== Welcome, \${user.firstName} \${user.lastName}! ===\`;
+  const count = \`You have \${messages.length} unread messages!\`;
+
+  console.log(full);
+  console.log(count);
 };
 
 welcome(userA, messages);
-welcome(userB, []); // try different arrays`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`const welcome = (user, messages) => {
-const full = \`=== Welcome, \${user.firstName} \${user.lastName}! ===\`;
-const count = \`You have \${messages.length} unread messages!\`;
-console.log(full);
-console.log(count);
-};
-
-welcome(userA, messages);
-welcome(userB, []);`}</pre> }
+welcome(userB, []);`}</pre>
+  }
 >
   <p className="m-0">
-    Update `welcome` to accept a `user` object and a `messages` array. Inside, use dot notation (for example `user.firstName`) to show the user's name and use `messages.length` to show how many messages they have. Call the function with different users and add comments to your code to explain what is happening line-by-line from line 1 to the last.
+    Update <code>welcome</code> so it accepts a <code>user</code> object and a <code>messages</code> array. Log a welcome line using the user’s first and last name, then log how many messages the supplied array contains. Call the function with at least two different argument combinations.
   </p>
 </HandbookChallenge>
 

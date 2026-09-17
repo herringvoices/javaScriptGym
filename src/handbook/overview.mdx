@@ -24,7 +24,7 @@ Over time, you’ll loop through this pattern across standards:
 
 ## How to pair the handbook with challenges
 
-Here’s how to use the site now that the handbook is a first‑class citizen:
+Here’s how to use the site now that the handbook is a first-class citizen:
 
 1. **Pick a chapter here** that matches a standard, like `JS.PF.ITR` for iteration.
 2. **Read the overview** and work through the inline HandbookChallenges. These are short, focused reps using the editor + console.
@@ -34,7 +34,7 @@ Here’s how to use the site now that the handbook is a first‑class citizen:
 You can absolutely skim ahead, but when in doubt:
 
 - Let the **handbook explain the idea**.
-- Let the **challenges stress‑test your understanding**.
+- Let the **challenges stress-test your understanding**.
 
 The fastest progress comes from bouncing between the two.
 
@@ -52,29 +52,31 @@ That’s CRUD, and it’s most of what we do. Our goal here isn’t to teach you
 
 ## Handbook Challenges
 
-Sometimes, you'll see amber colored boxes like this:
+Throughout the handbook, you’ll reach **YOUR TURN** checkpoints. When you see one, stop reading and do the task in the editor before you continue.
 
-<HandbookChallenge title="Example">
-	example
-
-	{/* This small example just shows the look and feel */}
+<HandbookChallenge title="Try a handbook challenge">
+  <p className="m-0">
+    This is the shape you’ll see throughout the handbook: a clear task, optional help if you get stuck, and a solution you can compare against after you try.
+  </p>
 </HandbookChallenge>
 
-These are little challenges for you to practice as you go. This is important: the only way to learn is to do. If you aren't _practicing_ these concepts, you may _feel_ like you get them in the moment, but they won't stick.
+The title tells you the programming action you’re practicing. When a task has a specific observable result, the challenge will show that separately. If you need help, hints appear one at a time so you can take the smallest nudge you need. The solution stays separate from the hints.
 
-You also might notice that, unlike a lot of online programing tutorials, we don't have any tests to run to see if your code is doing what it's supposed to. Instead, you will use your eyes to see if the result you get is the result you expect. I've seen too many students chasing checkmarks on a test instead of using their eyes and their brain to figure out what went wrong.
+This is important: the only way to learn is to do. If you aren't _practicing_ these concepts, you may _feel_ like you get them in the moment, but they won't stick.
+
+You also might notice that, unlike a lot of online programming tutorials, we don't have any tests to run to see if your code is doing what it's supposed to. Instead, you will use your eyes to see if the result you get is the result you expect. I've seen too many students chasing checkmarks on a test instead of using their eyes and their brain to figure out what went wrong.
 
 Finally, don't feel limited to doing only what the challenges say! Explore, try new things, break old ones! Breaking things is one of the best ways to learn JavaScript.
 
 <Callout type="note" title="A quick editor note">
 
-The workspace opens on `index.html` first because it is the page your code runs inside. We won't be worrying about our HTML for a long time, so until you're told otherwise, you should click "Show Files" in the workspace editor, and then click `main.js` in the file tree that opens up—that is where your JavaScript belongs.
+The workspace opens on `index.html` first because it is the page your code runs inside. We won't be worrying about our HTML for a long time, so until you're told otherwise, you should click "Show Files" in the workspace editor, and then click `main.js` in the file tree that opens up. That is where your JavaScript belongs.
 
 </Callout>
 
 ## Your first tool: <code>console.log</code>
 
-Think of <code>console.log</code> as your stethoscope—it lets you hear what your code is doing.
+Think of <code>console.log</code> as your stethoscope: it lets you hear what your code is doing.
 
 ```js
 console.log("Hello, handbook!");
@@ -82,28 +84,30 @@ console.log("Hello, handbook!");
 
 You’ll use it constantly to check values, confirm what ran, and debug surprises.
 
-<HandbookChallenge title="Console warm‑up" hints={[
-	"Quotes mark text so JavaScript doesn’t think it’s a variable name.",
-	"Reordering lines changes the order of output.",
-	"A ReferenceError means a variable name wasn’t found (e.g., missing quotes)."
-]}
-	answers={[
-		"console.log(\"first\");\nconsole.log(\"second\");\nconsole.log(\"third\");",
-	]}
->
-	<ol>
-		<li>Log three words on three lines: <code>"first"</code>, <code>"second"</code>, <code>"third"</code>.</li>
-		<li>Run and check the Console.</li>
-		<li>Reorder the lines and run again. What changed?</li>
-		<li>Remove the quotes from one line (e.g., <code>console.log(first)</code>). What error do you see, and why?</li>
-	</ol>
-
-	<p><strong>Expected console output (step 1):</strong></p>
-	<pre>
-first
+<HandbookChallenge
+  title="Experiment with console output"
+  hints={[
+    <>Text literals need quotation marks so JavaScript treats them as strings.</>,
+    <>JavaScript runs these statements from top to bottom, so changing line order changes output order.</>,
+    <>Without quotes, <code>first</code> is treated as an identifier. An identifier that does not exist produces a <code>ReferenceError</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`first
 second
-third
-	</pre>
+third`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log("first");
+console.log("second");
+console.log("third");`}</pre>
+  }
+>
+  <ol className="m-0 space-y-1 pl-5">
+    <li>Log three words on three lines: <code>"first"</code>, <code>"second"</code>, <code>"third"</code>.</li>
+    <li>Run and check the console.</li>
+    <li>Reorder the lines and run again. Notice what changes.</li>
+    <li>Remove the quotes from one line, such as <code>console.log(first)</code>. Run it again and inspect the error.</li>
+  </ol>
 </HandbookChallenge>
 
 ---
@@ -119,39 +123,35 @@ const greeting = "hi";
 
 We’ll learn patterns that run code later (events, functions), but for now think of your file like a book: top → bottom.
 
-<HandbookChallenge title="Order matters" hints={[
-	"Define a value before you use it.",
-	"Move the line that declares \"greeting\" above the line that logs it."
-]}
-	answers={[
-		"const greeting = \"hi\";\nconsole.log(greeting); // hi",
-	]}
+<HandbookChallenge
+  title="Define a value before using it"
+  hints={[
+    <>JavaScript executes these two statements from top to bottom.</>,
+    <>The declaration has to run before the line that reads <code>greeting</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`hi`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const greeting = "hi";
+console.log(greeting);`}</pre>
+  }
 >
-	<ol>
-		<li>Paste this code into the editor and run it.</li>
-	</ol>
+  <p className="m-0">Paste this code into the editor and run it:</p>
 
-```js
-console.log(greeting);
-const greeting = "hi";
-```
+  <pre className="m-0 whitespace-pre-wrap">{`console.log(greeting);
+const greeting = "hi";`}</pre>
 
-	<ol start={2}>
-		<li>Now move the second line above the first so the value is defined before it’s used.</li>
-		<li>Run again.</li>
-	</ol>
-
-	<p><strong>Expected console output (after step 2):</strong></p>
-	<pre>
-hi
-	</pre>
+  <p className="m-0">
+    Then rearrange the two lines so the value exists before JavaScript tries to log it. Run the code again and confirm the output.
+  </p>
 </HandbookChallenge>
 
 ---
 
 ## Comments: notes for humans (and how to toggle them)
 
-Programs are for computers and for people. Comments are short notes the computer ignores but teammates (and future‑you) will appreciate.
+Programs are for computers and for people. Comments are short notes the computer ignores but teammates (and future-you) will appreciate.
 
 - Line comment: anything after <code>//</code> on a line is ignored
 - Toggle quickly: press <strong>Ctrl+/</strong> (Windows/Linux) or <strong>Cmd+/</strong> (Mac) to comment/uncomment selected lines
@@ -162,24 +162,20 @@ console.log("Visible");
 console.log("Still visible"); // end-of-line comment is fine, too
 ```
 
-<HandbookChallenge title="Comment it out" hints={[
-	"Use Ctrl+/ (or Cmd+/) to toggle the selected line.",
-	"If something errors, comment it out and iterate."
-]}
-	answers={[
-		"// console.log(first)",
-	]}
+<HandbookChallenge
+  title="Comment out a broken line"
+  hints={[
+    <>A line that begins with <code>//</code> is ignored by JavaScript.</>,
+    <>The editor shortcut toggles the selected line between active code and a comment.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`// console.log(first);`}</pre>
+  }
 >
-	<ol>
-		<li>Reproduce the earlier error by removing quotes: <code>console.log(first)</code>.</li>
-		<li>Use <strong>Ctrl+/</strong> (or <strong>Cmd+/</strong>) to comment out that broken line.</li>
-		<li>Run again — you should only see the lines that are still active.</li>
-		<li>Toggle again to bring the line back.</li>
-	</ol>
-
-	<p><strong>Expected console output (after step 2):</strong></p>
-	<pre>
-first
-third
-	</pre>
+  <ol className="m-0 space-y-1 pl-5">
+    <li>Reproduce the earlier error by removing quotes: <code>console.log(first)</code>.</li>
+    <li>Select that broken line and use <strong>Ctrl+/</strong> (or <strong>Cmd+/</strong>) to comment it out.</li>
+    <li>Run again. The commented line should no longer execute.</li>
+    <li>Toggle it again to bring the line back.</li>
+  </ol>
 </HandbookChallenge>

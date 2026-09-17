@@ -78,13 +78,19 @@ console.log(removedBook.title);
 ```
 
 <HandbookChallenge
-title="Challenge E1: `push` and `pop`"
-hints={[
-  "Log books.length before and after pushing a new book object.",
-  "Use books.pop() to remove the last book and store it in removedBook.",
-  "Log removedBook.title to see which book left the shelf.",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`console.log(books.length);
+  title="Add and remove a book at the end"
+  hints={[
+    <><code>push()</code> adds an item to the end of an array and changes its length.</>,
+    <><code>pop()</code> removes the last item and gives that item back as its return value.</>,
+    <>Store the value returned by <code>pop()</code> if you need to use the removed book afterward.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`3
+4
+Rhythm of War`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(books.length);
 
 books.push({
   title: "Rhythm of War",
@@ -96,10 +102,11 @@ books.push({
 console.log(books.length);
 
 const removedBook = books.pop();
-console.log(removedBook.title);`}</pre>}
+console.log(removedBook.title);`}</pre>
+  }
 >
   <p className="m-0">
-    Add a new book to the end of <code>books</code>, watch the length grow, then pop it off and log its title as it leaves the shelf.
+    Log the current <code>books.length</code>. Push a new <code>Rhythm of War</code> book object onto the end and log the length again. Then remove the last book with <code>pop()</code>, store it in <code>removedBook</code>, and log its title.
   </p>
 </HandbookChallenge>
 
@@ -118,20 +125,26 @@ console.log(books[0].title);  // same title, now back at the front
 ```
 
 <HandbookChallenge
-title="Challenge E2: `shift` and `unshift`"
-hints={[
-  "Use const firstBook = books.shift(); to remove the first book.",
-  "Log firstBook.title, then put it back with books.unshift(firstBook).",
-  "After unshifting, log books[0].title to confirm it’s back at the front.",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`const firstBook = books.shift();
+  title="Remove and restore the first book"
+  hints={[
+    <><code>shift()</code> removes from the start in the same way <code>pop()</code> removes from the end.</>,
+    <><code>unshift()</code> adds an item to the start of the array.</>,
+    <>Keep the removed object in a variable so you can put that same object back.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings
+The Way of Kings`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const firstBook = books.shift();
 console.log(firstBook.title);
 
 books.unshift(firstBook);
-console.log(books[0].title);`}</pre>}
+console.log(books[0].title);`}</pre>
+  }
 >
   <p className="m-0">
-    Temporarily remove the front book, log which one it was, then restore it to the front using <code>unshift</code>.
+    Remove the first book with <code>shift()</code> and store it in <code>firstBook</code>. Log its title, restore it to the front with <code>unshift()</code>, then log <code>books[0].title</code> to confirm it is back.
   </p>
 </HandbookChallenge>
 
@@ -150,20 +163,26 @@ console.log(books.length);
 ```
 
 <HandbookChallenge
-title="Challenge E3: Feature the last book"
-hints={[
-  "Use const nowReading = books.pop(); to take the last book off the shelf.",
-  "Immediately put nowReading at the front with books.unshift(nowReading).",
-  "Log books[0].title and books.length to confirm the new order and size.",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`const nowReading = books.pop();
+  title="Move the last book to the front"
+  hints={[
+    <>You already have one method that removes from the end and another that adds to the start.</>,
+    <>Store the removed book before you add it back at the opposite end.</>,
+    <>Moving an existing item should change the order without changing the final array length.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Oathbringer
+3`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const nowReading = books.pop();
 books.unshift(nowReading);
 
 console.log(books[0].title);
-console.log(books.length);`}</pre>}
+console.log(books.length);`}</pre>
+  }
 >
   <p className="m-0">
-    Treat the last book as your current read: pop it off the end, move it to the very front, and log its title and the total number of books.
+    Remove the last book and store it in <code>nowReading</code>. Add that same object to the front of <code>books</code>, then log the new first title and the array length.
   </p>
 </HandbookChallenge>
 

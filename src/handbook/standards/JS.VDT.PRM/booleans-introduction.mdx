@@ -48,32 +48,30 @@ console.log(hasSentInvites, captionsEnabled); // false true
 Name booleans so you can read them out loud: “<em>has sent invites</em> is false” makes sense. Avoid double negatives like <code>isNotReady</code>—your future self will thank you.
 
 <HandbookChallenge
-  title="Set the status lights"
+  title="Set the planner status flags"
   hints={[
-    "Keep your strings and numbers above this new section so every chapter shares the same script.",
-    "Use <code>true</code>/<code>false</code> directly—no quotes.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let hasSentInvites = false;
-let isProjectorOn = false;
-const captionsEnabled = true;
-console.log(hasSentInvites, isProjectorOn, captionsEnabled);
-hasSentInvites = true;
-console.log(hasSentInvites, isProjectorOn, captionsEnabled);`}</pre>,
+    <>Boolean values are the keywords <code>true</code> and <code>false</code>, without quotation marks.</>,
+    <>Use <code>let</code> for a status you plan to change during the script.</>,
+    <>Reassignment changes the stored boolean without repeating <code>let</code>.</>,
   ]}
-  answers={
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`false false true
+true false true`}</pre>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`let hasSentInvites = false;
 let isProjectorOn = false;
 const captionsEnabled = true;
-console.log(hasSentInvites, isProjectorOn, captionsEnabled); // false false true
+
+console.log(hasSentInvites, isProjectorOn, captionsEnabled);
+
 hasSentInvites = true;
-console.log(hasSentInvites, isProjectorOn, captionsEnabled); // true false true`}</pre>
+console.log(hasSentInvites, isProjectorOn, captionsEnabled);`}</pre>
   }
 >
   <p className="m-0">
-    Add three booleans to your planner (<code>hasSentInvites</code>, <code>isProjectorOn</code>, <code>captionsEnabled</code>). Log them once, flip <code>hasSentInvites</code> to <code>true</code> to simulate blasting the invites, then log again.
+    Add <code>hasSentInvites</code> and <code>isProjectorOn</code> as changing booleans that start <code>false</code>, plus <code>captionsEnabled</code> as a <code>const</code> set to <code>true</code>. Log all three, change <code>hasSentInvites</code> to <code>true</code>, then log them again.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`false false true
-true false true`}</pre>
 </HandbookChallenge>
 
 ---
@@ -106,45 +104,35 @@ Common operators you’ll use here:
 </Callout>
 
 <HandbookChallenge
-  title="Capacity alarms"
+  title="Derive capacity and snack alarms"
   hints={[
-    "Re-use <code>numGuests</code>, <code>totalSnacksNeeded</code>, and <code>snacksOnHand</code> from Numbers.",
-    "Introduce <code>const maxGuests = 6;</code> near your other numbers.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const maxGuests = 6;
-let isOverCapacity = numGuests > maxGuests;
-let hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
-console.log(isOverCapacity, hasEnoughSnacks);
-
-numGuests += 2; // two more RSVPs
-isOverCapacity = numGuests > maxGuests;
-console.log(isOverCapacity);
-
-snacksOnHand -= 3; // someone ate a bag early
-hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
-console.log(hasEnoughSnacks);`}</pre>,
+    <>A comparison expression evaluates to one boolean value that you can store in a variable.</>,
+    <>Use <code>&gt;</code> when the alarm should turn on only after the guest count passes the limit.</>,
+    <>Use <code>&gt;=</code> when having exactly the amount of snacks needed should still count as enough.</>,
   ]}
-  answers={
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`false true
+true
+false`}</pre>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const maxGuests = 6;
 let isOverCapacity = numGuests > maxGuests;
 let hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
 console.log(isOverCapacity, hasEnoughSnacks);
 
-numGuests += 2;
+numGuests = 7;
 isOverCapacity = numGuests > maxGuests;
 console.log(isOverCapacity);
 
-snacksOnHand -= 3;
+snacksOnHand = 5;
 hasEnoughSnacks = snacksOnHand >= totalSnacksNeeded;
 console.log(hasEnoughSnacks);`}</pre>
   }
 >
   <p className="m-0">
-    Add <code>maxGuests</code> to your planner. Compute <code>isOverCapacity</code> and <code>hasEnoughSnacks</code>, log them, then change the numbers (simulate new RSVPs or lost snacks) and recompute so the booleans stay accurate.
+    Add <code>maxGuests = 6</code>. Store whether <code>numGuests</code> is over capacity and whether <code>snacksOnHand</code> is enough for <code>totalSnacksNeeded</code>, then log both booleans. Set <code>numGuests</code> to <code>7</code> and recompute the capacity alarm. Set <code>snacksOnHand</code> to <code>5</code> and recompute the snack alarm. Log each updated result.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`false true
-true
-false`}</pre>
 </HandbookChallenge>
 
 ---
@@ -162,23 +150,25 @@ const shouldSendReminder = !hasSentInvites; // true if invites aren’t sent yet
 Every UI toggle you’ve ever built uses this pattern somewhere: <code>isOpen</code>, <code>isEditing</code>, <code>isMuted</code>, <code>isDarkMode</code>—they all flip with <code>!</code>.
 
 <HandbookChallenge
-  title="Lights & reminders"
+  title="Flip a status with negation"
   hints={[
-    "Start with <code>let isLightsDimmed = false;</code> near your other booleans.",
-    "Use <code>!variable</code> instead of manually writing true/false each time.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let isLightsDimmed = false;
-console.log(isLightsDimmed); // false
-isLightsDimmed = !isLightsDimmed;
-console.log(isLightsDimmed); // true
-
-const shouldSendReminder = !hasSentInvites;
-console.log(shouldSendReminder);`}</pre>,
+    <>Placing <code>!</code> before a boolean gives you its opposite value.</>,
+    <>Assigning that opposite value back to the same variable creates a toggle.</>,
+    <>The reminder should be the opposite of <code>hasSentInvites</code>.</>,
   ]}
-  answers={
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`false
+true
+false
+false`}</pre>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`let isLightsDimmed = false;
 console.log(isLightsDimmed);
+
 isLightsDimmed = !isLightsDimmed;
 console.log(isLightsDimmed);
+
 isLightsDimmed = !isLightsDimmed;
 console.log(isLightsDimmed);
 
@@ -187,13 +177,8 @@ console.log(shouldSendReminder);`}</pre>
   }
 >
   <p className="m-0">
-    Toggle <code>isLightsDimmed</code> twice with <code>!</code> to simulate testing the room ambiance, logging after each flip. Then create <code>shouldSendReminder</code> that’s <code>true</code> only when invites haven’t gone out yet (<code>!hasSentInvites</code>).
+    Create <code>isLightsDimmed</code> as <code>false</code>. Log it, toggle it twice by assigning <code>!isLightsDimmed</code> back into the variable, and log after each change. Then create <code>shouldSendReminder</code> as the opposite of <code>hasSentInvites</code> and log it.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`false
-true
-false
-false`}</pre>
 </HandbookChallenge>
 
 ---
@@ -217,36 +202,33 @@ console.log(vipGuest);        // "Aunt Jo"
 </Callout>
 
 <HandbookChallenge
-  title="Hold the VIP seat"
+  title="Compare null and undefined"
   hints={[
-    "Set <code>let vipGuest = null;</code> near your booleans.",
-    "Create an object like <code>const extras = { specialSnack: snack };</code> but skip another property.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`let vipGuest = null;
-console.log(vipGuest); // null
-const extras = { specialSnack: snack };
-console.log(extras.bonusDrink); // undefined
-vipGuest = "Aunt Jo";
-console.log(vipGuest);         // "Aunt Jo"
-console.log(extras.bonusDrink); // still undefined`}</pre>,
+    <><code>null</code> is a value you assign deliberately when a slot is intentionally empty.</>,
+    <>Reading a property that does not exist on an object produces <code>undefined</code>.</>,
+    <>Assigning a real value later replaces the earlier <code>null</code>.</>,
   ]}
-  answers={
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`null
+undefined
+Aunt Jo
+undefined`}</pre>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`let vipGuest = null;
 console.log(vipGuest);
+
 const extras = { specialSnack: snack };
 console.log(extras.bonusDrink);
+
 vipGuest = "Aunt Jo";
 console.log(vipGuest);
 console.log(extras.bonusDrink);`}</pre>
   }
 >
   <p className="m-0">
-    Initialize <code>vipGuest</code> to <code>null</code>, log it, then create a small <code>extras</code> object with one defined property and log a missing one to see <code>undefined</code>. Finally assign a real name to <code>vipGuest</code> and print both values again.
+    Create <code>vipGuest</code> with the value <code>null</code> and log it. Create an <code>extras</code> object with a <code>specialSnack</code> property, then log its missing <code>bonusDrink</code> property. Assign <code>"Aunt Jo"</code> to <code>vipGuest</code> and log both values again.
   </p>
-  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`null
-undefined
-Aunt Jo
-undefined`}</pre>
 </HandbookChallenge>
 
 ---

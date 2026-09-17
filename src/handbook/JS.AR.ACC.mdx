@@ -56,32 +56,33 @@ Your starter code includes:
 ### First, do it the “obvious” way
 
 <HandbookChallenge
-title="Add objects the obvious way (and watch what happens)"
-answers={<pre className="m-0 whitespace-pre-wrap">{`const addCar = (car, color) => {
+  title="Reuse one blueprint on the production line"
+  hints={[
+    <>Objects are reference types, so passing the same blueprint into a function passes access to the same object each time.</>,
+    <>Assigning properties directly to the <code>car</code> parameter changes the object that was passed in.</>,
+    <>When the same object is pushed into an array more than once, each entry can point to that same object.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const addCar = (car, color) => {
   car.id = nextId;
   nextId++;
-  car.color = color
+  car.color = color;
   productionLine.push(car);
 };
 
-addCarBad(sedanBlueprint);
-addCarBad(sedanBlueprint);
-addCarBad(sedanBlueprint);
+addCar(sedanBlueprint, "red");
+addCar(sedanBlueprint, "blue");
+addCar(sedanBlueprint, "green");
 
-console.log(productionLine);`}</pre>}
+console.log(productionLine);`}</pre>
+  }
 >
-
-  <div className="m-0">
-<ul className="mt-2 mb-0 list-disc list-inside px-3">
-<li>Write a function named addCar() that takes an object called `car` and a string called `color` as parameters.</li>
-<li>Inside it, assign an id directly onto the car: `car.id = nextId`.</li>
-<li>Update the color property of the car object to match the `color` parameter.</li>
-<li>Increment nextId.</li>
-<li>`.push()` car into productionLine.</li>
-<li>Call addCarBad 3 times using the SAME blueprint object.</li>
-<li>Console.log productionLine and answer: What do you notice?</li>
-</ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Write <code>addCar(car, color)</code>.</li>
+    <li>Inside it, assign <code>car.id = nextId</code>, increment <code>nextId</code>, set <code>car.color</code> from the parameter, and push <code>car</code> into <code>productionLine</code>.</li>
+    <li>Call <code>addCar</code> three times with the same <code>sedanBlueprint</code> object but different colors.</li>
+    <li>Log <code>productionLine</code> and inspect the objects. What do you notice about their IDs and colors?</li>
+  </ul>
 </HandbookChallenge>
 
 ### What’s going on?
@@ -142,16 +143,14 @@ That says:
 Now you’re not mutating the blueprint. You’re creating a new car.
 
 <HandbookChallenge
-title="Add cars without mutating the blueprint"
-hints={[
-"Write a function named addCar(car).",
-"Inside it, create a new object: `const newCar = { ...car, id: nextId }`.",
-"Increment nextId.",
-"Push newCar to productionLine.",
-"Call addCar 3 times using the SAME Hondord blueprint object (for example, `hondordGrove`).",
-"Log productionLine and compare to Challenge M1.",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`const addCar = (car) => {
+  title="Copy the blueprint before adding a car"
+  hints={[
+    <>Spread inside an object literal creates a new outer object with the original object’s properties.</>,
+    <>Put properties after <code>...car</code> when you want those copied values to be overridden.</>,
+    <>Push the newly created object, not the original blueprint, into <code>productionLine</code>.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const addCar = (car) => {
   const newCar = { ...car, id: nextId };
   nextId++;
   productionLine.push(newCar);
@@ -161,20 +160,16 @@ addCar(hondordGrove);
 addCar(hondordGrove);
 addCar(hondordGrove);
 
-console.log(productionLine);`}</pre>}
+console.log(productionLine);`}</pre>
+  }
 >
-
-  <div className="m-0">
-<ul className="mt-2 mb-0 list-disc list-inside px-3">
-<li>Refactor your existing `addCar()` function so it does <em>not</em> change the original car object directly.</li>
-<li>Inside it, create a brand‑new object using the spread operator: `const newCar = { ...car, id: nextId }`.</li>
-<li>Increment `nextId` after you’ve created the new car.</li>
-<li>Push `newCar` into `productionLine` instead of the original `car` blueprint.</li>
-<li>Call `addCar` three times with the same Hondord blueprint object from your starter code (for example, `hondordGrove`).</li>
-<li>Log `productionLine` and compare the result to your first challenge.</li>
-<li><strong>What changed?</strong> How do the `id` values and objects look now?</li>
-</ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Refactor <code>addCar(car)</code> so it does not change the original blueprint.</li>
+    <li>Create <code>newCar</code> with object spread and the current <code>nextId</code>.</li>
+    <li>Increment <code>nextId</code>, then push <code>newCar</code> into <code>productionLine</code>.</li>
+    <li>Call the function three times with the same Hondord blueprint object, such as <code>hondordGrove</code>.</li>
+    <li>Log <code>productionLine</code> and compare its records to the first attempt.</li>
+  </ul>
 </HandbookChallenge>
 
 ---
@@ -192,15 +187,14 @@ You decide to make three “inventories” from the production line.
 ### First, do it the “obvious” way
 
 <HandbookChallenge
-title="Three branches that act suspiciously like one branch"
-hints={[
-"Create the branch inventories using direct assignment:",
-"`const westBranchInventory = productionLine` (same for east/central).",
-"Pop one car from eastBranchInventory into a showroom variable.",
-"Log the three inventories.",
-"Answer: why did they all change together?",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`const westBranchInventory = productionLine;
+  title="Share one inventory across three branches"
+  hints={[
+    <>Assigning an array to another variable copies the reference, not the array itself.</>,
+    <>If three variables all point to <code>productionLine</code>, a mutation through any one of them reaches the same array.</>,
+    <><code>pop()</code> mutates the array it is called on.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const westBranchInventory = productionLine;
 const eastBranchInventory = productionLine;
 const centralBranchInventory = productionLine;
 
@@ -208,17 +202,15 @@ const eastShowroomCar = eastBranchInventory.pop();
 
 console.log("West inventory:", westBranchInventory);
 console.log("East inventory:", eastBranchInventory);
-console.log("Central inventory:", centralBranchInventory);`}</pre>}
+console.log("Central inventory:", centralBranchInventory);`}</pre>
+  }
 >
-
-  <div className="m-0">
-<ul className="mt-2 mb-0 list-disc list-inside px-3">
-<li>Create three branch inventory variables all pointing at the same array: `westBranchInventory`, `eastBranchInventory`, and `centralBranchInventory`, each assigned to `productionLine`.</li>
-<li>Use `pop()` on `eastBranchInventory` to remove one car and store it in a showroom variable (for example, `eastShowroomCar`).</li>
-<li>Log all three inventories: west, east, and central.</li>
-<li><strong>What do you notice?</strong> Why did changing just the east branch affect what you logged for the other branches?</li>
-</ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create <code>westBranchInventory</code>, <code>eastBranchInventory</code>, and <code>centralBranchInventory</code>, assigning each one directly to <code>productionLine</code>.</li>
+    <li>Call <code>pop()</code> on <code>eastBranchInventory</code> and store the removed car in <code>eastShowroomCar</code>.</li>
+    <li>Log all three branch inventories.</li>
+    <li>Explain why changing only the east branch appears to change the other two branches too.</li>
+  </ul>
 </HandbookChallenge>
 
 ### What’s going on?
@@ -250,14 +242,14 @@ That creates a new array with the same items.
 Now each branch can mutate its own array without accidentally stealing from the other branches.
 
 <HandbookChallenge
-title="Independent branch inventories"
-hints={[
-"Create each branch inventory with spread: `[...productionLine]`.",
-"Pop a car from eastBranchInventory.",
-"Log all inventories again.",
-"Only east should change now.",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`const westBranchInventory = [...productionLine];
+  title="Give each branch its own inventory array"
+  hints={[
+    <>Spread inside an array literal creates a new outer array containing the same items.</>,
+    <>Create each branch inventory separately instead of assigning the shared <code>productionLine</code> reference.</>,
+    <>After copying, mutating one branch’s outer array should not change the other branch arrays.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const westBranchInventory = [...productionLine];
 const eastBranchInventory = [...productionLine];
 const centralBranchInventory = [...productionLine];
 
@@ -265,18 +257,15 @@ const eastShowroomCar = eastBranchInventory.pop();
 
 console.log("West inventory:", westBranchInventory);
 console.log("East inventory:", eastBranchInventory);
-console.log("Central inventory:", centralBranchInventory);`}</pre>}
+console.log("Central inventory:", centralBranchInventory);`}</pre>
+  }
 >
-
-  <div className="m-0">
-<ul className="mt-2 mb-0 list-disc list-inside px-3">
-<li>Create three new branch inventory arrays using spread, for example: `const eastBranchInventory = [...productionLine]` (and the same pattern for west and central).</li>
-<li>Each branch should start with its own copy of the cars, not a shared reference.</li>
-<li>Use `pop()` on `eastBranchInventory` to move one car into a showroom variable.</li>
-<li>Log all three branch inventories again.</li>
-<li><strong>What changed?</strong> Which inventories lost a car this time, and which stayed exactly the same?</li>
-</ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create three branch inventory arrays using <code>[...productionLine]</code>.</li>
+    <li>Use <code>pop()</code> on <code>eastBranchInventory</code> and store the removed car.</li>
+    <li>Log all three inventories.</li>
+    <li>Compare the result with the shared-reference version. Which inventory changes now?</li>
+  </ul>
 </HandbookChallenge>
 
 ---

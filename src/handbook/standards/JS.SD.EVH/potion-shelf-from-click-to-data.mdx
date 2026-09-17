@@ -57,33 +57,7 @@ So the core pattern for this part is:
 
 ## Canonical snippet: the “identify and lookup” pattern
 
-This is the smallest “real” version of the move, using a neutral example.
-
 Imagine you have a list of cities, each `<li>` has `data-city-id`, and clicking a city should display its population.
-
-### Data
-
-```js
-const cities = [
-  { id: 1, name: "Nashville", population: 715_000 },
-  { id: 2, name: "Chicago", population: 2_665_000 },
-  { id: 3, name: "Seattle", population: 749_000 }
-];
-```
-
-### Markup idea
-
-```html
-<ul id="cityList">
-  <li data-city-id="1">Nashville</li>
-  <li data-city-id="2">Chicago</li>
-  <li data-city-id="3">Seattle</li>
-</ul>
-
-<section id="cityDetails">Click a city…</section>
-```
-
-### Listener + lookup
 
 ```js
 document.addEventListener("click", (event) => {
@@ -98,16 +72,7 @@ document.addEventListener("click", (event) => {
 });
 ```
 
-### What’s happening here?
-
-1. `closest("li[data-city-id]")` finds the *right* `<li>` even if you clicked inside it.
-2. If you didn’t click a city, it returns `null`, and you safely do nothing.
-3. `dataset` gives you the id stored on that element.
-4. You convert it to a number so you can compare ids correctly.
-5. `.find()` gets the matching object from your data array.
-6. You update a details area in the DOM using a template literal.
-
-Same move every time: **click → id → find → display**.
+The same move applies here: **click → id → find → display**.
 
 ---
 
@@ -153,25 +118,22 @@ This part is not “a math lesson.” It’s a practical reality of web apps:
 <Callout type="tip" title="closest() + guard clause is a safety rail">
   <p>Most clicks on your page are irrelevant to your feature.</p>
   <p>If your handler tries to run feature logic on <em>every click</em>, you’ll get confusing bugs.</p>
-  <p>This is the safety pattern:</p>
-  <ul>
-    <li>find the element you care about</li>
-    <li>if it isn’t there, <code>return</code></li>
-  </ul>
-  <p>That’s not extra code. That’s how you keep your handler sane.</p>
+  <p>This is the safety pattern: find the element you care about, and if it is not there, <code>return</code>.</p>
 </Callout>
 
 ---
 
 <HandbookChallenge
-  title="Click a potion → show its effect"
+  title="Show the effect for the clicked potion"
   hints={[
-    "Use event.target.closest('li[data-potion-id]') and return early if it's null.",
-    "dataset values are strings — parseInt before comparing ids.",
-    "Use getPotions().find(...) and getEffects().find(...) to locate matching objects.",
-    "Render into #details with innerHTML so the UI updates immediately.",
+    <>Start by identifying a potion row with <code>closest()</code>; if the click was not inside one, stop the handler early.</>,
+    <>The id from <code>dataset</code> is a string, so convert it before comparing it with numeric object ids.</>,
+    <>Use one lookup to find the potion, then the potion’s <code>effectId</code> to find its related effect before rendering the details.</>,
   ]}
-  answers={
+  expected={
+    <p className="m-0">Clicking different potion rows should update the Effect panel with that potion’s name, effect description, and warning. Clicking outside the potion list should leave the panel unchanged.</p>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`// /scripts/handlers.js
 import { getEffects, getPotions } from "./database.js";
 
@@ -194,26 +156,15 @@ export const bindEvents = () => {
       <p class="details__line"><strong>Warning:</strong> \${effect.warning}</p>
     \`;
   });
-};
-`}</pre>
+};`}</pre>
   }
 >
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Open `/scripts/handlers.js`.</li>
-      <li>Find your document click listener inside `bindEvents()`.</li>
-      <li>Replace the debugging `console.dir(...)` line with real feature logic.</li>
-      <li>Use `event.target.closest('li[data-potion-id]')` to find the clicked potion list item.</li>
-      <li>If no matching `<li>` is found, `return` early (guard clause).</li>
-      <li>Read the potion id from `dataset` and convert it with `parseInt(...)`.</li>
-      <li><strong>Import</strong> `getPotions` and `getEffects` from `"./database.js"`.</li>
-      <li>Use `.find()` to locate the clicked potion, then use `effectId` to find the matching effect.</li>
-      <li>Select `#details` and set `#details.innerHTML` to show the potion name, effect description, and effect warning.</li>
-      <li>Refresh and confirm: clicking different potions updates the Effect panel.</li>
-      <li>Click outside the potion list and confirm: nothing changes.</li>
-      <li>Keep vs Trash: Keep the document click listener, `closest()` + guard clause, `data-potion-id` + `dataset`, and the `.find()` lookup. Trash the inspect-only logging line.</li>
-    </ul>
-  </div>
+  <p className="m-0">
+    In <code>/scripts/handlers.js</code>, replace the inspect-only click logging with the real feature. Find the nearest <code>li[data-potion-id]</code> and return when there is none. Read and parse its potion id, import <code>getPotions</code> and <code>getEffects</code>, find the matching potion and then its effect, and render the potion name, description, and warning into <code>#details</code>. Test several potions and one click outside the list.
+  </p>
+  <Callout type="note" title="Keep this">
+    <p className="m-0">Keep the document click listener, <code>closest()</code> guard, <code>dataset</code> id, and <code>.find()</code> lookups. The earlier inspect-only <code>console.dir()</code> has done its job.</p>
+  </Callout>
 </HandbookChallenge>
 
 ---

@@ -50,31 +50,29 @@ const book3 = {
 ```
 
 <HandbookChallenge
-title="Challenge D1: Create `book3`"
-hints={[
-  "Follow the same shape as book1 and book2.",
-  "Include at least title, author, pages, and isPaperback.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book3 = {
+  title="Create the third book object"
+  hints={[
+    <>Use the same object shape you used for <code>book1</code> and <code>book2</code>.</>,
+    <>A consistent shape means the same property names can describe every book.</>,
+    <>Read one field with dot notation after you create the object.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Oathbringer`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const book3 = {
   title: "Oathbringer",
   author: "Brandon Sanderson",
   pages: 1248,
   isPaperback: false,
 };
 
-console.log(book3.title);`}</pre>,
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`const book3 = {
-  title: "Oathbringer",
-  author: "Brandon Sanderson",
-  pages: 1248,
-  isPaperback: false,
-};
-
-console.log(book3.title); // Oathbringer`}</pre>}
+console.log(book3.title);`}</pre>
+  }
 >
   <p className="m-0">
-    Define a <code>book3</code> object with the same fields as your earlier books, then log its title to confirm.
-    </p>
+    Define a <code>book3</code> object with <code>title</code>, <code>author</code>, <code>pages</code>, and <code>isPaperback</code> properties. Use <code>"Oathbringer"</code>, <code>"Brandon Sanderson"</code>, <code>1248</code>, and <code>false</code>, then log the title.
+  </p>
 </HandbookChallenge>
 
 ---
@@ -91,21 +89,28 @@ console.log(books[2].author);   // third book’s author
 ```
 
 <HandbookChallenge
-title="Challenge D2: Assemble `books` array"
-hints={[
-  "Create a constant named books that holds [book1, book2, book3].",
-  "Use books.length to log how many books are on the shelf.",
-  "Use books[0].title and books[2].author to read specific fields.",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`const books = [book1, book2, book3];
+  title="Assemble the books array"
+  hints={[
+    <>An array can hold objects just as easily as strings or numbers.</>,
+    <>Use an index to choose one object, then dot notation to choose a property on that object.</>,
+    <>The pattern looks like <code>someArray[index].property</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`3
+The Way of Kings
+Brandon Sanderson`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const books = [book1, book2, book3];
 
-console.log(books.length);    // 3
-console.log(books[0].title);  // The Way of Kings
-console.log(books[2].author); // Brandon Sanderson`}</pre>}
+console.log(books.length);
+console.log(books[0].title);
+console.log(books[2].author);`}</pre>
+  }
 >
   <p className="m-0">
-    Build a <code>books</code> array containing your three book objects, then practice reading its length and a couple of fields using index + dot notation.
-    </p>
+    Create a <code>books</code> array containing <code>book1</code>, <code>book2</code>, and <code>book3</code>. Log the array’s length, the first book’s title, and the third book’s author.
+  </p>
 </HandbookChallenge>
 
 > If an index is out of range, <code>books[index]</code> is <code>undefined</code>. If a key is misspelled, <code>books[1].pagse</code> also gives <code>undefined</code>. Keep both indexes and property names precise.
@@ -123,20 +128,26 @@ console.log(books[1]);       // shows updated pages
 ```
 
 <HandbookChallenge
-title="Challenge D3: Update one record through `books`"
-hints={[
-  "Start by logging books[1].pages to see the current count.",
-  "Assign a new number to books[1].pages to simulate an updated edition.",
-  "Log books[1] again to see the full updated object.",
-]}
-answers={<pre className="m-0 whitespace-pre-wrap">{`console.log(books[1].pages);
+  title="Update a book through the array"
+  hints={[
+    <>The second book lives at index <code>1</code>.</>,
+    <>After selecting the object from the array, dot notation can reach its <code>pages</code> property.</>,
+    <>Assigning a new number to that property changes the same object already stored in the array.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`1087
+1100`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(books[1].pages);
 books[1].pages = 1100;
-console.log(books[1]);
-// { title: "Words of Radiance", author: "Brandon Sanderson", pages: 1100, isPaperback: false }`}</pre>}
+console.log(books[1].pages);
+console.log(books[1]);`}</pre>
+  }
 >
   <p className="m-0">
-    Use the <code>books</code> array plus dot notation to fix the page count for the second book. Logging before and after makes the change obvious.
-    </p>
+    Log the current page count for the second book, change it to <code>1100</code> through the <code>books</code> array, then log the new page count and the full updated object.
+  </p>
 </HandbookChallenge>
 
 > <code>const books = [book1, book2, book3]</code> keeps the variable’s link to the array stable. Editing a field inside one of the objects is normal and allowed.
@@ -178,4 +189,3 @@ console.log(books[2].author);
 ```
 
 In the next chapter, you’ll pick up this same <code>books</code> array and learn **array methods** like <code>push</code>, <code>pop</code>, <code>shift</code>, and <code>unshift</code>—tools that let you add and remove books from either end of the shelf without juggling indexes by hand.
-

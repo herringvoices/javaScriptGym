@@ -19,7 +19,7 @@ At the beginning of this project, the League needed a report like this:
 League of Heroes Roster Audit
 
 Heroes on roster: 4
-Average power level: 63.25
+Average power level: 15.75
 First responder: Scuba Driver
 Newest recruit: Neon Volt
 Audit status: Ready for review
@@ -38,8 +38,6 @@ Now it does.
 ## Clear Out the Old Checks
 
 Before you build the final audit, delete the temporary `console.log()` calls you made for Chapter 6.
-
-You already used them to prove that the roster is in good shape. The final audit should be easy for the League director to read without making them scroll through every diagnostic check you have ever performed.
 
 Keep your `roster` array and hero objects. Keep the imported-value work if you want to refer back to it. Just clean up the console logs that are no longer part of the final report.
 
@@ -61,10 +59,6 @@ Use the `roster` array to create a variable called `heroCount`.
 
 It should store the number of hero objects in the array.
 
-```txt
-4
-```
-
 ### Average Power Level
 
 Create a variable called `totalPowerLevel`.
@@ -75,25 +69,36 @@ Then create a variable called `averagePowerLevel`.
 
 Use `totalPowerLevel` and `heroCount` to calculate the average.
 
-Your console should show:
-
-```txt
-63.25
-```
-
 <HandbookChallenge
-  title="Calculate the Average"
+  title="Calculate the average power level"
   hints={[
-    "Get each hero's `powerLevel` from the `roster` array.",
-    "Add those values together first.",
-    "Divide the total by `heroCount`."
+    <>Read each <code>powerLevel</code> from the hero objects already stored in <code>roster</code>.</>,
+    <>First calculate one total, then divide that total by <code>heroCount</code>.</>,
+    <>The average should be derived from the data, not written as the expected final number.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`15.75`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const heroCount = roster.length;
+
+const totalPowerLevel =
+  roster[0].powerLevel +
+  roster[1].powerLevel +
+  roster[2].powerLevel +
+  roster[3].powerLevel;
+
+const averagePowerLevel = totalPowerLevel / heroCount;
+console.log(averagePowerLevel);`}</pre>
+  }
 >
-  Create `totalPowerLevel` and `averagePowerLevel`, then log the average.
+  <p className="m-0">
+    Create <code>heroCount</code> from <code>roster.length</code>. Add the four roster power levels into <code>totalPowerLevel</code>, then divide that total by <code>heroCount</code> to create <code>averagePowerLevel</code>. Log the average and confirm it comes from the roster values rather than a hard-coded answer.
+  </p>
 </HandbookChallenge>
 
 <Callout type="tip" title="Use the data, not the answer">
-  Do not write `63.25` directly into `averagePowerLevel`.
+  Do not write `15.75` directly into `averagePowerLevel`.
 
   The average should come from the actual power levels in your roster. That way, the report would still update if one of the hero records changed later.
 </Callout>
@@ -104,12 +109,6 @@ The first hero in the roster is the current first responder.
 
 Create a variable called `firstResponder` that stores that hero's name.
 
-Your console should show:
-
-```txt
-Scuba Driver
-```
-
 ### Newest Recruit
 
 Neon Volt was the most recently added permanent member of the roster.
@@ -117,12 +116,6 @@ Neon Volt was the most recently added permanent member of the roster.
 Create a variable called `newestRecruit` that stores the name of the last hero in the roster.
 
 Use `.length - 1` instead of a direct index.
-
-Your console should show:
-
-```txt
-Neon Volt
-```
 
 <PracticeCard
   prompt="Why is `roster[roster.length - 1]` a better choice than `roster[3]` for the newest recruit?"
@@ -139,51 +132,51 @@ Set it to:
 Ready for review
 ```
 
-The roster is organized, the data is cleaned, and you have checked the important values. The League may proceed with its extremely normal and definitely fish-free press event.
-
 ## Build the Final Report
 
 Now use one template literal to log the final roster audit.
 
 Your report should use the variables you created above. Do not type hero names, counts, or the average directly into the template literal.
 
-Your console should show exactly:
-
-```txt
-League of Heroes Roster Audit
+<HandbookChallenge
+  title="Publish the roster audit"
+  hints={[
+    <>Create <code>firstResponder</code> from the first roster object and <code>newestRecruit</code> from the last roster object before building the report.</>,
+    <>A multi-line template literal can preserve the line breaks shown in the target output.</>,
+    <>Interpolate the prepared variables so the report stays connected to the roster data.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`League of Heroes Roster Audit
 
 Heroes on roster: 4
-Average power level: 63.25
+Average power level: 15.75
 First responder: Scuba Driver
 Newest recruit: Neon Volt
-Audit status: Ready for review
-```
+Audit status: Ready for review`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const firstResponder = roster[0].heroName;
+const newestRecruit = roster[roster.length - 1].heroName;
+const auditStatus = "Ready for review";
 
-<HandbookChallenge
-  title="Publish the Roster Audit"
-  hints={[
-    "Use one template literal inside `console.log()`.",
-    "Put each audit value on its own line.",
-    "Use the variables you created instead of hardcoding the final values."
-  ]}
+console.log(\`League of Heroes Roster Audit
+
+Heroes on roster: \${heroCount}
+Average power level: \${averagePowerLevel}
+First responder: \${firstResponder}
+Newest recruit: \${newestRecruit}
+Audit status: \${auditStatus}\`);`}</pre>
+  }
 >
-  Build and log the complete League of Heroes Roster Audit.
+  <p className="m-0">
+    Create <code>firstResponder</code>, <code>newestRecruit</code>, and <code>auditStatus</code> from the rules above. Then build and log the complete audit as one template literal using <code>heroCount</code>, <code>averagePowerLevel</code>, and the other prepared variables. Do not hard-code the final names, count, or average into the report.
+  </p>
 </HandbookChallenge>
 
 <details>
 <summary>Template-literal reminder</summary>
 
-A template literal uses backticks:
-
-```js
-console.log(`Your text goes here`);
-```
-
-To place a variable's value inside the text, use `${}`:
-
-```js
-console.log(`Heroes on roster: ${heroCount}`);
-```
+A template literal uses backticks and inserts values with `${}`.
 
 </details>
 
@@ -191,18 +184,7 @@ console.log(`Heroes on roster: ${heroCount}`);
 
 Before you call it finished, make one small temporary change to the roster.
 
-You could:
-
-- increase one hero's `powerLevel`
-- add another hero to the end of the roster
-- remove the last hero
-- move a hero to the front
-
-Then run the final audit again.
-
-Notice which parts of the report change automatically.
-
-When you are finished testing, undo the temporary change so your final output matches the checkpoint.
+You could increase one hero's `powerLevel`, add another hero, remove the last hero, or move a hero to the front. Run the final audit again and notice which values update automatically. Then undo the temporary change.
 
 <Callout type="note" title="This is why data structures matter">
   The report does not need to know every hero's name and power level in advance.
@@ -218,7 +200,7 @@ Your final console output should be:
 League of Heroes Roster Audit
 
 Heroes on roster: 4
-Average power level: 63.25
+Average power level: 15.75
 First responder: Scuba Driver
 Newest recruit: Neon Volt
 Audit status: Ready for review

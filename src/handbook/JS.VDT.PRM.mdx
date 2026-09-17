@@ -18,7 +18,7 @@ We build a box with the keyword `let`—a special, reserved word in JavaScript. 
 
 ### Name the box (the label)
 
-After we build the box, we need to create a label for it—the variable’s name. Choose names that **say what’s inside** and still make sense a week from now. Imagine leaving a sticky note for future‑you and your teammates.
+After we build our box, we need to create a label for it—the variable’s name. Choose names that **say what’s inside** and still make sense a week from now. Imagine leaving a sticky note for future‑you and your teammates.
 
 **Bad → Better (and why)**
 
@@ -67,28 +67,30 @@ let myName = "Nick";
 console.log(myName); // "Nick"
 ```
 
----
-
 <HandbookChallenge
-title="Meet the host"
-hints={[
-"Use let to declare the box before you try to log it.",
-"You should see undefined the first time because nothing is inside yet.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let viewerName;\nconsole.log(viewerName); // undefined\nviewerName = "Milo";\nconsole.log(viewerName);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`let viewerName;\nconsole.log(viewerName); // undefined\nviewerName = "Milo";\nconsole.log(viewerName);`}</pre>
-}
+  title="Create the viewer name"
+  hints={[
+    <>A declared variable with no assigned value evaluates to <code>undefined</code>.</>,
+    <>The first log has to happen before the assignment if you want to observe that empty state.</>,
+    <>Remember that <code>let viewerName;</code> declares the variable without assigning a value.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`undefined
+Milo`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`let viewerName;
+console.log(viewerName); // undefined
+viewerName = "Milo";
+console.log(viewerName);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Start the Movie Night Planner by declaring <code>let viewerName;</code>. Log it (you should see <code>undefined</code>), assign your own name as a string, then log again so the console reflects the change.
+    Start the Movie Night Planner with a variable named <code>viewerName</code>. Declare it without a value and log it. Then assign your own name as a string and log it again so you can see the value change.
   </p>
-
-  <p className="mt-3 mb-1 text-slate-300"><strong>Expected console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`undefined\nMilo`}</pre>
 </HandbookChallenge>
 
 ---
-
 
 ## Changing what’s in the box (reassignment)
 
@@ -109,25 +111,36 @@ console.log(currentScore); // 150
 ```
 
 <HandbookChallenge
-title="Add flexible details"
-hints={[
-"Keep the <code>viewerName</code> code from the last challenge in your editor.",
-"Store each detail in its own box so you can reuse it later.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`// viewerName already exists above\nlet currentMood = "chill";\nconsole.log(currentMood);\ncurrentMood = "excited";\nlet snack = "kettle corn";\nconsole.log(viewerName, snack, currentMood);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`let viewerName;\nconsole.log(viewerName); // undefined\nviewerName = "Milo";\nconsole.log(viewerName);\n\nlet currentMood = "chill";\nconsole.log(currentMood); // chill\ncurrentMood = "excited";\nlet snack = "kettle corn";\nconsole.log(viewerName, snack, currentMood);`}</pre>
-}
->
+  title="Update the planning details"
+  hints={[
+    <>Use <code>let</code> for values you plan to change later.</>,
+    <>Reassignment uses the existing variable name and <code>=</code>; you do not write <code>let</code> a second time.</>,
+    <>Keep each piece of information in its own variable so you can reuse and log them together.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`chill
+<your name> <your snack> <new mood>`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`let viewerName;
+console.log(viewerName); // undefined
+viewerName = "Milo";
+console.log(viewerName);
 
+let currentMood = "chill";
+console.log(currentMood); // chill
+currentMood = "excited";
+let snack = "kettle corn";
+console.log(viewerName, snack, currentMood);`}</pre>
+  }
+>
   <Callout type="note" title="Starting point">
-    <p className="m-0">You should still have <code>viewerName</code> declared and assigned above this challenge.</p>
+    <p className="m-0">Keep the <code>viewerName</code> code from the previous challenge in your editor.</p>
   </Callout>
 
   <p className="m-0">
-    Add new variables that might change during planning: <code>currentMood</code> (start with <code>"chill"</code> and then reassign to something else) and <code>snack</code>. Log them along with <code>viewerName</code> so you can confirm everything is stored.
+    Add <code>currentMood</code> with a starting value of <code>"chill"</code> and add a <code>snack</code> variable. Log the starting mood, reassign <code>currentMood</code> to a different string, then log <code>viewerName</code>, <code>snack</code>, and <code>currentMood</code> together.
   </p>
-
-  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`chill\nMilo kettle corn excited`}</pre>
 </HandbookChallenge>
 
 Now, sometimes we don’t want a value to change. Think about a person’s birth date, the number of days in a week, or the name of your website. These things aren’t supposed to be reassigned later in the code.
@@ -152,30 +165,45 @@ console.log(favColor);
 ```
 
 <HandbookChallenge
-title="Lock the constants"
-hints={[
-"Use <code>const</code> for facts that should never change mid-script.",
-"Keep <code>let</code> for things like mood that can update as the night evolves.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`const location = "living room";\nconst streamingService = "CouchFlix";\nconsole.log(location, streamingService);\n\nlet currentMood = "chill";\nconsole.log(currentMood);\ncurrentMood = "energized";\nconsole.log(currentMood);`}</pre>,
+  title="Separate fixed and changing values"
+  hints={[
+    <>Choose <code>const</code> when you do not plan to reassign a variable.</>,
+    <>Keep changing values such as <code>currentMood</code> declared with <code>let</code>.</>,
+    <>Only reassign the variable that is supposed to change. A <code>const</code> assignment cannot be replaced later.</>,
   ]}
-  answers={     <pre className="m-0 whitespace-pre-wrap">{`let viewerName;\nconsole.log(viewerName);\nviewerName = "Milo";\nconsole.log(viewerName);\n\nlet snack = "kettle corn";\nlet currentMood = "chill";\ncurrentMood = "excited";\nconsole.log(snack, currentMood);\n\nconst location = "living room";\nconst streamingService = "CouchFlix";\nconsole.log(location, streamingService);\n\n// location = "backyard"; // TypeError if you uncomment this line`}</pre>
-}
->
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`living room CouchFlix
+chill
+energized`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`let viewerName = "Milo";
+let snack = "kettle corn";
+let currentMood = "chill";
 
+const location = "living room";
+const streamingService = "CouchFlix";
+console.log(location, streamingService);
+
+console.log(currentMood);
+currentMood = "energized";
+console.log(currentMood);
+
+// location = "backyard"; // TypeError if you uncomment this line`}</pre>
+  }
+>
   <Callout type="note" title="Starting point">
     <p className="m-0">Leave <code>viewerName</code>, <code>snack</code>, and <code>currentMood</code> from previous challenges in your editor.</p>
   </Callout>
 
   <div className="space-y-2">
     <p className="m-0">
-      Add <code>const location</code> and <code>const streamingService</code> for details that should stay fixed. Then log and reassign <code>currentMood</code> (or another <code>let</code>) to show the contrast between flexible and locked-down values.
+      Add <code>const location</code> and <code>const streamingService</code> for details that should stay fixed. Log both constants. Then set <code>currentMood</code> to <code>"chill"</code>, log it, reassign it to <code>"energized"</code>, and log it again so the difference between fixed and changing values is visible.
     </p>
     <p className="m-0">
       Optional: temporarily try to reassign <code>location</code> to see the TypeError, then comment that line out.
     </p>
   </div>
-
-  <p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-  <pre className="m-0 whitespace-pre-wrap">{`living room CouchFlix\nchill\nenergized`}</pre>
 </HandbookChallenge>
 <br/>
 

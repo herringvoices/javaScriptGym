@@ -48,31 +48,29 @@ console.log(redTeam, blueTeam); // 5 4
 ```
 
 <HandbookChallenge
-title="Count the guest list"
-hints={[
-"Keep your string variables above this section and add numbers underneath them.",
-"Use multiplication to calculate totals instead of doing the math in your head.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let numGuests = 3;
-const snacksPerGuest = 2;
-const drinksPerGuest = 1;
-let totalSnacksNeeded = numGuests * snacksPerGuest;
-let totalDrinksNeeded = numGuests * drinksPerGuest;
-console.log(totalSnacksNeeded, totalDrinksNeeded);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`let numGuests = 3;
+  title="Calculate snacks and drinks for the guests"
+  hints={[
+    <>Store each count as a number, without quotation marks.</>,
+    <>The total for one supply is the number of guests multiplied by the amount each guest needs.</>,
+    <>Use <code>*</code> for multiplication.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`6 3`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`let numGuests = 3;
 const snacksPerGuest = 2;
 const drinksPerGuest = 1;
 
 let totalSnacksNeeded = numGuests * snacksPerGuest;
 let totalDrinksNeeded = numGuests * drinksPerGuest;
-console.log(totalSnacksNeeded, totalDrinksNeeded); // 6 3`}</pre>
-}
+
+console.log(totalSnacksNeeded, totalDrinksNeeded);`}</pre>
+  }
 >
-
-	<p className="m-0">
-		Extend the Movie Night Planner by storing how many guests are coming plus how many snacks and drinks each person needs. Multiply to compute <code>totalSnacksNeeded</code> and <code>totalDrinksNeeded</code>, then log both numbers.
-		</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`6 3`}</pre>
+  <p className="m-0">
+    Add <code>numGuests</code> with a value of <code>3</code>, <code>snacksPerGuest</code> with <code>2</code>, and <code>drinksPerGuest</code> with <code>1</code>. Calculate <code>totalSnacksNeeded</code> and <code>totalDrinksNeeded</code> with multiplication, then log both totals.
+  </p>
 </HandbookChallenge>
 
 ---
@@ -116,40 +114,34 @@ console.log(total); // 2
 > Same rule as before: JavaScript evaluates the **right-hand side first**, then assigns the result to the **single** variable on the left.
 
 <HandbookChallenge
-title="RSVP ripple"
-hints={[
-"Re-use <code>numGuests</code>, <code>snacksPerGuest</code>, and <code>drinksPerGuest</code> from the previous challenge.",
-"Every time the guest count changes, recompute the totals so the planner doesn’t drift.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`numGuests += 1;
-totalSnacksNeeded = numGuests * snacksPerGuest;
-totalDrinksNeeded = numGuests * drinksPerGuest;
-console.log(numGuests, totalSnacksNeeded);
-
-numGuests -= 2;
-totalSnacksNeeded = numGuests * snacksPerGuest;
-totalDrinksNeeded = numGuests * drinksPerGuest;
-console.log(numGuests, totalSnacksNeeded);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`numGuests += 1; // a friend brings a plus-one
+  title="Update the totals when RSVPs change"
+  hints={[
+    <>Compound assignment changes the value already stored in a variable.</>,
+    <>The supply totals depend on <code>numGuests</code>, so changing the guest count makes the old totals stale.</>,
+    <>Re-run the multiplication expressions after each guest-count change.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`4 8 4
+2 4 2`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`numGuests += 1;
 totalSnacksNeeded = numGuests * snacksPerGuest;
 totalDrinksNeeded = numGuests * drinksPerGuest;
 console.log(numGuests, totalSnacksNeeded, totalDrinksNeeded);
 
-numGuests -= 2; // two people drop out
+numGuests -= 2;
 totalSnacksNeeded = numGuests * snacksPerGuest;
 totalDrinksNeeded = numGuests * drinksPerGuest;
 console.log(numGuests, totalSnacksNeeded, totalDrinksNeeded);`}</pre>
-}
+  }
 >
-
-	<Callout type="note" title="Starting point">
-		<p className="m-0">Your editor should already contain <code>numGuests</code>, <code>snacksPerGuest</code>, <code>drinksPerGuest</code>, and the running totals.</p>
-	</Callout>
-	<p className="m-0">
-		Use <code>+=</code> and <code>-=</code> to react when guests RSVP yes/no. After each change, recompute <code>totalSnacksNeeded</code> and <code>totalDrinksNeeded</code>, then log the new counts.
-		</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`4 8 4
-2 4 2`}</pre>
+  <Callout type="note" title="Starting point">
+    <p className="m-0">Keep <code>numGuests</code>, <code>snacksPerGuest</code>, <code>drinksPerGuest</code>, and both running totals from the previous challenge.</p>
+  </Callout>
+  <p className="m-0">
+    Add one guest with <code>+=</code>, recompute both supply totals, and log the guest/snack/drink counts. Then remove two guests with <code>-=</code>, recompute the totals again, and log the new counts.
+  </p>
 </HandbookChallenge>
 
 ---
@@ -166,26 +158,26 @@ console.log(2 + 2);       // 4   (two numbers added)
 ```
 
 <HandbookChallenge
-title="Label or add?"
-hints={[
-"Log both the numeric math and the string version so you can see the difference.",
-"You already have <code>numGuests</code> and <code>totalSnacksNeeded</code> from earlier.", <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(numGuests + 2); // numeric addition
-console.log(numGuests + " guests confirmed"); // string concatenation
-console.log("Snacks: " + totalSnacksNeeded);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`console.log(numGuests + 2); // adds 2 more guests numerically
-console.log(numGuests + " guests confirmed"); // turns the number into text
+  title="Compare addition and concatenation"
+  hints={[
+    <>When both operands are numbers, <code>+</code> performs numeric addition.</>,
+    <>When a string is involved, <code>+</code> builds text instead.</>,
+    <>Try reading each expression from left to right and asking what type of value is involved.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`4
+2 guests confirmed
+Snacks: 4`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(numGuests + 2);
+console.log(numGuests + " guests confirmed");
 console.log("Snacks: " + totalSnacksNeeded);`}</pre>
-}
+  }
 >
-
-	<p className="m-0">
-		Log three lines: the numeric total if two more people show up, a string label like <code>"4 guests confirmed"</code>, and another label for snacks. Notice how the same <code>+</code> either adds or concatenates depending on whether you involve a string.
-		</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`5
-3 guests confirmed
-Snacks: 6`}</pre>
+  <p className="m-0">
+    Using the current values from the previous challenge, log three expressions: <code>numGuests + 2</code>, a label made from <code>numGuests + " guests confirmed"</code>, and a snacks label made from <code>"Snacks: " + totalSnacksNeeded</code>. Compare what <code>+</code> does in each line.
+  </p>
 </HandbookChallenge>
 
 For now, keep it simple: **quotes = text** (glue with `+`), **no quotes = numbers** (add with `+`). We'll explore mixing types and coercion later.
@@ -209,35 +201,30 @@ console.log(cookiesEach); // 4
 ```
 
 <HandbookChallenge
-title="Snack stock math"
-hints={[
-"Introduce <code>snacksOnHand</code> so you can compare inventory to the total needed.",
-"Use division to estimate how many bowls you’ll fill (e.g., 4 snacks fit in one bowl).", <pre key="peek" className="m-0 whitespace-pre-wrap">{`let snacksOnHand = 10;
+  title="Calculate bowls and remaining snacks"
+  hints={[
+    <>Division answers how many groups of one size fit into another number.</>,
+    <>Changing <code>snacksOnHand</code> with <code>+=</code> updates the inventory before you subtract what guests need.</>,
+    <>The remaining amount is inventory minus <code>totalSnacksNeeded</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`1
+8`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`let snacksOnHand = 10;
 const snacksPerBowl = 4;
 let bowlsNeeded = totalSnacksNeeded / snacksPerBowl;
 console.log(bowlsNeeded);
 
-snacksOnHand += 2; // grabbed another bag
-const snacksRemaining = snacksOnHand - totalSnacksNeeded;
-console.log(snacksRemaining);`}</pre>,
-]}
-answers={ <pre className="m-0 whitespace-pre-wrap">{`let snacksOnHand = 10;
-const snacksPerBowl = 4;
-let bowlsNeeded = totalSnacksNeeded / snacksPerBowl;
-console.log(bowlsNeeded); // 1.5 if you need 6 snacks
-
 snacksOnHand += 2;
 const snacksRemaining = snacksOnHand - totalSnacksNeeded;
 console.log(snacksRemaining);`}</pre>
-}
+  }
 >
-
-	<p className="m-0">
-		Track how many snacks you already have (<code>snacksOnHand</code>), calculate how many bowls you need with division, then update <code>snacksOnHand</code> if you buy more. Finally, subtract to see how many snacks remain after covering guests.
-		</p>
-	<p className="mt-3 mb-1 text-slate-300"><strong>Example console output:</strong></p>
-	<pre className="m-0 whitespace-pre-wrap">{`1.5
-6`}</pre>
+  <p className="m-0">
+    Create <code>snacksOnHand</code> with <code>10</code> and <code>snacksPerBowl</code> with <code>4</code>. Divide <code>totalSnacksNeeded</code> by <code>snacksPerBowl</code> and log the result. Then add two snacks to the inventory, subtract what the guests need, and log <code>snacksRemaining</code>.
+  </p>
 </HandbookChallenge>
 <br/>
 

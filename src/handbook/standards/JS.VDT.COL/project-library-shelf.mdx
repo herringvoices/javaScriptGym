@@ -27,7 +27,6 @@ You’ll model a `library`:
   <p className="m-0">
     We’ll <strong>simulate</strong> that by keeping a counter called <code>nextBookId</code> in our code. When you create a book, you assign the current <code>nextBookId</code> as its <code>id</code>, then bump <code>nextBookId</code> up by 1 so the next book gets a fresh number.
   </p>
-
 </Callout>
 
 ---
@@ -37,19 +36,25 @@ You’ll model a `library`:
 Describe the library in an object so it can own a `books` array and a little metadata. Then set up your counter for IDs.
 
 <HandbookChallenge
-title="Build the library object + start the ID counter"
-answers={`const library = {\n  name: "East Nashville Free Library",\n  librarian: "Nick",\n  books: []\n};\nlet nextBookId = 1;`}
->
+  title="Create the library and ID counter"
+  hints={[
+    <>The library itself is one object with related properties.</>,
+    <>The <code>books</code> property should start as an empty array because the shelf has no records yet.</>,
+    <>The ID counter needs <code>let</code> because its number will change as books are added.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const library = {
+  name: "East Nashville Free Library",
+  librarian: "Nick",
+  books: []
+};
 
+let nextBookId = 1;`}</pre>
+  }
+>
   <p className="m-0">
-    Describe the shape of <code>library</code> and the data types of its properties. The answer shows what it looks like in code.
+    Create a <code>library</code> object with <code>name</code>, <code>librarian</code>, and <code>books</code> properties. Use strings for the first two and start <code>books</code> as an empty array. Then create <code>nextBookId</code> with a starting value of <code>1</code>.
   </p>
-  <ul className="mt-2 mb-0 space-y-1">
-    <li><code>name</code>: string</li>
-    <li><code>librarian</code>: string</li>
-    <li><code>books</code>: array (starts empty)</li>
-  </ul>
-  <p className="m-0">Also create a variable <code>nextBookId</code> (number) to track the next unique id you’ll assign.</p>
 </HandbookChallenge>
 
 ---
@@ -59,18 +64,35 @@ answers={`const library = {\n  name: "East Nashville Free Library",\n  librarian
 Each book is a tiny object with an `id`, a `title`, and an `author`. Put three of them into the `books` array **in order**, assigning an `id` from `nextBookId` and then incrementing the counter.
 
 <HandbookChallenge
-title="Stock the shelf with IDs"
-hints={[
-"Make three book variables. Each should be an object with <code>{ id, title, author }</code>.",
-"Set <code>id</code> to the current <code>nextBookId</code>, then bump it with <code>nextBookId += 1</code> (shorthand for adding 1).",
-"Use <code>library.books.push(book)</code> to add each new book to the array in order.",
-`// Example flow for one book (fill in your own title/author):\n// const b1 = { id: nextBookId, title: "…", author: "…" };\n// nextBookId += 1; // bump the counter\n// library.books.push(b1);`,
-]}
-answers={`const b1 = { id: nextBookId, title: "Sunset Drive",   author: "Axton"  }; nextBookId += 1;\nconst b2 = { id: nextBookId, title: "Neon Rain",      author: "Riza"   }; nextBookId += 1;\nconst b3 = { id: nextBookId, title: "Echoes & Honey", author: "Palmer" }; nextBookId += 1;\n\nlibrary.books.push(b1);\nlibrary.books.push(b2);\nlibrary.books.push(b3);\n\nconsole.log(library.books);\n// [ { id: 1, title: "Sunset Drive", author: "Axton" }, ... ]`}
->
+  title="Stock the shelf with unique IDs"
+  hints={[
+    <>Each new book should capture the current <code>nextBookId</code> before the counter changes.</>,
+    <>After creating one book, increase <code>nextBookId</code> so the next object receives a different number.</>,
+    <>Use <code>push()</code> to add each completed book object to <code>library.books</code>.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const b1 = { id: nextBookId, title: "Sunset Drive", author: "Axton" };
+nextBookId += 1;
 
-  <p className="m-0">Create three book objects, assign each an <code>id</code> from the current <code>nextBookId</code>, then increment (add one to it) with <code>nextBookId += 1</code> (compound assignment adds 1). Add each book to <code>library.books</code> using <code>.push()</code>.</p>
-  <p className="m-0 mt-2">You should see three book objects with distinct <code>id</code> values in <code>library.books</code>. The <code>+=</code> operator is shorthand for <code>nextBookId = nextBookId + 1</code>.</p>
+const b2 = { id: nextBookId, title: "Neon Rain", author: "Riza" };
+nextBookId += 1;
+
+const b3 = { id: nextBookId, title: "Echoes & Honey", author: "Palmer" };
+nextBookId += 1;
+
+library.books.push(b1);
+library.books.push(b2);
+library.books.push(b3);
+
+console.log(library.books);`}</pre>
+  }
+>
+  <p className="m-0">
+    Create three book objects named <code>b1</code>, <code>b2</code>, and <code>b3</code>. Each should have <code>id</code>, <code>title</code>, and <code>author</code>. Give each object the current <code>nextBookId</code>, increase the counter after each object, then push all three books into <code>library.books</code> and log the array.
+  </p>
+  <p className="m-0">
+    You may choose your own titles and authors. The important result is three records with different IDs. <code>nextBookId += 1</code> is shorthand for <code>nextBookId = nextBookId + 1</code>.
+  </p>
 </HandbookChallenge>
 
 ---
@@ -80,18 +102,26 @@ answers={`const b1 = { id: nextBookId, title: "Sunset Drive",   author: "Axton" 
 Choose a record by **index**, then choose a field with **dot notation**.
 
 <HandbookChallenge
-title="Spot-check the shelf"
-hints={[
-"Log the <em>first</em> book’s <code>title</code> with index <code>0</code>.",
-"Log the <em>last</em> book’s <code>author</code> using <code>library.books.length - 1</code>.",
-"Optionally, also log the <code>id</code> of the last book.",
-`// console.log(library.books[0].title);\n// const lastIndex = library.books.length - 1;\n// console.log(library.books[lastIndex].author);\n// console.log(library.books[lastIndex].id);`,
-]}
-answers={`console.log(library.books[0].title); // "Sunset Drive"\nconst lastIndex = library.books.length - 1;\nconsole.log(library.books[lastIndex].author); // "Palmer"\nconsole.log(library.books[lastIndex].id);     // 3 (example)`}
+  title="Read specific records from the shelf"
+  hints={[
+    <>Use an array index first to select one book object, then dot notation to select a field.</>,
+    <>The first item is at index <code>0</code>; the last index is one less than <code>library.books.length</code>.</>,
+    <>Store the last index in a variable if that makes the repeated access easier to read.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Sunset Drive
+Palmer
+3`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(library.books[0].title);
+const lastIndex = library.books.length - 1;
+console.log(library.books[lastIndex].author);
+console.log(library.books[lastIndex].id);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Index picks the record; dot notation picks the field. IDs give each record its own handle.
+    Log the first book’s <code>title</code>. Then find the last index and use it to log the last book’s <code>author</code> and <code>id</code>.
   </p>
 </HandbookChallenge>
 
@@ -102,18 +132,24 @@ answers={`console.log(library.books[0].title); // "Sunset Drive"\nconst lastInde
 Edit a single property on a specific book—no rebuilding required.
 
 <HandbookChallenge
-title="Fix a typo (second book’s title)"
-hints={[
-"Target the <em>second</em> book (index <code>1</code>).",
-"Change that book’s <code>title</code> to <code>\"Neon Rain (Remix)\"</code>.",
-"Log before and after so the change is obvious.",
-`// console.log(library.books[1].title);\n// library.books[1].title = "Neon Rain (Remix)";\n// console.log(library.books[1].title);`,
-]}
-answers={`console.log(library.books[1].title); // "Neon Rain"\nlibrary.books[1].title = "Neon Rain (Remix)";\nconsole.log(library.books[1].title); // "Neon Rain (Remix)"`}
+  title="Update the second book title"
+  hints={[
+    <>The second book lives at index <code>1</code>.</>,
+    <>Once you have selected that object, dot notation can reach its <code>title</code> property.</>,
+    <>Assigning a new string to the property changes the existing object in place.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Neon Rain
+Neon Rain (Remix)`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(library.books[1].title);
+library.books[1].title = "Neon Rain (Remix)";
+console.log(library.books[1].title);`}</pre>
+  }
 >
-
   <p className="m-0">
-    That’s an in-place update to a field on a record inside your array.
+    Log the second book’s current title, change it to <code>"Neon Rain (Remix)"</code>, then log the title again so the update is visible.
   </p>
 </HandbookChallenge>
 
@@ -144,21 +180,29 @@ answers={`console.log(library.books[1].title); // "Neon Rain"\nlibrary.books[1].
 Create your favorite book as an object **with an `id`**, add it to the end, take it off the end (pretend you “checked it out”), then put it at the beginning so it’s first in line.
 
 <HandbookChallenge
-title="Add, remove, reorder (end controls with IDs)"
-hints={[
-"Make a <code>fave</code> book object with <code>{ id, title, author }</code>.",
-"Set <code>id</code> to the current <code>nextBookId</code>, then increase <code>nextBookId</code> by 1.",
-"Add it to <code>library.books</code> using <code>push</code>.",
-"Remove the last item with <code>pop</code> and store it in <code>nowReading</code>.",
-"Place <code>nowReading</code> at the start with <code>unshift</code>.",
-"Verify it worked by logging the first book’s <code>id</code> and <code>title</code>.",
-`// const fave = { id: nextBookId, title: "Your Fave", author: "Author Name" };\n// nextBookId = nextBookId + 1;\n// library.books.push(fave);\n// const nowReading = library.books.pop();\n// library.books.unshift(nowReading);\n// console.log(library.books[0].id, library.books[0].title);`,
-]}
-answers={`const fave = { id: nextBookId, title: "Midnight Paper Planes", author: "Paper Planes Collective" };\nnextBookId = nextBookId + 1;\n\nlibrary.books.push(fave);\nconst nowReading = library.books.pop();\nlibrary.books.unshift(nowReading);\n\nconsole.log(library.books[0].id, library.books[0].title);\n// e.g., 4 "Midnight Paper Planes"`}
->
+  title="Move a favorite book to the front"
+  hints={[
+    <>Give the new book the current ID before increasing <code>nextBookId</code>.</>,
+    <>The value returned by <code>pop()</code> is the object you need to move.</>,
+    <>Use the method that adds an item to the start of an array to put that object first.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const fave = {
+  id: nextBookId,
+  title: "Midnight Paper Planes",
+  author: "Paper Planes Collective"
+};
+nextBookId += 1;
 
+library.books.push(fave);
+const nowReading = library.books.pop();
+library.books.unshift(nowReading);
+
+console.log(library.books[0].id, library.books[0].title);`}</pre>
+  }
+>
   <p className="m-0">
-    IDs move with the record wherever it goes. That’s the whole point—you always know exactly which book you’re talking about.
+    Create a <code>fave</code> book with <code>id</code>, <code>title</code>, and <code>author</code>. Assign the current <code>nextBookId</code>, increase the counter, and push the book to the end. Then pop that book into <code>nowReading</code>, unshift it to the front, and log the first book’s <code>id</code> and <code>title</code>.
   </p>
 </HandbookChallenge>
 

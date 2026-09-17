@@ -67,8 +67,6 @@ All of these are the same little action over and over, with just one or two deta
 
 ---
 
-
-
 ## 3) One parameter: personalize a message
 
 A **parameter** is a **labeled blank** in your function’s parentheses.
@@ -96,30 +94,25 @@ Here:
 * `"Ada"` and `"Grace"` are **arguments** (the actual values you pass in).
 
 <HandbookChallenge
-title="F1-3 · Refactor welcome to an arrow function with one parameter"
-hints={[
-  "Refactor the previously declared `welcome` so that it accepts a single parameter named `name`.",
-  "Use a template literal for the welcome line: `` `=== Welcome, ${name}! ===` ``.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`const welcome = (name) => {
-  console.log(\`=== Welcome, \${name}! ===\`)
-  console.log("You have unread messages!")
-};`}</pre>,
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`const welcome = (name) => {
-  console.log(\`=== Welcome, \${name}! ===\`)
-  console.log("You have unread messages!")
+  title="Give welcome a name parameter"
+  hints={[
+    <>A parameter is the name inside the function definition’s parentheses.</>,
+    <>Use that parameter anywhere inside the function where the personalized value belongs.</>,
+    <>Template literals can insert a parameter with <code>${'{'}name{'}'}</code>.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const welcome = (name) => {
+  console.log(\`=== Welcome, \${name}! ===\`);
+  console.log("You have unread messages!");
 };`}</pre>
-
-}
+  }
 >
   <p className="m-0">
-    Refactor the existing <code>welcome</code> so that it accepts one parameter, <code>name</code>. Use string interpolation to log your welcome message with the parameter (for example: <code>`=== Welcome, ${name}! ===`</code>)
+    Refactor the existing <code>welcome</code> arrow function so it accepts one parameter named <code>name</code>. Use that parameter in the first log so the welcome message can change for different callers. Keep the unread-messages log unchanged.
   </p>
 </HandbookChallenge>
 
-You’ve now seen a function that can speak to different sections, just by changing the argument.
+You’ve now seen a function that can speak to different people just by changing the argument.
 
 ---
 
@@ -132,35 +125,28 @@ const bookLine = (title, author) => {
   console.log(title + " — " + author);
 };
 
-bookLine("The Hobbit", "J.R.R. Tolkein");
+bookLine("The Hobbit", "J.R.R. Tolkien");
 bookLine("A Song of Ice and Fire", "George R.R. Martin");
 ```
 
 Here, both `title` and `author` are labeled blanks. Each call fills them with different arguments.
 
-
-
 <HandbookChallenge
-title="F1-4 · Welcome with first and last name"
-hints={[
-  "Update the `welcome` arrow function so it accepts two parameters: `firstName` and `lastName`.",
-  "Use a template literal to include both names in the welcome line: `` `=== Welcome, ${firstName} ${lastName}! ===` ``.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`const welcome = (firstName, lastName) => {
-  console.log(\`=== Welcome, \${firstName} \${lastName}! ===\`)
-  console.log("You have unread messages!")
-};`}</pre>,
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`const welcome = (firstName, lastName) => {
-  console.log(\`=== Welcome, \${firstName} \${lastName}! ===\`)
-  console.log("You have unread messages!")
+  title="Welcome someone by first and last name"
+  hints={[
+    <>Multiple parameters are separated by commas inside the function definition’s parentheses.</>,
+    <>Each parameter can be used independently inside the function body.</>,
+    <>A template literal can place both parameter values into the same string.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const welcome = (firstName, lastName) => {
+  console.log(\`=== Welcome, \${firstName} \${lastName}! ===\`);
+  console.log("You have unread messages!");
 };`}</pre>
-
-}
+  }
 >
   <p className="m-0">
-    Change <code>welcome</code> so it accepts two parameters, <code>firstName</code> and <code>lastName</code>, and log the welcome line using both values together (for example: <code>`=== Welcome, Ada Lovelace! ===`</code>). Keep the second log exactly as <code>"You have unread messages!"</code>.
+    Change <code>welcome</code> so it accepts two parameters named <code>firstName</code> and <code>lastName</code>. Use both values in the welcome line, and keep the second log exactly as <code>"You have unread messages!"</code>.
   </p>
 </HandbookChallenge>
 

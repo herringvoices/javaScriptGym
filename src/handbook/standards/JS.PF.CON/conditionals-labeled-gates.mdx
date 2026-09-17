@@ -86,33 +86,20 @@ What you are saying is:
 This is not a stack of screens. It is a labeled choice.
 
 <HandbookChallenge
-title="Replace type if/else with switch(seed.type)"
-hints={[
-"Keep using the same practice file where you built `processSeed(seed)` so your seeds and helper functions are already in place.",
-"Find the section that currently branches on `seed.type` (or create a quick `if / else` chain that logs different messages for each type if you do not have one yet).",
-"If your decision logic is still checking `seed.size`, rewrite those comparisons to look at `seed.type` so the rest of the challenge lines up.",
-"Replace the entire type-checking `if / else if / else` block with `switch (seed.type)`.",
-'Add `case "pumpkin"`, `case "sunflower"`, and `case "sesame"` branches that do the same work your old ladder performed (logging, setting properties, etc.).',
-"Add a `default` branch to catch any unknown `seed.type` values.",
-"Finish each `case` (including `default`) with `break;` so only one branch runs.",
-'Test by running your code, then temporarily changing one seed\'s `type` to `"mystery"` to confirm the `default` branch handles it.',
-<pre key="peek1" className="m-0 whitespace-pre-wrap">{`switch (seed.type) {
-  case "pumpkin":
-    console.log("Handling pumpkin seed type");
-    break;
-  case "sunflower":
-    console.log("Handling sunflower seed type");
-    break;
-  case "sesame":
-    console.log("Handling sesame seed type");
-    break;
-  default:
-    console.log("Handling unknown seed type");
-}`}</pre>,
-]}
-answers={
-  <pre className="m-0 whitespace-pre-wrap">{`// Refactor type-based if/else into switch
-function handleSeedType(seed) {
+  title="Route seed types with switch"
+  hints={[
+    <><code>switch</code> is useful when one value is compared against several exact labels.</>,
+    <>Put <code>seed.type</code> in the <code>switch</code> expression and use one <code>case</code> for each known type.</>,
+    <>Use <code>break</code> after each branch and <code>default</code> for an unknown type.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Pumpkin seed: queue it for roasting.
+Sunflower seed: send it to shucking.
+Sesame seed: press it into oil.
+Unknown seed type; hold for manual review.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function handleSeedType(seed) {
   switch (seed.type) {
     case "pumpkin":
       console.log("Pumpkin seed: queue it for roasting.");
@@ -137,20 +124,12 @@ const seedD = { type: "mystery" };
 handleSeedType(seedA);
 handleSeedType(seedB);
 handleSeedType(seedC);
-handleSeedType(seedD); // hits the default branch
-// Run with: node path-to-your-file.js`}</pre>
-}
+handleSeedType(seedD);`}</pre>
+  }
 >
-
-  <div className="m-0">
-    <p className="m-0">Follow these steps so beginners can see each requirement clearly:</p>
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Make sure your branching logic looks at `seed.type`, not `seed.size`.</li>
-      <li>Swap the old `if / else` chain for `switch (seed.type)` while keeping the same behavior.</li>
-      <li>Create explicit `case` labels for every known type, end each with `break;`, and wrap up with a `default` safeguard.</li>
-      <li>Test with a handful of seeds, including an unknown type, to see `default` fire.</li>
-    </ul>
-  </div>
+  <p className="m-0">
+    Create or refactor a <code>handleSeedType(seed)</code> function so it branches on <code>seed.type</code> with <code>switch</code>. Handle <code>"pumpkin"</code>, <code>"sunflower"</code>, and <code>"sesame"</code> with different messages, and add a <code>default</code> branch for unknown types. End every branch with <code>break</code>. Test all four paths, including one mystery type.
+  </p>
 </HandbookChallenge>
 
 ---
@@ -231,8 +210,6 @@ switch (seed.name) {
 
 That is one chute with two gates.
 
-
-
 ---
 
 ## 5) When to use `switch` vs `if / else`
@@ -268,8 +245,6 @@ A quick gut-check:
 > If you keep repeating `seed.name === ...`, you are probably in `switch` territory.
 > If you are comparing sizes, thresholds, or combinations, stick with `if / else`.
 
-
-
 ---
 
 ## 6) Quick practice: a status handler with `switch`
@@ -298,8 +273,6 @@ switch (status) {
 ```
 
 Notice how cleanly this reads: one value, several exact labels, one clear default.
-
-
 
 ---
 

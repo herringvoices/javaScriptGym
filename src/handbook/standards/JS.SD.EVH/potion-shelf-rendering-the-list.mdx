@@ -16,7 +16,7 @@ While you do that, you’ll add one small upgrade that will matter *a lot* in th
 
 **Each `<li>` will store the potion’s id using a `data-*` attribute.**
 
-Why? Because clicks happen in the DOM world — but the real potion info lives in the data world. `data-*` is the bridge between them.
+Why? Because clicks happen in the DOM world, but the real potion info lives in the data world. `data-*` is the bridge between them.
 
 ---
 
@@ -41,13 +41,6 @@ const listItems = items
 document.querySelector("#somewhere").innerHTML = `<ul>${listItems}</ul>`;
 ```
 
-### What’s happening here?
-
-1. `map()` runs once per item and returns a new array.
-2. Each run returns a **string of HTML** (a `<li>...</li>`).
-3. `join("")` smashes that array of strings into one long string.
-4. `innerHTML` replaces whatever was inside the container with your new markup.
-
 That’s the core “render a list” move. You’ll use it constantly.
 
 ---
@@ -60,19 +53,13 @@ A `data-*` attribute is just a custom HTML attribute you can put on an element.
 <li data-potion-id="3">Glacier Draught</li>
 ```
 
-It doesn’t change how the element looks. It’s not magic. It’s just information attached to the element.
+It doesn’t change how the element looks. It’s information attached to the element.
 
-Later, when a click happens, you can grab that element and ask:
-
-- “Okay… which potion id are you?”
-
-That’s why we’re doing this now.
+Later, when a click happens, you can ask that element which potion id it represents.
 
 ---
 
 ## Generic example: ids on list items
-
-Let’s say your data looks like this:
 
 ```js
 const pets = [
@@ -81,76 +68,39 @@ const pets = [
 ];
 ```
 
-A good render would produce:
+A useful render could produce:
 
 ```html
 <li data-pet-id="1">Dexter</li>
 <li data-pet-id="2">Mochi</li>
 ```
 
-Notice the trick:
-
-- the user sees the **name**
-- your code can still access the **id**
-
-That id is how you connect a DOM click back to the correct object in your data.
+The user sees the name while your code still has the id available for future interaction.
 
 ---
 
 <Callout type="tip" title="String interpolation is your friend">
-  When you build markup from data, you’ll usually use template literals.
-
-  - Template literal: <code>{"`<li>${potion.name}</li>`"}</code>
-  - Old school concatenation: <code>{'"<li>" + potion.name + "</li>"'}</code>
-
-  We’re sticking with template literals because they read like actual HTML instead of a ransom note.
+  When you build markup from data, template literals keep the HTML readable. We’re sticking with them instead of turning the markup into a ransom note made of concatenated strings.
 </Callout>
 
 ---
 
 <HandbookChallenge
-  title="Render the full potion list"
+  title="Render potion rows with data ids"
   hints={[
-    "Import getPotions from ./database.js.",
-    "Select #potionList after you render the shell.",
-    "Set potionListEl.innerHTML = `<ul class=\"potionList\">${...}</ul>`.",
-    "Each <li> needs data-potion-id so clicks can map back to data.",
+    <>Get the potion array first, then transform every object into one list-item string.</>,
+    <>The visible name belongs between the <code>&lt;li&gt;</code> tags while the object id belongs in a <code>data-potion-id</code> attribute.</>,
+    <>After <code>map()</code>, combine the strings with <code>join("")</code> before assigning the final markup to <code>#potionList</code>.</>,
   ]}
-  answers={
+  expected={
+    <p className="m-0">The Shelf panel should show every potion inside one <code>&lt;ul class="potionList"&gt;</code>. Inspecting a row should show a matching <code>data-potion-id="..."</code> attribute.</p>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`// /scripts/render.js
 import { getPotions } from "./database.js";
 
 export const render = () => {
-  const app = document.querySelector("#app");
-
-  app.innerHTML = [
-    '<header class="header">',
-      "<h1>Potion Shelf</h1>",
-      '<p class="subtitle">A tiny catalog for a magical shop. Filter potions by school, then click one to reveal its effect.</p>',
-    "</header>",
-
-    '<main class="layout">',
-      '<section class="panel" id="potionShelf">',
-        "<h2>Shelf</h2>",
-        '<div id="controls">',
-          '<p class="placeholder">A school filter will appear here.</p>',
-        "</div>",
-        '<div id="shelfStatus">',
-          '<p class="placeholder">A “Showing: …” label will appear here.</p>',
-        "</div>",
-        '<div id="potionList">',
-          '<p class="placeholder">Potions will appear here.</p>',
-        "</div>",
-      "</section>",
-
-      '<section class="panel" id="potionDetails">',
-        "<h2>Effect</h2>",
-        '<div id="details">',
-          '<p class="placeholder">Click a potion to see its effect.</p>',
-        "</div>",
-      "</section>",
-    "</main>",
-  ].join("");
+  // existing app shell render stays here
 
   const potions = getPotions();
   const potionListEl = document.querySelector("#potionList");
@@ -160,24 +110,15 @@ export const render = () => {
     .join("");
 
   potionListEl.innerHTML = \`<ul class="potionList">\${items}</ul>\`;
-};
-`}</pre>
+};`}</pre>
   }
 >
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Open `/scripts/render.js`.</li>
-      <li><strong>Import</strong> `getPotions` from `"./database.js"`.</li>
-      <li>Inside `render()`, call `getPotions()` and store the result.</li>
-      <li>Select `#potionList` after the shell renders.</li>
-      <li>Set `#potionList.innerHTML` to a `<ul class="potionList">` containing one `<li>` per potion.</li>
-      <li>Build the `<li>` elements with `map()` + `join("")`.</li>
-      <li>Each `<li>` must include `data-potion-id` set to the potion’s `id`.</li>
-      <li>Refresh and confirm the full potion list appears.</li>
-      <li>Inspect a potion `<li>` and confirm you see `data-potion-id="..."`.</li>
-      <li>Keep vs Trash: Keep the `<ul class="potionList">` + `map()` → `join("")` pattern and the `data-potion-id` attribute. Trash the placeholder “Potions will appear here.” paragraph.</li>
-    </ul>
-  </div>
+  <p className="m-0">
+    In <code>/scripts/render.js</code>, import <code>getPotions</code> and call it inside <code>render()</code>. After the shell exists, select <code>#potionList</code>. Map the potions into <code>&lt;li&gt;</code> strings that display each potion name and store its id in <code>data-potion-id</code>, join the strings, and render them inside one <code>&lt;ul class="potionList"&gt;</code>. Refresh the page and inspect a row to confirm the attribute matches its potion object.
+  </p>
+  <Callout type="note" title="Keep this">
+    <p className="m-0">Keep the list render pattern and <code>data-potion-id</code>. Remove the old “Potions will appear here.” placeholder once the real list replaces it.</p>
+  </Callout>
 </HandbookChallenge>
 
 ---
@@ -191,7 +132,7 @@ You can now:
 - Inject the final markup into the DOM with `innerHTML`
 - Label DOM elements with `data-*` attributes so events can identify them later
 
-Next up, we’ll start listening for clicks — and those `data-potion-id` attributes will suddenly feel extremely clever.
+Next up, we’ll start listening for clicks, and those `data-potion-id` attributes will suddenly feel extremely clever.
 
 ---
 

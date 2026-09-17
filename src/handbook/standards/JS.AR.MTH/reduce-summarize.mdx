@@ -16,7 +16,7 @@ That “single thing” might be:
 - a string (build a receipt line)
 - an object (count things, group things)
 
-Bascially, `reduce()` **reduces** an entire array down into **one result**.
+Basically, `reduce()` **reduces** an entire array down into **one result**.
 
 ### A quick warning (because you’re not alone)
 
@@ -154,12 +154,14 @@ for (const item of cart) {
 
 If you understand *this* version first, you’re in great shape — `reduce()` is basically just a more compact way to do the same running-result pattern.
 
----
-
 <HandbookChallenge
-  title="Count pets in a house with reduce()"
-  hints={["Use the house arrays you created with filter() in the previous section."]}
-  answers={
+  title="Count the pets in a house"
+  hints={[
+    <>The result is one number, so the accumulator should begin at <code>0</code>.</>,
+    <>Each student contributes the value stored in that student’s <code>pets</code> property.</>,
+    <>The reducer must return the updated running total on every step.</>,
+  ]}
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const countPets = (houseArray) => {
   return houseArray.reduce((total, s) => total + s.pets, 0);
 };
@@ -167,17 +169,13 @@ If you understand *this* version first, you’re in great shape — `reduce()` i
 console.log("Dragonport pets:", countPets(dragonportHouse));`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Create a function `countPets(houseArray)` that returns a number.</li>
-      <li>Inside, use `houseArray.reduce((total, s) => total + s.pets, 0)` to add up all `pets` values.</li>
-      <li>Make sure your `reduce` starts at `0` so the total is always a number.</li>
-      <li>Call it for at least one house array (for example, `dragonportHouse`) and log the result.</li>
-      <li>Optionally, call it for every house to see pet counts side‑by‑side.</li>
-      <li>Keep vs Trash: Keep `countPets`. The roster printer will call it.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create <code>countPets(houseArray)</code> so it returns the total number of pets represented by the students in that array.</li>
+    <li>Use <code>reduce()</code> with a numeric accumulator that starts at <code>0</code>.</li>
+    <li>Add each student’s <code>pets</code> value to the running total.</li>
+    <li>Call the helper for at least one filtered house array and log the result. You can try the other houses too.</li>
+    <li>Keep <code>countPets</code>; the roster printer will reuse it.</li>
+  </ul>
 </HandbookChallenge>
 
 You should now have a `countPets(houseArray)` helper built on top of your house arrays.

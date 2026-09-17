@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.DOM_BASICS
-title: DOM Basics ? The Page as Objects
+title: DOM Basics · The Page as Objects
 short: Select the mount point and inspect the returned element.
 ---
 
@@ -204,42 +204,54 @@ You have probably used `console.log()` before. `console.dir()` is similar, but i
 
 Since DOM elements are objects, `console.dir(selectedElement)` lets us explore a selected element in the console.
 
-<HandbookChallenge title="ELM Challenge 2 · Select the mount point">
-
+<HandbookChallenge
+  title="Select and inspect the app mount point"
+  hints={[
+    <>Start with <code>document</code> because the element lives in the page DOM.</>,
+    <><code>querySelector()</code> accepts the same kind of selector you would use in CSS.</>,
+    <>An element with <code>id="app"</code> is selected with <code>#app</code>.</>,
+  ]}
+  expected={
+    <p className="m-0">The console should show a DOM element object representing <code>&lt;div id="app"&gt;&lt;/div&gt;</code>, not a string.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const app = document.querySelector("#app");
+console.dir(app);`}</pre>
+  }
+>
   <Callout type="note" title="Starting point">
-    <p className="m-0">Your HTML already contains <code>&lt;div id="app"&gt;&lt;/div&gt;</code>. This challenge is only about finding that element from JavaScript.</p>
+    <p className="m-0">Your HTML already contains <code>&lt;div id="app"&gt;&lt;/div&gt;</code>. This task is only about finding that element from JavaScript.</p>
   </Callout>
-
-In `/scripts/main.js`, select the Potion Shelf mount point and inspect it.
-
-- Create a variable named `app`.
-- Use `document.querySelector("#app")` to store the `<div id="app"></div>` element in that variable.
-- Use `console.dir(app)` to inspect the selected element.
-- Refresh the preview.
-- Confirm that the console shows a DOM element object, not a string.
-
+  <p className="m-0">
+    In <code>/scripts/main.js</code>, create a variable named <code>app</code> and store the <code>#app</code> DOM element in it with <code>document.querySelector()</code>. Inspect the result with <code>console.dir(app)</code>, refresh the preview, and confirm that JavaScript found an element object.
+  </p>
 </HandbookChallenge>
 
-<HandbookChallenge title="ELM Flow Challenge 2 · Add the mount point selection">
+<HandbookChallenge
+  title="Add mount-point selection to the flow diagram"
+  hints={[
+    <>The diagram should describe the program in execution order.</>,
+    <>The browser loads <code>main.js</code> before that script can select anything from the DOM.</>,
+    <>The new interaction is from <code>Main</code> to <code>DOM</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Browser->>Main: load module script
+Main->>DOM: select #app`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`sequenceDiagram
+  participant Browser
+  participant Main as main.js
+  participant DB as database.js
+  participant DOM
 
-Open `/sequenceDiagram.mmd`.
-
-Add this line after the browser loads `main.js`:
-
-```mermaid
-  Main->>DOM: select #app
-```
-
-Preview the diagram.
-
-The new arrow should show `main.js` reaching into the DOM to find the app mount point.
-
-**Check your diagram:**
-
-- Does `Browser->>Main: load module script` still appear first?
-- Does `Main->>DOM: select #app` come after the browser loads `main.js`?
-- Has anything changed on the page yet, or has JavaScript only selected an element?
-
+  Browser->>Main: load module script
+  Main->>DOM: select #app`}</pre>
+  }
+>
+  <p className="m-0">
+    Open <code>/sequenceDiagram.mmd</code> and add <code>Main-&gt;&gt;DOM: select #app</code> immediately after the browser loads <code>main.js</code>. Preview the diagram and verify that the order matches what the program actually does. Nothing has been rendered yet; the script has only selected an element.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice
