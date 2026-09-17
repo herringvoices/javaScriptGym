@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.JOIN_FULL_LIST
-title: join("") ? One Big String for innerHTML
+title: join("") · One Big String for innerHTML
 short: Join mapped HTML strings and render the full list.
 ---
 
@@ -422,24 +422,29 @@ taskList.innerHTML = taskHTML;
 
 The array transformation creates the final string. The `innerHTML` assignment renders that string.
 
-<HandbookChallenge title="ELM Challenge 10 · Join and render the full potion list">
+<HandbookChallenge
+  title="Join and render the full potion list"
+  hints={[
+    <><code>map(PotionItem)</code> still returns an array, so one more transformation is needed before rendering.</>,
+    <>Use an empty string as the <code>join()</code> separator so no commas appear between the list-item strings.</>,
+    <>The visible DOM changes only when the final string is assigned to <code>potionList.innerHTML</code>.</>,
+  ]}
+  expected={
+    <p className="m-0">Every potion should appear as its own <code>&lt;li&gt;</code> inside <code>#potion-list</code>, with no commas between items.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const potions = getPotions();
+const potionHTML = potions.map(PotionItem).join("");
 
-* Keep the `getPotions` import at the top of `/scripts/main.js`.
-* Keep the `PotionItem` function.
-* Keep the `app` variable.
-* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
-* Keep the `potionList` variable below the `app.innerHTML` block.
-* Keep the `potions` variable that stores the result of `getPotions()`.
-* Remove the temporary `console.log(potionHTMLArray)` line.
-* Replace `potionHTMLArray` with a new variable named `potionHTML`.
-* Set `potionHTML` equal to `potions.map(PotionItem).join("")`.
-* Set `potionList.innerHTML` equal to `potionHTML`.
-* Refresh the preview.
-* Confirm that every potion appears in the list.
-* Inspect the page in DevTools.
-* Confirm that the potion names are inside `<li>` elements.
-* Confirm that there are no commas between the potion items.
-
+potionList.innerHTML = potionHTML;`}</pre>
+  }
+>
+  <Callout type="note" title="Starting point">
+    <p className="m-0">Keep the <code>getPotions</code> import, <code>PotionItem</code>, the app shell, <code>potionList</code>, and the <code>potions</code> array from the previous pages.</p>
+  </Callout>
+  <p className="m-0">
+    Replace the temporary <code>potionHTMLArray</code> and its console log with a <code>potionHTML</code> variable that stores <code>potions.map(PotionItem).join("")</code>. Assign that final string to <code>potionList.innerHTML</code>. Refresh the preview and inspect the DOM to confirm that the full list is rendered as real list items without separator commas.
+  </p>
 </HandbookChallenge>
 
 ## Keep vs Trash
@@ -488,49 +493,27 @@ potionList.innerHTML = potionHTMLArray;
 
 The DOM needs the final HTML string.
 
-<HandbookChallenge title="ELM Flow Challenge 10 · Replace map-only flow with full list render">
-
-Open `/sequenceDiagram.mmd`.
-
-Replace the previous map-only lines:
-
-```mermaid
-  Main->>Main: map potions with PotionItem
-  Main->>Main: store array of li strings in potionHTMLArray
-```
-
-with these lines:
-
-```mermaid
-  Main->>Main: map potions with PotionItem
-  Main->>Main: join li strings into potionHTML
-  Main->>DOM: set potionList.innerHTML
-```
-
-The first two steps happen inside `main.js`.
-
-`map()` creates the array of `<li>` strings.
-
-`join("")` combines that array into one HTML string.
-
-The DOM gets involved when `main.js` sets `potionList.innerHTML`.
-
-That is when the user sees the full potion list.
-
-Preview the diagram.
-
-The diagram should now show the data becoming one HTML string before the DOM receives it.
-
-**Check your diagram:**
-
-* What does `map()` return before `join("")` runs?
-* What does `join("")` return?
-* Why do we use `join("")` instead of `join()`?
-* What value is stored in `potionHTML`?
-* Which line updates the DOM?
-* What should the user see after `potionList.innerHTML = potionHTML` runs?
-* Are the potion names inside real `<li>` elements?
-
+<HandbookChallenge
+  title="Complete the list-render flow diagram"
+  hints={[
+    <>The diagram should distinguish JavaScript-only transformations from the step that touches the DOM.</>,
+    <><code>map()</code> produces the array of strings before <code>join("")</code> produces the single string.</>,
+    <>Only the final <code>innerHTML</code> assignment should point from <code>Main</code> to <code>DOM</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: map potions with PotionItem
+Main->>Main: join li strings into potionHTML
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: map potions with PotionItem
+Main->>Main: join li strings into potionHTML
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+>
+  <p className="m-0">
+    Open <code>/sequenceDiagram.mmd</code>. Replace the old map-only steps with three current steps: map the potions with <code>PotionItem</code>, join those strings into <code>potionHTML</code>, and set <code>potionList.innerHTML</code>. Preview the diagram and make sure the DOM does not receive anything until the final HTML string has been prepared.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice
