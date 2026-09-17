@@ -180,17 +180,14 @@ Each house should print:
 - `Pets in HouseName: X`
 - Final divider line
 
----
-
-### HandbookChallenge: `formatStudentBlock(student)`
-
 <HandbookChallenge
   title="Format one student block"
   hints={[
-    "Build an array of lines, then join them with `\\n`.",
-    "Use your existing helpers (`getHomeroomTeacher`, `hasFines`, `needsTutoring`) instead of re-writing the logic.",
+    <>Build the output as separate lines first, then combine those lines at the end.</>,
+    <>Reuse <code>getHomeroomTeacher</code>, <code>hasFines</code>, and <code>needsTutoring</code> instead of recreating their logic.</>,
+    <>An array of strings can become one multi-line string with <code>join("\n")</code>.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const formatStudentBlock = (student) => {
   const teacher = getHomeroomTeacher(student);
   const lines = [];
@@ -212,36 +209,25 @@ Each house should print:
 };`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Write `formatStudentBlock(student)` that returns one multi-line string describing a student.</li>
-      <li>It must include the student’s full name, their teacher’s name (via `getHomeroomTeacher(student)`), and their pets count.</li>
-      <li>Use a `lines` array to collect the pieces; join them with `"\n"` at the end.</li>
-      <li>Add conditional lines:</li>
-      <ul className="list-disc list-inside pl-4">
-        <li>If `hasFines(student)` is true, include a fines warning line.</li>
-        <li>If `needsTutoring(student)` is true, include a tutoring line.</li>
-      </ul>
-      <li>Practice by calling `formatStudentBlock` for one student and logging the returned string.</li>
-      <li>Keep vs Trash: Keep `formatStudentBlock`. It’s required for the roster printer.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Write <code>formatStudentBlock(student)</code> so it returns one multi-line string.</li>
+    <li>Include the student’s full name, homeroom teacher from <code>getHomeroomTeacher(student)</code>, and pets count.</li>
+    <li>Add <code>"* has fines"</code> only when <code>hasFines(student)</code> is true, and <code>"* needs tutoring"</code> only when <code>needsTutoring(student)</code> is true.</li>
+    <li>Collect the lines in an array and join them with newline characters before returning.</li>
+    <li>Call the helper for one student and log the returned string to inspect it.</li>
+  </ul>
 </HandbookChallenge>
 
 You should now have `formatStudentBlock(student)` plus your house arrays, lookup helpers, and `countPets(houseArray)`.
 
----
-
-### HandbookChallenge: `printHouseRoster(houseName, houseArray)`
-
 <HandbookChallenge
-  title="Print a full house roster"
+  title="Print one complete house roster"
   hints={[
-    "Use `map(formatStudentBlock)` to create the block strings.",
-    "Use `join` with a divider between blocks.",
+    <>Use <code>map()</code> to turn every student object in the house into a formatted block string.</>,
+    <>Join those block strings with the divider text between them.</>,
+    <>Use the existing <code>countPets</code> helper for the summary instead of counting again here.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const printHouseRoster = (houseName, houseArray) => {
   const header = \`======\${houseName.toUpperCase()} ROSTER======\`;
   const divider = "---------------------------";
@@ -250,7 +236,7 @@ You should now have `formatStudentBlock(student)` plus your house arrays, lookup
   console.log(divider);
 
   const blocks = houseArray.map((s) => formatStudentBlock(s));
-  const joinedBlocks = blocks.join(\`\\n\${divider}\\n\`);
+  const joinedBlocks = blocks.join(\`\n\${divider}\n\`);
 
   if (joinedBlocks.length > 0) {
     console.log(joinedBlocks);
@@ -265,53 +251,32 @@ You should now have `formatStudentBlock(student)` plus your house arrays, lookup
 printHouseRoster("Dragonport", dragonportHouse);`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>This challenge assumes you already have the house arrays, `countPets`, and `formatStudentBlock`.</li>
-      <li>Create `printHouseRoster(houseName, houseArray)`.</li>
-      <li>Log the header line `======HOUSE ROSTER======` where `HOUSE` is `houseName.toUpperCase()`.</li>
-      <li>Log a divider line `---------------------------`.</li>
-      <li>Use `houseArray.map(formatStudentBlock)` to create an array of student blocks.</li>
-      <li>Join the blocks with `"\n---------------------------\n"` between them and log the result (if there are any students).</li>
-      <li>Use `countPets(houseArray)` to compute the pet total, then log `Pets in HouseName: X`.</li>
-      <li>Log a final divider line.</li>
-      <li>Call `printHouseRoster("Dragonport", dragonportHouse)` and check that the output roughly matches the target format from the intro.</li>
-      <li>Keep vs Trash: Keep `printHouseRoster`. You’ll reuse it immediately in the next challenge.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create <code>printHouseRoster(houseName, houseArray)</code>.</li>
+    <li>Print an uppercased roster header and a divider.</li>
+    <li>Transform the students with <code>formatStudentBlock</code>, join the block strings with dividers, and print the result when the house contains students.</li>
+    <li>Print <code>Pets in HouseName: X</code> using <code>countPets(houseArray)</code>, followed by a final divider.</li>
+    <li>Call the helper for Dragonport and compare the structure with the target format above.</li>
+  </ul>
 </HandbookChallenge>
 
----
-
-### HandbookChallenge: Print all Boarblemish houses
-
 <HandbookChallenge
-  title="Print all Boarblemish houses"
-  hints={["You should not need any new helpers—just wire up the ones you already wrote."]}
-  answers={
+  title="Print all four house rosters"
+  hints={[
+    <>The reusable printer already knows how to format a house; this task only supplies the correct name and array each time.</>,
+  ]}
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`printHouseRoster("Dragonport", dragonportHouse);
 printHouseRoster("Crowbeak", crowbeakHouse);
 printHouseRoster("Sidleup", sidleupHouse);
 printHouseRoster("Heavysigh", heavysighHouse);`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Call `printHouseRoster` four times: Dragonport, Crowbeak, Sidleup, and Heavysigh.</li>
-      <li>
-        Scan the output to confirm each roster has:
-        <ul className="list-disc list-inside pl-4">
-          <li>a header and dividers</li>
-          <li>student blocks with teacher and pets, plus fines/tutoring lines where appropriate</li>
-          <li>a pet summary line</li>
-        </ul>
-      </li>
-      <li>Adjust minor spacing as needed so the output stays readable, but keep the structure the same.</li>
-      <li>Keep vs Trash: Keep everything from this section. This is your final “report generator” set of helpers.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Call <code>printHouseRoster</code> for Dragonport, Crowbeak, Sidleup, and Heavysigh using the matching house arrays.</li>
+    <li>Scan each roster for its header, student blocks, conditional fines/tutoring lines, pet summary, and dividers.</li>
+    <li>Keep the helpers from this section as your final report-generator code.</li>
+  </ul>
 </HandbookChallenge>
 
 ---
@@ -337,9 +302,9 @@ printHouseRoster("Heavysigh", heavysighHouse);`}</pre>
 ## What to remember
 
 - Array methods like `map`, `filter`, `find`, `some`, `every`, and `reduce` all take **callbacks**.
-- `map` transforms items into a new array of the **same length`.
-- `filter` selects matching items to create a **subset array`.
+- `map` transforms items into a new array of the **same length**.
+- `filter` selects matching items to create a **subset array**.
 - `find` returns **one** matching item (or `undefined` if none match).
 - `some` and `every` answer **boolean questions** about your data.
 - `reduce` produces **one result** from many items (like a total or summary object).
-- Chaining methods is just step‑by‑step transformation—keep each step small and the pipeline stays readable.
+- Chaining methods is just step-by-step transformation—keep each step small and the pipeline stays readable.
