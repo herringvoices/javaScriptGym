@@ -146,35 +146,30 @@ The only difference is *where* you attach the listener.
 ---
 
 <HandbookChallenge
-  title="Bind your first click listener"
+  title="Listen for clicks anywhere on the page"
   hints={[
-    "Put the listener inside bindEvents() in /scripts/handlers.js.",
-    "Use document.addEventListener(\"click\", ...).",
-    "Don’t call the function — pass a function so the browser can run it later.",
+    <>The listener belongs inside <code>bindEvents()</code>, which is responsible for registering event behavior.</>,
+    <><code>addEventListener()</code> needs the event type first and a function to run later second.</>,
+    <>Pass an anonymous function to the listener; do not run the callback while binding it.</>,
   ]}
-  answers={
+  expected={
+    <p className="m-0">After refresh, clicking the header, panels, potion list, or any other page area should show <code>You clicked on the page!</code>.</p>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`// /scripts/handlers.js
 export const bindEvents = () => {
   document.addEventListener("click", () => {
     alert("You clicked on the page!");
   });
-};
-`}</pre>
+};`}</pre>
   }
 >
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Open `/scripts/handlers.js`.</li>
-      <li>Find the `bindEvents()` function.</li>
-      <li>Inside `bindEvents()`, add a click listener to `document` using `addEventListener()`.</li>
-      <li>Use `"click"` as the first argument.</li>
-      <li>Use an anonymous function as the second argument.</li>
-      <li>Inside the anonymous function, add `alert("You clicked on the page!")`.</li>
-      <li>Refresh and confirm: clicking anywhere shows the alert.</li>
-      <li>Click a few different places (header, panels, potion list) and confirm it always works.</li>
-      <li>Keep vs Trash: Keep `bindEvents()` and the call to `bindEvents()` in `/scripts/main.js`. Trash nothing yet — this alert is proof-of-life.</li>
-    </ul>
-  </div>
+  <p className="m-0">
+    Open <code>/scripts/handlers.js</code> and find <code>bindEvents()</code>. Inside it, register a <code>"click"</code> listener on <code>document</code>. Give the listener an anonymous function that calls <code>alert("You clicked on the page!")</code>. Refresh the app and click several different page areas to confirm that the browser runs the callback only after a click occurs.
+  </p>
+  <Callout type="note" title="Keep this">
+    <p className="m-0">Keep <code>bindEvents()</code> and the existing call to <code>bindEvents()</code> in <code>/scripts/main.js</code>. The alert is temporary proof that the listener works, but do not remove it until the next event-handling step replaces it.</p>
+  </Callout>
 </HandbookChallenge>
 
 ---
