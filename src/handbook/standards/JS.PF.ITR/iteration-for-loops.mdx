@@ -86,21 +86,15 @@ If you change how many heroes are in the array, the loop automatically adjusts b
 
 In the last chapter you wrote **four separate lines** to welcome each hero and kept a separate `heroCount` in sync. Let’s replace both of those with a single `for` loop.
 
----
-
 <HandbookChallenge
-title="ITR Challenge 3 · Welcome and count heroes with a for loop"
-hints={[
-"Use the pattern `for (let i = 0; i < heroes.length; i++) { ... }` to walk each index.",
-"Inside the loop, reach each hero with `heroes[i]` and log `heroes[i].name`.",
-"Start `heroCount` at 0 before the loop, add 1 to it on each pass inside the loop, and then log the final `heroCount` after the loop finishes.",
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`// Replace the manual welcomes and manual count with a for loop:
-
-let heroCount = 0;
+  title="Welcome and count the heroes with a for loop"
+  hints={[
+    <>Walking every array index usually starts at <code>0</code> and stops before <code>heroes.length</code>.</>,
+    <>The current hero is available through <code>heroes[i]</code>.</>,
+    <>Start the count before the loop and increase it once per completed pass.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`let heroCount = 0;
 
 for (let i = 0; i < heroes.length; i++) {
   console.log(\`\${heroes[i].name} has arrived!\`);
@@ -108,17 +102,10 @@ for (let i = 0; i < heroes.length; i++) {
 }
 
 console.log(\`There are \${heroCount} heroes in the League.\`);`}</pre>
-
-}
-
+  }
 >
-
   <p className="m-0">
-    In the previous chapter, you logged a separate welcome message for each hero and maintained a hard-coded
-    <code>heroCount</code>. Comment out or delete those manual <code>console.log</code> lines and the old
-    <code>heroCount</code> variable. Then write a single <code>for</code> loop that walks through the
-    <code>heroes</code> array using an index <code>i</code>, logs a welcome message for each hero, and increments a
-    <code>heroCount</code> variable on every pass. After the loop, log how many heroes you counted.
+    Remove or comment out the manual welcome lines and hard-coded <code>heroCount</code> from the previous chapter. Create a fresh <code>heroCount</code> that starts at <code>0</code>. Then write one <code>for</code> loop that walks <code>heroes</code> by index, welcomes each hero, and increments the count once per iteration. Log the final count after the loop.
   </p>
 </HandbookChallenge>
 
@@ -152,40 +139,25 @@ console.log(heroNames);
 
 One recipe, applied to every hero.
 
----
-
 <HandbookChallenge
-title="ITR Challenge 4 · Build heroNames with a for loop"
-hints={[
-"Start by declaring `const heroNames = [];` again so you have a fresh, empty array.",
-"Use the same loop pattern: `for (let i = 0; i < heroes.length; i++) { ... }`.",
-"Inside the loop, push each hero's name with `heroNames.push(heroes[i].name)`, and when the loop is done, log `heroNames` to confirm it contains all of the hero names.",
-
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{`// Comment out your old manual pushes from the intro chapter,
-// then build heroNames using a for loop instead:
-
-const heroNames = [];
+  title="Build heroNames with a for loop"
+  hints={[
+    <>Create the result array before the loop so every iteration adds to the same collection.</>,
+    <>Use the same start, stop, and step pattern that walks every valid hero index.</>,
+    <>Push only the current hero’s <code>name</code> into the result array.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const heroNames = [];
 
 for (let i = 0; i < heroes.length; i++) {
   heroNames.push(heroes[i].name);
 }
 
-console.log(heroNames);
-// Example output:
-// ["Crimson Phoenix", "Neon Volt", "Star Sentinel", "Aurora Pulse"]`}</pre>
-
-}
-
+console.log(heroNames);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Comment out the manual <code>heroNames.push(...)</code> lines you wrote before. Then, create a fresh
-    <code>heroNames</code> array and use a <code>for</code> loop that walks the <code>heroes</code> array by index.
-    On each pass, push the current hero's <code>.name</code> into <code>heroNames</code>. Finally, log
-    <code>heroNames</code> to confirm that the loop built the same playlist of names for you.
+    Comment out the old manual <code>heroNames.push(...)</code> lines. Create a fresh <code>heroNames</code> array and use a <code>for</code> loop to walk <code>heroes</code> by index. Push each current hero’s <code>name</code> into the new array, then log the finished result.
   </p>
 </HandbookChallenge>
 
@@ -228,7 +200,7 @@ for (let i = 0; i < heroes.length; ) {
   console.log(heroes[i].name);
 }
 
-// ❌ Counts the wrong way: i-- will never make i < heroes.length false if you start at 0
+// ❌ Counts the wrong way
 for (let i = 0; i < heroes.length; i--) {
   console.log(heroes[i].name);
 }
