@@ -1,5 +1,38 @@
 import React, { useEffect, useId, useState } from "react";
 
+function normalizeLegacyTitle(title) {
+  return title
+    .replace(/^(?:[A-Z.]+\s+)?Challenge\s+[A-Z]*\d+\s*[·:.-]\s*/i, "")
+    .replace(/^[A-Z]\d+-\d+\s*·\s*/i, "")
+    .trim();
+}
+
+function renderLegacyInlineText(value) {
+  if (typeof value !== "string") return value;
+
+  const parts = value.split(/(<code>.*?<\/code>|`[^`]+`)/g).filter(Boolean);
+
+  return parts.map((part, index) => {
+    if (part.startsWith("<code>") && part.endsWith("</code>")) {
+      return <code key={index}>{part.slice(6, -7)}</code>;
+    }
+
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return <code key={index}>{part.slice(1, -1)}</code>;
+    }
+
+    return <React.Fragment key={index}>{part}</React.Fragment>;
+  });
+}
+
+function renderBlockValue(value) {
+  if (typeof value === "string") {
+    return <pre className="m-0 whitespace-pre-wrap font-mono leading-relaxed">{value}</pre>;
+  }
+
+  return value;
+}
+
 /**
  * HandbookChallenge
  * A required practice checkpoint embedded in handbook pages.
@@ -11,8 +44,9 @@ import React, { useEffect, useId, useState } from "react";
  * - hints?: Array<React.ReactNode> of progressively stronger nudges
  * - solution?: canonical working solution
  *
- * `answers` and non-array `hints` are retained temporarily for older handbook
- * pages. New content should use `solution` and an array of hint nodes.
+ * `answers`, non-array hints, legacy challenge-number title prefixes, and
+ * simple inline-code strings are retained temporarily for older handbook
+ * pages. New content should use the preferred contract above.
  */
 export default function HandbookChallenge({
   title = "Practice this step",
@@ -25,6 +59,7 @@ export default function HandbookChallenge({
   const headingId = useId();
   const hintItems = Array.isArray(hints) ? hints : hints == null ? [] : [hints];
   const resolvedSolution = solution ?? answers;
+  const displayTitle = normalizeLegacyTitle(title);
 
   const [revealedHintCount, setRevealedHintCount] = useState(0);
   const [solutionOpen, setSolutionOpen] = useState(false);
@@ -65,7 +100,7 @@ export default function HandbookChallenge({
           Your turn
         </p>
         <h3 id={headingId} className="m-0 mt-1.5 text-xl font-semibold leading-snug text-white sm:text-2xl">
-          {title}
+          {displayTitle}
         </h3>
 
         <div className="mt-5 space-y-3 text-sm leading-7 text-slate-200 sm:text-[0.95rem]">
@@ -77,7 +112,7 @@ export default function HandbookChallenge({
             <div className="border-b border-slate-800 px-4 py-2.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-slate-400">
               Expected result
             </div>
-            <div className="p-4 text-sm text-slate-100">{expected}</div>
+            <div className="p-4 text-sm text-slate-100">{renderBlockValue(expected)}</div>
           </div>
         ) : null}
       </div>
@@ -117,7 +152,7 @@ export default function HandbookChallenge({
       )}
 
       {visibleHints.length > 0 ? (
-        <div className="space-y-3 border-t border-slate-800 bg-brand-950/20 px-5 py-5 sm:px-6">
+        <div className="space-y-3 border-t border-slate-800 bg-slate-950/30 px-5 py-5 sm:px-6">
           {visibleHints.map((hint, index) => (
             <div
               key={index}
@@ -126,7 +161,7 @@ export default function HandbookChallenge({
               <p className="m-0 mb-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-brand-300">
                 Hint {index + 1}
               </p>
-              <div>{hint}</div>
+              <div>{renderLegacyInlineText(hint)}</div>
             </div>
           ))}
         </div>
@@ -137,7 +172,7 @@ export default function HandbookChallenge({
           <p className="m-0 mb-3 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-slate-400">
             Canonical solution
           </p>
-          <div className="text-sm text-slate-100">{resolvedSolution}</div>
+          <div className="text-sm text-slate-100">{renderBlockValue(resolvedSolution)}</div>
         </div>
       ) : null}
     </section>
