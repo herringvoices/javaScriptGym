@@ -1,28 +1,28 @@
 # JavaScript Gym Handbook Chapter Authoring Guide
 
-This guide defines the house style for authoring JavaScript Gym handbook chapters.
+This guide defines the house style for JavaScript Gym handbook chapters.
 
 The goal is not merely to make chapters *sound* alike. The goal is to make them **teach alike**.
 
-The strongest VDT chapters share a recognizable instructional rhythm:
+The handbook should feel like a guided lesson with a clear learning path, not like documentation broken into sections.
+
+A strong instructional rhythm is:
 
 > **problem → mental model → smallest useful tool → example → immediate practice → next complication**
 
-A successful chapter should feel like a guided lesson with a clear learning path, not like documentation broken into sections.
+The `<HandbookChallenge>` component is the spine of that rhythm. It marks the moment when reading stops and the learner must use the idea before moving on.
 
 ---
 
-# 1. The Core Teaching Philosophy
+# 1. Core Teaching Philosophy
 
 ## 1.1 Earn the abstraction
 
-Do not begin with the new feature just because it is the topic of the chapter.
+Do not begin with a feature merely because it is the topic of the chapter.
 
-Begin, whenever practical, with the **problem the feature solves**.
+When practical, begin with the **problem the feature solves**.
 
-The learner should encounter enough friction to understand why the new idea exists.
-
-For example:
+Examples:
 
 - awkward string concatenation → template literals
 - several related variables → objects
@@ -31,25 +31,7 @@ For example:
 - manually transforming every item → `.map()`
 - repeated code → functions
 
-Bad:
-
-> JavaScript objects store key-value pairs.
-
-Better:
-
-> We have a title, author, price, and availability for one book. We *could* keep four separate variables, but those values all describe the same thing. It would be useful if JavaScript gave us a way to keep them together.
-
-Then introduce the object.
-
-### Productive pain, not busywork
-
-The learner only needs enough awkwardness to recognize the need.
-
-Do **not** make them write twenty lines of intentionally clumsy code so that the elegant solution can arrive dramatically.
-
-Usually one small example is enough.
-
-The rule is:
+The learner should encounter enough friction to understand why the new idea exists, but not enough to turn the setup into busywork.
 
 > **Let the learner feel the problem before giving them the tool, but do not punish them with the problem.**
 
@@ -57,35 +39,21 @@ The rule is:
 
 ## 1.2 Teach one meaningful new thing at a time
 
-Every chapter has a limited **novelty budget**.
-
-The learner may technically be capable of following an example that contains six unfamiliar ideas, but that does not mean they can tell which idea caused their confusion when the code breaks.
+Every chapter and every challenge has a limited novelty budget.
 
 Prefer examples where the learner already understands nearly everything except the concept currently being taught.
 
-If the lesson is about `.filter()`, do not also make the challenge depend on:
-
-- a brand-new object shape,
-- unfamiliar destructuring,
-- a complicated callback,
-- a new comparison pattern,
-- and DOM rendering.
-
-Control the number of moving parts.
-
-### A useful diagnostic
-
-Ask:
+A useful diagnostic is:
 
 > If the learner gets this wrong, will we know what they misunderstood?
 
-If the answer is no, the challenge probably contains too many new dimensions.
+If the answer is no, the example or challenge probably contains too many new dimensions.
 
 ---
 
 ## 1.3 Explain behavior before terminology
 
-Technical vocabulary matters, but vocabulary should usually **name something the learner already understands**.
+Technical vocabulary matters, but vocabulary should usually name something the learner already understands.
 
 A strong sequence is:
 
@@ -95,34 +63,24 @@ A strong sequence is:
 4. give the technical name,
 5. later compress the idea into a reference table.
 
-This is why vocabulary tables work well near the end of a chapter. They summarize understanding rather than replacing instruction.
-
 ---
 
 ## 1.4 Use mental models that predict behavior
 
-Metaphors are useful when they help the learner reason about code they have not seen yet.
-
-Strong examples include ideas like:
+Useful mental models include:
 
 - variables as labeled boxes,
 - arrays as numbered shelves,
 - objects as grouped information about one thing,
 - methods as tools attached to a kind of data.
 
-A metaphor is not successful merely because it is memorable.
-
-It should help the learner correctly predict what happens next.
-
-Avoid metaphors that must be repeatedly qualified with “well, not really.”
+A metaphor is useful when it helps the learner correctly predict what happens next.
 
 ---
 
-## 1.5 Build from the learner’s existing world
+## 1.5 Build from the learner's existing world
 
-A chapter should feel connected to what came before.
-
-Whenever possible:
+Whenever practical:
 
 - reuse familiar data,
 - extend an existing script,
@@ -130,62 +88,43 @@ Whenever possible:
 - connect the new tool to a prior problem,
 - maintain recognizable project contexts.
 
-This lowers setup cost and creates retrieval practice naturally.
+The learner should often feel:
 
-A learner should often think:
-
-> “Oh, we are doing something new with something I already know.”
+> "We are doing something new with something I already know."
 
 ---
 
-# 2. The Default Chapter Rhythm
+# 2. Default Chapter Rhythm
 
 A normal instructional chapter should usually move through this sequence.
 
 ## 2.1 Bridge from prior knowledge
 
-Open by orienting the learner.
+Briefly establish:
 
-Briefly answer:
-
-- What do we already know?
-- What are we trying to do now?
-- Why is the current approach becoming awkward or insufficient?
+- what the learner already knows,
+- what they are trying to do now,
+- why the current approach is becoming awkward or insufficient.
 
 Keep this concrete.
-
-Do not spend several paragraphs previewing every concept that will appear later.
 
 ---
 
 ## 2.2 Present the problem
 
-Show the learner the friction.
+Show the friction in code whenever practical.
 
-The problem might be:
-
-- repetition,
-- scattered data,
-- awkward syntax,
-- inability to make a decision,
-- inability to repeat an action,
-- difficulty selecting data,
-- difficulty changing every item,
-- difficulty keeping state organized.
-
-Whenever possible, show the problem in code rather than only describing it.
+The problem might be repetition, scattered data, inability to make a decision, inability to repeat an action, or difficulty selecting or transforming data.
 
 ---
 
 ## 2.3 Introduce a mental model
 
-Before or alongside formal syntax, give the learner a simple conceptual model.
+Answer:
 
-The model should answer:
+> "What kind of thing is this, and what job does it do?"
 
-> “What kind of thing is this, and what job does it do?”
-
-Keep this section short enough that the learner reaches code quickly.
+Keep this short enough that the learner reaches code quickly.
 
 ---
 
@@ -204,8 +143,6 @@ const book = {
 
 before introducing every object feature JavaScript supports.
 
-Do not front-load edge cases.
-
 ---
 
 ## 2.5 Demonstrate with a tiny example
@@ -218,19 +155,15 @@ The first example should be:
 - focused on the current concept,
 - composed mostly of familiar syntax.
 
-The learner should be able to inspect it and explain what changed.
-
 ---
 
 ## 2.6 Give immediate practice
 
-Do not teach three sections of new material before the learner touches the first idea.
+Do not teach several sections of new material before the learner touches the first idea.
 
-Use a challenge soon after introducing the concept.
+A challenge should appear soon after instruction.
 
-The first challenge should normally change **one meaningful thing**.
-
-Examples:
+The first challenge should normally change one meaningful thing:
 
 - create one variable,
 - add one property,
@@ -245,7 +178,7 @@ Examples:
 
 Once the learner succeeds with the smallest form, introduce the next natural need.
 
-This creates a rhythm:
+The rhythm is:
 
 1. learn,
 2. use,
@@ -268,15 +201,15 @@ A chapter should usually finish with some combination of:
 - a brief synthesis,
 - a bridge to the next chapter.
 
-The ending should help the learner answer:
+The learner should be able to answer:
 
-> “What can I do now that I could not do before?”
+> "What can I do now that I could not do before?"
 
 ---
 
 # 3. Recommended Chapter Anatomy
 
-This is the default authoring shape, not an inflexible template.
+This is the default shape, not an inflexible template.
 
 ````mdx
 ---
@@ -290,13 +223,7 @@ short: ...
 Bridge from prior learning.
 Introduce the problem this chapter solves.
 
-<Callout type="note" title="Starting checkpoint">
-  ...
-</Callout>
-
----
-
-## 1) First idea
+## First idea
 
 Explanation.
 
@@ -305,14 +232,17 @@ Explanation.
 ```
 
 <HandbookChallenge
-  title="..."
+  title="Do the specific thing"
   hints={[
-    "Conceptual nudge.",
-    "More concrete nudge.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`// optional code peek`}</pre>,
+    <>Conceptual reminder.</>,
+    <>More specific direction.</>,
+    <>Syntax reminder using <code>inlineCode</code> when useful.</>,
   ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`// canonical answer`}</pre>
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`observable result`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`// canonical solution`}</pre>
   }
 >
   <p className="m-0">
@@ -320,33 +250,19 @@ Explanation.
   </p>
 </HandbookChallenge>
 
----
-
-## 2) Next idea
+## Next idea
 
 Explanation.
-
-```js
-// another focused example
-```
-
-<HandbookChallenge ...>
-  ...
-</HandbookChallenge>
-
----
+Example.
+Immediate practice.
 
 ## Checkpoint
 
-Show the expected state or cumulative result.
-
----
+Show the expected cumulative state when later work depends on it.
 
 ## Common gotchas
 
 Call out likely mistakes if needed.
-
----
 
 ## Technical Vocabulary
 
@@ -354,142 +270,64 @@ Call out likely mistakes if needed.
 | --- | --- | --- |
 | ... | ... | ... |
 
----
-
 ## Wrap-up
 
 Brief synthesis and bridge forward.
 ````
 
-Not every chapter needs every section.
-
-The important thing is the instructional flow.
-
 ---
 
-# 4. Openings: Start With the Need
+# 4. Pacing and the Novelty Budget
 
-The opening is one of the most important parts of the chapter.
-
-Avoid opening with dictionary-style definitions.
-
-Bad:
-
-> An array is an ordered collection of values.
-
-That statement is true, but it gives the learner no reason to care yet.
-
-Better:
-
-> Our bookshelf is growing. We could make `book1`, `book2`, `book3`, and keep going, but that gets hard to work with fast. What we really need is one value that can hold a whole list of books.
-
-Now the array has a job.
-
-## 4.1 Good opening questions
-
-Useful opening questions include:
-
-- What is becoming annoying?
-- What are we repeating?
-- What information belongs together?
-- What can our program not do yet?
-- What would be easier if JavaScript gave us a tool for it?
-
-## 4.2 Do not manufacture fake stakes
-
-The problem should be credible.
-
-Avoid exaggerated language such as:
-
-> Our code is an absolute disaster!
-
-when the learner has only written three variables.
-
-A calmer tone is more trustworthy:
-
-> This still works, but it is starting to get awkward.
-
----
-
-# 5. Pacing and the Novelty Budget
-
-## 5.1 One primary learning target per challenge
+## 4.1 One primary learning target per challenge
 
 A challenge may reinforce older skills, but it should normally have one main new target.
 
-For example, a challenge about array indexing may still require:
-
-- declaring a variable,
-- logging a value,
-- reading a string.
-
-Those are fine if already familiar.
-
-It should not quietly become a challenge about indexing, nested objects, callbacks, and string interpolation all at once.
+A challenge about array indexing can require declaring a variable and logging a value if those skills are already familiar. It should not quietly become a challenge about indexing, nested objects, callbacks, and interpolation at the same time.
 
 ---
 
-## 5.2 Increase difficulty by reducing support, not by adding unrelated complexity
+## 4.2 Increase difficulty by reducing support
 
-A strong progression might look like:
+A useful progression is:
 
-### Challenge 1
+### Early challenge
+
 Nearly mirrors the example.
 
-### Challenge 2
+### Next challenge
+
 Uses the same idea with different data.
 
-### Challenge 3
+### Later challenge
+
 Combines the new idea with one familiar concept.
 
-### Challenge 4
+### Final challenge
+
 Asks the learner to choose the appropriate form with less prompting.
 
-This is usually better than making every later challenge longer.
+Difficulty should come from increasing independence, not unrelated complexity.
 
 ---
 
-## 5.3 Let patterns repeat before abstracting them
+## 4.3 Let patterns repeat before abstracting them
 
-If a new abstraction exists to simplify a pattern, learners should usually see or perform the pattern first.
+Learners should usually see or perform the pattern that a new abstraction will simplify.
 
 Examples:
 
 - concatenate strings before interpolation,
-- manually inspect conditions before a reusable predicate,
 - perform repeated operations before extracting a function,
 - use a loop before introducing an array method that expresses the same intention.
 
-The learner should recognize the abstraction as a solution to something they know.
-
 ---
 
-## 5.4 Do not explain the entire language feature at once
-
-Teach the subset needed now.
-
-For example, an introductory function lesson does not need to cover:
-
-- declarations,
-- expressions,
-- arrow functions,
-- default parameters,
-- rest parameters,
-- closures,
-- recursion,
-- higher-order functions.
-
-Teach the smallest coherent concept, then expand later.
-
----
-
-# 6. Examples
+# 5. Examples
 
 Examples are teaching tools, not demonstrations of author expertise.
 
-## 6.1 Keep first examples tiny
-
-The first example should foreground the new syntax.
+## 5.1 Keep first examples tiny
 
 Good:
 
@@ -498,21 +336,11 @@ const scores = [8, 10, 7];
 console.log(scores[0]);
 ```
 
-Less useful as a first example:
-
-```js
-const activePlayers = game.players
-  .filter((player) => player.stats.isActive)
-  .sort((a, b) => b.stats.score - a.stats.score);
-
-console.log(activePlayers[0]?.profile?.displayName);
-```
-
-Even if every line is technically relevant someday, the learner cannot see the target.
+Avoid making the learner find the target concept inside a large block of unrelated syntax.
 
 ---
 
-## 6.2 Use names that carry meaning
+## 5.2 Use names that carry meaning
 
 Prefer:
 
@@ -526,147 +354,227 @@ over:
 obj.x
 ```
 
-Prefer:
-
-```js
-availableBooks
-```
-
-over:
-
-```js
-arr2
-```
-
 Code examples are part of the prose. Naming should reduce cognitive load.
 
 ---
 
-## 6.3 Keep example domains stable when practical
+## 5.3 Keep example domains stable when practical
 
-If the learner is already working with books, do not switch to spaceships, sandwiches, zoo animals, and bank accounts in four consecutive examples unless the change itself serves a purpose.
-
-Stable contexts help learners distinguish the **programming idea** from the **story wrapper**.
+If the learner is already working with books, do not switch to spaceships, sandwiches, zoo animals, and bank accounts in four consecutive examples unless the change serves a purpose.
 
 ---
 
-## 6.4 Use output when output clarifies behavior
+## 5.4 Do not give away the challenge
 
-Show console output when it makes the transformation or result easier to understand.
+An example immediately before a challenge should be a cousin of the task, not its twin.
 
-Inside a challenge, a compact output block may be useful:
-
-```mdx
-<p className="mt-3 mb-1 text-slate-300">
-  <strong>Example console output:</strong>
-</p>
-<pre className="m-0 whitespace-pre-wrap">{`The Hobbit
-12`}</pre>
-```
-
-Do not show output merely because you can.
+If the learner can copy the example and only rename a variable or selector, the challenge is too close to the example.
 
 ---
 
-# 7. Challenge Design
+# 6. HandbookChallenge: The Authoring Contract
 
-`<HandbookChallenge>` is the primary coding-practice component.
+`<HandbookChallenge>` is a required practice checkpoint.
 
-A challenge should make the learner **do the thing that was just taught**.
+It is not:
 
-## 7.1 Challenge responsibilities
+- an optional callout,
+- a place for extra explanation,
+- a decorative exercise box,
+- a quiz about material the learner has not been taught.
 
-The component has three distinct instructional surfaces:
+When the learner reaches one, the intended message is:
 
-1. **body**: what the learner must do,
-2. **hints**: progressively stronger help,
-3. **answers**: the canonical solution.
+> **Stop reading. Use what you just learned. Then continue.**
+
+The component has five instructional surfaces:
+
+1. **title**: the action the learner is about to perform,
+2. **body**: the task instructions,
+3. **expected**: the observable success target when useful,
+4. **hints**: progressively stronger nudges,
+5. **solution**: the canonical working implementation.
 
 Keep those responsibilities separate.
 
 ---
 
-## 7.2 Challenge body
+## 6.1 The canonical component shape
 
-The body should describe the task clearly and concretely.
+```mdx
+<HandbookChallenge
+  title="Create the viewer name"
+  hints={[
+    <>A variable can exist before it has a value.</>,
+    <>Declare the variable before your first <code>console.log()</code>.</>,
+    <>Remember that <code>let name;</code> declares without assigning.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`undefined
+Milo`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`let viewerName;
+console.log(viewerName);
 
-It should answer:
+viewerName = "Milo";
+console.log(viewerName);`}</pre>
+  }
+>
+  <p className="m-0">
+    Declare <code>viewerName</code>, log it before assigning a value,
+    then assign your name and log it again.
+  </p>
+</HandbookChallenge>
+```
+
+New handbook content should use this form.
+
+---
+
+# 7. Challenge Titles
+
+Challenge titles have one job:
+
+> **Tell the learner what they are about to do.**
+
+Use a short, active, verb-first phrase whenever possible.
+
+Good:
+
+- `Create the viewer name`
+- `Build the book object`
+- `Grab the first book`
+- `Filter the affordable books`
+- `Select the mount point`
+- `Update the text content`
+- `Return the total`
+
+Avoid:
+
+- `Challenge 3`
+- `Challenge A1: One book's data`
+- `ELM Challenge 6 · Import and inspect potion data`
+- `F1-5 · Create users`
+- `Practice`
+- `Warmup`
+- `Arrays`
+- story-only titles such as `Dressing a Cat`
+
+The component already tells the learner that this is **YOUR TURN**. The title should not repeat curriculum metadata or the word "challenge."
+
+Story flavor belongs in the body, not in place of the programming action.
+
+### Title test
+
+Ask:
+
+> If this title appeared by itself in a table of contents, would I know what coding action I am practicing?
+
+If not, rewrite it.
+
+---
+
+# 8. Challenge Body
+
+The body describes the task clearly and concretely.
+
+It should answer only what the learner needs in order to act:
 
 - What should I create or change?
 - What names must I use?
 - What result should I produce?
 - What constraints matter?
+- What existing code should remain in place?
 
 Good:
 
 ```mdx
-<HandbookChallenge ...>
-  <p className="m-0">
-    Create a variable named <code>displayName</code>. Use a template literal
-    to combine <code>firstName</code> and <code>lastName</code> with a space
-    between them.
-  </p>
-</HandbookChallenge>
+<p className="m-0">
+  Create a variable named <code>displayName</code>. Use a template literal
+  to combine <code>firstName</code> and <code>lastName</code> with one space
+  between them.
+</p>
 ```
 
-Avoid burying the actual task inside a long story.
+Avoid burying the task inside a long story.
+
+Do not move required instructions into hints. A learner who understands the material should be able to complete the task without opening any hint.
+
+### Starting state
+
+When a challenge depends on code from earlier work, state that briefly in the body or a small starting-point callout.
+
+Do not make the learner guess which old lines should still exist.
 
 ---
 
-## 7.3 Challenge titles
+# 9. Expected Results
 
-Titles should be short, active, and specific.
+Use the `expected` prop when success would otherwise be ambiguous.
 
-Good:
+Good uses include:
 
-- `Build the display name`
-- `Grab the first book`
-- `Keep the affordable books`
-- `Add one more property`
-- `Return the total`
+- exact console output,
+- the text that should appear on the page,
+- the shape of a returned object,
+- the visible state of a rendered UI,
+- a specific array or value the learner should be able to inspect.
 
-Less useful:
+Example:
 
-- `Challenge 3`
-- `Practice`
-- `Try This`
-- `Arrays`
+```mdx
+expected={
+  <pre className="m-0 whitespace-pre-wrap">{`undefined
+Milo`}</pre>
+}
+```
 
-The title should remind the learner what action they are practicing.
+The expected result should describe **what success looks like**, not reveal the implementation.
+
+Do not include an expected block when the result is already obvious from the task.
 
 ---
 
-# 8. Hint Design
+# 10. Hints: A Support Ladder, Not a Solution Ladder
 
-Hints should form a **support ladder**.
+Hints should answer:
 
-A learner who needs a small nudge should not have to reveal the whole solution.
+> **What should I think about next?**
 
-A strong sequence is:
+They should not answer:
 
-1. conceptual reminder,
-2. more concrete guidance,
-3. syntax reminder,
-4. optional code peek.
+> **What code should I type?**
+
+Use one to three hints. Three is a ceiling for normal challenges, not a target.
+
+A strong progression is:
+
+1. **recall**: remind the learner of the relevant concept,
+2. **direction**: point toward the relevant part of the problem,
+3. **syntax cue**: remind them of a general syntax form without completing this task.
 
 Example:
 
 ```mdx
 hints={[
-  "An array position is called an index.",
-  "The first item is at index <code>0</code>.",
-  "Use square brackets after the array name.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`books[0]`}</pre>,
+  <>Array positions start counting at <code>0</code>.</>,
+  <>Use the item's position with the array name.</>,
+  <>Array access uses square brackets, like <code>someArray[0]</code>.</>,
 ]}
 ```
 
-## 8.1 Hint 1: point toward the idea
+The UI reveals these one at a time. The order therefore matters.
 
-Do not simply restate the prompt.
+---
+
+## 10.1 Hint 1: recall the idea
 
 Bad:
 
 > Get the first item from the array.
+
+That merely restates the task.
 
 Better:
 
@@ -674,61 +582,135 @@ Better:
 
 ---
 
-## 8.2 Hint 2: narrow the path
+## 10.2 Hint 2: narrow the path
 
-Give more specific conceptual or syntactic help.
+Bad:
 
-> Put the index inside square brackets after the array name.
+> Write `const firstBook = books[0]`.
+
+That is the solution.
+
+Better:
+
+> You need the position of the item you want and the array that contains it.
 
 ---
 
-## 8.3 Final hint: code peek when useful
+## 10.3 Hint 3: remind, do not complete
 
-The final hint may show the crucial syntax or a partial solution.
+A final hint may show a **generic syntax pattern**:
 
 ```mdx
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`const firstBook = books[0];`}</pre>
+<>Array access looks like <code>someArray[index]</code>.</>
 ```
 
-The code peek is allowed to be strong. The learner deliberately requested escalating help.
-
----
-
-## 8.4 Do not make every hint equally revealing
-
-If all hints effectively give the answer, there is no support ladder.
-
-If every hint is vague, the hints do not help.
-
-Escalate intentionally.
-
----
-
-# 9. Answers
-
-The `answers` prop contains a canonical answer.
+It should not show the challenge's completed line:
 
 ```mdx
-answers={
+// Do not use this as a hint:
+<pre>{`const firstBook = books[0];`}</pre>
+```
+
+That belongs in `solution`.
+
+---
+
+## 10.4 The paste test
+
+Use this test on every hint:
+
+> **Could the learner paste this hint, make one or two trivial edits, and finish the task?**
+
+If yes, it is not a hint. Move that information to the solution or rewrite the hint.
+
+---
+
+## 10.5 Do not hide required instructions in hints
+
+Bad hint:
+
+> Write a function named `createUser(first, last)` that returns an object with `firstName` and `lastName` properties.
+
+If those names and requirements are part of the assignment, they belong in the body.
+
+A hint should help a learner who understood the assignment but is stuck on the programming idea.
+
+---
+
+## 10.6 Hint formatting
+
+Hints are React nodes inside an array.
+
+Use JSX when a hint contains inline code:
+
+```mdx
+hints={[
+  <>Use <code>const</code> when the variable should not be reassigned.</>,
+  <>Keep <code>let</code> for values that will change.</>,
+]}
+```
+
+Do **not** write HTML or Markdown syntax inside a JavaScript string:
+
+```mdx
+// Wrong: this is only a string. The <code> tag will not become markup.
+hints={[
+  "Use <code>const</code> for fixed values.",
+]}
+```
+
+Likewise, backticks inside a normal hint string are just backtick characters. Prefer JSX and `<code>` when code formatting matters.
+
+---
+
+# 11. Solutions
+
+Use the `solution` prop for the canonical working implementation.
+
+```mdx
+solution={
   <pre className="m-0 whitespace-pre-wrap">{`const firstBook = books[0];`}</pre>
 }
 ```
 
-A canonical answer should be:
+A canonical solution should be:
 
 - correct,
 - simple,
 - consistent with the syntax taught,
 - free from clever shortcuts,
-- formatted like handbook code.
+- easy to compare against the learner's work.
 
-Do not introduce a new technique in the answer that the learner has not been taught.
+Do not introduce a new technique in the solution that the learner has not been taught.
 
-If several solutions are valid, show the one that best reinforces the chapter’s current mental model.
+If several solutions are valid, show the one that best reinforces the chapter's current mental model.
+
+The prop is called `solution`, not `answers`. We are showing a canonical implementation, not implying that programming problems always have one magical answer.
 
 ---
 
-# 10. PracticeCard vs HandbookChallenge
+# 12. HandbookChallenge UX Rules
+
+The component's visual design encodes the teaching model.
+
+Authors should not recreate these regions manually.
+
+The component itself provides:
+
+- the fixed **YOUR TURN** eyebrow,
+- the large task title,
+- the task body,
+- an optional **EXPECTED RESULT** surface,
+- progressively revealed hints,
+- a separate **VIEW SOLUTION** action.
+
+Hints and solutions are intentionally not peer tabs. Hints are scaffolding. The solution is the fallback/reference after scaffolding is not enough.
+
+Do not add your own `Hints`, `Answers`, `Expected output`, or `Challenge` headings inside the body when the component already has a prop or built-in surface for that information.
+
+---
+
+# 13. PracticeCard vs HandbookChallenge
 
 Use the components for different jobs.
 
@@ -740,16 +722,7 @@ Use for:
 - identification,
 - prediction,
 - conceptual checks,
-- quick “what do you notice?” questions.
-
-Example:
-
-```mdx
-<PracticeCard
-  prompt="Is .trim() a property or a method? How can you tell?"
-  answer={`Method. It has the parentheses at the end.`}
-/>
-```
+- quick "what do you notice?" questions.
 
 The learner does not need an editor to answer.
 
@@ -769,141 +742,54 @@ A useful rule:
 
 ---
 
-# 11. Checkpoints and Cumulative State
+# 14. Checkpoints and Cumulative State
 
 Checkpoints help learners know what their working file should look like before continuing.
 
 They also make later lessons less fragile.
 
-## 11.1 Callout checkpoint
+Use a checkpoint when later work depends on specific earlier state.
 
-Use a callout when the checkpoint is mostly an editor-state reset or confirmation.
+A learner should not fail the next lesson because they missed an unrelated line several sections ago.
+
+Example:
 
 ```mdx
 <Callout type="note" title="Checkpoint">
-  <p>Your file should now have three book variables.</p>
-  <pre className="m-0 whitespace-pre-wrap">{`const book1 = ...
-const book2 = ...
-const book3 = ...`}</pre>
+  <p className="m-0">Your file should now contain three book objects.</p>
+  <pre className="m-0 whitespace-pre-wrap">{`const book1 = ...;
+const book2 = ...;
+const book3 = ...;`}</pre>
 </Callout>
 ```
 
-This says:
-
-> Make sure your file is in this state before we continue.
+A checkpoint confirms or restores state. A challenge asks the learner to perform new practice. Do not use them interchangeably.
 
 ---
 
-## 11.2 Section checkpoint
-
-Use a full section when reaching the state is itself an important learning milestone.
-
-```md
-## Checkpoint B · Two book objects
-
-By the end of this section, your program should have two complete book objects.
-```
-
-This gives the checkpoint more instructional weight.
-
----
-
-## 11.3 Checkpoints should reduce accidental failure
-
-A learner should not fail the next lesson because they missed an unrelated line three chapters ago.
-
-When later work depends on specific state, provide enough checkpoint information to recover.
-
----
-
-# 12. Cumulative Projects
-
-Project chapters should integrate learned concepts rather than secretly introduce several new ones.
-
-A project is primarily for:
-
-- retrieval,
-- combination,
-- decision-making,
-- fluency,
-- transfer.
-
-It should not be the first time the learner sees a critical syntax form.
-
-## 12.1 Project scaffolding
-
-A project may still be staged.
-
-For example:
-
-1. create the data,
-2. display one piece,
-3. add a decision,
-4. process the collection,
-5. produce the final output.
-
-“Project” does not mean “remove all structure.”
-
----
-
-## 12.2 Preserve diagnosability
-
-If the final project fails, the learner should have intermediate checkpoints that help locate the problem.
-
-Avoid one enormous challenge whose only feedback is that the final output is wrong.
-
----
-
-# 13. Tone and Voice
+# 15. Tone and Voice
 
 The handbook should sound like a capable instructor sitting beside the learner.
 
-## 13.1 Be conversational without becoming sloppy
+## 15.1 Be conversational without becoming vague
 
-Prefer:
+Prefer concrete explanations over formal definitions at the moment a concept is first introduced.
 
-> We have a problem: all four variables describe the same book, but JavaScript does not know they belong together yet.
-
-over:
-
-> Objects are associative data structures consisting of properties represented by key-value pairs.
-
-The technical version may become useful later, but it is not the opening explanation.
-
----
-
-## 13.2 Respect the learner
-
-Do not imply that a concept is trivial.
+## 15.2 Respect the learner
 
 Avoid:
 
-- “Obviously...”
-- “Simply...”
-- “Just...”
-- “This is easy.”
-- “You should already know...”
+- "Obviously..."
+- "Simply..."
+- unnecessary "Just..."
+- "This is easy."
+- "You should already know..."
 
-Something can be straightforward to an experienced programmer and still require real work from a beginner.
+## 15.3 Humor should be brief and nonessential
 
----
+Humor can give the handbook personality, but the instructional path must remain clear without the joke.
 
-## 13.3 Humor should be brief and safe
-
-Humor can give the handbook personality, but it should not obscure instructions.
-
-Good humor:
-
-- one sentence,
-- easy to skip,
-- does not depend on the learner getting a reference,
-- does not make the learner the joke.
-
-The instructional path must remain clear without the joke.
-
----
-
-## 13.4 Prefer concrete verbs
+## 15.4 Prefer concrete verbs
 
 Good:
 
@@ -928,200 +814,87 @@ Weaker:
 
 ---
 
-# 14. Frontmatter
-
-VDT chapters use minimal frontmatter.
-
-```yaml
----
-id: JS.VDT.PRM.STR
-title: Strings · Text Data
-short: Create text values, join them, and embed variables with template literals.
----
-```
-
-## `id`
-
-The `id` should match the handbook’s standard hierarchy.
-
-Do not invent a one-off naming pattern.
-
-## `title`
-
-Keep it compact and UI-friendly.
-
-It may pair a formal topic with a learner-friendly description.
-
-## `short`
-
-Use an action-oriented summary.
-
-Prefer:
-
-> Create text values, join them, and embed variables with template literals.
-
-over:
-
-> An introduction to strings and template literals.
-
-The `short` field should tell us what the learner will **do**.
-
----
-
-# 15. Markdown vs JSX
+# 16. Markdown and JSX
 
 Use the simplest authoring form that correctly expresses the content.
 
-## 15.1 Prefer normal Markdown for normal instructional content
+## 16.1 Prefer Markdown for normal instructional content
 
-Use Markdown for:
+Use Markdown for headings, paragraphs, emphasis, lists, inline code, links, code fences, tables, and horizontal rules.
 
-- headings,
-- paragraphs,
-- emphasis,
-- lists,
-- inline code,
-- links,
-- ordinary code fences,
-- tables,
-- horizontal rules.
+## 16.2 Use JSX for handbook components
 
-Example:
-
-```md
-Arrays are like **numbered shelves**.
-
-Each item has a position called an `index`.
-```
-
-Do not wrap every paragraph in `<p>` simply because MDX allows it.
-
----
-
-## 15.2 Use JSX for handbook components
-
-Use JSX when invoking:
+Use JSX when invoking custom UI such as:
 
 - `<Callout>`
 - `<HandbookChallenge>`
 - `<PracticeCard>`
-- other custom handbook UI components.
 
-Inside those components, JSX elements may be useful for precise layout.
+Inside those components, JSX elements are useful for precise structure and code formatting.
+
+---
+
+## 16.3 Multiline code inside props
+
+Use a template literal inside a JSX expression:
+
+```mdx
+<pre className="m-0 whitespace-pre-wrap">{`const name = "Nick";
+console.log(name);`}</pre>
+```
+
+If the displayed code contains template-literal backticks or `${...}`, escape those characters so the authoring-time template literal does not evaluate them.
 
 Example:
 
 ```mdx
-<HandbookChallenge ...>
-  <p className="m-0">
-    Create a variable named <code>firstBook</code>.
-  </p>
-</HandbookChallenge>
+<pre className="m-0 whitespace-pre-wrap">{`const greeting = \`Hello, \${name}!\`;`}</pre>
 ```
 
 ---
 
-## 15.3 JSX inside custom components
+## 16.4 JSX elements inside arrays need keys only when React needs them
 
-Inside a component body, utility classes are often used to control spacing reliably.
-
-Common patterns:
+The preferred hints are fragments containing prose and inline code:
 
 ```mdx
-<p className="m-0">...</p>
+hints={[
+  <>Array indexes start at <code>0</code>.</>,
+  <>Use square brackets after the array name.</>,
+]}
 ```
 
-```mdx
-<p className="mt-3 mb-1 text-slate-300">
-  <strong>Example console output:</strong>
-</p>
-```
+If you intentionally place a standalone element such as `<pre>` in an array, give it a stable `key`.
 
-```mdx
-<pre className="m-0 whitespace-pre-wrap">{`...`}</pre>
-```
-
-```mdx
-<ul className="mt-2 mb-2">
-  <li>...</li>
-  <li>...</li>
-</ul>
-```
-
-Outside custom UI components, prefer ordinary Markdown unless JSX solves a specific problem.
+In normal challenge authoring, a task-specific code block should be in `solution`, not in `hints`.
 
 ---
 
-# 16. Callouts
+# 17. Callouts
 
 Callouts should carry meaning. They are not decorative boxes.
 
 ## `type="note"`
 
-Use for:
-
-- context,
-- starting state,
-- checkpoints,
-- clarifications,
-- useful background.
-
-Think:
-
-> **Here is something to keep in mind.**
-
----
+Use for context, starting state, checkpoints, clarification, or useful background.
 
 ## `type="tip"`
 
-Use for:
-
-- an important mental model,
-- a useful insight,
-- a “why this works” explanation,
-- a “problem this solves” observation.
-
-Think:
-
-> **Here is an idea that will make this easier to understand or use.**
-
----
+Use for an important mental model, useful insight, or a "why this works" explanation.
 
 ## `type="caution"` or `type="danger"`
 
-Use when the learner should stop and pay special attention.
+Use for a common mistake, misleading similarity, conceptual trap, or behavior that deserves unusually high attention.
 
-Appropriate uses include:
-
-- a very common mistake,
-- a misleading similarity,
-- a conceptual trap,
-- behavior that can unexpectedly change data,
-- syntax that looks almost correct but means something different.
-
-“Danger” does not have to mean literal danger. It signals instructional importance.
-
-Do not overuse high-attention callouts or they stop feeling important.
+Do not choose a callout type because its color looks good.
 
 ---
 
-## 16.1 Choose callout type by purpose
+# 18. Horizontal Rules and Visual Pacing
 
-Do not choose a type because its color looks good in the page.
+Use `---` to mark a genuine lesson boundary.
 
-The visual treatment should communicate the semantic role.
-
-A useful shorthand:
-
-> **note = context**  
-> **tip = insight**  
-> **caution/danger = stop and notice**
-
----
-
-# 17. Horizontal Rules and Visual Pacing
-
-VDT uses `---` heavily to create lesson beats.
+Do not usually place a horizontal rule between a concept and the challenge that practices it. They belong to the same instructional beat.
 
 A common unit is:
 
@@ -1132,56 +905,13 @@ A common unit is:
 5. `---`,
 6. next concept.
 
-Do not usually put a horizontal rule between a concept and the challenge that practices it. They belong to the same instructional unit.
-
-Use `---` when the learner is moving to the next conceptual beat.
+The challenge component already has strong visual separation. Do not surround every challenge with extra spacing hacks or decorative rules.
 
 ---
 
-# 18. `<br/>`
+# 19. Technical Vocabulary
 
-`<br/>` may occasionally be useful between adjacent custom components when the rendered layout needs a small local spacing correction.
-
-It is not a general chapter-structure tool.
-
-Prefer:
-
-- sections,
-- paragraphs,
-- component spacing,
-- horizontal rules,
-
-before adding repeated `<br/>` tags.
-
-A useful distinction:
-
-> `---` marks a **lesson boundary**.  
-> `<br/>` fixes **local visual spacing**.
-
----
-
-# 19. Tables
-
-Use Markdown tables primarily as **reference and compression surfaces**.
-
-Teach the idea first.
-
-Then summarize it.
-
-Good order:
-
-1. explanation,
-2. examples,
-3. practice,
-4. vocabulary/reference table.
-
-Avoid introducing a complex concept by dropping a large table on the learner before they have a mental model for it.
-
----
-
-# 20. Technical Vocabulary
-
-Vocabulary sections should connect formal language to concepts the learner already understands.
+Teach the idea first, then summarize it.
 
 Example:
 
@@ -1193,563 +923,88 @@ Example:
 
 Avoid circular definitions.
 
-Bad:
-
-> Method: a method belonging to an object.
-
-Better:
-
-> Method: a function attached to a value or object that you call with parentheses.
-
 ---
 
-# 21. Quotation Marks, Backticks, and Escaping
+# 20. Editing an Existing Chapter
 
-MDX chapters contain several nested syntax layers.
+When revising an existing chapter, work in this order.
 
-Most authoring mistakes happen because the writer loses track of **which layer currently owns the text**.
-
-Ask:
-
-> **What is currently delimiting this text?**
-
-The answer determines what must be escaped.
-
----
-
-## 21.1 Normal Markdown prose
-
-Use Markdown backticks for inline code.
-
-```md
-Create a variable named `bookTitle`.
-```
-
-JavaScript quotes inside inline code do not need escaping:
-
-```md
-Set it equal to `"The Hobbit"`.
-```
-
-The Markdown backticks own the inline-code span, so the quotation marks are ordinary content.
-
----
-
-## 21.2 JSX text content
-
-Quotation marks in JSX text content are generally fine.
-
-```mdx
-<p>
-  Use <code>"hello"</code> for a string.
-</p>
-```
-
-The quotation marks are text content, not JSX attribute delimiters.
-
-Do not escape them unnecessarily.
-
----
-
-## 21.3 JSX attributes
-
-A JSX attribute commonly uses double quotation marks:
-
-```mdx
-<Callout type="tip" title="Remember the index">
-```
-
-If you need literal double quotation marks *inside* a double-quoted attribute, they cannot appear unescaped as ordinary delimiter characters.
-
-When the content becomes complicated, prefer restructuring rather than building unreadable escape sequences.
-
----
-
-## 21.4 JavaScript strings inside JSX expressions
-
-The `hints` prop is a JavaScript array.
-
-```mdx
-hints={[
-  "Remember that array indexes start at 0.",
-  "Use square brackets after the array name.",
-]}
-```
-
-Each quoted item is a real JavaScript string.
-
-If a double-quoted hint needs a literal double quote, escape it:
-
-```mdx
-hints={[
-  "Create <code>status</code> with the value <code>\"active\"</code>.",
-]}
-```
-
-The outer JavaScript string owns the text, so its internal double quotes require `\"`.
-
----
-
-## 21.5 HTML inside hint strings
-
-VDT hint strings may include small HTML fragments such as `<code>`.
-
-```mdx
-hints={[
-  "Use <code>books[0]</code> to access the first item.",
-]}
-```
-
-This is an established handbook pattern.
-
-Use it sparingly and keep the string readable.
-
----
-
-## 21.6 Multiline code inside JSX
-
-For code inside props or custom component content, use a template literal inside a JSX expression:
-
-```mdx
-<pre className="m-0 whitespace-pre-wrap">{`const name = "Nick";
-console.log(name);`}</pre>
-```
-
-This is especially convenient because normal JavaScript double quotes inside the displayed code do not need escaping.
-
-The outer delimiters are backticks.
-
----
-
-## 21.7 Displaying backticks inside a template literal
-
-If the code being displayed itself contains JavaScript template-literal backticks, escape those inner backticks:
-
-```mdx
-<pre className="m-0 whitespace-pre-wrap">{`const greeting = \`Hello!\`;`}</pre>
-```
-
-Without the backslashes, the inner backticks would terminate the outer authoring-time template literal.
-
----
-
-## 21.8 Displaying `${...}` inside a template literal
-
-If the displayed code contains template interpolation, escape the `${...}` so the **outer** authoring-time template literal does not evaluate it.
-
-```mdx
-<pre className="m-0 whitespace-pre-wrap">{`const greeting = \`Hello, \${name}!\`;`}</pre>
-```
-
-The learner should see:
-
-```js
-const greeting = `Hello, ${name}!`;
-```
-
-The source MDX must therefore protect both:
-
-- the displayed backticks,
-- the displayed interpolation marker.
-
----
-
-## 21.9 `<pre>` elements inside arrays need a key
-
-A JSX element stored inside the `hints` array should have a `key`.
-
-```mdx
-hints={[
-  "Start with the array name.",
-  <pre key="peek" className="m-0 whitespace-pre-wrap">{`books[0]`}</pre>,
-]}
-```
-
-The `key="peek"` exists because the `<pre>` is a JSX element inside an array.
-
-The `answers` prop usually contains one JSX expression rather than an array, so it does not need the same key:
-
-```mdx
-answers={
-  <pre className="m-0 whitespace-pre-wrap">{`const firstBook = books[0];`}</pre>
-}
-```
-
----
-
-## 21.10 Escaping quick reference
-
-| Where you are writing | Typical delimiter | What to watch |
-| --- | --- | --- |
-| Markdown prose | none | use backticks for inline code |
-| Inline code | `` `...` `` | quotes usually need no escaping |
-| JSX attribute | `"..."` | internal `"` can conflict |
-| Hint string | `"..."` | internal `"` becomes `\"` |
-| `<pre>` code template | `` {`...`} `` | displayed backticks become `\`` |
-| Template interpolation being displayed | inside `` {`...`} `` | `${name}` becomes `\${name}` |
-
-The general rule is more useful than memorizing individual cases:
-
-> **Identify the outer delimiter first. Escape only characters that would interfere with that delimiter or trigger authoring-time JavaScript behavior.**
-
----
-
-# 22. Common MDX Authoring Patterns
-
-## A standard challenge
-
-```mdx
-<HandbookChallenge
-  title="Grab the first book"
-  hints={[
-    "Array positions start counting at <code>0</code>.",
-    "Put the index inside square brackets after <code>books</code>.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`books[0]`}</pre>,
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const firstBook = books[0];`}</pre>
-  }
->
-  <p className="m-0">
-    Create a variable named <code>firstBook</code> and store the first item
-    from <code>books</code> in it.
-  </p>
-</HandbookChallenge>
-```
-
----
-
-## A challenge with displayed template-literal code
-
-```mdx
-<HandbookChallenge
-  title="Build the greeting"
-  hints={[
-    "Template literals use backticks instead of quotation marks.",
-    "Put the variable inside <code>${...}</code>.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const greeting = \`Hello, \${name}!\`;`}</pre>,
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`const greeting = \`Hello, \${name}!\`;`}</pre>
-  }
->
-  <p className="m-0">
-    Create <code>greeting</code> with a template literal that includes
-    <code>name</code>.
-  </p>
-</HandbookChallenge>
-```
-
----
-
-## A conceptual practice card
-
-```mdx
-<PracticeCard
-  prompt="Why is .trim() a method instead of a property?"
-  answer={`Because it performs an action and is called with parentheses.`}
-/>
-```
-
----
-
-## A checkpoint callout
-
-```mdx
-<Callout type="note" title="Checkpoint">
-  <p>
-    Before continuing, make sure your file contains the completed
-    <code>book</code> object.
-  </p>
-  <pre className="m-0 whitespace-pre-wrap">{`const book = {
-  title: "The Hobbit",
-  price: 12,
-  available: true
-};`}</pre>
-</Callout>
-```
-
----
-
-# 23. Things to Avoid
-
-## 23.1 Documentation-first openings
-
-Avoid beginning with a complete formal definition and list of syntax rules.
-
-Teach the need first.
-
----
-
-## 23.2 Giant walls of explanation before practice
-
-If the learner has read several screens without changing or running code, look for a place to insert practice sooner.
-
----
-
-## 23.3 Challenges that introduce hidden new material
-
-A challenge should not require the learner to reverse-engineer syntax the chapter never taught.
-
-Difficulty should come from applying the concept, not discovering missing instructions.
-
----
-
-## 23.4 Huge challenge bodies
-
-Do not turn `<HandbookChallenge>` into a mini textbook chapter.
-
-Teach outside the component.
-
-Use the component to tell the learner what to do.
-
----
-
-## 23.5 Unstructured hint dumps
-
-Hints are not miscellaneous notes.
-
-They should escalate deliberately.
-
----
-
-## 23.6 Clever answers
-
-Do not show advanced shorthand merely because it is elegant.
-
-Canonical answers should reinforce the lesson currently being learned.
-
----
-
-## 23.7 Callout inflation
-
-If every other paragraph is a colorful callout, none of the callouts communicate importance.
-
----
-
-## 23.8 Unnecessary JSX
-
-Ordinary prose should remain ordinary Markdown.
-
-MDX is not improved by turning:
-
-```md
-This is an **array**.
-```
-
-into:
-
-```mdx
-<p>This is an <strong>array</strong>.</p>
-```
-
-without a reason.
-
----
-
-## 23.9 Arbitrary context switching
-
-A new story setting should not make the learner mentally rebuild the entire world for every example.
-
-Reuse familiar data when it helps.
-
----
-
-## 23.10 “Just” teaching
-
-Avoid instructions like:
-
-> Just use `.filter()` here.
-
-If the learner knew why and how to use it, the instruction would be unnecessary.
-
-Say what decision they should make.
-
----
-
-# 24. Chapter Types
-
-Not every handbook page serves the same purpose.
-
-The author should know what kind of chapter they are writing.
-
-## 24.1 Concept introduction
-
-Purpose:
-
-- establish a need,
-- build a mental model,
-- introduce basic syntax,
-- provide immediate practice.
-
-This type should follow the core problem-first rhythm closely.
-
----
-
-## 24.2 Expansion chapter
-
-Purpose:
-
-- add another capability to a known concept.
-
-Examples:
-
-- more string methods,
-- object utilities,
-- array end controls.
-
-Start from what the learner already knows and introduce the new capability as an answer to a new need.
-
-Do not reteach the entire foundational concept.
-
----
-
-## 24.3 Integration chapter
-
-Purpose:
-
-- combine previously learned concepts.
-
-Examples:
-
-- arrays of objects,
-- a cumulative data project,
-- rendering structured data.
-
-Be especially careful with the novelty budget. Integration is already cognitively demanding.
-
----
-
-## 24.4 Reference or overview chapter
-
-Purpose:
-
-- organize a family of related concepts,
-- show where the learner is headed,
-- compare tools already introduced or soon to be introduced.
-
-These can contain more summary material than a normal lesson, but they should still avoid becoming raw documentation dumps.
-
----
-
-## 24.5 Project chapter
-
-Purpose:
-
-- practice retrieval and transfer,
-- combine skills,
-- produce something larger.
-
-Projects may reduce scaffolding gradually, but should still contain milestones and recovery points.
-
----
-
-# 25. Editing an Existing Chapter Toward VDT Quality
-
-Do not revise a weak chapter by only changing its tone.
-
-A chapter can sound friendly and still teach poorly.
-
-When revising, work in this order.
-
-## Step 1: Identify the actual learning target
+## Step 1: Identify the learning target
 
 Write one sentence:
 
 > By the end of this chapter, the learner can ______.
 
-If that sentence contains four unrelated skills, reconsider the chapter boundary.
-
----
-
 ## Step 2: Find the problem that makes the skill useful
 
-Ask:
-
-> Why would a beginner want this tool *right now*?
-
-Build the opening around that need.
-
----
+Ask why a beginner would want this tool right now.
 
 ## Step 3: Audit prerequisite knowledge
 
-Mark every piece of syntax in the examples as:
+Mark syntax as:
 
 - already known,
 - being taught now,
 - unnecessary novelty.
 
-Remove or explain unnecessary novelty.
-
----
-
 ## Step 4: Break the lesson into beats
 
-For each beat, aim for:
+Aim for:
 
 > explanation → example → practice
 
-Do not group all explanations first and all challenges later unless there is a compelling reason.
+## Step 5: Audit every challenge
 
----
+For each `<HandbookChallenge>`, ask:
 
-## Step 5: Audit challenges
-
-For each challenge, ask:
-
-- What is the primary skill?
-- What previous skills does it require?
+- Is the title a short action rather than a number or label?
+- Is the task completely understandable without opening a hint?
+- Is there one primary skill?
 - Is failure diagnosable?
-- Do the hints escalate?
-- Does the answer use only taught syntax?
-
----
+- Are hints actual nudges rather than instructions or solutions?
+- Does each hint get progressively more specific?
+- Would any hint fail the paste test?
+- Is the expected result observable without exposing implementation?
+- Does the solution use only syntax already taught?
 
 ## Step 6: Audit MDX structure
 
-Check:
-
-- frontmatter,
-- heading hierarchy,
-- horizontal rules,
-- callout semantics,
-- Markdown vs JSX,
-- challenge props,
-- `key` on JSX elements inside hint arrays,
-- quoting and escaping.
-
----
+Check frontmatter, heading hierarchy, callout semantics, Markdown vs JSX, challenge props, and escaping.
 
 ## Step 7: Tighten language
 
-Remove:
-
-- repeated explanations,
-- unnecessary preambles,
-- jargon before understanding,
-- filler,
-- instructions hidden in paragraphs.
-
-Keep useful warmth and personality.
+Remove repeated explanation, filler, unnecessary jargon, and instructions hidden in long paragraphs.
 
 ---
 
-# 26. Authoring Checklist
+# 21. Challenge Migration Rules
 
-Before considering a chapter complete, ask the following.
+When converting an older challenge to the current contract:
+
+1. Remove challenge numbers, standard IDs, and `Challenge` from the title.
+2. Rewrite the title as a short programming action.
+3. Move all required instructions out of hints and into the body.
+4. Convert hint strings that need code formatting into JSX nodes.
+5. Delete hints that only restate the prompt.
+6. Rewrite solution-like hints as conceptual or syntactic nudges.
+7. Move exact task code out of hints and into `solution`.
+8. Rename `answers` to `solution`.
+9. Move expected output/results out of the body and into `expected`.
+10. Read the full challenge sequence to ensure support decreases and independence grows.
+
+Do not perform a purely mechanical `answers` → `solution` rename and call the migration complete. The content contract matters more than the prop name.
+
+---
+
+# 22. Authoring Checklist
+
+Before considering a chapter complete, verify the following.
 
 ## Learning target
 
 - [ ] Can I state the primary learning target in one sentence?
-- [ ] Does the chapter mostly stay focused on that target?
+- [ ] Does the chapter stay focused on that target?
 - [ ] Are prerequisites already taught?
-
-## Problem and motivation
-
-- [ ] Does the learner understand why the new concept is useful?
-- [ ] When practical, do they encounter the awkward/problematic version first?
-- [ ] Is the pain brief and productive rather than tedious?
 
 ## Pacing
 
@@ -1758,62 +1013,61 @@ Before considering a chapter complete, ask the following.
 - [ ] Does each challenge have one primary new target?
 - [ ] Does difficulty increase through independence rather than random complexity?
 
-## Explanations
+## Challenge titles
 
-- [ ] Is there a useful mental model?
-- [ ] Does terminology follow understanding where practical?
-- [ ] Are examples small enough to foreground the concept?
-- [ ] Are names concrete and meaningful?
+- [ ] Is every title a short, active description of the coding task?
+- [ ] Have I removed challenge numbers, standard IDs, and generic labels?
+- [ ] Would the title still make sense outside the story wrapper?
 
-## Challenges
+## Challenge body
 
-- [ ] Are instructions explicit?
-- [ ] Is the title active and specific?
-- [ ] Do hints progress from conceptual to concrete?
-- [ ] Is the final answer simple and canonical?
-- [ ] Does the answer avoid untaught shortcuts?
+- [ ] Can a prepared learner complete the task without opening a hint?
+- [ ] Are required names, constraints, and starting state stated in the body?
+- [ ] Is the body short enough to scan before coding?
+
+## Expected result
+
+- [ ] Is an expected result included when success would otherwise be ambiguous?
+- [ ] Does it show the outcome without revealing the implementation?
+
+## Hints
+
+- [ ] Are there no more than three normal hints?
+- [ ] Does each hint answer "what should I think about next?"
+- [ ] Do hints progress from recall to direction to syntax cue?
+- [ ] Have I removed task-completing code from hints?
+- [ ] Does every hint pass the paste test?
+- [ ] Are inline code terms represented with JSX `<code>` elements rather than markup inside strings?
+
+## Solution
+
+- [ ] Is there one simple canonical solution?
+- [ ] Does it use only taught syntax?
+- [ ] Does it avoid clever shortcuts that obscure the lesson?
 
 ## Cumulative state
 
 - [ ] If later work depends on earlier code, is there a checkpoint?
-- [ ] Can a learner recover if their file drifted?
-- [ ] Are project milestones visible?
+- [ ] Can a learner recover if their working file drifted?
 
-## Tone
+## Tone and MDX
 
 - [ ] Does the writing respect beginners?
-- [ ] Have I removed “obviously,” “simply,” and unnecessary “just” language?
-- [ ] Is humor brief and nonessential?
-- [ ] Is the prose conversational but precise?
-
-## MDX
-
-- [ ] Is frontmatter complete and consistent?
 - [ ] Is ordinary prose written in Markdown?
-- [ ] Is JSX used only when useful?
+- [ ] Is JSX used where it provides structure or formatting?
 - [ ] Are callout types chosen semantically?
-- [ ] Are horizontal rules marking actual lesson beats?
-- [ ] Are `<br/>` tags rare and local?
-- [ ] Do JSX elements inside arrays have keys?
-- [ ] Are quotes, backticks, and `${...}` correctly escaped for their current syntax layer?
-
-## Ending
-
-- [ ] Does the learner get a chance to consolidate?
-- [ ] Is important vocabulary summarized?
-- [ ] Does the ending make clear what the learner can now do?
-- [ ] Is there a natural bridge to what comes next?
+- [ ] Are quotes, backticks, and `${...}` escaped for the syntax layer that owns them?
 
 ---
 
-# 27. The Short Version
+# 23. The Short Version
 
 When in doubt, write the chapter according to this rule:
 
 > **Make the learner feel a real problem, give them one new tool that solves it, show the smallest useful version of that tool, let them use it immediately, then build the next need from what they now understand.**
 
-And author the MDX according to this rule:
+And write every challenge according to this rule:
 
-> **Use Markdown for teaching, components for handbook behavior, JSX for component-internal structure, and always know which syntax layer currently owns your text.**
+> **Tell the learner exactly what to do, show what success looks like when needed, offer hints that nudge without solving, and keep the canonical solution behind the final reveal.**
 
 That combination is the core of the JavaScript Gym handbook style.
