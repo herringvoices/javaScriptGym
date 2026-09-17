@@ -11,6 +11,8 @@ import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
 import useMediaQuery from "../hooks/useMediaQuery";
 
+const EMPTY_WORKSPACE_FILES = Object.freeze({});
+
 export default function HandbookWorkbench({
   entry,
   showEditor = true,
@@ -60,7 +62,7 @@ export default function HandbookWorkbench({
     return { files, entry: challengeLike.entry, activeFile };
   }, [entry]);
 
-  const virtualWorkspace = useVirtualWorkspace(model?.files || {}, storageKey);
+  const virtualWorkspace = useVirtualWorkspace(model?.files || EMPTY_WORKSPACE_FILES, storageKey);
   const filesState = virtualWorkspace.workspace.files;
   const [, setActiveFile] = useState(model?.activeFile || null);
   const [srcDoc, setSrcDoc] = useState("");
