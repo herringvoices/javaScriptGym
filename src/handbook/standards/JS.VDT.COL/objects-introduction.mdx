@@ -4,7 +4,6 @@ title: Objects · One Book in One Binder
 short: Bundle separate book variables into book objects, read with dot paths, and update fields safely.
 ---
 
-
 # Data Types → Objects (Books as Binders)
 
 In the overview, you described books with separate variables like <code>book1Title</code> and <code>book1Pages</code>. That works for a tiny library, but it scatters information about **one book** across many boxes.
@@ -47,20 +46,13 @@ const book1 = {
 ```
 
 <HandbookChallenge
-  title="Challenge B1: Build `book1` from primitives"
+  title="Build the first book object"
   hints={[
-    "Create a new constant named `book1` and assign an object literal `{ ... }` to it.",
-    "Use your existing `book1Title`, `book1Author`, `book1Pages`, and `book1IsPaperback` variables as the values.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book1 = {
-  title: book1Title,
-  author: book1Author,
-  pages: book1Pages,
-  isPaperback: book1IsPaperback
-};
-
-console.log(book1);`}</pre>,
+    <>An object groups related values as named properties inside <code>{`{}`}</code>.</>,
+    <>The property names can be short labels such as <code>title</code>, <code>author</code>, <code>pages</code>, and <code>isPaperback</code>.</>,
+    <>Each property can use one of your existing <code>book1...</code> variables as its value.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const book1 = {
   title: book1Title,
   author: book1Author,
@@ -68,12 +60,11 @@ console.log(book1);`}</pre>,
   isPaperback: book1IsPaperback
 };
 
-console.log(book1);
-// { title: "The Way of Kings", author: "Brandon Sanderson", pages: 1007, isPaperback: false }`}</pre>
+console.log(book1);`}</pre>
   }
 >
   <p className="m-0">
-    Use your existing <code>book1...</code> variables to construct a single <code>book1</code> object and log it. Don't delete the old variables yet we still need them for the next challenge.
+    Use your existing <code>book1...</code> variables to construct a single object named <code>book1</code>, then log the object. Keep the old variables for now because the next challenge still uses them.
   </p>
 </HandbookChallenge>
 
@@ -95,21 +86,17 @@ const book2 = {
 ```
 
 <HandbookChallenge
-  title="Challenge B2: Build `book2` from primitives"
+  title="Build the second book object"
   hints={[
-    "Create a `book2` object that mirrors `book1` but uses the `book2...` variables.",
-    "After creating `book2`, log `book2.title` and `book2.pages`.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`const book2 = {
-  title: book2Title,
-  author: book2Author,
-  pages: book2Pages,
-  isPaperback: book2IsPaperback
-};
-
-console.log(book2.title);
-console.log(book2.pages);`}</pre>,
+    <>The second object should have the same property names as <code>book1</code>.</>,
+    <>Only the values change: use the existing <code>book2...</code> variables.</>,
+    <>Dot notation reads one property from an object, such as <code>someBook.title</code>.</>,
   ]}
-  answers={
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Words of Radiance
+1087`}</pre>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const book2 = {
   title: book2Title,
   author: book2Author,
@@ -117,12 +104,12 @@ console.log(book2.pages);`}</pre>,
   isPaperback: book2IsPaperback
 };
 
-console.log(book2.title); // Words of Radiance
-console.log(book2.pages); // 1087`}</pre>
+console.log(book2.title);
+console.log(book2.pages);`}</pre>
   }
 >
   <p className="m-0">
-    Build a <code>book2</code> object from your <code>book2...</code> primitives and log just its title and page count.
+    Build a <code>book2</code> object from your <code>book2...</code> primitives, then log its <code>title</code> and <code>pages</code> properties on separate lines.
   </p>
 </HandbookChallenge>
 
@@ -147,39 +134,35 @@ book1.genre = "Fantasy";   // new field
 ```
 
 <HandbookChallenge
-  title="Challenge B3: Access and update properties"
+  title="Read and change object properties"
   hints={[
-    "Start by logging `book1.title` and `book1.author`.",
-    "Change `book1.pages` to a slightly different number, then log `book1.pages` again.",
-    "Add a new property like book1.genre = \"Fantasy\"; and log the whole book1 object.",
-    <pre key="peek" className="m-0 whitespace-pre-wrap">{`console.log(book1.title);
+    <>Dot notation uses the object name, a dot, and the property name.</>,
+    <>Assigning to an existing property changes that property’s value.</>,
+    <>Assigning to a property name that does not exist yet adds it to the object.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`The Way of Kings
+Brandon Sanderson
+1010`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(book1.title);
 console.log(book1.author);
 
 book1.pages = 1010;
 console.log(book1.pages);
 
 book1.genre = "Fantasy";
-console.log(book1);`}</pre>,
-  ]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`console.log(book1.title);   // The Way of Kings
-console.log(book1.author);  // Brandon Sanderson
-
-book1.pages = 1010;
-console.log(book1.pages);   // 1010
-
-book1.genre = "Fantasy";
-console.log(book1);
-// { title: "The Way of Kings", author: "Brandon Sanderson", pages: 1010, isPaperback: false, genre: "Fantasy" }`}</pre>
+console.log(book1);`}</pre>
   }
 >
   <p className="m-0">
-    Practice reading fields with dot notation, tweaking one field, and adding a new one. Watch how the object changes in the console.
+    Log <code>book1.title</code> and <code>book1.author</code>. Change <code>book1.pages</code> to <code>1010</code> and log the new value. Then add a <code>genre</code> property with the value <code>"Fantasy"</code> and log the whole object.
   </p>
 </HandbookChallenge>
 
 > <strong>Const vs. mutation</strong><br />
-> <code>const book1 = {'{'}{'}'}</code> locks the variable-to-object link, not the pages inside. You can still update or add properties; you just cant reassign <code>book1</code> to a completely different object.
+> <code>const book1 = {'{'}{'}'}</code> locks the variable-to-object link, not the pages inside. You can still update or add properties; you just can’t reassign <code>book1</code> to a completely different object.
 
 ---
 
