@@ -64,34 +64,27 @@ You can think of it as:
 
 > For each hero on the outer belt, run the entire power belt and pick out the powers that match.
 
----
-
 <HandbookChallenge
-title="ITR Challenge 7 · List each hero’s powers"
-hints={[
-"Start with a for…of loop over heroes: `for (const hero of heroes) { ... }`.",
-"Inside that loop, log a header like `--- Powers for <name> ---` using `hero.name`.",
-"Then, inside the hero loop, write another for…of over `powerVault`.",
-"In the inner loop, check `if (power.heroId === hero.id)` to see if the power belongs to the current hero.",
-"When it matches, log the power description with a dash in front so it appears under that hero's header.",
+  title="List each hero’s powers"
+  hints={[
+    <>The outer loop gives you one current hero; the inner loop can scan every power for that hero.</>,
+    <>Inside the inner loop, both objects are available, so compare the field that links a power to its hero.</>,
+    <>Only print a power when its <code>heroId</code> matches the current <code>hero.id</code>.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`for (const hero of heroes) {
+  console.log(\`--- Powers for \${hero.name} ---\`);
 
-]}
-answers={
-
-  <pre className="m-0 whitespace-pre-wrap">{"// Nested for…of: heroes on the outer belt, powers on the inner belt\n\nfor (const hero of heroes) {\n  console.log(`--- Powers for ${hero.name} ---`);\n\n  for (const power of powerVault) {\n    if (power.heroId === hero.id) {\n      console.log(`- ${power.description}`);\n    }\n  }\n}"}</pre>
-
-}
-
+  for (const power of powerVault) {
+    if (power.heroId === hero.id) {
+      console.log(\`- \${power.description}\`);
+    }
+  }
+}`}</pre>
+  }
 >
-
   <p className="m-0">
-    Write a nested pair of <code>for…of</code> loops that lists each hero's powers.
-    In the outer loop, use <code>for (const hero of heroes)</code> and log a header line like
-    <code>&quot;--- Powers for Crimson Phoenix ---&quot;</code> using <code>hero.name</code>.
-    Inside that loop, add another <code>for…of</code> that walks through <code>powerVault</code>. For each
-    <code>power</code>, check if its <code>heroId</code> matches the current <code>hero.id</code>. If it does,
-    log a line that starts with a dash and the power description (for example,
-    <code>&quot;- Plasma flight&quot;</code>). Each hero should print only their own powers.
+    Loop through <code>heroes</code> with an outer <code>for…of</code>. For each hero, log a header containing that hero’s name. Inside that loop, scan <code>powerVault</code> with another <code>for…of</code>. When a power’s <code>heroId</code> matches the current <code>hero.id</code>, log that power’s description beneath the header.
   </p>
 </HandbookChallenge>
 
@@ -141,34 +134,36 @@ Key ideas:
 * The inner loop walks all powers and increments `powerCount` when there’s a match.
 * After the inner loop finishes for that hero, you push one summary object.
 
----
-
 <HandbookChallenge
-title="ITR Challenge 8 · Build heroSummaries (name + powerCount)"
-hints={[
-"Start by declaring an empty array: `const heroSummaries = [];`.",
-"Use `for (const hero of heroes)` for the outer loop.",
-"Inside the outer loop, set `let powerCount = 0;` so it resets for each hero.",
-"Use another `for…of` over `powerVault` inside, and increment `powerCount` whenever `power.heroId === hero.id`.",
-"After the inner loop finishes (still inside the outer loop), push an object like `{ name: hero.name, powerCount: powerCount }` into `heroSummaries`, and log `heroSummaries` at the end to see one summary per hero.",
+  title="Build a power-count summary for each hero"
+  hints={[
+    <>Each hero needs a fresh count, so reset the counter inside the outer loop before scanning powers.</>,
+    <>The inner loop should increase that counter only when the current power belongs to the current hero.</>,
+    <>After the inner loop finishes, you have the final count for that hero and can add one summary object.</>,
+  ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const heroSummaries = [];
 
-]}
-answers={
+for (const hero of heroes) {
+  let powerCount = 0;
 
-  <pre className="m-0 whitespace-pre-wrap">{"const heroSummaries = [];\n\nfor (const hero of heroes) {\n  let powerCount = 0;\n\n  for (const power of powerVault) {\n    if (power.heroId === hero.id) {\n      powerCount = powerCount + 1;\n    }\n  }\n\n  heroSummaries.push({\n    name: hero.name,\n    powerCount: powerCount,\n  });\n}\n\nconsole.log(heroSummaries);\n// Example output (your heroes/powers may differ):\n// [\n//   { name: \"Crimson Phoenix\", powerCount: 2 },\n//   { name: \"Neon Volt\",       powerCount: 1 },\n//   { name: \"Star Sentinel\",   powerCount: 1 }\n// ]"}</pre>
+  for (const power of powerVault) {
+    if (power.heroId === hero.id) {
+      powerCount = powerCount + 1;
+    }
+  }
 
+  heroSummaries.push({
+    name: hero.name,
+    powerCount: powerCount,
+  });
 }
 
+console.log(heroSummaries);`}</pre>
+  }
 >
-
   <p className="m-0">
-    Create an empty array called <code>heroSummaries</code>. Then, write a nested pair of
-    <code>for…of</code> loops. In the outer loop, walk through each <code>hero</code> in <code>heroes</code> and start
-    a <code>powerCount</code> at <code>0</code>. In the inner loop, walk through each <code>power</code> in
-    <code>powerVault</code> and increment <code>powerCount</code> whenever the power's
-    <code>heroId</code> matches the current <code>hero.id</code>. After the inner loop finishes for that hero, push an
-    object with <code>name</code> and <code>powerCount</code> into <code>heroSummaries</code>. Finally, log
-    <code>heroSummaries</code> to see one summary row per hero.
+    Create an empty <code>heroSummaries</code> array. For each hero, start a <code>powerCount</code> at <code>0</code>, scan <code>powerVault</code>, and increase the count whenever <code>power.heroId === hero.id</code>. After that hero’s inner loop finishes, push an object containing the hero’s <code>name</code> and final <code>powerCount</code>. Log the completed summary array at the end.
   </p>
 </HandbookChallenge>
 
