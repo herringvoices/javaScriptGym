@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.RENDER_FUNCTION
-title: Render Function ? Put the DOM Update in One Place
+title: Render Function · Put the DOM Update in One Place
 short: Group the DOM update pipeline inside render().
 ---
 
@@ -74,9 +74,7 @@ app.innerHTML = `
 const potionList = document.querySelector("#potion-list");
 
 const potions = getPotions();
-
 const potionHTML = potions.map(PotionItem).join("");
-
 potionList.innerHTML = potionHTML;
 ```
 
@@ -270,49 +268,10 @@ That means these lines:
 
 ```js
 const potions = getPotions();
-
 const potionHTML = potions.map(PotionItem).join("");
 ```
 
 should also live inside `render`.
-
-Now the function should look like this:
-
-```js
-function render() {
-  const app = document.querySelector("#app");
-
-  app.innerHTML = `
-    <header>
-      <h1>Potion Shelf</h1>
-      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-    </header>
-
-    <main>
-      <section>
-        <h2>Available Potions</h2>
-        <ul id="potion-list"></ul>
-      </section>
-    </main>
-  `;
-
-  const potions = getPotions();
-
-  const potionHTML = potions.map(PotionItem).join("");
-}
-```
-
-Now `render` does more of the full rendering process.
-
-It creates the shell.
-
-It gets the data.
-
-It turns the data into one HTML string.
-
-But it still does not put the potion HTML into the list yet.
-
-For that, we need `potionList`.
 
 ## Select the List After the Shell Exists
 
@@ -326,57 +285,15 @@ app.innerHTML = `...`;
 
 That means we still need to select `#potion-list` after the shell has been rendered.
 
-Inside `render`, add this line after the `app.innerHTML` block:
+Inside `render`, add:
 
 ```js
 const potionList = document.querySelector("#potion-list");
 ```
 
-You can place it before or after the `potions` and `potionHTML` lines.
-
 The most important rule is this:
 
 > Select `#potion-list` after `app.innerHTML` creates it.
-
-For this version, we will select the list after creating the final potion HTML string:
-
-```js
-function render() {
-  const app = document.querySelector("#app");
-
-  app.innerHTML = `
-    <header>
-      <h1>Potion Shelf</h1>
-      <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
-    </header>
-
-    <main>
-      <section>
-        <h2>Available Potions</h2>
-        <ul id="potion-list"></ul>
-      </section>
-    </main>
-  `;
-
-  const potions = getPotions();
-
-  const potionHTML = potions.map(PotionItem).join("");
-
-  const potionList = document.querySelector("#potion-list");
-}
-```
-
-Now `render` has:
-
-* the app mount point
-* the app shell
-* the potion data
-* the final potion HTML string
-* the potion list element
-
-Only one step is missing.
-
-We need to update the list.
 
 ## Update the List Inside `render`
 
@@ -407,9 +324,7 @@ function render() {
   `;
 
   const potions = getPotions();
-
   const potionHTML = potions.map(PotionItem).join("");
-
   const potionList = document.querySelector("#potion-list");
 
   potionList.innerHTML = potionHTML;
@@ -513,9 +428,7 @@ function render() {
   `;
 
   const potions = getPotions();
-
   const potionHTML = potions.map(PotionItem).join("");
-
   const potionList = document.querySelector("#potion-list");
 
   potionList.innerHTML = potionHTML;
@@ -590,7 +503,6 @@ function render() {
   `;
 
   const taskHTML = tasks.map(TaskItem).join("");
-
   const taskList = document.querySelector("#task-list");
 
   taskList.innerHTML = taskHTML;
@@ -601,52 +513,27 @@ render();
 
 The point is not the task data. The point is naming the render pipeline and calling it once.
 
-<HandbookChallenge title="ELM Challenge 11 · Group the render pipeline">
+<HandbookChallenge
+  title="Move the render pipeline into render()"
+  hints={[
+    <>A refactor should preserve the visible result; move the existing working steps rather than rewriting their behavior.</>,
+    <>Keep the shell creation before the <code>#potion-list</code> selection because that list does not exist until <code>app.innerHTML</code> runs.</>,
+    <>Defining <code>render</code> is not enough. The function still has to be called after its declaration.</>,
+  ]}
+  expected={
+    <p className="m-0">Potion Shelf should look exactly as it did before the refactor: the shell and full potion list are still visible, but the DOM-update pipeline now lives inside <code>render()</code>.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`import { getPotions } from "./database.js";
 
-  <Callout type="note" title="Starting point">
-    <p className="m-0">The page should already render the full potion list before this challenge. This is a refactor: the visible result should stay the same.</p>
-  </Callout>
-
-* Keep the `getPotions` import at the top of `/scripts/main.js`.
-* Keep the `PotionItem` function.
-* Create a function named `render`.
-* Move the `app` variable inside `render`.
-* Move the `app.innerHTML` block inside `render`.
-* Move the `potions` variable inside `render`.
-* Move the `potionHTML` variable inside `render`.
-* Move the `potionList` variable inside `render`.
-* Make sure `potionList` is selected after `app.innerHTML` creates the list.
-* Move `potionList.innerHTML = potionHTML` inside `render`.
-* Call `render()` at the bottom of the file.
-* Refresh the preview.
-* Confirm that every potion still appears in the list.
-* Confirm that the page looks the same as it did before the refactor.
-
-</HandbookChallenge>
-
-## Keep vs Trash
-
-Keep:
-
-```js
-import { getPotions } from "./database.js";
-```
-
-Keep:
-
-```js
 function PotionItem(potion) {
-  return `<li>${potion.name}</li>`;
+  return \`<li>\${potion.name}</li>\`;
 }
-```
 
-Keep:
-
-```js
 function render() {
   const app = document.querySelector("#app");
 
-  app.innerHTML = `
+  app.innerHTML = \`
     <header>
       <h1>Potion Shelf</h1>
       <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
@@ -658,87 +545,63 @@ function render() {
         <ul id="potion-list"></ul>
       </section>
     </main>
-  `;
+  \`;
 
   const potions = getPotions();
-
   const potionHTML = potions.map(PotionItem).join("");
-
   const potionList = document.querySelector("#potion-list");
 
   potionList.innerHTML = potionHTML;
 }
 
-render();
-```
+render();`}</pre>
+  }
+>
+  <Callout type="note" title="Starting point">
+    <p className="m-0">The page should already render the full potion list before this task. This is a refactor, so the visible result should stay the same.</p>
+  </Callout>
+  <p className="m-0">
+    Create <code>render()</code> below <code>PotionItem</code>. Move the app selection, shell render, potion data retrieval, HTML transformation, nested list selection, and list update into that function. Keep the <code>#potion-list</code> selection after the shell is created. Remove duplicate loose copies of those statements, call <code>render()</code> at the bottom of the file, and confirm the page still renders the same full list.
+  </p>
+</HandbookChallenge>
 
-Move into `render`, instead of leaving loose in the file:
+## Keep vs Trash
 
-```js
-const app = document.querySelector("#app");
-```
+Keep the import, `PotionItem`, one `render` function, and one `render()` call. Trash duplicate loose render code after it has been moved into the function. One cauldron is enough.
 
-```js
-const potionList = document.querySelector("#potion-list");
-```
-
-```js
-const potions = getPotions();
-```
-
-```js
-const potionHTML = potions.map(PotionItem).join("");
-
-potionList.innerHTML = potionHTML;
-```
-
-Trash any duplicate loose code after you have moved it into `render`.
-
-The goal is not to have two render pipelines.
-
-One cauldron is enough.
-
-<HandbookChallenge title="ELM Flow Challenge 11 · Group the render flow">
-
-Your program flow is mostly the same, but now the render work happens when `main.js` calls `render()`.
-
-Add this line before the DOM and data work:
-
-```mermaid
-  Main->>Main: call render()
-```
-
-Then keep the render steps under that call:
-
-```mermaid
-  Main->>DOM: select #app
-  Main->>DOM: set app.innerHTML
-  Main->>DB: call getPotions()
-  DB-->>Main: return potions array
-  Main->>Main: map potions with PotionItem
-  Main->>Main: join li strings into potionHTML
-  Main->>DOM: select #potion-list
-  Main->>DOM: set potionList.innerHTML
-```
-
-The important idea is that the same steps still happen.
-
-They are just grouped inside the `render` function now.
-
-Preview the diagram.
-
-The diagram should show one `render()` call followed by the same render pipeline from before.
-
-**Check your diagram:**
-
-* What does the `render` function do?
-* Does defining `render` automatically update the page?
-* Which line actually runs the `render` function?
-* Why does `#potion-list` still need to be selected after `app.innerHTML` runs?
-* Did the visible page change after this refactor?
-* What does it mean to refactor code?
-* Why might it be useful to have the render process in one function later?
-
+<HandbookChallenge
+  title="Group the render flow in the sequence diagram"
+  hints={[
+    <>The underlying render steps have not changed; the diagram now needs to show what causes that group of steps to run.</>,
+    <>Add the <code>render()</code> call before the DOM and data interactions it contains.</>,
+    <>Keep the list selection after the shell update in the diagram for the same reason it stays after the shell update in code.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: call render()
+Main->>DOM: select #app
+Main->>DOM: set app.innerHTML
+Main->>DB: call getPotions()
+DB-->>Main: return potions array
+Main->>Main: map potions with PotionItem
+Main->>Main: join li strings into potionHTML
+Main->>DOM: select #potion-list
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: call render()
+Main->>DOM: select #app
+Main->>DOM: set app.innerHTML
+Main->>DB: call getPotions()
+DB-->>Main: return potions array
+Main->>Main: map potions with PotionItem
+Main->>Main: join li strings into potionHTML
+Main->>DOM: select #potion-list
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+>
+  <p className="m-0">
+    Update <code>/sequenceDiagram.mmd</code> so the existing render pipeline appears after a new <code>Main-&gt;&gt;Main: call render()</code> step. Preview the diagram and verify that it still describes the same work in the same order, now grouped under the reusable render action.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice
