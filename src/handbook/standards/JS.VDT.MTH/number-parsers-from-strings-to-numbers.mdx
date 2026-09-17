@@ -84,63 +84,53 @@ console.log(typeof width); // "number"
 
 ---
 
-## Challenge 1: Add prices to your books
+## Add prices to the bookshelf
 
 <HandbookChallenge
-  title="Attach price data to your existing books"
-  hints={["Reuse the same book1, book2, and book3 objects from the Collections and String Methods chapters—just add a new property to each one."]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`
-const book1 = {
-  title: "The Way of Kings",
-  author: "Brandon Sanderson",
-  pages: 1010,
-  isPaperback: false,
-  genre: "Fantasy",
-  price: 18.99,
-};
-
-const book2 = {
-  title: "Words of Radiance",
-  author: "Brandon Sanderson",
-  pages: 1100,
-  isPaperback: false,
-  price: 19.99,
-};
-
-const book3 = {
-  title: "Oathbringer",
-  author: "Brandon Sanderson",
-  pages: 1248,
-  isPaperback: false,
-  price: 21.99,
-};
-
-
-
+  title="Add a price to each book"
+  hints={[
+    <>A price is numeric data, so store it as a number rather than a quoted string.</>,
+    <>Keep the existing book objects and add one new property to each object.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`18.99
+19.99
+21.99`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`book1.price = 18.99;
+book2.price = 19.99;
+book3.price = 21.99;
 
 console.log(book1.price);
 console.log(book2.price);
 console.log(book3.price);`}</pre>
   }
 >
-
   <p className="m-0">
-    Add a new <code>price</code> property to each of your book objects. This turns your bookshelf into something you can actually compare against a reader's budget.
+    Reuse <code>book1</code>, <code>book2</code>, and <code>book3</code> from the Collections chapters. Add a numeric <code>price</code> property to each one using <code>18.99</code>, <code>19.99</code>, and <code>21.99</code>, then log the three prices.
   </p>
 </HandbookChallenge>
 
 ---
 
-## Challenge 2: Price and budget flow
+## Turn a form value into a usable budget
 
 <HandbookChallenge
-  title="Check whether a reader can afford a book"
-  hints={["Look back at the Number(...) example above to remind yourself how to turn a string like \"20.00\" into a real number."]}
-  answers={
-    <pre className="m-0 whitespace-pre-wrap">{`// ...book1, book2, book3, books, and prices already defined above
-
-const userBudgetInput = "20.00";
+  title="Convert a budget string and compare prices"
+  hints={[
+    <>The entire value <code>"20.00"</code> is numeric, so use the parser intended for a complete numeric string.</>,
+    <>After parsing, <code>typeof userBudget</code> should report <code>"number"</code>.</>,
+    <>A reader can afford a book when the budget is greater than or equal to the price.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`20
+number
+true
+false`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const userBudgetInput = "20.00";
 const userBudget = Number(userBudgetInput);
 
 const canAffordFirstBook = userBudget >= book1.price;
@@ -152,22 +142,8 @@ console.log(canAffordFirstBook);
 console.log(isExactPriceMatch);`}</pre>
   }
 >
-
   <p className="m-0">
-    At the bottom of your file, add a new string called <code>userBudgetInput</code>:
-  </p>
-  <p className="m-0 mt-2"><code>const userBudgetInput = "20.00";</code></p>
-  <p className="m-0 mt-2">
-    This represents what a reader typed into a budget field on your library's website. Use one of the number parsers above to convert that string into a real number called <code>userBudget</code>, then compare it to your book prices:
-  </p>
-  <ul className="mt-2 mb-2">
-    <li>Create <code>userBudget</code> with one of the number parsers above.</li>
-    <li>Create <code>canAffordFirstBook</code> with <code>userBudget \<= book1.price</code>.</li>
-    <li>Create <code>isExactPriceMatch</code> to store the results of your check that <code>userBudget === book2.price</code> to check for an exact match to the second book's price.</li>
-    <li>Use <code>console.log()</code> to print the budget, its type, and both booleans so you can see how the comparisons turned out.</li>
-  </ul>
-  <p className="m-0">
-    This flow mirrors what real apps do: they take numeric-looking strings from a form, parse them into numbers, and then use comparisons to decide what a user can afford.
+    Create <code>userBudgetInput</code> with the string <code>"20.00"</code>. Convert it into a number named <code>userBudget</code>. Then create <code>canAffordFirstBook</code> to check whether the budget is at least <code>book1.price</code>, and <code>isExactPriceMatch</code> to check whether the budget exactly equals <code>book2.price</code>. Log the parsed budget, its type, and both booleans.
   </p>
 </HandbookChallenge>
 
