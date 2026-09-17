@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.ONE_OBJECT_ONE_LI
-title: One Object ? One List Item
+title: One Object · One List Item
 short: Turn one data object into one list item string.
 ---
 
@@ -307,29 +307,29 @@ First, we make sure one object can become one list item.
 
 Then we can worry about repeating the pattern.
 
-<HandbookChallenge title="ELM Challenge 7 · Render one potion">
+<HandbookChallenge
+  title="Render the first potion as a list item"
+  hints={[
+    <>Array indexes start at <code>0</code>, so use the first position to get one potion object.</>,
+    <>Read the potion’s <code>name</code> property inside the template literal rather than hard-coding a name.</>,
+    <>The visible update happens when the completed <code>&lt;li&gt;</code> string is assigned to <code>potionList.innerHTML</code>.</>,
+  ]}
+  expected={
+    <p className="m-0">Exactly one potion name should appear inside the <strong>Available Potions</strong> list. Temporarily switching the selected index to <code>1</code> should display a different potion.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const potions = getPotions();
+const firstPotion = potions[0];
 
+potionList.innerHTML = \`<li>\${firstPotion.name}</li>\`;`}</pre>
+  }
+>
   <Callout type="note" title="Starting point">
-    <p className="m-0">You should already have the app shell, the selected <code>potionList</code>, and the <code>potions</code> array from <code>getPotions()</code>.</p>
+    <p className="m-0">Keep the data import, app shell, selected <code>potionList</code>, and <code>potions</code> array from the previous page. Remove the temporary <code>console.log(potions)</code>.</p>
   </Callout>
-
-* Keep the `getPotions` import at the top of `/scripts/main.js`.
-* Keep the `app` variable.
-* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
-* Keep the `potionList` variable below the `app.innerHTML` block.
-* Keep the `potions` variable that stores the result of `getPotions()`.
-* Remove the temporary `console.log(potions)` line.
-* Create a variable named `firstPotion`.
-* Store `potions[0]` in `firstPotion`.
-* Set `potionList.innerHTML` to one `<li>` string.
-* Inside the `<li>`, display `firstPotion.name`.
-* Refresh the preview.
-* Confirm that one potion appears in the list.
-* Change `potions[0]` to `potions[1]`.
-* Refresh again.
-* Confirm that a different potion appears.
-* Change `potions[1]` back to `potions[0]`.
-
+  <p className="m-0">
+    Create <code>firstPotion</code> from <code>potions[0]</code>. Set <code>potionList.innerHTML</code> to one <code>&lt;li&gt;</code> string containing <code>firstPotion.name</code>. Refresh the preview and confirm that one potion appears. As a quick test, temporarily use <code>potions[1]</code> and confirm that the displayed name changes, then restore index <code>0</code>.
+  </p>
 </HandbookChallenge>
 
 ## Keep vs Trash
@@ -366,35 +366,27 @@ Change it back to:
 const firstPotion = potions[0];
 ```
 
-<HandbookChallenge title="ELM Flow Challenge 7 · Add the one-potion render">
-
-Open `/sequenceDiagram.mmd`.
-
-Add these lines after the potion array is returned:
-
-```mermaid
-  Main->>Main: store potions[0] in firstPotion
-  Main->>Main: build one li string
-  Main->>DOM: set potionList.innerHTML
-```
-
-These first two lines stay inside `main.js` because JavaScript is working with values it already has.
-
-The DOM only gets involved when `main.js` updates `potionList.innerHTML`.
-
-Preview the diagram.
-
-The diagram should now show one potion object turning into one visible list item.
-
-**Check your diagram:**
-
-* What object is stored in `firstPotion`?
-* Why does `potions[0]` give us the first potion?
-* What property are we reading from `firstPotion`?
-* Which line changes what the user sees?
-* Does this code render every potion in the array yet?
-* What happened when you changed `potions[0]` to `potions[1]`?
-
+<HandbookChallenge
+  title="Add the one-potion render to the flow diagram"
+  hints={[
+    <>The first two new steps manipulate JavaScript values inside <code>Main</code>; the final step updates the DOM.</>,
+    <>Store the array item before building the string so the diagram mirrors the code you wrote.</>,
+    <>The DOM should receive the completed list-item string only after it has been built.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: store potions[0] in firstPotion
+Main->>Main: build one li string
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: store potions[0] in firstPotion
+Main->>Main: build one li string
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+>
+  <p className="m-0">
+    Open <code>/sequenceDiagram.mmd</code>. After the potions array is returned, add steps showing <code>Main</code> storing <code>potions[0]</code>, building one <code>&lt;li&gt;</code> string, and then updating <code>potionList.innerHTML</code> in the DOM. Preview the diagram and verify that data preparation happens before the visible update.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice
