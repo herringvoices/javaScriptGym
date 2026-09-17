@@ -11,9 +11,13 @@ short: Use map() to turn arrays of objects into arrays of strings and other shap
 Headmaster Glumstomple wants a list of all the students' first and last names. So, he's hired you to see that it's done!
 
 <HandbookChallenge
-  title="Attendance list (for...of loop version)"
-  hints={["Start with a loop version so you can clearly see how map() will replace it."]}
-  answers={
+  title="Build the attendance list with a loop"
+  hints={[
+    <>Start with an empty array that will collect one name string per student.</>,
+    <>The loop gives you one student object at a time; turn that object into the string you want to keep.</>,
+    <>Add each finished string to the result array before the loop moves on.</>,
+  ]}
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const names = [];
 
 for (const s of students) {
@@ -21,22 +25,16 @@ for (const s of students) {
   names.push(fullName);
 }
 
-console.log(names.join(", "));
-// e.g. "Edgar Gullylog, Polly Frumpleton"`}</pre>
+console.log(names.join(", "));`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>You’re building the loop version first so `map()` can replace it cleanly.</li>
-      <li>Create an empty array called `names`.</li>
-      <li>Loop through `students` with `for...of`.</li>
-      <li>Inside the loop, build a full name string like ``${s.firstName} ${s.lastName}``.</li>
-      <li>Push each full name into `names`.</li>
-      <li>After the loop, log `names.join(", ")` so you see one attendance line.</li>
-      <li>Keep vs Trash: Trash this loop version after MAP 2 works.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create an empty array named <code>names</code>.</li>
+    <li>Loop through <code>students</code> with <code>for...of</code>.</li>
+    <li>For each student, build one full-name string from <code>firstName</code> and <code>lastName</code>, then push it into <code>names</code>.</li>
+    <li>After the loop, log <code>names.join(", ")</code>.</li>
+    <li>Keep this version only until the <code>map()</code> version works.</li>
+  </ul>
 </HandbookChallenge>
 
 <br/>
@@ -51,14 +49,14 @@ console.log(names.join(", "));
 
 `map()`, for example, takes an array, runs a callback on **every item**, and builds a **new array** from whatever the callback `return`s. The new array is the **same length** as the original.
 
-Imagine you are writing thank you notes after a birthday party. You have a list of people's names and what they got you. In this scenareo, you take on the role of the `map()` function, iterating over that list to produce one `thankYouCard` for every item in your list.
+Imagine you are writing thank you notes after a birthday party. You have a list of people's names and what they got you. In this scenario, you take on the role of the `map()` function, iterating over that list to produce one `thankYouCard` for every item in your list.
 
 So if `thankYouList` looks like:
 
 ```js
 const thankYouList = [
   { id: 1, name: "Tobias", gift: "McDonald's Gift Card"},
-  { id: 1, name: "Deshawn", gift: "Coffe Maker"},
+  { id: 2, name: "Deshawn", gift: "Coffee Maker"},
 ]
 ```
 
@@ -74,40 +72,31 @@ produces:
 ["Dear Tobias, thank you for the McDonald's Gift Card.", "Dear Deshawn, thank you for the Coffee Maker."]
 ```
 
-Once you have an array of strings, you can turn it into a string of comma-separated items with a line break after each one using  `join(",\n")`:
+Once you have an array of strings, you can turn it into one string with a line break after each item using `join("\n")`:
 
 ```js
-console.log(thankYouCards.join(",\n"));
-// "Dear Tobias, thank you for the McDonald's Gift Card.,
-// Dear Deshawn, thank you for the Coffee Maker."
+console.log(thankYouCards.join("\n"));
 ```
 
-
----
-
-### HandbookChallenge: Attendance list with `map()`
-
 <HandbookChallenge
-  title="Attendance list with map()"
-  hints={["You can delete or comment out your loop version once this works."]}
-  answers={
+  title="Build the attendance list with map()"
+  hints={[
+    <><code>map()</code> should produce one new value for every student in the original array.</>,
+    <>The callback’s job is only to turn the current student object into one full-name string.</>,
+    <>A concise arrow callback can return that string expression directly.</>,
+  ]}
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const names = students.map((s) => \`\${s.firstName} \${s.lastName}\`);
 
-console.log(names.join(", "));
-// e.g. "Edgar Gullylog, Polly Frumpleton"`}</pre>
+console.log(names.join(", "));`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Replace your loop solution with a single `map()` call.</li>
-      <li>Your `map()` should create an array of strings with the students' first names and lastnames.</li>
-      <li>Your `map()` callback must produce the string that goes into the new array.</li>
-      <li>Log `names.join(", ")` again to confirm the result matches the loop version.</li>
-      <li>Notice how `map()` expresses the **shape change** directly: “students → full name strings.”</li>
-      <li>Keep vs Trash: You don’t need to keep the `names` array for later challenges—this is a demo of transformation.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Replace the loop version with one <code>map()</code> call.</li>
+    <li>Create a new <code>names</code> array containing one first-and-last-name string for every student.</li>
+    <li>Log <code>names.join(", ")</code> and confirm it matches the loop version.</li>
+    <li>Once it works, remove or comment out the old loop version.</li>
+  </ul>
 </HandbookChallenge>
 
 ---
