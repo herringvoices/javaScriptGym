@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.POTION_ITEM
-title: PotionItem ? A Function That Returns HTML
+title: PotionItem · A Function That Returns HTML
 short: Give the one-object rendering pattern a name.
 ---
 
@@ -264,10 +264,6 @@ That function call returns one `<li>` string.
 
 Then `playlist.innerHTML` puts that returned string inside the list.
 
-means:
-
-> Turn the first song into an `<li>` string, then place that string inside the playlist.
-
 The page should look the same as it did before.
 
 That is okay.
@@ -316,8 +312,6 @@ Only the argument changed.
 
 That is the power of the parameter.
 
-`SongItem` can receive different song objects and still return the correct `<li>` string for each one.
-
 After the test, change the argument back to the first item.
 
 ## Why This Still Does Not Render the Whole List
@@ -354,27 +348,28 @@ But that repetition is the next lesson.
 
 For now, the win is that we have a reusable function that knows how to turn one object into one list item string.
 
-<HandbookChallenge title="ELM Challenge 8 · Extract PotionItem">
+<HandbookChallenge
+  title="Extract the PotionItem renderer"
+  hints={[
+    <>Move only the one-object-to-one-string job into the helper; DOM selection and DOM updates stay outside it.</>,
+    <>Give the function one <code>potion</code> parameter so the same template works for different potion objects.</>,
+    <>The helper should <code>return</code> the <code>&lt;li&gt;</code> string rather than assigning it anywhere.</>,
+  ]}
+  expected={
+    <p className="m-0">The page should still show one potion. Temporarily passing <code>potions[1]</code> should show a different potion without changing the <code>PotionItem</code> function.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function PotionItem(potion) {
+  return \`<li>\${potion.name}</li>\`;
+}
 
-* Keep the `getPotions` import at the top of `/scripts/main.js`.
-* Create a function named `PotionItem`.
-* Give `PotionItem` one parameter named `potion`.
-* Inside the function, return one `<li>` string.
-* Inside the `<li>`, display `potion.name`.
-* Keep the `app` variable.
-* Keep the `app.innerHTML` block that renders the Potion Shelf shell.
-* Keep the `potionList` variable below the `app.innerHTML` block.
-* Keep the `potions` variable that stores the result of `getPotions()`.
-* Remove the temporary `firstPotion` variable.
-* Replace the old direct `<li>` string with a call to `PotionItem(potions[0])`.
-* Set `potionList.innerHTML` equal to the value returned by `PotionItem(potions[0])`.
-* Refresh the preview.
-* Confirm that one potion appears in the list.
-* Change the argument from `potions[0]` to `potions[1]`.
-* Refresh again.
-* Confirm that a different potion appears.
-* Change the argument back to `potions[0]`.
-
+const potions = getPotions();
+potionList.innerHTML = PotionItem(potions[0]);`}</pre>
+  }
+>
+  <p className="m-0">
+    Near the top of <code>/scripts/main.js</code>, create <code>PotionItem(potion)</code> and have it return one <code>&lt;li&gt;</code> string containing <code>potion.name</code>. Remove the temporary <code>firstPotion</code> variable. Render one potion by assigning the value returned by <code>PotionItem(potions[0])</code> to <code>potionList.innerHTML</code>. Test the reusable function once with <code>potions[1]</code>, then restore <code>potions[0]</code>.
+  </p>
 </HandbookChallenge>
 
 ## Keep vs Trash
@@ -425,46 +420,27 @@ Change it back to:
 potionList.innerHTML = PotionItem(potions[0]);
 ```
 
-<HandbookChallenge title="ELM Flow Challenge 8 · Replace the one-potion render with PotionItem">
-
-Open `/sequenceDiagram.mmd`.
-
-Replace the previous one-item rendering lines:
-
-```mermaid
-  Main->>Main: store potions[0] in firstPotion
-  Main->>Main: build one li string
-  Main->>DOM: set potionList.innerHTML
-```
-
-with these lines:
-
-```mermaid
-  Main->>Main: call PotionItem with potions[0]
-  Main->>Main: return one li string
-  Main->>DOM: set potionList.innerHTML
-```
-
-The first two steps still happen inside `main.js`.
-
-`PotionItem` is a function in `main.js`, and it returns a string to `main.js`.
-
-The DOM only gets involved when `main.js` sets `potionList.innerHTML`.
-
-Preview the diagram.
-
-The diagram should now show `main.js` calling the reusable `PotionItem` function.
-
-**Check your diagram:**
-
-* What value gets passed into `PotionItem`?
-* What is the parameter name inside the `PotionItem` function?
-* What does `PotionItem` return?
-* Does `PotionItem` update the DOM by itself?
-* Which line actually changes what the user sees?
-* What changed when you passed `potions[1]` instead of `potions[0]`?
-* Does this code render every potion in the array yet?
-
+<HandbookChallenge
+  title="Show PotionItem in the flow diagram"
+  hints={[
+    <>The reusable renderer replaces the earlier steps that stored <code>firstPotion</code> and built the string directly.</>,
+    <>Calling <code>PotionItem</code> and receiving its returned string both happen inside <code>Main</code>.</>,
+    <>The DOM is still updated only after the renderer returns the completed string.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: call PotionItem with potions[0]
+Main->>Main: return one li string
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>Main: call PotionItem with potions[0]
+Main->>Main: return one li string
+Main->>DOM: set potionList.innerHTML`}</pre>
+  }
+>
+  <p className="m-0">
+    Open <code>/sequenceDiagram.mmd</code>. Replace the previous first-potion steps with a call to <code>PotionItem</code>, the returned list-item string, and the existing DOM update. Preview the diagram and verify that <code>PotionItem</code> itself does not interact with the DOM.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice
