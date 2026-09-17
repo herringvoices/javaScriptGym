@@ -29,7 +29,7 @@ When beginners try to filter a list, the first impulse is usually:
 
 > “I’ll hide some `<li>`s.”
 
-That can work… but it’s not the clean move you’re practicing here.
+That can work, but it’s not the clean move you’re practicing here.
 
 The clean move is:
 
@@ -40,17 +40,11 @@ So your list is always “freshly built” from the data you chose.
 
 ---
 
-## Canonical snippet: filter-driven render (neutral example)
+## Canonical snippet: filter-driven render
 
 Imagine a list of quests, each with a `difficultyId`, and a dropdown that selects difficulty.
 
 ```js
-const quests = [
-  { id: 1, title: "Gather herbs", difficultyId: 1 },
-  { id: 2, title: "Slay the ogre", difficultyId: 3 },
-  { id: 3, title: "Escort the merchant", difficultyId: 2 }
-];
-
 const renderQuestList = (difficultyId) => {
   const filtered = difficultyId === 0
     ? quests
@@ -61,75 +55,45 @@ const renderQuestList = (difficultyId) => {
 };
 ```
 
-### What’s happening here?
-
-1. The render function accepts a filter value (`difficultyId`).
-2. If it’s `0`, we show everything.
-3. Otherwise, we use `filter()` to choose only matching quests.
-4. We map the filtered array into `<li>` strings.
-5. We inject the markup into the DOM.
-
-This pattern scales well because it keeps one rule true:
-
-> The DOM list is always the result of rendering your chosen data.
+The render function chooses the data first, then builds the DOM from that chosen array.
 
 ---
 
-## DOM values are strings (so compare like a grownup)
+## DOM values are strings
 
-Here’s the practical reality:
-
-- `event.target.value` comes from the DOM
-- DOM values are strings
-
-So even if your options look numeric, they arrive as text:
+`event.target.value` comes from the DOM, so even numeric-looking option values arrive as strings:
 
 - `"0"`, `"1"`, `"2"`, …
 
-And strict comparisons care:
+Strict comparisons care:
 
 - `"2" === 2` is `false`
 
-So before you use the value for numeric comparisons, convert it:
+So convert the value before using it with numeric ids:
 
 ```js
 const selectedId = parseInt(event.target.value);
 ```
 
-You’re not doing this because “parsing is fun.”
-
-You’re doing it because you want comparisons like:
-
-```js
-p.schoolId === selectedId
-```
-
-to actually work.
-
 ---
 
 <Callout type="tip" title="Parse once, then stop thinking about it">
-  <p>A common beginner mistake is mixing string ids and number ids throughout the code.</p>
-  <p>The clean habit is:</p>
-  <ul>
-    <li>read from the DOM (string)</li>
-    <li>parse immediately (number)</li>
-    <li>use the parsed number everywhere else</li>
-  </ul>
-  <p>That way your filtering logic stays simple and predictable.</p>
+  <p>Read from the DOM as a string, parse immediately, then use the parsed number everywhere else. That keeps the filtering logic predictable.</p>
 </Callout>
 
 ---
 
 <HandbookChallenge
-  title="Filter by school and re-render"
+  title="Filter the potion list by school"
   hints={[
-    "Create a renderPotionList(schoolId) helper.",
-    "If schoolId is 0, show all potions; otherwise use filter().",
-    "Keep data-potion-id on every <li> so clicks still work.",
-    "In the change handler: parseInt(event.target.value) then call renderPotionList(parsedId).",
+    <>Put the list-rendering logic in a helper that accepts the selected school id; the handler should choose the id, not build the HTML itself.</>,
+    <>Treat <code>0</code> as the “show everything” case. Any other id can create a filtered array with <code>filter()</code>.</>,
+    <>Convert <code>event.target.value</code> to a number before calling the render helper, and keep <code>data-potion-id</code> on every rendered row so click behavior still works.</>,
   ]}
-  answers={
+  expected={
+    <p className="m-0"><strong>All Schools</strong> should show every potion. Selecting a school should immediately show only that school’s potions, and clicking any visible potion should still display its correct effect.</p>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`// /scripts/render.js
 import { getPotions, getSchools } from "./database.js";
 
@@ -149,85 +113,29 @@ export const renderPotionList = (schoolId) => {
 };
 
 export const render = () => {
-  const app = document.querySelector("#app");
-
-  app.innerHTML = \`
-    <header class="header">
-      <h1>Potion Shelf</h1>
-      <p class="subtitle">A tiny catalog for a magical shop. Filter potions by school, then click one to reveal its effect.</p>
-    </header>
-
-    <main class="layout">
-      <section class="panel" id="potionShelf">
-        <h2>Shelf</h2>
-        <div id="controls">
-          <p class="placeholder">A school filter will appear here.</p>
-        </div>
-        <div id="shelfStatus">
-          <p class="placeholder">A “Showing: …” label will appear here.</p>
-        </div>
-        <div id="potionList">
-          <p class="placeholder">Potions will appear here.</p>
-        </div>
-      </section>
-
-      <section class="panel" id="potionDetails">
-        <h2>Effect</h2>
-        <div id="details">
-          <p class="placeholder">Click a potion to see its effect.</p>
-        </div>
-      </section>
-    </main>
-  \`;
-
-  const schools = getSchools();
-  const options = schools
-    .map((s) => \`<option value="\${s.id}">\${s.name}</option>\`)
-    .join("");
-
-  const controlsEl = document.querySelector("#controls");
-  controlsEl.innerHTML = \`
-    <label class="field">
-      <span>School</span>
-      <select id="schoolFilter">
-        <option value="0">All Schools</option>
-        \${options}
-      </select>
-    </label>
-  \`;
-
+  // existing shell and school dropdown render stay here
   renderPotionList(0);
 };
-
 
 // /scripts/handlers.js
 import { renderPotionList } from "./render.js";
 
 export const bindEvents = () => {
   const schoolFilter = document.querySelector("#schoolFilter");
+
   schoolFilter.addEventListener("change", (event) => {
     const selectedId = parseInt(event.target.value);
     renderPotionList(selectedId);
   });
-};
-`}</pre>
+};`}</pre>
   }
 >
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Open `/scripts/render.js`.</li>
-      <li>Create a function that renders the potion list (example: `renderPotionList`).</li>
-      <li>Make it accept one argument: a school id (number).</li>
-      <li>Inside it, filter the potions: if the id is `0` keep all potions, otherwise use `filter()` on `schoolId`.</li>
-      <li>Render the filtered array into `#potionList` using `map()` + `join("")`.</li>
-      <li>Keep `data-potion-id` on each rendered `<li>`.</li>
-      <li>Call the function once on initial render with `0`, and again when the dropdown changes.</li>
-      <li>Open `/scripts/handlers.js` and find your dropdown `change` listener.</li>
-      <li>Replace the console log: read `event.target.value`, parse it with `parseInt(...)`, then call your render function.</li>
-      <li>Refresh and confirm: “All Schools” shows all potions, selecting a school filters immediately, and clicking a potion still shows the correct effect.</li>
-      <li>Keep vs Trash: Keep the `change` handler, parsing the DOM value immediately, filtering-before-rendering, and re-rendering in response to events. Trash the proof `console.log(event.target.value)` line.</li>
-    </ul>
-  </div>
+  <p className="m-0">
+    In <code>/scripts/render.js</code>, create and export <code>renderPotionList(schoolId)</code>. Get the potions, use all of them when <code>schoolId === 0</code>, otherwise filter by <code>p.schoolId</code>, then render the selected array into <code>#potionList</code> with the existing <code>data-potion-id</code> attributes. Call <code>renderPotionList(0)</code> during the initial render. In <code>/scripts/handlers.js</code>, import that helper, replace the proof-mode console log with a parsed <code>event.target.value</code>, and call the helper with the selected id. Test all-school, filtered, and potion-click behavior.
+  </p>
+  <Callout type="note" title="Keep this">
+    <p className="m-0">Keep the change handler, immediate parsing of DOM values, filtering before rendering, and the reusable list renderer. Remove the old <code>console.log(event.target.value)</code> proof line.</p>
+  </Callout>
 </HandbookChallenge>
 
 ---
