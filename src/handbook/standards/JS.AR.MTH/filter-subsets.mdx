@@ -35,7 +35,6 @@ const pinkStarbursts = starbursts.filter((s) => s.color === "pink");
 ```
 We could do this all day! The point is, `filter()` lets you pick through an array **item by item** and decide what should **_stay_** and what should **_go_** based on a condition.
 
-
 ---
 
 ### House sorting rules
@@ -49,12 +48,14 @@ At Boarblemish, students are sorted into houses based on their `nature`:
 
 You’ll use `filter()` to create a separate array for each house.
 
----
-
 <HandbookChallenge
-  title="Sort students into houses (for...of loop version)"
-  hints={["Use one `if / else if / else` chain so each student goes to exactly one house."]}
-  answers={
+  title="Sort the houses with a loop"
+  hints={[
+    <>Each student should be pushed into exactly one house array.</>,
+    <>One <code>if / else if / else</code> chain prevents a student from being added to multiple branches.</>,
+    <>The final <code>else</code> can collect every nature that did not match the three named houses.</>,
+  ]}
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const dragonportHouse = [];
 const crowbeakHouse = [];
 const sidleupHouse = [];
@@ -80,33 +81,23 @@ console.log(
 );`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Create four empty arrays: `dragonportHouse`, `crowbeakHouse`, `sidleupHouse`, and `heavysighHouse`.</li>
-      <li>Loop through `students` with `for...of`.</li>
-      <li>Use one `if / else if / else` chain so each student goes to exactly one house based on `nature`:</li>
-      <ul className="list-disc list-inside pl-4">
-        <li>`"brave"` → Dragonport</li>
-        <li>`"smart"` → Crowbeak</li>
-        <li>`"sneaky"` → Sidleup</li>
-        <li>anything else → Heavysigh</li>
-      </ul>
-      <li>Log the length of each house array to sanity-check your sorting.</li>
-      <li>Keep vs Trash: Trash this loop version once FILTER 2 works.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create empty arrays named <code>dragonportHouse</code>, <code>crowbeakHouse</code>, <code>sidleupHouse</code>, and <code>heavysighHouse</code>.</li>
+    <li>Loop through <code>students</code> with <code>for...of</code>.</li>
+    <li>Sort <code>"brave"</code> students into Dragonport, <code>"smart"</code> into Crowbeak, <code>"sneaky"</code> into Sidleup, and everything else into Heavysigh.</li>
+    <li>Log the length of each house array to check the result.</li>
+    <li>Keep this only as a comparison version; once the <code>filter()</code> version works, you can remove the loop.</li>
+  </ul>
 </HandbookChallenge>
 
----
-
 <HandbookChallenge
-  title="Sort students into houses with filter()"
+  title="Sort the houses with filter()"
   hints={[
-    "Use one filter per house.",
-    "Use a small helper for Heavysigh so your intent is readable.",
+    <><code>filter()</code> creates a new array containing only items whose callback returns <code>true</code>.</>,
+    <>Each named nature can use its own small comparison callback.</>,
+    <>For Heavysigh, a helper predicate can return true only when none of the three named natures match.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const dragonportHouse = students.filter((s) => s.nature === "brave");
 const crowbeakHouse = students.filter((s) => s.nature === "smart");
 const sidleupHouse = students.filter((s) => s.nature === "sneaky");
@@ -129,17 +120,13 @@ console.log(
 );`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Create `dragonportHouse`, `crowbeakHouse`, and `sidleupHouse` with `filter()` based on the `nature` rules above.</li>
-      <li>Write a helper function `heavysighHouseCheck(student)` that returns `true` only when a student’s `nature` is not `"brave"`, `"smart"`, or `"sneaky"`.</li>
-      <li>Create `heavysighHouse = students.filter(heavysighHouseCheck)`.</li>
-      <li>Log the `.length` of each house array so you can quickly sanity‑check your sorting.</li>
-      <li>Your house lengths should match the loop version.</li>
-      <li>Keep vs Trash: Keep the house arrays and the Heavysigh check helper. You’ll use them in `reduce()` and roster printing.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create <code>dragonportHouse</code>, <code>crowbeakHouse</code>, and <code>sidleupHouse</code> with <code>filter()</code> using the three nature rules.</li>
+    <li>Create <code>heavysighHouseCheck(student)</code> so it returns <code>true</code> only when the nature is not <code>"brave"</code>, <code>"smart"</code>, or <code>"sneaky"</code>.</li>
+    <li>Create <code>heavysighHouse</code> by passing that helper to <code>students.filter()</code>.</li>
+    <li>Log the four array lengths and compare them with the loop version.</li>
+    <li>Keep the filtered house arrays and Heavysigh helper for later chapters.</li>
+  </ul>
 </HandbookChallenge>
 
 You should now have `dragonportHouse`, `crowbeakHouse`, `sidleupHouse`, `heavysighHouse`, and a `heavysighHouseCheck(student)` helper.
