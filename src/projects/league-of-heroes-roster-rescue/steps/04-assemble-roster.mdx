@@ -46,7 +46,7 @@ ID: 1
 
   An array index identifies a record's current position in the roster.
 
-  Scuba Driver can have an ID of `1` while living at index `0`. JavaScript is not being difficult. Those numbers answer different questions.
+  Scuba Driver can have an ID of `1` while living at index `0`. Those numbers answer different questions.
 </Callout>
 
 ## Create the Roster
@@ -71,15 +71,26 @@ Hero number 1 is Scuba Driver.
 Remember: arrays are zero-indexed.
 
 <HandbookChallenge
-  title="Start the Roster"
+  title="Start the roster with Scuba Driver"
   hints={[
-    "Create the array with square brackets: `[]`.",
-    "Put `scubaDriver` inside the array.",
-    "Scuba Driver is the first item in the array, so their index is `0`.",
-    "The hero's ID and the hero's array index are not the same thing."
+    <>An array literal uses square brackets and can contain an existing object variable as an item.</>,
+    <>The first array item is at index <code>0</code>, even though this hero’s <code>id</code> is <code>1</code>.</>,
+    <>Read the object from the array first, then use dot notation for its <code>id</code> and <code>heroName</code>.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Hero number 1 is Scuba Driver.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`scubaDriver.id = 1;
+
+const roster = [scubaDriver];
+
+console.log(\`Hero number \${roster[0].id} is \${roster[0].heroName}.\`);`}</pre>
+  }
 >
-  Add Scuba Driver to a `roster` array, then log the requested sentence using the array.
+  <p className="m-0">
+    Add <code>id: 1</code> to Scuba Driver’s record, create a <code>roster</code> array containing that object, and log the requested sentence by reading the hero through <code>roster[0]</code>. Do not use the id as though it were the array index.
+  </p>
 </HandbookChallenge>
 
 <PracticeCard
@@ -131,14 +142,41 @@ City: Bridgeport
 ```
 
 <HandbookChallenge
-  title="Fill Out the Roster"
+  title="Add Solar Flare and Echo Fang"
   hints={[
-    "Each hero needs their own object inside the `roster` array.",
-    "Separate the hero objects with commas.",
-    "Use the same property names that Scuba Driver uses, even when a value is different."
+    <>Give every hero object the same property names so later code can treat the records consistently.</>,
+    <>The two new objects belong after <code>scubaDriver</code> in the existing <code>roster</code> array.</>,
+    <>Separate object items in an array with commas.</>,
   ]}
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const solarFlare = {
+  id: 2,
+  heroName: "Solar Flare",
+  isActive: true,
+  powerLevel: 18,
+  age: 34,
+  power: "Heat and Light Control",
+  secretIdentity: "Cameron Vale",
+  city: "Old York",
+};
+
+const echoFang = {
+  id: 3,
+  heroName: "Echo Fang",
+  isActive: true,
+  powerLevel: 14,
+  age: 29,
+  power: "Sound Tracking",
+  secretIdentity: "Riley Parks",
+  city: "Bridgeport",
+};
+
+const roster = [scubaDriver, solarFlare, echoFang];`}</pre>
+  }
 >
-  Create Solar Flare and Echo Fang as objects, then add them to the `roster` array after Scuba Driver.
+  <p className="m-0">
+    Create <code>solarFlare</code> and <code>echoFang</code> objects from the two profiles above, using exactly the same property names as Scuba Driver. Add both objects to <code>roster</code> after <code>scubaDriver</code>.
+  </p>
 </HandbookChallenge>
 
 <Callout type="warn" title="Consistency matters">
