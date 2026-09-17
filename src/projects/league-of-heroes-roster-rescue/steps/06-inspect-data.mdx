@@ -29,19 +29,24 @@ console.log("League Data Check");
 
 Then log the number of heroes currently in `roster`.
 
-```txt
-League Data Check
-4
-```
-
 <HandbookChallenge
-  title="Count the Roster"
+  title="Count the heroes on the roster"
   hints={[
-    "The `roster` array already exists from Chapter 5.",
-    "Arrays have a property that tells you how many items they contain."
+    <>The roster already contains all four permanent heroes from Chapter 5.</>,
+    <>Arrays expose their current item count through a property rather than a method.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`League Data Check
+4`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log("League Data Check");
+console.log(roster.length);`}</pre>
+  }
 >
-  Log the number of heroes currently in `roster`.
+  <p className="m-0">
+    Log <code>"League Data Check"</code>, then log the current number of objects in <code>roster</code> using the array itself rather than hard-coding the number.
+  </p>
 </HandbookChallenge>
 
 <PracticeCard
@@ -66,14 +71,24 @@ Then use `Object.values()` with the same record.
 That blank space between the commas represents Scuba Driver's `null` secret identity. It is still there. It is just not much of a conversationalist.
 
 <HandbookChallenge
-  title="Inspect the First Record"
+  title="Inspect the first hero record"
   hints={[
-    "Scuba Driver is the first hero in `roster`.",
-    "`Object.keys()` gives you property names.",
-    "`Object.values()` gives you the values stored in those properties."
+    <>Scuba Driver is the first object in <code>roster</code>.</>,
+    <><code>Object.keys()</code> returns an array of property names; <code>Object.values()</code> returns the corresponding values.</>,
+    <>Pass the hero object itself into each utility.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`id,heroName,isActive,powerLevel,age,power,secretIdentity,city
+1,Scuba Driver,true,10,21,Underwater Transportation,,Old York`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(Object.keys(roster[0]));
+console.log(Object.values(roster[0]));`}</pre>
+  }
 >
-  Log Scuba Driver's property names and values using object utilities.
+  <p className="m-0">
+    Use object utilities on <code>roster[0]</code> to log its property names and then its stored values. Confirm that the record still has the consistent hero shape and Scuba Driver’s updated data.
+  </p>
 </HandbookChallenge>
 
 <Callout type="tip" title="A consistent shape is useful">
@@ -115,23 +130,29 @@ Log these hero names:
 - the last hero using a direct index
 - the last hero using `.length - 1`
 
-```txt
-Scuba Driver
+<HandbookChallenge
+  title="Read heroes from different roster positions"
+  hints={[
+    <>The first two positions are indexes <code>0</code> and <code>1</code>.</>,
+    <>A direct index can reach Neon Volt in the current four-person roster, but it describes a position rather than the idea “last item.”</>,
+    <>Use <code>roster.length - 1</code> when you specifically mean the final position.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Scuba Driver
 Solar Flare
 Neon Volt
-Neon Volt
-```
-
-<HandbookChallenge
-  title="Check the Lineup"
-  hints={[
-    "The first hero is at index `0`.",
-    "The second hero is at index `1`.",
-    "Neon Volt is currently at index `3`.",
-    "The last item can also be found with `array.length - 1`."
-  ]}
+Neon Volt`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(roster[0].heroName);
+console.log(roster[1].heroName);
+console.log(roster[3].heroName);
+console.log(roster[roster.length - 1].heroName);`}</pre>
+  }
 >
-  Log the requested hero names using both direct indexes and `.length - 1`.
+  <p className="m-0">
+    Log the first hero, the second hero, Neon Volt using the current direct index, and the last hero using <code>roster.length - 1</code>. Compare the two ways of reaching the current final record.
+  </p>
 </HandbookChallenge>
 
 <Callout type="warn" title="Indexes can change">
@@ -154,44 +175,60 @@ The press team needs this codename:
 NEON VOLT
 ```
 
-Create `cleanCodename`. Use string methods to remove extra spaces, replace the dash with a space, and convert the result to uppercase. Then log it.
-
 <HandbookChallenge
-  title="Clean the Codename"
+  title="Clean the imported codename"
   hints={[
-    "Start with `.trim()`.",
-    "Use `.replace()` to change the dash into a space.",
-    "Use `.toUpperCase()` after cleaning the text."
+    <>Remove the outside whitespace before changing the text’s internal punctuation.</>,
+    <>Replace the dash with a normal space.</>,
+    <>Apply the case conversion to the cleaned result.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`NEON VOLT`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const importedCodename = "  neon-volt  ";
+const cleanCodename = importedCodename
+  .trim()
+  .replace("-", " ")
+  .toUpperCase();
+
+console.log(cleanCodename);`}</pre>
+  }
 >
-  Create and log `cleanCodename` so the imported codename becomes `NEON VOLT`.
+  <p className="m-0">
+    Create <code>cleanCodename</code> from <code>importedCodename</code> by removing the extra outside spaces, replacing the dash with a space, and converting the final text to uppercase. Log the cleaned value.
+  </p>
 </HandbookChallenge>
 
 ## Parse Imported Numbers
 
 The imported power level looks like a number, but JavaScript still sees it as text.
 
-Create `parsedPowerLevel` with `parseInt()`, then log it.
-
-```txt
-21
-```
-
-Next, create `parsedBadgeScore` with `parseFloat()` so the decimal remains intact.
-
-```txt
-91.5
-```
-
 <HandbookChallenge
-  title="Parse the Imports"
+  title="Parse the imported numeric values"
   hints={[
-    "`parseInt()` is useful when you need a whole number from text.",
-    "`parseFloat()` is useful when the number may include a decimal.",
-    "Use the parsed values in the next step instead of the original strings."
+    <><code>parseInt()</code> can read the whole-number prefix from text such as <code>"21 points"</code>.</>,
+    <><code>parseFloat()</code> keeps the decimal portion of a numeric string.</>,
+    <>Store the parsed values so later comparisons use numbers rather than the original strings.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`21
+91.5`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const importedPowerLevel = "21 points";
+const importedBadgeScore = "91.5";
+
+const parsedPowerLevel = parseInt(importedPowerLevel);
+const parsedBadgeScore = parseFloat(importedBadgeScore);
+
+console.log(parsedPowerLevel);
+console.log(parsedBadgeScore);`}</pre>
+  }
 >
-  Parse the imported power level and badge score, then log both parsed values.
+  <p className="m-0">
+    Convert <code>importedPowerLevel</code> into a whole number named <code>parsedPowerLevel</code> and <code>importedBadgeScore</code> into a decimal number named <code>parsedBadgeScore</code>. Log both parsed values.
+  </p>
 </HandbookChallenge>
 
 <Callout type="note" title="Looks can be deceiving">
@@ -200,21 +237,23 @@ Next, create `parsedBadgeScore` with `parseFloat()` so the decimal remains intac
 
 ## Use a Parsed Value
 
-Check whether the parsed power level is greater than Scuba Driver's power level.
-
-```txt
-true
-```
-
 <HandbookChallenge
-  title="Compare the Power Levels"
+  title="Compare the imported and roster power levels"
   hints={[
-    "Scuba Driver's power level is in the first object in `roster`.",
-    "Use the parsed number, not the original imported string.",
-    "A comparison expression produces a boolean value."
+    <>Use the parsed numeric value rather than the original imported string.</>,
+    <>Scuba Driver’s current power level belongs to the first object in <code>roster</code>.</>,
+    <>A greater-than comparison produces the boolean you need directly.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`true`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(parsedPowerLevel > roster[0].powerLevel);`}</pre>
+  }
 >
-  Log whether the parsed imported power level is greater than Scuba Driver's power level.
+  <p className="m-0">
+    Log whether <code>parsedPowerLevel</code> is greater than Scuba Driver’s current <code>powerLevel</code> from the first roster record.
+  </p>
 </HandbookChallenge>
 
 ## Checkpoint
