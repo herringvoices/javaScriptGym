@@ -66,21 +66,14 @@ showWelcome();
 
 The chef hears “showWelcome!”, finds that card, and runs each line inside in order.
 
-
 <HandbookChallenge
-  title="F1-1 · Write a welcome function"
+  title="Create the welcome function"
   hints={[
-    "Start by writing a named function called welcome using the function keyword.",
-    "Inside the function body, add two console.log calls with the exact messages.",
-    <pre
-      key="peek"
-      className="m-0 whitespace-pre-wrap"
-    >{`function welcome() {
-  console.log("=== Welcome, User! ===");
-  console.log("You have unread messages!");
-}`}</pre>,
+    <>A function declaration begins with the <code>function</code> keyword followed by the function’s name.</>,
+    <>The steps the function should remember belong inside its curly braces.</>,
+    <>Declaring the function stores the recipe; it does not run the body yet.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`function welcome() {
   console.log("=== Welcome, User! ===");
   console.log("You have unread messages!");
@@ -88,7 +81,7 @@ The chef hears “showWelcome!”, finds that card, and runs each line inside in
   }
 >
   <p className="m-0">
-    Declare a named function called <code>welcome</code> that uses <code>console.log</code> to print exactly two lines: <code>"=== Welcome, User! ==="</code> and <code>"You have unread messages!"</code>.
+    Declare a named function called <code>welcome</code>. Its body should log exactly <code>"=== Welcome, User! ==="</code> and <code>"You have unread messages!"</code>, in that order. Do not call the function yet.
   </p>
 </HandbookChallenge>
 
@@ -120,7 +113,6 @@ showWelcome();
 ```
 
 you’re calling out the name with `()`. The chef looks it up and runs everything between the braces.
-
 
 ---
 
@@ -182,19 +174,13 @@ Let's go over those steps one more time from the JavaScript Engine's perspective
 3) `()=>{ console.log("Hello!") }` → we're storing a function inside it. I'll remember this code so I can run it when they call it later.
 
 <HandbookChallenge
-  title="F1-2 · Convert welcome to an arrow function"
+  title="Rewrite welcome as an arrow function"
   hints={[
-    "Keep the behavior the same; only change how it's written.",
-    "Create a const variable named welcome and store an arrow function inside it.",
-    <pre
-      key="peek"
-      className="m-0 whitespace-pre-wrap"
-    >{`const welcome = () => {
-  console.log("=== Welcome, User! ===");
-  console.log("You have unread messages!");
-};`}</pre>,
+    <>Keep the function’s behavior the same; only the declaration syntax changes.</>,
+    <>An arrow function can be stored in a <code>const</code> variable.</>,
+    <>The basic shape is <code>const name = () =&gt; {'{'} ... {'}'}</code>.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const welcome = () => {
   console.log("=== Welcome, User! ===");
   console.log("You have unread messages!");
@@ -202,10 +188,9 @@ Let's go over those steps one more time from the JavaScript Engine's perspective
   }
 >
   <p className="m-0">
-    Rewrite <code>welcome</code> as a <code>const</code> arrow function that still logs exactly <code>"=== Welcome, User! ==="</code> and <code>"You have unread messages!"</code> in that order.
+    Rewrite <code>welcome</code> as a <code>const</code> arrow function while preserving the same two log statements in the same order.
   </p>
 </HandbookChallenge>
-
 
 ----
 
