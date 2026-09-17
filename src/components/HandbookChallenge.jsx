@@ -170,7 +170,7 @@ export default function HandbookChallenge({
       {resolvedSolution != null && solutionOpen ? (
         <div className="border-t border-slate-800 bg-slate-950/60 px-5 py-5 sm:px-6">
           <p className="m-0 mb-3 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-slate-400">
-            Canonical solution
+            Solution
           </p>
           <div className="text-sm text-slate-100">{renderBlockValue(resolvedSolution)}</div>
         </div>
