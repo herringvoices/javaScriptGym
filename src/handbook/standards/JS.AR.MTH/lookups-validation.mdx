@@ -45,7 +45,7 @@ What about an example from real life? Maybe you’re trying to find the first cl
 const firstCleanShirt = shirts.find((s) => s.isClean);
 ```
 
-Or maybe you’re trying to find the first gas station that’s actually open (because your gas light light is judging you):
+Or maybe you’re trying to find the first gas station that’s actually open (because your gas light is judging you):
 
 ```js
 const openStation = stations.find((st) => st.isOpen);
@@ -55,8 +55,8 @@ Most often, when you use `find()`, you're looking for one specific thing, and yo
 For example: you're trying to pick up your kid from daycare. They are one of two kids named "Hoffle Sturp McWoof." So the daycare looks them up by a unique id they gave them when you first signed them up:
 
 ```js
-const yourKidId = 14
-const yourKid = kids.find(k => k.id === yourKidId)
+const yourKidId = 14;
+const yourKid = kids.find((k) => k.id === yourKidId);
 ```
 
 We could do this all day! The point is: `find()` is for when you want **one specific item**, not a whole subset.
@@ -145,15 +145,14 @@ const teacher = teachers.find((t) => t.id === student3.homeroomTeacherId);
 In the next section you'll see method chaining — calling array methods one after another (for example: `students.filter(...).map(...).find(...)`). Chaining can make code shorter and easier to read...and can make you feel very clever and proud of yourself, which is also nice.
 </Callout>
 
----
-
 <HandbookChallenge
-  title="Build the Boarblemish lookup helpers"
+  title="Build the student lookup helpers"
   hints={[
-    "Each helper should do one job and return a value.",
-    "If you get `undefined`, double-check which array you should use `find` on (single object) vs `filter` (array).",
+    <><code>find()</code> returns one matching object, while <code>some()</code> and <code>every()</code> return booleans.</>,
+    <>Keep each helper focused on one question and return the answer instead of logging inside the helper.</>,
+    <>For tutoring, first isolate that student’s grades; then check the resulting array with <code>every()</code>, while handling the no-grades case separately.</>,
   ]}
-  answers={
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`const getStudentById = (id) => {
   return students.find((s) => s.id === id);
 };
@@ -169,13 +168,11 @@ const hasFines = (student) => {
 const needsTutoring = (student) => {
   const studentGrades = grades.filter((g) => g.studentId === student.id);
 
-  // If they have no grades yet, we probably shouldn't mark them as "needs tutoring".
   if (studentGrades.length === 0) return false;
 
   return studentGrades.every((g) => g.grade < 2);
 };
 
-// Practice call
 const sample = getStudentById(3);
 const sampleTeacher = getHomeroomTeacher(sample);
 
@@ -185,35 +182,14 @@ console.log("Has fines?", hasFines(sample));
 console.log("Needs tutoring?", needsTutoring(sample));`}</pre>
   }
 >
-
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>These helpers should return values. Don’t `console.log` inside the helpers.</li>
-      <li>
-        Create <code>getStudentById(id)</code> using <code>students.find(...)</code> to return the matching student
-        object.
-      </li>
-      <li>
-        Create <code>getHomeroomTeacher(student)</code> using <code>teachers.find(...)</code> and
-        <code>student.homeroomTeacherId</code>.
-      </li>
-      <li>
-        Create <code>hasFines(student)</code> using <code>fines.some(...)</code> to check whether any fine record has
-        <code>studentId === student.id</code>.
-      </li>
-      <li>
-        Create <code>needsTutoring(student)</code> using the rule: all their <code>grade</code> values are
-        <code>< 2</code>. Use <code>grades.filter(...)</code> to get just that student’s grades, then
-        <code>every(...)</code> to test them.
-      </li>
-      <li>If a student has no grades yet, don’t label them as needing tutoring.</li>
-      <li>
-        Practice: pick an <code>id</code>, get the student, log their <code>lastName</code>, log their teacher’s name,
-        and log whether they <code>hasFines</code> and <code>needsTutoring</code>.
-      </li>
-      <li>Keep vs Trash: Keep all lookup helpers. The roster formatter will use them.</li>
-    </ul>
-  </div>
+  <ul className="m-0 list-disc space-y-1 pl-5">
+    <li>Create <code>getStudentById(id)</code> with <code>students.find()</code> so it returns the matching student.</li>
+    <li>Create <code>getHomeroomTeacher(student)</code> with <code>teachers.find()</code> and the student’s <code>homeroomTeacherId</code>.</li>
+    <li>Create <code>hasFines(student)</code> with <code>fines.some()</code> so it returns whether any fine belongs to that student.</li>
+    <li>Create <code>needsTutoring(student)</code>: filter <code>grades</code> to that student, return <code>false</code> when there are no grades, otherwise return whether every grade is below <code>2</code>.</li>
+    <li>Choose an ID and use the helpers to log the student’s last name, teacher name, fines status, and tutoring status.</li>
+    <li>Keep all four helpers; the roster formatter will reuse them.</li>
+  </ul>
 </HandbookChallenge>
 
 You should now have helpers `getStudentById`, `getHomeroomTeacher`, `hasFines`, and `needsTutoring`.
