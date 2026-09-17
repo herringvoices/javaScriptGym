@@ -1,6 +1,6 @@
 ---
 id: JS.SD.ELM.INNERHTML_SHELL
-title: innerHTML ? Render the App Shell
+title: innerHTML · Render the App Shell
 short: Replace plain text with real HTML structure.
 ---
 
@@ -210,21 +210,37 @@ It is the future render target for the potion data.
 
 The pattern is the important part: select a mount point, assign a multi-line HTML string, and include an empty list that later code can fill.
 
-<HandbookChallenge title="ELM Challenge 4 · Render the app shell">
+<HandbookChallenge
+  title="Render the Potion Shelf app shell"
+  hints={[
+    <><code>textContent</code> can only place text, so remove that old update before adding the shell.</>,
+    <><code>innerHTML</code> can receive one multi-line template literal containing the page structure.</>,
+    <>Keep <code>#potion-list</code> empty for now; this task creates the render target, not the potion items.</>,
+  ]}
+  expected={
+    <p className="m-0">The preview should show a Potion Shelf heading, subtitle, an <strong>Available Potions</strong> section, and an empty list rather than the old plain-text message.</p>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const app = document.querySelector("#app");
 
-- Keep the `app` variable from the previous chapter.
-- Remove the old `app.textContent = ...` line.
-- Use `app.innerHTML` instead.
-- Render a `<header>`.
-- Add an `<h1>` that says `Potion Shelf`.
-- Add a subtitle paragraph below the heading.
-- Render a `<main>` element.
-- Inside it, render a `<section>`.
-- Add an `<h2>` that says `Available Potions`.
-- Add an empty `<ul id="potion-list"></ul>`.
-- Refresh the preview.
-- Confirm that the page now shows structured content instead of plain text.
+app.innerHTML = \`
+  <header>
+    <h1>Potion Shelf</h1>
+    <p>Rare brews, trusted classics, and suspiciously glowing mystery blends.</p>
+  </header>
 
+  <main>
+    <section>
+      <h2>Available Potions</h2>
+      <ul id="potion-list"></ul>
+    </section>
+  </main>
+\`;`}</pre>
+  }
+>
+  <p className="m-0">
+    Keep the existing <code>app</code> selection and remove the old <code>app.textContent</code> line. Use <code>app.innerHTML</code> to render a header with <code>Potion Shelf</code> and a subtitle, then a main section containing <code>Available Potions</code> and an empty <code>&lt;ul id="potion-list"&gt;&lt;/ul&gt;</code>. Refresh the preview and confirm that real HTML structure replaced the plain text.
+  </p>
 </HandbookChallenge>
 
 ## Keep vs Trash
@@ -251,32 +267,25 @@ app.innerHTML = `
 
 We will build on this shell in the next chapter.
 
-<HandbookChallenge title="ELM Flow Challenge 4 · Replace the text update with the app shell">
-
-Open `/sequenceDiagram.mmd`.
-
-Replace the old text update line:
-
-```mermaid
-  Main->>DOM: set app.textContent
-```
-
-with this line:
-
-```mermaid
-  Main->>DOM: set app.innerHTML
-```
-
-Preview the diagram.
-
-The DOM update should now describe rendering the HTML shell instead of setting plain text.
-
-**Check your diagram:**
-
-- What changed in the DOM when `innerHTML` ran?
-- Is `#potion-list` part of the DOM after this line runs?
-- Did `main.js` ask `database.js` for potion data yet?
-
+<HandbookChallenge
+  title="Update the flow diagram for the app shell"
+  hints={[
+    <>The diagram should describe the DOM action the code performs now, not the older text-only version.</>,
+    <>Replace the old DOM update line instead of keeping both historical versions.</>,
+    <>The interaction still travels from <code>Main</code> to <code>DOM</code>; only the action label changes.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>DOM: set app.innerHTML`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`Browser->>Main: load module script
+Main->>DOM: select #app
+Main->>DOM: set app.innerHTML`}</pre>
+  }
+>
+  <p className="m-0">
+    Open <code>/sequenceDiagram.mmd</code>. Replace the old <code>Main-&gt;&gt;DOM: set app.textContent</code> line with <code>Main-&gt;&gt;DOM: set app.innerHTML</code>. Preview the diagram and verify that it describes the current program: <code>main.js</code> has created the shell, including <code>#potion-list</code>, but has not requested potion data yet.
+  </p>
 </HandbookChallenge>
 
 ## What You Should Notice
