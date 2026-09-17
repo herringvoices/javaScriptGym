@@ -91,12 +91,12 @@ export default function HandbookChallenge({
   return (
     <section
       aria-labelledby={headingId}
-      className="not-prose my-10 overflow-hidden rounded-xl border border-brand-400/40 bg-slate-900 text-slate-200 shadow-card ring-1 ring-inset ring-brand-500/10"
+      className="not-prose my-10 overflow-hidden rounded-xl border border-pink-400/45 bg-slate-900 text-slate-200 shadow-card ring-1 ring-inset ring-pink-500/10"
     >
-      <div className="h-1 bg-gradient-to-r from-brand-400 via-brand-500 to-transparent" />
+      <div className="h-1 bg-gradient-to-r from-pink-400 via-fuchsia-500 to-transparent" />
 
       <div className="px-5 py-6 sm:px-6 sm:py-7">
-        <p className="m-0 text-xs font-bold uppercase tracking-[0.2em] text-brand-300">
+        <p className="m-0 text-xs font-bold uppercase tracking-[0.2em] text-pink-300">
           Your turn
         </p>
         <h3 id={headingId} className="m-0 mt-1.5 text-xl font-semibold leading-snug text-white sm:text-2xl">
@@ -125,7 +125,7 @@ export default function HandbookChallenge({
                 type="button"
                 onClick={handleHintClick}
                 aria-expanded={revealedHintCount > 0}
-                className="rounded-md border border-brand-400/40 bg-brand-500/10 px-3 py-2 text-xs font-semibold text-brand-200 transition hover:border-brand-300/70 hover:bg-brand-500/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+                className="rounded-md border border-pink-400/45 bg-pink-500/10 px-3 py-2 text-xs font-semibold text-pink-200 transition hover:border-pink-300/75 hover:bg-pink-500/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-400"
               >
                 {hintButtonLabel}
               </button>
@@ -143,7 +143,7 @@ export default function HandbookChallenge({
               type="button"
               onClick={() => setSolutionOpen((open) => !open)}
               aria-expanded={solutionOpen}
-              className="w-fit rounded-md border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-800 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+              className="w-fit rounded-md border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-800 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-400"
             >
               {solutionOpen ? "Hide solution" : "View solution"}
             </button>
@@ -156,9 +156,9 @@ export default function HandbookChallenge({
           {visibleHints.map((hint, index) => (
             <div
               key={index}
-              className="rounded-lg border border-brand-400/20 bg-brand-500/5 px-4 py-3 text-sm leading-relaxed text-slate-200"
+              className="rounded-lg border border-pink-400/20 bg-pink-500/5 px-4 py-3 text-sm leading-relaxed text-slate-200"
             >
-              <p className="m-0 mb-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-brand-300">
+              <p className="m-0 mb-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-pink-300">
                 Hint {index + 1}
               </p>
               <div>{renderLegacyInlineText(hint)}</div>
