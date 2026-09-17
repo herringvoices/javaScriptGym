@@ -94,19 +94,20 @@ As soon as one condition is `true`, its body runs and the rest are skipped.
 That's the whole point of a stacked-screen sorter: the **first screen that catches something** decides its route. It doesn't keep falling to see what the other screens think about it.
 
 <HandbookChallenge
-title="Process ladder (order matters)"
-hints={[
-"In <code>seeds.js</code>, assume you already have a <code>barrel</code> array of seeds with <code>type</code> and <code>size</code> properties from earlier challenges.",
-"Create a function <code>processSeed(seed)</code> that decides what to do with one seed based on <code>seed.size</code>.",
-"Inside <code>processSeed</code>, build an <code>if / else if / else</code> ladder:",
-"- <code>size >= 6</code> → set <code>seed.condition = \"roasted\"</code>",
-"- <code>size >= 4</code> → set <code>seed.condition = \"shucked\"</code>",
-"- <code>size >= 2</code> → set <code>seed.condition = \"pressed\"</code>",
-"- otherwise → set <code>seed.condition = \"too small\"</code>",
-"After setting <code>seed.condition</code>, log a message that includes both <code>seed.type</code> and the decision (for example, \`${'${'}seed.type{'}'} seed will be ${'${'}seed.condition{'}'}.\`).",
-"Call <code>processSeed</code> for each seed in <code>barrel</code> (for example, <code>processSeed(barrel[0])</code>, <code>processSeed(barrel[1])</code>, etc.).",
-"Then, intentionally mess up the order by checking <code>size >= 2</code> first, run again, and notice how bigger seeds fall into the wrong branch before you fix the order back.",
-<pre key="peek" className="m-0 whitespace-pre-wrap">{`function processSeed(seed) {
+  title="Classify seeds with an ordered ladder"
+  hints={[
+    <>In an <code>if / else if / else</code> ladder, the first true branch wins.</>,
+    <>Because the size ranges overlap, put the largest threshold first and work downward.</>,
+    <>After the ladder chooses a condition, log the result once using the property you assigned.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`<type> seed will be roasted.
+<type> seed will be shucked.
+<type> seed will be pressed.
+<type> seed will be too small.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function processSeed(seed) {
   if (seed.size >= 6) {
     seed.condition = "roasted";
   } else if (seed.size >= 4) {
@@ -117,53 +118,23 @@ hints={[
     seed.condition = "too small";
   }
 
-  console.log(
-    \`${'${'}seed.type{'}'} seed will be ${'${'}seed.condition{'}'}.\`
-  );
+  console.log(\`\${seed.type} seed will be \${seed.condition}.\`);
 }
 
-processSeed(barrel[0]);`}
-</pre>,
-]}
-answers={
-  <pre className="m-0 whitespace-pre-wrap">{`// seeds.js (using a size-based ladder)
-function processSeed(seed) {
-  if (seed.size >= 6) {
-    seed.condition = "roasted";
-  } else if (seed.size >= 4) {
-    seed.condition = "shucked";
-  } else if (seed.size >= 2) {
-    seed.condition = "pressed";
-  } else {
-    seed.condition = "too small";
-  }
-
-  console.log(
-
-    \`${'${'}seed.type{'}'} seed will be ${'${'}seed.condition{'}'}.\`
-  );
-}
-
-// Example: process each seed in the barrel
 processSeed(barrel[0]);
 processSeed(barrel[1]);
-processSeed(barrel[2]);
-
-// If you temporarily move the "size >= 2" check to the top of the ladder,
-// larger seeds will incorrectly become "pressed" instead of "roasted" or "shucked".
-// Restoring the order (largest threshold first) fixes the results.
-// Run with: node seeds.js`}</pre>
-}
+processSeed(barrel[2]);`}</pre>
+  }
 >
-
-  <div className="m-0">
-    <p className="m-0">Your goal:</p>
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Build a <code>processSeed(seed)</code> ladder that sets <code>seed.condition</code> based on size.</li>
-      <li>Process every seed in <code>barrel</code> using bracket notation (`barrel[0]`, for example) so you can see the outcomes for each branch.</li>
-      <li>Temporarily reorder the checks (like putting your `seed.size >= 2` check on top) to prove why the most specific screen must run first.</li>
-    </ul>
-  </div>
+  <Callout type="note" title="Starting point">
+    <p className="m-0">Use the <code>barrel</code> array of seed objects from the previous chapter. Each seed should have at least <code>type</code> and <code>size</code>.</p>
+  </Callout>
+  <p className="m-0">
+    Write <code>processSeed(seed)</code>. Set <code>seed.condition</code> to <code>"roasted"</code> when size is at least <code>6</code>, <code>"shucked"</code> when it is at least <code>4</code>, <code>"pressed"</code> when it is at least <code>2</code>, and <code>"too small"</code> otherwise. Log the seed type and chosen condition, then call the function for each seed in <code>barrel</code>.
+  </p>
+  <p className="m-0">
+    After it works, temporarily move the <code>size &gt;= 2</code> branch to the top and run it again. Notice what happens to larger seeds, then restore the correct order.
+  </p>
 </HandbookChallenge>
 
 ---
@@ -213,8 +184,6 @@ What happens?
 
 That's not a bug in JavaScript. It's your ladder doing exactly what it promised: **first true wins**.
 
-
-
 ---
 
 ## 4) Designing thresholds (your own factory rules)
@@ -253,8 +222,6 @@ Same ordering rule:
 - then `else` for everything unmatched
 
 When your ranges overlap, your ladder becomes a **priority list** from top to bottom.
-
-
 
 ---
 
@@ -297,8 +264,6 @@ Now the ladder has a name (`classifyItem`) and a clear output you can use anywhe
 - show it in the UI
 - attach it to the object as a new property
 
-
-
 ---
 
 ## 6) Mini practice: ordering and unreachable branches
@@ -326,8 +291,6 @@ Questions to think through:
 1. Which message prints for size 6?
 2. Will the "Display-worthy" branch ever run for any positive size?
 3. How would you reorder this ladder so all three labels are actually reachable?
-
-
 
 ---
 
