@@ -85,14 +85,31 @@ The Scuba Driver has the power of Underwater Transportation with a power level o
 Then log `profileMessage`.
 
 <HandbookChallenge
-  title="League Intake Form"
+  title="Build Scuba Driver's intake profile"
   hints={[
-    "Every piece of information in the League's message needs its own variable for now.",
-    "A missing secret identity is not the same thing as an empty string.",
-    "Assign the template literal to `profileMessage` before you log it."
+    <>Choose each primitive based on what the value represents, not how it looks in the sentence.</>,
+    <>A deliberately missing secret identity should use <code>null</code>, not an empty string.</>,
+    <>Build <code>profileMessage</code> from the variables with a template literal, then log that variable.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`The Scuba Driver has the power of Underwater Transportation with a power level of 5.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const heroName = "The Scuba Driver";
+const isActive = true;
+const powerLevel = 5;
+const age = 20;
+const power = "Underwater Transportation";
+const secretIdentity = null;
+const city = "New Atlantis";
+
+const profileMessage = \`\${heroName} has the power of \${power} with a power level of \${powerLevel}.\`;
+console.log(profileMessage);`}</pre>
+  }
 >
-  Create The Scuba Driver's profile variables, then create and log `profileMessage`.
+  <p className="m-0">
+    Create the seven requested profile variables using appropriate primitive values. Then create <code>profileMessage</code> with a template literal that uses those variables and log it. Your output should match the profile sentence above.
+  </p>
 </HandbookChallenge>
 
 <Callout type="tip" title="Use the handbook like a developer">
