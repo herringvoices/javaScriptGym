@@ -47,14 +47,33 @@ Use assignment operators where they make sense:
 - Use `++` when increasing a value by exactly `1`.
 
 <HandbookChallenge
-  title="Process the Change Request"
+  title="Update the existing hero record"
   hints={[
-    "Use dot notation to reach the property you want to update.",
-    "Scuba Driver's age increases by exactly one year.",
-    "His power level increases from 5 to 10. You can replace the value, or add 5 to the existing value."
+    <>Use dot notation on the existing <code>scubaDriver</code> object rather than creating a replacement object.</>,
+    <>The age changes by exactly one, so an increment operator can express that update directly.</>,
+    <>The power level can be replaced with its new value or increased by the known difference; the unchanged properties should not be reassigned.</>,
   ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Scuba Driver
+21
+10
+Old York`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`scubaDriver.heroName = "Scuba Driver";
+scubaDriver.age++;
+scubaDriver.powerLevel += 5;
+scubaDriver.city = "Old York";
+
+console.log(scubaDriver.heroName);
+console.log(scubaDriver.age);
+console.log(scubaDriver.powerLevel);
+console.log(scubaDriver.city);`}</pre>
+  }
 >
-  Update Scuba Driver's name, age, power level, and city without creating a new object.
+  <p className="m-0">
+    Apply the League's four corrections directly to <code>scubaDriver</code>: remove <code>"The"</code> from the hero name, increase the age from <code>20</code> to <code>21</code>, increase the power level from <code>5</code> to <code>10</code>, and change the city to <code>"Old York"</code>. Do not create a new object. Log the four changed properties to confirm the update.
+  </p>
 </HandbookChallenge>
 
 <Callout type="note" title="Why update instead of rewriting?">
@@ -91,17 +110,6 @@ The League does not need you to announce every field in the object each time. It
 
 ## Check the Updated Values
 
-Add console logs for the properties that changed.
-
-Your console should show:
-
-```txt
-Scuba Driver
-21
-10
-Old York
-```
-
 Then check that the information that did **not** change is still there:
 
 ```txt
@@ -120,11 +128,6 @@ Those values should represent:
 <summary>One possible set of checks</summary>
 
 ```js
-console.log(scubaDriver.heroName);
-console.log(scubaDriver.age);
-console.log(scubaDriver.powerLevel);
-console.log(scubaDriver.city);
-
 console.log(scubaDriver.isActive);
 console.log(scubaDriver.power);
 console.log(scubaDriver.secretIdentity === null);
