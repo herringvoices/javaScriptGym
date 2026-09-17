@@ -54,7 +54,7 @@ This tells you **where the event started**.
 
 For a click event, it’s the element that was actually clicked.
 
-If you click the text inside an `<li>`, the target might be a `<span>` or `<strong>` inside it — not the `<li>` itself.
+If you click the text inside an `<li>`, the target might be a `<span>` or `<strong>` inside it, not the `<li>` itself.
 
 That’s not a bug. That’s just what “where it started” means.
 
@@ -77,8 +77,6 @@ Examples of default behavior:
 
 You won’t need it for today’s click inspection challenge, but you *will* use it often in real apps, especially with forms.
 
-We’re naming it now because it’s one of the first methods you’ll reach for when the browser is doing something you didn’t ask it to do.
-
 ---
 
 ## Canonical snippet: the browser hands your handler an object
@@ -98,7 +96,7 @@ document.addEventListener("click", (event) => {
 3. The browser passes in an `event` object as the first argument.
 4. `console.dir(event)` prints the event as an expandable object so you can inspect its properties and methods.
 
-Why `console.dir`? Because you’re not trying to print a sentence — you’re trying to explore an object.
+Why `console.dir`? Because you’re not trying to print a sentence. You’re trying to explore an object.
 
 ---
 
@@ -148,35 +146,30 @@ Keep that mental sticky note. We’ll come back to it when the browser starts tr
 ---
 
 <HandbookChallenge
-  title="Inspect what you clicked"
+  title="Inspect the clicked list item"
   hints={[
-    "Accept an event parameter: (event) => { ... }.",
-    "console.dir is great for inspecting objects.",
-    "closest(\"li\") returns the nearest li ancestor — or null.",
+    <>The browser passes the event object into the handler when the click happens, so give the callback an <code>event</code> parameter.</>,
+    <><code>event.target</code> may be a nested element; use <code>closest("li")</code> when you care about the surrounding list item.</>,
+    <>A click outside every list item should make <code>closest("li")</code> return <code>null</code>.</>,
   ]}
-  answers={
+  expected={
+    <p className="m-0">Clicking inside a potion row should log its nearest <code>&lt;li&gt;</code> element. Clicking the header or empty panel space should log <code>null</code>.</p>
+  }
+  solution={
     <pre className="m-0 whitespace-pre-wrap">{`// /scripts/handlers.js
 export const bindEvents = () => {
   document.addEventListener("click", (event) => {
     console.dir(event.target.closest("li"));
   });
-};
-`}</pre>
+};`}</pre>
   }
 >
-  <div className="m-0">
-    <ul className="mt-2 mb-0 list-disc list-inside px-3">
-      <li>Open `/scripts/handlers.js`.</li>
-      <li>Find your `document.addEventListener("click", ...)` listener inside `bindEvents()`.</li>
-      <li>Update the listener so it accepts a parameter named `event`.</li>
-      <li>Remove the alert line.</li>
-      <li>Inside the handler, add: `console.dir(event.target.closest("li"))`.</li>
-      <li>Refresh the page and open DevTools.</li>
-      <li>Click a potion row, the header area, and empty space inside a panel.</li>
-      <li>Confirm you see an `<li>` object when you click inside a list item, and `null` when you click somewhere that isn’t inside any `<li>`.</li>
-      <li>Keep vs Trash: Keep the click listener, the `event` parameter, and the `closest()` pattern. Trash `alert("You clicked on the page!")`.</li>
-    </ul>
-  </div>
+  <p className="m-0">
+    In <code>/scripts/handlers.js</code>, update the existing document click listener so its callback accepts an <code>event</code> parameter. Remove the temporary alert. Inside the handler, inspect <code>event.target.closest("li")</code> with <code>console.dir()</code>. Refresh the app, then click inside a potion row and in several places that are not inside list items to compare the results.
+  </p>
+  <Callout type="note" title="Keep this">
+    <p className="m-0">Keep the listener, its <code>event</code> parameter, and the <code>closest()</code> pattern. The old proof-of-life alert can now go.</p>
+  </Callout>
 </HandbookChallenge>
 
 ---
