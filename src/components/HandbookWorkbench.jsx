@@ -11,6 +11,8 @@ import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
 import useMediaQuery from "../hooks/useMediaQuery";
 
+import useRuntimeConsole from "../hooks/useRuntimeConsole";
+
 const EMPTY_WORKSPACE_FILES = Object.freeze({});
 
 export default function HandbookWorkbench({
@@ -19,6 +21,7 @@ export default function HandbookWorkbench({
   showRunner = false,
   showConsole,
   onShowRunnerChange,
+  onShowEditorChange,
   onHideEditor,
   onHideRunner,
   resizeSignal = 0,
@@ -69,7 +72,12 @@ export default function HandbookWorkbench({
   const [previewFullScreen, setPreviewFullScreen] = useState(false);
   const editorRef = useRef(null);
   const iframeRef = useRef(null);
-  const [consoleKey, setConsoleKey] = useState(0);
+  const runtime = useRuntimeConsole(filesState, iframeRef);
+  const clearRuntime = runtime.clear;
+  const consoleProps = { ...runtime.consoleProps, onRevealLocation: (loc) => {
+    runtime.consoleProps.onRevealLocation(loc);
+    onShowEditorChange?.(true);
+  } };
   const diagramFiles = useMemo(() => getDiagramFiles(filesState), [filesState]);
   const runnerVisible = showConsole ?? showRunner;
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -79,8 +87,9 @@ export default function HandbookWorkbench({
     const preferredPanel = entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE;
     setActiveFile(model.activeFile);
     setSrcDoc("");
+    clearRuntime();
     setBottomPanel(isValidPanelForFiles(preferredPanel, model.files) ? preferredPanel : DIAGRAM_PANEL.CONSOLE);
-  }, [model, entry?.sandbox?.defaultPanel]);
+  }, [model, entry?.sandbox?.defaultPanel, clearRuntime]);
 
   useEffect(() => {
     if (!isValidPanelForFiles(bottomPanel, filesState)) {
@@ -110,22 +119,25 @@ export default function HandbookWorkbench({
   const handleRun = useCallback(() => {
     if (!model) return;
     try {
-      setConsoleKey((key) => key + 1);
-      const html = buildSrcDoc({ files: filesState, entry: model.entry });
+      const runId = runtime.beginRun();
+      const html = buildSrcDoc({ files: filesState, entry: model.entry, workspaceId: storageKey, runId });
       setSrcDoc(html);
       onShowRunnerChange?.(true);
     } catch (error) {
-      console.error("Preview build failed", error);
+      setSrcDoc("");
+      runtime.reportBuildError(error);
+      setBottomPanel(DIAGRAM_PANEL.CONSOLE);
+      onShowRunnerChange?.(true);
     }
-  }, [filesState, model, onShowRunnerChange]);
+  }, [filesState, model, onShowRunnerChange, runtime, storageKey]);
 
   const handleReset = useCallback(() => {
     const confirmed = window.confirm("Reset this editor workspace to the starter files? This will remove files and folders you created.");
     if (!confirmed) return;
     virtualWorkspace.reset();
     setSrcDoc("");
-    setConsoleKey((key) => key + 1);
-  }, [virtualWorkspace]);
+    runtime.clear();
+  }, [virtualWorkspace, runtime]);
 
   const onChange = useCallback((path, code) => {
     virtualWorkspace.setFileCode(path, code);
@@ -191,6 +203,7 @@ export default function HandbookWorkbench({
 
   const editorContent = (
     <MonacoWorkspace
+      navigationRequest={runtime.navigation}
       files={filesState}
       folders={virtualWorkspace.workspace.folders}
       resetKey={virtualWorkspace.revision}
@@ -289,7 +302,8 @@ export default function HandbookWorkbench({
             previewFullScreen={previewFullScreen}
             setPreviewFullScreen={setPreviewFullScreen}
             iframeRef={iframeRef}
-            consoleKey={consoleKey}
+            consoleProps={consoleProps}
+            runId={runtime.runId}
             diagramFiles={diagramFiles}
           />
         </DesktopPanel>
@@ -306,7 +320,8 @@ export default function HandbookWorkbench({
             previewFullScreen={previewFullScreen}
             setPreviewFullScreen={setPreviewFullScreen}
             iframeRef={iframeRef}
-            consoleKey={consoleKey}
+            consoleProps={consoleProps}
+            runId={runtime.runId}
             diagramFiles={diagramFiles}
           />
         </div>
@@ -316,10 +331,10 @@ export default function HandbookWorkbench({
 
   return !isDesktop ? (
     <div className="space-y-3">
-      <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen contentClassName="p-0">
+      <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen openSignal={runtime.navigation?.requestId} contentClassName="p-0">
         {editorPanel}
       </MobileAccordion>
-      <MobileAccordion title="Preview" eyebrow="Run" contentClassName="p-0">
+      <MobileAccordion title="Preview" eyebrow="Run" openSignal={runtime.runId} contentClassName="p-0">
         {runnerPanel || (
           <div className="px-4 py-6 text-sm text-slate-400">
             Run the editor to open the preview.
@@ -342,7 +357,8 @@ function RunnerBody({
   previewFullScreen,
   setPreviewFullScreen,
   iframeRef,
-  consoleKey,
+  consoleProps,
+  runId,
   diagramFiles,
 }) {
   return (
@@ -352,6 +368,7 @@ function RunnerBody({
             <div style={{ position: "relative", height: "100%", width: "100%" }}>
               <iframe
                 ref={iframeRef}
+                key={runId}
                 title="preview"
                 className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
                 style={previewFullScreen ? { border: "none", borderRadius: 0, margin: 0, padding: 0 } : {}}
@@ -377,7 +394,7 @@ function RunnerBody({
           )}
         </div>
         <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.CONSOLE ? "z-10" : "z-0 invisible"}`}>
-          <ConsolePanel key={consoleKey} compact={false} />
+          <ConsolePanel {...consoleProps} compact={false} />
         </div>
         <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.SEQUENCE ? "z-10" : "z-0 invisible"}`}>
           <DiagramPanel

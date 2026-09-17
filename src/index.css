@@ -505,3 +505,5 @@ pre[data-theme] code > span.highlighted {
     min-width: 0;
   }
 }
+
+.monaco-editor .runtime-error-line { background: rgba(251, 113, 133, 0.18); border-left: 3px solid #fb7185; }

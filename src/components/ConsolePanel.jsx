@@ -1,37 +1,25 @@
 import React from "react";
 import { ObjectInspector } from "react-inspector";
 
-// Simple console panel that listens for messages from the preview iframe.
-// Expected postMessage shape from iframe: { source: 'sandbox-console', type: 'log'|'warn'|'error'|'runtime-error', args: any[] }
-
-export default function ConsolePanel({ className = "", compact = true }) {
-	const [logs, setLogs] = React.useState([]);
-
-	React.useEffect(() => {
-		const onMsg = (e) => {
-			const data = e?.data;
-			if (!data || data.source !== "sandbox-console") return;
-			setLogs((prev) => [
-				...prev,
-				{ type: data.type || "log", args: data.args || [], loc: data.loc || null },
-			]);
-		};
-		window.addEventListener("message", onMsg);
-		return () => window.removeEventListener("message", onMsg);
-	}, []);
+export default function ConsolePanel({ className = "", compact = true, logs = [], stale = false, files = {}, onRevealLocation }) {
+	const renderLocation = (loc) => loc ? <button type="button" className="text-xs text-sky-300 underline underline-offset-2 disabled:cursor-default disabled:text-slate-500 disabled:no-underline" disabled={stale || !files[loc.file] || files[loc.file].hidden} onClick={() => onRevealLocation?.(loc)}>{loc.file}:{loc.line}{loc.column ? `:${loc.column}` : ''}</button> : null;
 
 	return (
 		<div className={`h-full w-full bg-slate-950 text-slate-200 ${className}`}>
 			<div className="border-b border-slate-800 px-3 py-2 text-xs text-slate-400">Console</div>
 			<div className="h-[calc(100%-36px)] overflow-auto p-3 text-sm leading-relaxed">
+				{stale && <p role="status" className="mb-3 rounded border border-amber-500/40 bg-amber-500/10 p-2 text-xs text-amber-200">Code changed since this run. Run again to update errors and their locations.</p>}
 				{logs.length === 0 ? (
 					<div className="text-slate-500">No console output yet…</div>
 				) : (
 					logs.map((row, idx) => (
-						<div key={idx} className="mb-2">
+						<div key={idx} className={`mb-3 ${['error', 'runtime-error'].includes(row.type) ? 'border-l-2 border-rose-400 pl-2 text-rose-200' : row.type === 'warn' ? 'text-amber-200' : ''}`}>
 							<div className="whitespace-pre-wrap break-words">
-								<ConsoleArgs args={row.args} compact={compact} />
+								{row.error ? <><strong>{row.error.name}: </strong>{row.error.message}{row.error.unhandledRejection && <span className="ml-2 text-xs text-slate-400">Unhandled promise rejection</span>}</> : <ConsoleArgs args={row.args} compact={compact} />}
 							</div>
+							{renderLocation(row.loc || row.error?.loc)}
+							{row.error && !row.error.loc && <div className="text-xs text-slate-400">Source location unavailable</div>}
+							{row.error?.stack && <details className="mt-1 text-xs text-slate-300"><summary className="cursor-pointer">Stack trace</summary><ol className="my-2 space-y-1">{row.error.frames?.filter(frame => frame.loc).map((frame, index) => <li key={index}>{frame.name || '(anonymous)'} — {renderLocation(frame.loc)}</li>)}</ol><details><summary className="cursor-pointer text-slate-400">Raw browser stack</summary><pre className="mt-1 whitespace-pre-wrap break-all">{row.error.stack}</pre></details></details>}
 						</div>
 					))
 				)}
@@ -139,4 +127,3 @@ function decodeSentinel(a, compact) {
 
 	return null;
 }
-

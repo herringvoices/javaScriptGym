@@ -3,7 +3,7 @@ import Editor from "@monaco-editor/react";
 import { VscChevronDown, VscChevronRight, VscEdit, VscFile, VscFolder, VscFolderOpened, VscNewFile, VscNewFolder, VscTrash, VscClose } from "react-icons/vsc";
 import { buildAutoImportSuggestions } from "../lib/autoImports";
 
-export default function MonacoWorkspace({ files = {}, folders = [], resetKey, onChange, onCreateFile, onCreateFolder, onRename, onDelete, onActiveChange, showExplorer = true, className = "", onEditorMount }) {
+export default function MonacoWorkspace({ files = {}, folders = [], resetKey, onChange, onCreateFile, onCreateFolder, onRename, onDelete, onActiveChange, showExplorer = true, className = "", onEditorMount, navigationRequest }) {
   const [activePath, setActivePath] = React.useState(() => firstVisibleFile(files));
   const [openPaths, setOpenPaths] = React.useState(() => new Set(firstVisibleFile(files) ? [firstVisibleFile(files)] : []));
   const [expanded, setExpanded] = React.useState(() => new Set(["/"]));
@@ -19,6 +19,41 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
   const activeFile = activePath ? files[activePath] : null;
 
   React.useEffect(() => { setDraft(null); setError(""); }, [resetKey]);
+
+  React.useEffect(() => {
+    if (!navigationRequest || !files[navigationRequest.file] || files[navigationRequest.file].hidden) return;
+    const path = navigationRequest.file;
+    setActivePath(path);
+    setOpenPaths(previous => new Set([...previous, path]));
+    setExpanded(previous => new Set([...previous, ...parentFolders(path)]));
+  }, [navigationRequest, files]);
+
+  React.useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || !monacoApi || !navigationRequest) return;
+    let timer;
+    let frame;
+    let decoration;
+    let revealed = false;
+    const reveal = () => {
+      const model = editor.getModel();
+      if (revealed || !model || model.uri.path !== navigationRequest.file) return;
+      if (navigationRequest.line > model.getLineCount()) return;
+      revealed = true;
+      const position = model.validatePosition({ lineNumber: navigationRequest.line, column: navigationRequest.column || 1 });
+      editor.setPosition(position);
+      editor.revealPositionInCenter(position);
+      editor.focus();
+      decoration = editor.createDecorationsCollection([{ range: new monacoApi.Range(position.lineNumber, 1, position.lineNumber, 1), options: { isWholeLine: true, className: 'runtime-error-line' } }]);
+      timer = setTimeout(() => decoration?.clear(), 2200);
+    };
+    // @monaco-editor/react restores tab view state after setModel returns.
+    // Reveal on the next frame so that restoration cannot overwrite our cursor.
+    const scheduleReveal = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(reveal); };
+    const subscription = editor.onDidChangeModel(scheduleReveal);
+    scheduleReveal();
+    return () => { subscription.dispose(); cancelAnimationFrame(frame); clearTimeout(timer); decoration?.clear(); };
+  }, [navigationRequest, monacoApi]);
 
   React.useEffect(() => {
     const visible = Object.keys(files).filter((path) => !files[path]?.hidden);

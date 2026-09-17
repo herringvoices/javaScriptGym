@@ -21,6 +21,7 @@ import { dbmlToMermaidEr } from "../lib/dbmlToMermaidEr";
 import { DIAGRAM_PANEL, getDiagramFiles, isValidPanelForFiles } from "../lib/diagramFiles";
 import useMediaQuery from "../hooks/useMediaQuery";
 import useResizableDesktopPanels from "../hooks/useResizableDesktopPanels";
+import useRuntimeConsole from "../hooks/useRuntimeConsole";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const CHALLENGE_DESKTOP_PANEL_SIZES = [
@@ -64,7 +65,7 @@ export default function ChallengePage() {
     );
   }
 
-  return <ChallengeWorkspace challenge={challenge} />;
+  return <ChallengeWorkspace key={challenge.id} challenge={challenge} />;
 }
 
 function ChallengeWorkspace({ challenge }) {
@@ -243,7 +244,7 @@ function ChallengeSandboxUI({
   const [showRunnerColumn, setShowRunnerColumn] = useState(
     challenge.sandbox?.showRightPanel !== undefined ? challenge.sandbox.showRightPanel : false
   );
-  const [consoleKey, setConsoleKey] = useState(0);
+  const runtime = useRuntimeConsole(files, iframeRef);
   const editorRef = useRef(null);
   const descriptionCopy = challenge.description || challenge.summary || "Description coming soon.";
   const diagramFiles = useMemo(() => getDiagramFiles(files), [files]);
@@ -251,12 +252,15 @@ function ChallengeSandboxUI({
 
   const handleRun = () => {
     try {
-      setConsoleKey((k) => k + 1);
-      const html = buildSrcDoc({ files, entry });
+      const runId = runtime.beginRun();
+      const html = buildSrcDoc({ files, entry, workspaceId: `challenge:${challenge.id}`, runId });
       setSrcDoc(html);
       setShowRunnerColumn(true);
     } catch (e) {
-      console.error("Preview build failed", e);
+      setSrcDoc("");
+      runtime.reportBuildError(e);
+      setShowRunnerColumn(true);
+      setRightPanel(DIAGRAM_PANEL.CONSOLE);
     }
   };
 
@@ -265,7 +269,7 @@ function ChallengeSandboxUI({
     if (!confirmed) return;
     onResetStorage?.();
     setSrcDoc("");
-    setConsoleKey((k) => k + 1);
+    runtime.clear();
   };
 
   useEffect(() => {
@@ -500,6 +504,7 @@ function ChallengeSandboxUI({
                 }
               >
                 <MonacoWorkspace
+                  navigationRequest={runtime.navigation}
                   files={files}
                   folders={folders}
                   resetKey={resetKey}
@@ -597,6 +602,7 @@ function ChallengeSandboxUI({
                     <div style={{ position: "relative", height: "100%", width: "100%" }}>
                       <iframe
                         ref={iframeRef}
+                        key={runtime.runId}
                         title="preview"
                         className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
                         style={previewFullScreen ? { border: "none", borderRadius: 0, margin: 0, padding: 0 } : {}}
@@ -622,7 +628,7 @@ function ChallengeSandboxUI({
                   )}
                 </div>
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.CONSOLE ? "z-10" : "z-0 invisible"}`}>
-                  <ConsolePanel key={consoleKey} />
+                  <ConsolePanel {...runtime.consoleProps} onRevealLocation={(loc) => { runtime.consoleProps.onRevealLocation(loc); setShowEditorColumn(true); }} />
                 </div>
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.SEQUENCE ? "z-10" : "z-0 invisible"}`}>
                   <DiagramPanel
@@ -706,7 +712,7 @@ function ChallengeSandboxUI({
             </article>
           </MobileAccordion>
 
-          <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen stickyHeader contentClassName="p-0">
+          <MobileAccordion title="Editor" eyebrow="Workspace" defaultOpen openSignal={runtime.navigation?.requestId} stickyHeader contentClassName="p-0">
             <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <p className="text-xs uppercase tracking-widest text-brand-300">Editor</p>
@@ -731,6 +737,7 @@ function ChallengeSandboxUI({
               </div>
               <div className="min-h-0 grow">
                 <MonacoWorkspace
+                  navigationRequest={runtime.navigation}
                   files={files}
                   folders={folders}
                   resetKey={resetKey}
@@ -755,7 +762,7 @@ function ChallengeSandboxUI({
             </section>
           </MobileAccordion>
 
-          <MobileAccordion title="Preview" eyebrow="Run" stickyHeader contentClassName="p-0">
+          <MobileAccordion title="Preview" eyebrow="Run" openSignal={runtime.runId} stickyHeader contentClassName="p-0">
             <section className="flex h-[70vh] min-h-[420px] flex-col overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
                 <button
@@ -790,6 +797,7 @@ function ChallengeSandboxUI({
                   {srcDoc ? (
                     <iframe
                       ref={iframeRef}
+                      key={runtime.runId}
                       title="preview"
                       className={`h-full w-full bg-white transition-all duration-300 ${previewFullScreen ? "fixed top-0 left-0 w-screen h-screen z-50 rounded-none border-none" : ""}`}
                       style={previewFullScreen ? { border: "none", borderRadius: 0, margin: 0, padding: 0 } : {}}
@@ -803,7 +811,7 @@ function ChallengeSandboxUI({
                   )}
                 </div>
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.CONSOLE ? "z-10" : "z-0 invisible"}`}>
-                  <ConsolePanel key={consoleKey} />
+                  <ConsolePanel {...runtime.consoleProps} onRevealLocation={(loc) => { runtime.consoleProps.onRevealLocation(loc); setShowEditorColumn(true); }} />
                 </div>
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.SEQUENCE ? "z-10" : "z-0 invisible"}`}>
                   <DiagramPanel

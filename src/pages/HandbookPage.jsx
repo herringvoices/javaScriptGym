@@ -306,6 +306,7 @@ export default function HandbookPage() {
                     renderDesktopResizeHandleAfter={renderResizeHandleAfter}
                     onShowRunnerChange={setShowConsole}
                     onHideEditor={() => setShowEditor(false)}
+                    onShowEditorChange={setShowEditor}
                     onHideRunner={() => setShowConsole(false)}
                   />
                 )}

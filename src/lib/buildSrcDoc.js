@@ -1,316 +1,164 @@
-// Build an iframe srcdoc string from a simple virtual FS.
-// Goals (v1):
-// - Support vanilla challenges with HTML entry (preferred)
-// - Inject console bridge to bubble logs/errors to the parent window
-// - Inline mock/bridge scripts if present (/__mocks__/fetch.js and /__bridge__.js)
-// - Rewrite <script src> and <link rel="stylesheet" href> for known files to inline content
-// - If entry is a JS file, provide a minimal HTML shell and run it as a module
+import { parse as parseJavaScript } from 'acorn';
+import { parse as parseHtml } from 'parse5';
+import MagicString from 'magic-string';
+import { createRuntimeProtocol } from './runtimeProtocol.js';
+import { installConsoleBridge } from './consoleBridge.js';
 
-/**
- * @typedef {{ code: string, readOnly?: boolean, hidden?: boolean, active?: boolean }} FileSpec
- * @param {{ files: Record<string, FileSpec>, entry: string }} opts
- */
-export function buildSrcDoc({ files, entry }) {
-	const fileFor = (p) => files[p]?.code ?? null;
+export function normalizePath(path) {
+  const parts = [];
+  for (const part of String(path).replace(/\\/g, '/').split('/')) {
+    if (part === '..') parts.pop();
+    else if (part && part !== '.') parts.push(part);
+  }
+  return '/' + parts.join('/');
+}
 
-	const normalizePath = (p) => {
-		let out = String(p || "");
-		out = out.replace(/\\/g, "/");
-		if (!out.startsWith("/")) out = "/" + out;
-		out = out.replace(/\/+/g, "/");
-		// resolve ./ and ../ segments
-		const parts = [];
-		for (const seg of out.split("/")) {
-			if (!seg || seg === ".") continue;
-			if (seg === "..") {
-				parts.pop();
-				continue;
-			}
-			parts.push(seg);
-		}
-		return "/" + parts.join("/");
-	};
+// Also serialized for computed import() expressions in the preview.
+function resolveImport(specifier, from, paths, prefix) {
+  if (typeof specifier !== 'string') specifier = String(specifier);
+  if (/^[a-z][a-z\d+.-]*:/i.test(specifier) || specifier.startsWith('//')) return specifier;
+  const parts = [];
+  const path = specifier.startsWith('.') ? from.slice(0, from.lastIndexOf('/') + 1) + specifier : specifier;
+  for (const part of path.split('/')) {
+    if (part === '..') parts.pop();
+    else if (part && part !== '.') parts.push(part);
+  }
+  let resolved = '/' + parts.join('/');
+  if (!paths.includes(resolved) && paths.includes(resolved + '.js')) resolved += '.js';
+  return prefix + resolved.split('/').map(encodeURIComponent).join('/');
+}
 
-	const dirname = (p) => {
-		const path = normalizePath(p);
-		const idx = path.lastIndexOf("/");
-		return idx <= 0 ? "/" : path.slice(0, idx);
-	};
+function walk(node, visit) {
+  visit(node);
+  for (const value of Object.values(node)) {
+    if (Array.isArray(value)) value.forEach(child => { if (child?.type) walk(child, visit); });
+    else if (value?.type) walk(value, visit);
+  }
+}
 
-	const resolveRelative = (fromFile, spec) => {
-		const base = dirname(fromFile);
-		return normalizePath(base + "/" + spec);
-	};
+const dataUrl = code => `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`;
+const scriptJson = value => JSON.stringify(value).replace(/</g, '\\u003c');
+const escapeAttribute = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
-	const resolveJsPath = (absPath) => {
-		const p = normalizePath(absPath);
-		if (files[p]?.code != null) return p;
-		if (!/\.js$/i.test(p) && files[p + ".js"]?.code != null) return p + ".js";
-		return p;
-	};
+/** Each run has a fresh document but stable source identities within its workspace. */
+export function buildSrcDoc({ files, entry, workspaceId = 'workspace', runId = 'standalone' }) {
+  entry = normalizePath(entry);
+  const namespace = encodeURIComponent(workspaceId);
+  const prefix = `jsgym-module://${namespace}`;
+  const paths = Object.keys(files).filter(path => /\.(m?js)$/i.test(path) && !path.startsWith('/__'));
+  const sources = {};
+  const aliases = {};
+  const imports = {};
+  const cache = new Map();
+  const resolve = (specifier, from) => resolveImport(specifier, from, paths, prefix);
 
-	// In the Monaco iframe runner, modules are loaded via data: URLs.
-	// Browsers don't reliably resolve './x' relative imports from data: URLs,
-	// so we rewrite relative specifiers to virtual FS *bare* specifiers that
-	// are covered by the import map (e.g. 'scripts/database.js').
-	const rewriteRelativeImports = (code, fromPath) => {
-		if (!code || typeof code !== "string") return code;
-		const from = normalizePath(fromPath);
+  function compile(code, file, module, inlineRange = null, identity = file) {
+    const cacheKey = `${identity}:${module}`;
+    if (cache.has(cacheKey)) return cache.get(cacheKey);
+    const original = inlineRange ? files[file].code : code;
+    const transformed = new MagicString(original);
+    const offset = inlineRange?.start || 0;
+    if (inlineRange) {
+      transformed.remove(0, inlineRange.start);
+      transformed.remove(inlineRange.end, original.length);
+    }
+    if (module) {
+      let ast;
+      try { ast = parseJavaScript(code, { ecmaVersion: 'latest', sourceType: 'module' }); }
+      catch { /* Let the browser produce the actual SyntaxError and location. */ }
+      if (ast) walk(ast, node => {
+        if (['ImportDeclaration', 'ExportNamedDeclaration', 'ExportAllDeclaration'].includes(node.type) && node.source) {
+          transformed.overwrite(offset + node.source.start, offset + node.source.end, JSON.stringify(resolve(node.source.value, file)));
+        }
+        if (node.type === 'ImportExpression') {
+          if (node.source.type === 'Literal' && typeof node.source.value === 'string') {
+            transformed.overwrite(offset + node.source.start, offset + node.source.end, JSON.stringify(resolve(node.source.value, file)));
+          } else {
+            transformed.appendLeft(offset + node.source.start, 'globalThis.__jsgymResolve((');
+            transformed.appendRight(offset + node.source.end, `),${JSON.stringify(file)})`);
+          }
+        }
+      });
+    }
+    const encodedPath = identity.split('/').map(encodeURIComponent).join('/');
+    const url = `jsgym-runtime://${namespace}${encodedPath}${module ? '' : '?classic'}`;
+    const source = `jsgym://${namespace}${file.split('/').map(encodeURIComponent).join('/')}`;
+    const map = transformed.generateMap({ source, includeContent: true, hires: true });
+    const decoded = transformed.generateDecodedMap({ source, hires: true });
+    const compiled = `${transformed.toString()}\n//# sourceURL=${url}\n//# sourceMappingURL=${map.toUrl()}`;
+    const transport = dataUrl(compiled);
+    sources[url] = { file, mappings: decoded.mappings, lineCount: original.split('\n').length };
+    aliases[transport] = url;
+    cache.set(cacheKey, transport);
+    return transport;
+  }
 
-		const rewriteOne = (raw) => {
-			if (!raw || typeof raw !== "string") return raw;
-			if (!(raw.startsWith("./") || raw.startsWith("../"))) return raw;
-			const abs = resolveJsPath(resolveRelative(from, raw));
-			// Prefer a bare specifier so import-map resolution doesn't depend on
-			// the module's base URL (data: URLs have no useful base for relatives).
-			return abs.startsWith("/") ? abs.slice(1) : abs;
-		};
+  for (const path of paths) imports[resolve(path, '/')] = compile(files[path].code, path, true);
+  // Older saved workspaces may still contain adapter-injected helper imports.
+  // Helpers already execute once, as classic scripts, before any student code.
+  for (const path of ['/__bridge__.js', '/__mocks__/fetch.js']) {
+    if (files[path]) imports[resolve(path, '/')] = dataUrl('export {};');
+  }
 
-		// 1) static imports: import ... from "./x" and import "./x"
-		let out = code.replace(
-			/(\bimport\s+(?:[\s\S]*?\s+from\s+)?)(["'])(\.{1,2}\/[^"']+)(\2)/g,
-			(m, pre, q, spec, endq) => `${pre}${q}${rewriteOne(spec)}${endq}`
-		);
-
-		// 2) dynamic imports: import("./x")
-		out = out.replace(
-			/(\bimport\s*\(\s*)(["'])(\.{1,2}\/[^"']+)(\2)(\s*\))/g,
-			(m, pre, q, spec, endq, post) => `${pre}${q}${rewriteOne(spec)}${endq}${post}`
-		);
-
-		return out;
-	};
-
-	const getScriptInline = (code, type) => `<script ${type ? `type="${type}"` : ""}>\n${code}\n</script>`;
-	const getStyleInline = (code) => `<style>\n${code}\n</style>`;
-
-	const withSourceURL = (code, path) => {
-		if (!path) return code;
-		return `${code}\n//# sourceURL=${path}`;
-	};
-
-	const bridgeCode = fileFor("/__bridge__.js");
-	const mockFetchCode = fileFor("/__mocks__/fetch.js");
-
-	const consoleHook = `
-		(function(){
-			const ORIG = {
-				log: console.log,
-				warn: console.warn,
-				error: console.error,
-				info: console.info,
-				debug: console.debug,
-				dir: console.dir,
-				table: console.table,
-			};
-			function safe(v){
-				// Preserve undefined/null explicitly so the UI can render them
-				if (v === undefined) return { __type: 'undefined' };
-				if (v === null) return { __type: 'null' };
-
-				// Structured, circular-safe serialization for Monaco-friendly console output.
-				// We intentionally do NOT JSON.stringify here; the parent UI decides
-				// whether to render compact (one-line) or pretty (multi-line).
-				const seen = new WeakSet();
-				const MAX_DEPTH = 6;
-
-				function serialize(val, depth){
-					if (val === undefined) return { __type: 'undefined' };
-					if (val === null) return null;
-					const t = typeof val;
-					if (t === 'string' || t === 'number' || t === 'boolean') return val;
-					if (t === 'bigint') return { __type: 'bigint', value: String(val) + 'n' };
-					if (t === 'symbol') return { __type: 'symbol', value: String(val) };
-					if (t === 'function') return { __type: 'function', name: val.name || 'anonymous' };
-
-					// Objects
-					try {
-						if (val instanceof Error) {
-							return { __type: 'error', name: val.name, message: val.message, stack: val.stack };
-						}
-						if (val instanceof Date) {
-							return { __type: 'date', value: val.toISOString() };
-						}
-						if (val instanceof RegExp) {
-							return { __type: 'regexp', value: String(val) };
-						}
-						if (val instanceof Map) {
-							if (depth >= MAX_DEPTH) return { __type: 'map', truncated: true, size: val.size };
-							return { __type: 'map', entries: Array.from(val.entries()).map(([k, vv]) => [serialize(k, depth+1), serialize(vv, depth+1)]) };
-						}
-						if (val instanceof Set) {
-							if (depth >= MAX_DEPTH) return { __type: 'set', truncated: true, size: val.size };
-							return { __type: 'set', values: Array.from(val.values()).map((vv) => serialize(vv, depth+1)) };
-						}
-					} catch {}
-
-					if (t === 'object') {
-						if (seen.has(val)) return { __type: 'circular' };
-						seen.add(val);
-						if (depth >= MAX_DEPTH) return { __type: 'truncated' };
-
-						if (Array.isArray(val)) {
-							return val.map((item) => serialize(item, depth+1));
-						}
-
-						const out = {};
-						for (const key in val) {
-							try { out[key] = serialize(val[key], depth+1); } catch { out[key] = { __type: 'unserializable' }; }
-						}
-						return out;
-					}
-
-					try { return String(val); } catch { return { __type: 'unserializable' }; }
-				}
-
-				try { return serialize(v, 0); } catch { return { __type: 'unserializable', value: String(v) }; }
-			}
-			function parseLocFromStack(stack){
-				try{
-					const lines = String(stack||'').split('\\n');
-					for (let i=0;i<lines.length;i++){
-						const L = lines[i];
-						if (!L) continue;
-						if (L.includes('sandbox-console') || L.includes('consoleHook')) continue;
-						const m = L.match(/\\(?:(.*?):(\\d+):(\\d+)\\)|\\s(.*?):(\\d+):(\\d+)/);
-						if (m){
-							const file = m[1] || m[4] || '';
-							const line = Number(m[2] || m[5] || 0);
-							const column = Number(m[3] || m[6] || 0);
-							return { file, line, column };
-						}
-					}
-				} catch {}
-				return null;
-			}
-			function currentLoc(){ try { throw new Error(); } catch(e){ return parseLocFromStack(e && e.stack); } }
-			function post(type, args, loc){
-				try { parent.postMessage({ source: 'sandbox-console', type, args: Array.from(args).map(safe), loc: loc || currentLoc() }, '*'); } catch {}
-			}
-			console.log = function(){ post('log', arguments); return ORIG.log.apply(console, arguments); };
-			console.warn = function(){ post('warn', arguments); return ORIG.warn.apply(console, arguments); };
-			console.error = function(){ post('error', arguments); return ORIG.error.apply(console, arguments); };
-			console.info = function(){ post('info', arguments); return ORIG.info ? ORIG.info.apply(console, arguments) : ORIG.log.apply(console, arguments); };
-			console.debug = function(){ post('debug', arguments); return ORIG.debug ? ORIG.debug.apply(console, arguments) : ORIG.log.apply(console, arguments); };
-			console.dir = function(){ post('dir', arguments); return ORIG.dir ? ORIG.dir.apply(console, arguments) : ORIG.log.apply(console, arguments); };
-			console.table = function(){ post('table', arguments); return ORIG.table ? ORIG.table.apply(console, arguments) : ORIG.log.apply(console, arguments); };
-			window.addEventListener('error', function(e){
-				const loc = { file: e && e.filename, line: e && e.lineno, column: e && e.colno };
-				post('runtime-error', [e && e.message ? e.message : String(e)], loc);
-			});
-			window.addEventListener('unhandledrejection', function(e){
-				const msg = (e && e.reason && e.reason.message) || String((e && e.reason) || e);
-				const loc = (e && e.reason && e.reason.stack) ? parseLocFromStack(e.reason.stack) : null;
-				post('runtime-error', [msg], loc);
-			});
-		})();
-	`;
-
-	// Build import map for ES modules to resolve imports
-	// Maps module paths to data URLs so inline scripts can import them
-	const buildImportMap = () => {
-		const imports = {};
-		Object.keys(files).forEach((path) => {
-			if (path.endsWith('.js') && !path.startsWith('/__')) {
-				const code = rewriteRelativeImports(files[path]?.code ?? '', path);
-				// Create data URL for this module
-				const dataUrl = `data:text/javascript;charset=utf-8,${encodeURIComponent(withSourceURL(code, path))}`;
-				// Map absolute path
-				imports[path] = dataUrl;
-				// Map without leading slash for imports like 'database.js'
-				if (path.startsWith('/')) {
-					const bare = path.substring(1);
-					imports[bare] = dataUrl;
-					// Also map with ./ prefix for relative imports
-					imports['./' + bare] = dataUrl;
-
-					// Also map by file name (with and without extension) so
-					// same-directory imports like "./database" or "./database.js"
-					// can resolve even when the file lives in a subfolder
-					const segments = bare.split('/');
-					const fileName = segments[segments.length - 1]; // e.g. 'database.js'
-					const fileNameNoExt = fileName.replace(/\.js$/i, ''); // e.g. 'database'
-
-					// Prefer not to overwrite any more-specific mappings that already exist
-					if (!imports[fileName]) imports[fileName] = dataUrl;
-					if (!imports['./' + fileName]) imports['./' + fileName] = dataUrl;
-					if (fileNameNoExt !== fileName) {
-						if (!imports[fileNameNoExt]) imports[fileNameNoExt] = dataUrl;
-						if (!imports['./' + fileNameNoExt]) imports['./' + fileNameNoExt] = dataUrl;
-					}
-				}
-			}
-		});
-		if (Object.keys(imports).length === 0) return '';
-		return `<script type="importmap">\n${JSON.stringify({ imports }, null, 2)}\n</script>`;
-	};
-
-	// Inject console hook, then globals bridge, then fetch mock, then import map.
-	// Use classic scripts for bridge/mock so they execute immediately during parse,
-	// ensuring the mock fetch is active before any classic app scripts run.
-		const headExtras = [
-			getScriptInline(consoleHook, undefined),
-			bridgeCode ? getScriptInline(withSourceURL(bridgeCode, '/__bridge__.js'), undefined) : '',
-			mockFetchCode ? getScriptInline(withSourceURL(mockFetchCode, '/__mocks__/fetch.js'), undefined) : '',
-			buildImportMap(),
-		].filter(Boolean).join('\n');
-
-	const rewriteHtml = (html) => {
-		// Inline known JS files (modules will use import map for resolution)
-			html = html.replace(/<script([^>]*?)src=["']([^"']+)["']([^>]*)><\s*\/script>/gi, (m, pre, src, post) => {
-			// normalize to absolute-like path used in challenge files
-			let path = src.startsWith('/') ? src : ('/' + src.replace(/^\.\/?/, ''));
-			const spec = files[path];
-			if (!spec || typeof spec.code !== 'string') return m;
-			const typeMatch = /type=["']([^"']+)["']/i.exec(pre + ' ' + post);
-			const type = typeMatch ? typeMatch[1] : 'module';
-				return getScriptInline(withSourceURL(spec.code, path), type);
-		});
-
-		// Inline known CSS files
-		html = html.replace(/<link[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi, (m, href) => {
-			let path = href.startsWith('/') ? href : ('/' + href.replace(/^\.\/?/, ''));
-			const spec = files[path];
-			if (!spec || typeof spec.code !== 'string') return m;
-			return getStyleInline(spec.code);
-		});
-
-		// Inject head extras after <head> open if present, else at top of body
-		if (/<head[^>]*>/i.test(html)) {
-			return html.replace(/<head[^>]*>/i, (tag) => tag + '\n' + headExtras + '\n');
-		}
-		if (/<body[^>]*>/i.test(html)) {
-			return html.replace(/<body[^>]*>/i, (tag) => tag + '\n' + headExtras + '\n');
-		}
-		return headExtras + html;
-	};
-
-	if (/\.html?$/i.test(entry)) {
-		const html = fileFor(entry) ?? '<!doctype html><html><head><meta charset="utf-8"><title>Preview</title></head><body></body></html>';
-		return rewriteHtml(html);
-	}
-
-	// JS entry: minimal shell
-		const js = withSourceURL(fileFor(entry) ?? '', entry);
-	const styles = Object.entries(files)
-		.filter(([p]) => p.endsWith('.css'))
-		.map(([, s]) => getStyleInline(s.code))
-		.join('\n');
-	const html = `<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			<meta charset="UTF-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<title>Preview</title>
-			${headExtras}
-			${styles}
-		</head>
-		<body>
-			<div id="app"></div>
-			${getScriptInline(js, 'module')}
-		</body>
-	</html>`;
-	return html;
+  const isHtml = /\.html?$/i.test(entry);
+  const html = isHtml ? files[entry]?.code || '' : '<!doctype html><html><head><meta charset="utf-8"><title>Preview</title></head><body><div id="app"></div></body></html>';
+  const document = parseHtml(html, { sourceCodeLocationInfo: true });
+  const output = new MagicString(html);
+  let headOffset = 0;
+  let bodyEnd = html.length;
+  let inlineIndex = 0;
+  function visit(node) {
+    const loc = node.sourceCodeLocation;
+    const attrs = Object.fromEntries((node.attrs || []).map(attr => [attr.name, attr.value]));
+    if (node.tagName === 'head' && loc?.startTag) headOffset = loc.startTag.endOffset;
+    if (node.tagName === 'body' && loc?.endTag) bodyEnd = loc.endTag.startOffset;
+    if (node.tagName === 'script' && loc?.startTag) {
+      const type = (attrs.type || '').trim().toLowerCase();
+      const module = type === 'module';
+      const executable = module || !type || /^(?:text|application)\/(?:java|ecma)script$/.test(type);
+      if (executable) {
+        let transport;
+        if (attrs.src) {
+          const path = normalizePath(attrs.src.startsWith('/') ? attrs.src : entry.slice(0, entry.lastIndexOf('/') + 1) + attrs.src);
+          if (!/^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(attrs.src) && files[path]) {
+            transport = ['/__bridge__.js', '/__mocks__/fetch.js'].includes(path) ? dataUrl('') : compile(files[path].code, path, module);
+          }
+        } else if (loc.endTag) {
+          const start = loc.startTag.endOffset;
+          const end = loc.endTag.startOffset;
+          transport = compile(html.slice(start, end), entry, module, { start, end }, `${entry}/inline-${++inlineIndex}.js`);
+        }
+        if (transport) {
+          // Keep async/defer/nomodule and other author attributes.
+          const kept = (node.attrs || []).filter(attr => !['src', 'integrity', 'crossorigin'].includes(attr.name));
+          const attributes = kept.map(attr => ` ${attr.name}="${escapeAttribute(attr.value)}"`).join('');
+          output.overwrite(loc.startOffset, loc.endOffset, `<script${attributes} crossorigin="anonymous" src="${escapeAttribute(transport)}"></script>`);
+        }
+      }
+    }
+    if (node.tagName === 'link' && attrs.rel?.toLowerCase() === 'stylesheet' && attrs.href && loc) {
+      const path = normalizePath(attrs.href.startsWith('/') ? attrs.href : entry.slice(0, entry.lastIndexOf('/') + 1) + attrs.href);
+      if (files[path]) output.overwrite(loc.startOffset, loc.endOffset, `<style>${files[path].code.replace(/<\/style/gi, '<\\/style')}</style>`);
+    }
+    (node.childNodes || []).forEach(visit);
+  }
+  visit(document);
+  if (!isHtml) {
+    const transport = compile(files[entry]?.code || '', entry, true);
+    const styles = Object.entries(files).filter(([path]) => path.endsWith('.css')).map(([, file]) => `<style>${file.code.replace(/<\/style/gi, '<\\/style')}</style>`).join('');
+    output.appendLeft(bodyEnd, `${styles}<script type="module" src="${escapeAttribute(transport)}"></script>`);
+  }
+  const config = scriptJson({ runId, sources, aliases });
+  const hook = `(${installConsoleBridge.toString()})(${config},${createRuntimeProtocol.toString()});\n` +
+    `globalThis.__jsgymResolve=(specifier,from)=>(${resolveImport.toString()})(specifier,from,${scriptJson(paths)},${scriptJson(prefix)});\n//# sourceURL=jsgym-internal://console.js`;
+  // Helpers are separate resources too: no HTML offsets enter student stacks.
+  const extras = [
+    `<script src="${escapeAttribute(dataUrl(hook))}"></script>`,
+    ...['/__bridge__.js', '/__mocks__/fetch.js'].filter(path => files[path]).map(path => `<script src="${escapeAttribute(dataUrl(files[path].code + `\n//# sourceURL=jsgym-internal:/${path}`))}"></script>`),
+    `<script type="importmap">${scriptJson({ imports })}</script>`,
+  ].join('\n');
+  output.appendLeft(headOffset, extras);
+  return output.toString();
 }
 
 export default buildSrcDoc;

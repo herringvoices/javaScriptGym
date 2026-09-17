@@ -11,12 +11,18 @@ export default function MobileAccordion({
   children,
   className = "",
   contentClassName = "",
+  openSignal,
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const [hasOpened, setHasOpened] = useState(defaultOpen);
   const sectionRef = useRef(null);
   const savedScrollOffsetRef = useRef(0);
   const restoreOnOpenRef = useRef(false);
+  useLayoutEffect(() => {
+    if (!openSignal) return;
+    setOpen(true);
+    setHasOpened(true);
+  }, [openSignal]);
   const headerClassName = [
     "flex w-full items-center justify-between gap-3 px-4 py-3 text-left",
     stickyHeader ? "sticky top-0 z-30 rounded-t-lg bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/85" : "",

@@ -37,27 +37,7 @@ export function toSandpackFiles(challenge, saved = {}, opts = {}) {
   if (needsMock) {
     files["/__mocks__/fetch.js"] = { code: mockSrc, readOnly: true, hidden: true };
 
-    const entry = challenge.entry || "/src/index.js";
-    const entryFile = files[entry] || { code: "", active: true };
-    // If entry is HTML, inject <script> tags; otherwise prepend import lines.
-    if (/\.html?$/.test(entry)) {
-      let html = entryFile.code;
-      // naive detection: insert right after <head> or at start of body
-      const bridgeTag = '<script type="module" src="/__bridge__.js"></script>';
-      const mockTag = '<script type="module" src="/__mocks__/fetch.js"></script>';
-      if (/<head[^>]*>/i.test(html)) {
-        html = html.replace(/<head[^>]*>/i, m => m + bridgeTag + mockTag);
-      } else if (/<body[^>]*>/i.test(html)) {
-        html = html.replace(/<body[^>]*>/i, m => m + bridgeTag + mockTag);
-      } else {
-        html = bridgeTag + mockTag + html;
-      }
-      files[entry] = { ...entryFile, code: html };
-    } else {
-      const bridgeline = `import "/__bridge__.js";\n`;
-      const mockline = `import "/__mocks__/fetch.js";\n`;
-      files[entry] = { ...entryFile, code: bridgeline + mockline + entryFile.code };
-    }
+    // buildSrcDoc installs helpers before student scripts. Keep starter source intact.
   }
 
   // 3) globals bridge (challenge id, seeds, chaos)

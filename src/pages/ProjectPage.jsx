@@ -251,6 +251,7 @@ export default function ProjectPage() {
                   renderDesktopResizeHandleAfter={renderResizeHandleAfter}
                   onShowRunnerChange={setShowConsole}
                   onHideEditor={() => setShowEditor(false)}
+                  onShowEditorChange={setShowEditor}
                   onHideRunner={() => setShowConsole(false)}
                 />
               )}
