@@ -1,0 +1,82 @@
+---
+id: JS.DB.ERR.1.REFERENCE
+title: Error Messages · ReferenceError
+short: Recognize a ReferenceError as valid JavaScript that refers to a name JavaScript cannot find.
+---
+
+# Error Messages → `ReferenceError`
+
+Your syntax is fixed, and Weird Mike's shop heading prints correctly.
+
+Now the report needs to list the inventory.
+
+Add this section underneath the two heading logs in your existing `main.js`:
+
+```js
+console.log("---");
+console.log("For Sale:");
+
+for (const item of inventory) {
+  console.log(`${item.name} - ${priceInPennies}`);
+  console.log(item.description);
+}
+```
+
+Then run the program.
+
+This time JavaScript understands the file perfectly well. It creates the inventory, prints the heading, begins the `for...of` loop, and only then stops with an error similar to:
+
+```text
+ReferenceError: priceInPennies is not defined
+```
+
+That difference matters.
+
+A **`ReferenceError`** usually means JavaScript understood the instruction, but the instruction refers to a name that does not exist in the current scope.
+
+You have already seen the pieces involved here:
+
+- `item` is the current inventory object from the loop.
+- each item has a `priceInPennies` property,
+- but there is no standalone variable named `priceInPennies`.
+
+<Callout type="tip" title="Read the name in the message">
+  <p className="m-0">When JavaScript says <code>priceInPennies is not defined</code>, start by looking for exactly that name. Ask: where was this supposed to come from?</p>
+</Callout>
+
+<HandbookChallenge
+  title="Read the price from the current item"
+  hints={[
+    <>The error names <code>priceInPennies</code> because JavaScript is looking for a variable with that name.</>,
+    <>Inside the loop, <code>item</code> is the current object from <code>inventory</code>.</>,
+    <>Read the property from the object with <code>item.priceInPennies</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+Number of Items: 2
+---
+For Sale:
+Holy Umbrella - 2223
+An umbrella with holes in it.
+Definitely Normal Mirror - 4899
+Your reflection blinks slightly late.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`for (const item of inventory) {
+  console.log(\`${item.name} - ${item.priceInPennies}\`);
+  console.log(item.description);
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Run the report and read the <code>ReferenceError</code>. Fix the unknown reference without creating a new variable: the price is already stored on the current inventory item.
+  </p>
+</HandbookChallenge>
+
+A `ReferenceError` is JavaScript saying, roughly:
+
+> **"I understand this code, but I do not know what that name refers to."**
+
+That is different from a `SyntaxError`: this program was valid enough to start running.
+
+Next, Weird Mike decides that displaying every price in pennies is "unprofessional," which is apparently where his standards begin.
