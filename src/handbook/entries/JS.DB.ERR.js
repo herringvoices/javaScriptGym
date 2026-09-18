@@ -24,11 +24,70 @@ const entry = {
     {
       path: "/main.js",
       active: true,
-      content: `const firstName = "Mina";
-const lastName = "Lopez";
+      content: `const inventory = [
+  {
+    id: 1,
+    name: "Holy Umbrella",
+    description: "An umbrella with holes in it.",
+    clearance: true
+    priceInPennies: 2223,
+  },
+  {
+    id: 2,
+    name: "Definitely Normal Mirror",
+    description: "Your reflection blinks slightly late.",
+    clearance: false,
+    priceInPennies: 4899,
+  },
+  {
+    id: 3,
+    name: "Possibly Haunted Toaster",
+    description: "Burns an image of someone you miss into every slice.",
+    clearance: true,
+    priceInPennies: 1599,
+  },
+  {
+    id: 4,
+    name: 8,
+    description: "A Magic 8 Ball with suspiciously specific answers.",
+    clearance: false,
+    priceInPennies: 1199,
+  },
+];
 
-console.log(\`First name: \${lastName}\`);
-console.log(\`Last name: \${firstName}\`);
+const shopManager = "Mike";
+
+function printDescription(item) {
+  console.log(item.descripton.toUpperCase());
+}
+
+function formatItemName(item) {
+  return item.name.toUpperCase();
+}
+
+function formatPrice(item) {
+  return `$${(item.priceInPennies / 100).toFixed(2)}`;
+}
+
+function printItem(item) {
+  console.log(`${formatItemName(item)} - ${formatPrice(item)}`);
+}
+
+function printFeaturedItem(item) {
+  console.log("FEATURED ITEM");
+  printItem(item);
+}
+
+console.log("WEIRD MIKE'S PAWN SHOP");
+console.log(`Manager: ${managerName}`);
+console.log(`Number of Items: ${inventory.length()}`);
+
+printDescription(inventory[0]);
+printFeaturedItem(inventory);
+
+const requestedItemId = 4;
+const requestedItem = inventory.find((item) => item.id === requestedItemId);
+printItem(requestedItem);
 `,
     },
   ],
