@@ -17,7 +17,7 @@ console.log("---");
 console.log("For Sale:");
 
 for (const item of inventory) {
-  console.log(`${item.name} - ${priceInPennies}`);
+  console.log(`\${item.name} - ${priceInPennies}`);
   console.log(item.description);
 }
 ```
@@ -63,7 +63,7 @@ Your reflection blinks slightly late.`}</pre>
   }
   solution={
     <pre className="m-0 whitespace-pre-wrap">{`for (const item of inventory) {
-  console.log(\`${item.name} - ${item.priceInPennies}\`);
+  console.log(\`${item.name} - \${item.priceInPennies}\`);
   console.log(item.description);
 }`}</pre>
   }
