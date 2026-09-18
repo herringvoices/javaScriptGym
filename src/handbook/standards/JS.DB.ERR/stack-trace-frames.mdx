@@ -1,0 +1,131 @@
+---
+id: JS.DB.ERR.2.FRAMES
+title: Stack Traces · Follow the Call Chain
+short: Read multiple stack frames to see which functions called one another and trace a bad value back to the call that supplied it.
+---
+
+# Stack Traces → Follow the Call Chain
+
+The first stack frame helped you find the exact line where JavaScript failed.
+
+But the line where an error **appears** is not always the line that introduced the bad value.
+
+We can make that distinction visible by giving Weird Mike's report a few small helper functions.
+
+Keep your inventory and `formatPrice()`. Replace your current `printItem()` and report loop with this code:
+
+```js
+function formatDescription(description) {
+  return description.trim();
+}
+
+function buildItemSummary(item) {
+  const price = formatPrice(item.priceInPennies);
+  const description = formatDescription(item);
+
+  return `${item.name} - ${price}
+${description}`;
+}
+
+function printItem(item) {
+  console.log(buildItemSummary(item));
+}
+
+console.log("---");
+console.log("For Sale:");
+
+for (const item of inventory) {
+  printItem(item);
+}
+```
+
+Run it.
+
+The error should point first to `formatDescription()`:
+
+```text
+TypeError: description.trim is not a function
+    at formatDescription (main.js:LINE:COLUMN)
+    at buildItemSummary (main.js:LINE:COLUMN)
+    at printItem (main.js:LINE:COLUMN)
+    at main.js:LINE:COLUMN
+```
+
+## Read the stack from the failure backward
+
+Each frame represents a function that was active when the error happened.
+
+In plain language, this trace says:
+
+1. the report loop called `printItem()`,
+2. `printItem()` called `buildItemSummary()`,
+3. `buildItemSummary()` called `formatDescription()`,
+4. and `formatDescription()` failed when it tried to call `trim()`.
+
+The code inside `formatDescription()` is not actually the problem:
+
+```js
+function formatDescription(description) {
+  return description.trim();
+}
+```
+
+That function works perfectly when `description` is a string.
+
+So the useful next question is:
+
+> **What value did the caller give it?**
+
+Look one frame lower in the stack. `buildItemSummary()` called it like this:
+
+```js
+formatDescription(item)
+```
+
+`item` is an entire object. Objects do not have a `trim()` string method.
+
+The error was **noticed** inside `formatDescription()`, but the wrong value was **supplied** by `buildItemSummary()`.
+
+<Callout type="tip" title="The first frame is a starting point, not always the fix">
+  <p className="m-0">
+    Start where the stack says JavaScript failed. If the code on that line looks correct for the value it expects, move down the stack and inspect the call that supplied that value.
+  </p>
+</Callout>
+
+<HandbookChallenge
+  title="Trace the wrong value back to its caller"
+  hints={[
+    <>Do not rewrite <code>formatDescription()</code>. Its job is still to trim a description string.</>,
+    <>The next stack frame is <code>buildItemSummary()</code>. Inspect the argument it passes into <code>formatDescription()</code>.</>,
+    <>Pass <code>item.description</code>, not the entire <code>item</code> object.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+Number of Items: 2
+---
+For Sale:
+Holy Umbrella - $22.23
+An umbrella with holes in it.
+Definitely Normal Mirror - $48.99
+Your reflection blinks slightly late.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function buildItemSummary(item) {
+  const price = formatPrice(item.priceInPennies);
+  const description = formatDescription(item.description);
+
+  return \`\${item.name} - \${price}
+\${description}\`;
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Run the program and use the stack trace to follow the call chain from <code>formatDescription()</code> back to <code>buildItemSummary()</code>. Fix the argument that introduced the wrong value. Leave <code>formatDescription()</code> unchanged.
+  </p>
+</HandbookChallenge>
+
+You can now read a stack trace as more than a location:
+
+> **Where did JavaScript fail, and what chain of function calls brought execution there?**
+
+The final skill in this chapter is different. Instead of asking where the error happened, you will ask **what conditions make it happen reliably**.
