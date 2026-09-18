@@ -16,7 +16,7 @@ But JavaScript usually gives you more information underneath it.
 
 That extra information is the **stack trace**.
 
-For this page, keep your existing inventory and `formatPrice()` function. Replace the inventory loop at the bottom of `main.js` with this version:
+For this page, keep your existing inventory and `formatPrice()` function. Replace the entire `For Sale` section at the bottom of `main.js` with this version:
 
 ```js
 function printItem(item) {
@@ -81,7 +81,9 @@ The important habit is simple:
     <>Inventory items have a <code>description</code> property, not a <code>details</code> property.</>,
   ]}
   expected={
-    <pre className="m-0 whitespace-pre-wrap">{`---
+    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+Number of Items: 2
+---
 For Sale:
 Holy Umbrella - $22.23
 An umbrella with holes in it.
