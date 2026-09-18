@@ -1,0 +1,105 @@
+---
+id: JS.DB.ERR.2.LOCATE
+title: Stack Traces · Find the Failure
+short: Use the first useful stack frame to jump from an error message to the function, file, line, and column where JavaScript failed.
+---
+
+# Stack Traces → Find the Failure
+
+So far, you have mostly cared about the **first line** of an error:
+
+```text
+TypeError: item.priceInPennies is not a function
+```
+
+But JavaScript usually gives you more information underneath it.
+
+That extra information is the **stack trace**.
+
+For this page, keep your existing inventory and `formatPrice()` function. Replace the inventory loop at the bottom of `main.js` with this version:
+
+```js
+function printItem(item) {
+  console.log(`${item.name} - ${formatPrice(item.priceInPennies)}`);
+  console.log(item.details.trim());
+}
+
+console.log("---");
+console.log("For Sale:");
+
+for (const item of inventory) {
+  printItem(item);
+}
+```
+
+Run it.
+
+You should get a `TypeError`. Depending on the exact line numbers in your editor, the trace will look something like:
+
+```text
+TypeError: Cannot read properties of undefined (reading 'trim')
+    at printItem (main.js:LINE:COLUMN)
+    at main.js:LINE:COLUMN
+```
+
+Your actual line and column numbers are the useful part. Do not worry if they differ from an example.
+
+## A stack frame is one stop in the call history
+
+A line such as:
+
+```text
+at printItem (main.js:24:28)
+```
+
+is a **stack frame**.
+
+It tells you:
+
+- the function that was running: `printItem`,
+- the file: `main.js`,
+- the line: `24`,
+- and the column: `28`.
+
+When you are debugging your own code, the first frame that points into your readable student file is often the fastest place to start.
+
+<Callout type="note" title="Your challenge files in DevTools">
+  <p className="m-0">
+    After you click <strong>Run</strong>, Chrome exposes your challenge code under <code>Sources → about:srcdoc → student → handbook/...</code>. Open <code>main.js</code> there if you want to inspect the exact line the stack trace points to. Ignore the <code>generated</code> folder during handbook exercises.
+  </p>
+</Callout>
+
+The important habit is simple:
+
+> **Read the location before you start scanning the file.**
+
+<HandbookChallenge
+  title="Use the stack trace to find the bad property"
+  hints={[
+    <>Start with the first stack frame that names <code>main.js</code> and one of your functions.</>,
+    <>The failing line is inside <code>printItem()</code>, on the line that calls <code>trim()</code>.</>,
+    <>Inventory items have a <code>description</code> property, not a <code>details</code> property.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`---
+For Sale:
+Holy Umbrella - $22.23
+An umbrella with holes in it.
+Definitely Normal Mirror - $48.99
+Your reflection blinks slightly late.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function printItem(item) {
+  console.log(\`\${item.name} - \${formatPrice(item.priceInPennies)}\`);
+  console.log(item.description.trim());
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Run the broken report first. Use the first useful stack frame to go directly to the failing line in <code>printItem()</code>, then fix the wrong property name and run again.
+  </p>
+</HandbookChallenge>
+
+The stack trace did more than say "something broke." It gave you a direct route to the failure.
+
+On the next page, the first frame will still show where JavaScript **noticed** the problem, but the mistake you need to fix will be one function farther up the call chain.
