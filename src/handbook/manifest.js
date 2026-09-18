@@ -12,6 +12,7 @@ export const handbookChapters = {
   'JS.FN.HOF': () => import('./JS.FN.HOF.mdx'),
   'JS.AR.ACC': () => import('./JS.AR.ACC.mdx'),
   'JS.AR.MTH': () => import('./JS.AR.MTH.mdx'),
+  'JS.DB.ERR': () => import('./JS.DB.ERR.mdx'),
   'JS.SD.ELM': () => import('./JS.SD.ELM.mdx'),
   'JS.SD.EVH': () => import('./JS.SD.EVH.mdx'),
 };
@@ -27,6 +28,7 @@ export const handbookOrder = [
   'JS.PF.ITR',
   'JS.AR.ACC',
   'JS.AR.MTH',
+  'JS.DB.ERR',
   'JS.SD.ELM',
   'JS.SD.EVH',
 ];
@@ -43,6 +45,7 @@ export const handbookEntries = {
   'JS.PF.ITR': () => import('./entries/JS.PF.ITR.js').then(m => m.default),
   'JS.AR.ACC': () => import('./entries/JS.AR.ACC.js').then(m => m.default),
   'JS.AR.MTH': () => import('./entries/JS.AR.MTH.js').then(m => m.default),
+  'JS.DB.ERR': () => import('./entries/JS.DB.ERR.js').then(m => m.default),
 
   'JS.SD.ELM': () => import('./entries/JS.SD.ELM.js').then(m => m.default),
 
@@ -237,6 +240,42 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.AR.MTH.mdx'),
+  },
+
+  'JS.DB.ERR': {
+    chapters: [
+      {
+        id: 'syntax-error',
+        title: 'Error Messages · SyntaxError',
+        load: () => import('./standards/JS.DB.ERR/syntax-error.mdx'),
+      },
+      {
+        id: 'reference-error',
+        title: 'Error Messages · ReferenceError',
+        load: () => import('./standards/JS.DB.ERR/reference-error.mdx'),
+      },
+      {
+        id: 'type-error',
+        title: 'Error Messages · TypeError',
+        load: () => import('./standards/JS.DB.ERR/type-error.mdx'),
+      },
+      {
+        id: 'stack-trace-location',
+        title: 'Stack Traces · Find the Failure',
+        load: () => import('./standards/JS.DB.ERR/stack-trace-location.mdx'),
+      },
+      {
+        id: 'stack-trace-frames',
+        title: 'Stack Traces · Follow the Call Chain',
+        load: () => import('./standards/JS.DB.ERR/stack-trace-frames.mdx'),
+      },
+      {
+        id: 'reproducing-errors',
+        title: 'Reproducing Errors · Make It Happen on Purpose',
+        load: () => import('./standards/JS.DB.ERR/reproducing-errors.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.DB.ERR.mdx'),
   },
 
   'JS.SD.ELM': {
