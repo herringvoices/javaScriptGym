@@ -1,0 +1,158 @@
+---
+id: JS.DB.ERR.3.REPRODUCE
+title: Reproducing Errors · Make It Happen on Purpose
+short: Vary one input at a time, identify the cases that fail, and describe the condition that reliably reproduces the same error.
+---
+
+# Reproducing Errors → Make It Happen on Purpose
+
+Weird Mike has one final bug report for you:
+
+> "The inventory report breaks sometimes."
+
+That is a symptom, but it is not yet a useful description of the bug.
+
+A bug becomes much easier to investigate when you can **reproduce** it: make the same failure happen reliably under known conditions.
+
+For this page, replace your inventory with this larger batch:
+
+```js
+const inventory = [
+  {
+    id: 1,
+    name: "Holy Umbrella",
+    description: "An umbrella with holes in it.",
+    clearance: true,
+    priceInPennies: 2223,
+  },
+  {
+    id: 2,
+    name: "Definitely Normal Mirror",
+    description: "Your reflection blinks slightly late.",
+    clearance: false,
+    priceInPennies: 4899,
+  },
+  {
+    id: 3,
+    name: "Vintage Invisible Chair",
+    description: null,
+    clearance: true,
+    priceInPennies: 1750,
+  },
+  {
+    id: 4,
+    name: "Sword of Mild Inconvenience",
+    description: "Makes nearby doors slightly harder to open.",
+    clearance: false,
+    priceInPennies: 3200,
+  },
+  {
+    id: 5,
+    name: "Second Invisible Chair",
+    description: null,
+    clearance: true,
+    priceInPennies: 1299,
+  },
+];
+```
+
+Keep your corrected `formatPrice()`, `formatDescription()`, `buildItemSummary()`, and `printItem()` functions from the last page.
+
+Then temporarily replace the final inventory loop with this:
+
+```js
+const itemToPrint = inventory[0];
+
+printItem(itemToPrint);
+```
+
+Run it. Then change only the index:
+
+```js
+inventory[0]
+inventory[1]
+inventory[2]
+inventory[3]
+inventory[4]
+```
+
+Run after each change.
+
+## An example is not yet a condition
+
+You should discover a pattern like this:
+
+| Inventory index | Result |
+| ---: | --- |
+| `0` | works |
+| `1` | works |
+| `2` | throws a `TypeError` |
+| `3` | works |
+| `4` | throws the same `TypeError` |
+
+Saying **"item 3 breaks"** identifies one example.
+
+A stronger debugging statement explains what the failing examples have in common.
+
+Compare the two records that fail with the three that work.
+
+<Callout type="tip" title="Change one thing at a time">
+  <p className="m-0">
+    Reproduction is an experiment. Keeping the program the same while changing only the selected inventory record makes it much easier to connect the failure to the data.
+  </p>
+</Callout>
+
+<HandbookChallenge
+  title="Turn 'sometimes' into a reproducible condition"
+  hints={[
+    <>Test all five indexes before changing the inventory data.</>,
+    <>Compare the <code>description</code> values on the two records that fail.</>,
+    <>Both failures occur when <code>item.description</code> is <code>null</code>, so <code>formatDescription()</code> eventually tries to call <code>trim()</code> on <code>null</code>.</>,
+  ]}
+  expected={
+    <div className="space-y-2">
+      <p className="m-0">Your code includes a comment that describes the triggering condition, and all five inventory records can be printed without an error.</p>
+      <pre className="m-0 whitespace-pre-wrap">{`// Reproduces when: item.description is null`}</pre>
+    </div>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`// Reproduces when: item.description is null
+
+inventory[2].description = "The chair is invisible. The price tag is not.";
+inventory[4].description = "Another invisible chair. Mike swears this one is different.";
+
+for (const item of inventory) {
+  printItem(item);
+}`}</pre>
+  }
+>
+  <div className="space-y-2">
+    <p className="m-0">
+      Test each inventory index and identify the records that produce the same error. Before fixing them, add a comment to your code that states the condition that reliably reproduces the failure.
+    </p>
+    <p className="m-0">
+      Then replace the two <code>null</code> descriptions with strings and restore a <code>for...of</code> loop that sends every inventory item through <code>printItem()</code>. Run the full report to verify the same error no longer occurs.
+    </p>
+  </div>
+</HandbookChallenge>
+
+That investigation moved through three increasingly useful statements:
+
+- **"The program breaks sometimes."** Too vague.
+- **"Inventory indexes 2 and 4 break."** Reproducible examples.
+- **"The program breaks when an item's `description` is `null`."** A reproducible condition.
+
+That last statement predicts what will happen to a **new** record with the same kind of data.
+
+And that is the point of reproduction: turn a mysterious failure into something specific enough to test.
+
+---
+
+You now have a first debugging workflow:
+
+1. Read the error type.
+2. Use the stack trace to locate where the failure appeared.
+3. Follow stack frames when you need to understand how execution got there.
+4. Reproduce the failure and describe the condition that triggers it.
+
+In the next debugging standard, you will investigate programs that do not necessarily throw an error at all. You will trace values while the program runs.
