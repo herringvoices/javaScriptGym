@@ -1,0 +1,83 @@
+---
+id: JS.DB.ERR
+title: Debugging · Finding What Went Wrong
+short: Treat bugs as evidence: run the program, compare what happened with what should happen, and investigate before guessing.
+---
+
+# Debugging → Finding What Went Wrong
+
+Sooner or later, every program does something you did not mean for it to do.
+
+Sometimes JavaScript stops and prints a bright red error. Sometimes nothing crashes at all, but the result is still wrong. A label is swapped. A total is off. One item disappears from a list. The computer has followed your instructions perfectly; unfortunately, those instructions were not quite the ones you intended.
+
+That is a **bug**.
+
+**Debugging** is the process of figuring out why the program's actual behavior does not match the behavior you expected, then making the smallest change that corrects it.
+
+A useful debugging rhythm is:
+
+1. **Run** the program.
+2. **Observe** what actually happens.
+3. **Compare** that with what should happen.
+4. **Investigate** the difference.
+5. **Change** the code.
+6. **Run again** to see whether your change actually fixed the problem.
+
+That order matters. Guessing at code before you understand the symptom can turn one bug into three, which is a fun way to spend an afternoon if your afternoon was going suspiciously well.
+
+## Bugs do not always come with error messages
+
+The little program in your editor runs successfully:
+
+```js
+const firstName = "Mina";
+const lastName = "Lopez";
+
+console.log(`First name: ${lastName}`);
+console.log(`Last name: ${firstName}`);
+```
+
+JavaScript has no complaint about that code. It is valid JavaScript.
+
+The problem is the output:
+
+```text
+First name: Lopez
+Last name: Mina
+```
+
+The values are simply in the wrong places.
+
+That is still a bug. The program's **actual result** does not match its **expected result**.
+
+<HandbookChallenge
+  title="Put the names beside the right labels"
+  hints={[
+    <>The variables already hold the correct values. The problem is where those values are used.</>,
+    <>Compare each label in the template literal with the variable inside its interpolation slot.</>,
+    <>The first line should use <code>firstName</code>; the second should use <code>lastName</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`First name: Mina
+Last name: Lopez`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const firstName = "Mina";
+const lastName = "Lopez";
+
+console.log(\`First name: \${firstName}\`);
+console.log(\`Last name: \${lastName}\`);`}</pre>
+  }
+>
+  <p className="m-0">
+    Run the program once before changing anything. Compare the output with what the labels are supposed to mean, then correct the two logs and run it again.
+  </p>
+</HandbookChallenge>
+
+---
+
+In the next pages, JavaScript <em>will</em> start complaining.
+
+You will learn to treat those error messages the same way: not as a wall of red text to make disappear as quickly as possible, but as **evidence** about what happened.
+
+You are also leaving this tiny example behind. The Error Messages & Stack Traces project starts fresh in the next page at **Weird Mike's Pawn Shop**.
