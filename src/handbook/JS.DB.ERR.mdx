@@ -1,83 +1,124 @@
 ---
 id: JS.DB.ERR
 title: Debugging · Finding What Went Wrong
-short: Treat bugs as evidence: run the program, compare what happened with what should happen, and investigate before guessing.
+short: Treat bugs as evidence: run the program, observe what happens, investigate one problem, and run again.
 ---
 
 # Debugging → Finding What Went Wrong
 
-Sooner or later, every program does something you did not mean for it to do.
+Before we talk about debugging, let's break something.
 
-Sometimes JavaScript stops and prints a bright red error. Sometimes nothing crashes at all, but the result is still wrong. A label is swapped. A total is off. One item disappears from a list. The computer has followed your instructions perfectly; unfortunately, those instructions were not quite the ones you intended.
+Actually, somebody already took care of that for us.
 
-That is a **bug**.
+Welcome to **Weird Mike's Pawn Shop**.
 
-**Debugging** is the process of figuring out why the program's actual behavior does not match the behavior you expected, then making the smallest change that corrects it.
+Nobody is completely sure whether "Weird Mike" describes Mike or the pawn shop. Either way, the inventory is unusual and the software needs work.
 
-A useful debugging rhythm is:
+Mike had his nephew, Mook, put together a program for the shop.
 
-1. **Run** the program.
-2. **Observe** what actually happens.
-3. **Compare** that with what should happen.
-4. **Investigate** the difference.
-5. **Change** the code.
-6. **Run again** to see whether your change actually fixed the problem.
+It does not work.
 
-That order matters. Guessing at code before you understand the symptom can turn one bug into three, which is a fun way to spend an afternoon if your afternoon was going suspiciously well.
-
-## Bugs do not always come with error messages
-
-The little program in your editor runs successfully:
+This is the `main.js` already waiting in your editor:
 
 ```js
-const firstName = "Mina";
-const lastName = "Lopez";
+const inventory = [
+  {
+    id: 1,
+    name: "Holy Umbrella",
+    description: "An umbrella with holes in it.",
+    clearance: true
+    priceInPennies: 2223,
+  },
+  {
+    id: 2,
+    name: "Definitely Normal Mirror",
+    description: "Your reflection blinks slightly late.",
+    clearance: false,
+    priceInPennies: 4899,
+  },
+  {
+    id: 3,
+    name: "Possibly Haunted Toaster",
+    description: "Burns an image of someone you miss into every slice.",
+    clearance: true,
+    priceInPennies: 1599,
+  },
+  {
+    id: 4,
+    name: 8,
+    description: "A Magic 8 Ball with suspiciously specific answers.",
+    clearance: false,
+    priceInPennies: 1199,
+  },
+];
 
-console.log(`First name: ${lastName}`);
-console.log(`Last name: ${firstName}`);
+const shopManager = "Mike";
+
+function printDescription(item) {
+  console.log(item.descripton.toUpperCase());
+}
+
+function formatItemName(item) {
+  return item.name.toUpperCase();
+}
+
+function formatPrice(item) {
+  return `$${(item.priceInPennies / 100).toFixed(2)}`;
+}
+
+function printItem(item) {
+  console.log(`${formatItemName(item)} - ${formatPrice(item)}`);
+}
+
+function printFeaturedItem(item) {
+  console.log("FEATURED ITEM");
+  printItem(item);
+}
+
+console.log("WEIRD MIKE'S PAWN SHOP");
+console.log(`Manager: ${managerName}`);
+console.log(`Number of Items: ${inventory.length()}`);
+
+printDescription(inventory[0]);
+printFeaturedItem(inventory);
+
+const requestedItemId = 4;
+const requestedItem = inventory.find((item) => item.id === requestedItemId);
+printItem(requestedItem);
 ```
 
-JavaScript has no complaint about that code. It is valid JavaScript.
+**Do not fix it yet. Run it first.**
 
-The problem is the output:
+The program fails.
 
-```text
-First name: Lopez
-Last name: Mina
-```
+That is where debugging begins.
 
-The values are simply in the wrong places.
+**Debugging** is the process of figuring out why a program is not behaving the way you expect and making a change that fixes the problem.
 
-That is still a bug. The program's **actual result** does not match its **expected result**.
+Sometimes a bug makes JavaScript stop with an error. Sometimes the program keeps running but produces the wrong result. Either way, the useful first move is the same: **observe what actually happened before you start changing code**.
 
-<HandbookChallenge
-  title="Put the names beside the right labels"
-  hints={[
-    <>The variables already hold the correct values. The problem is where those values are used.</>,
-    <>Compare each label in the template literal with the variable inside its interpolation slot.</>,
-    <>The first line should use <code>firstName</code>; the second should use <code>lastName</code>.</>,
-  ]}
-  expected={
-    <pre className="m-0 whitespace-pre-wrap">{`First name: Mina
-Last name: Lopez`}</pre>
-  }
-  solution={
-    <pre className="m-0 whitespace-pre-wrap">{`const firstName = "Mina";
-const lastName = "Lopez";
+For Weird Mike's program, we are going to use this rhythm:
 
-console.log(\`First name: \${firstName}\`);
-console.log(\`Last name: \${lastName}\`);`}</pre>
-  }
->
+1. **Run** the program.
+2. **Read** what JavaScript reports.
+3. **Investigate** that one problem.
+4. **Change** the code.
+5. **Run again**.
+
+<Callout type="important" title="One file. One problem at a time.">
   <p className="m-0">
-    Run the program once before changing anything. Compare the output with what the labels are supposed to mean, then correct the two logs and run it again.
+    Mook left several mistakes in this program, and they are all here from the beginning. Do not clean up everything you notice. Fix the problem JavaScript is reporting right now, then run again.
   </p>
-</HandbookChallenge>
+</Callout>
 
----
+That last step matters.
 
-In the next pages, JavaScript <em>will</em> start complaining.
+When you fix one problem, JavaScript may immediately show you another one.
 
-You will learn to treat those error messages the same way: not as a wall of red text to make disappear as quickly as possible, but as **evidence** about what happened.
+That does not mean your first fix failed.
 
-You are also leaving this tiny example behind. The Error Messages & Stack Traces project starts fresh in the next page at **Weird Mike's Pawn Shop**.
+> **A new error can be progress.**
+
+You will keep this same `main.js` through the entire Error Messages & Stack Traces project. Each successful fix lets JavaScript get a little farther into Mook's program.
+
+On the next page, we start with the error that prevents it from beginning at all.
