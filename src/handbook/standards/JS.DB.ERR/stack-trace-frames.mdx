@@ -6,126 +6,95 @@ short: Read multiple stack frames to see which functions called one another and 
 
 # Stack Traces → Follow the Call Chain
 
-The first stack frame helped you find the exact line where JavaScript failed.
+The first stack frame helped you fix `printDescription()`.
 
-But the line where an error **appears** is not always the line that introduced the bad value.
+Run the program again.
 
-We can make that distinction visible by giving Weird Mike's report a few small helper functions.
-
-Keep your inventory and `formatPrice()`. Replace your current `printItem()` and report loop with this code:
-
-```js
-function formatDescription(description) {
-  return description.trim();
-}
-
-function buildItemSummary(item) {
-  const price = formatPrice(item.priceInPennies);
-  const description = formatDescription(item);
-
-  return `${item.name} - ${price}
-${description}`;
-}
-
-function printItem(item) {
-  console.log(buildItemSummary(item));
-}
-
-console.log("---");
-console.log("For Sale:");
-
-for (const item of inventory) {
-  printItem(item);
-}
-```
-
-Run it.
-
-The error should point first to `formatDescription()`:
+You should now make it through the description and see:
 
 ```text
-TypeError: description.trim is not a function
-    at formatDescription (main.js:LINE:COLUMN)
-    at buildItemSummary (main.js:LINE:COLUMN)
-    at printItem (main.js:LINE:COLUMN)
-    at main.js:LINE:COLUMN
+FEATURED ITEM
 ```
 
-## Read the stack from the failure backward
+Then JavaScript stops inside `formatItemName()`.
 
-Each frame represents a function that was active when the error happened.
+Your trace should include a chain like:
 
-In plain language, this trace says:
+```text
+at formatItemName (main.js:LINE:COLUMN)
+at printItem (main.js:LINE:COLUMN)
+at printFeaturedItem (main.js:LINE:COLUMN)
+at main.js:LINE:COLUMN
+```
 
-1. the report loop called `printItem()`,
-2. `printItem()` called `buildItemSummary()`,
-3. `buildItemSummary()` called `formatDescription()`,
-4. and `formatDescription()` failed when it tried to call `trim()`.
+The first frame shows where JavaScript **noticed** the problem.
 
-The code inside `formatDescription()` is not actually the problem:
+But look at the function itself:
 
 ```js
-function formatDescription(description) {
-  return description.trim();
+function formatItemName(item) {
+  return item.name.toUpperCase();
 }
 ```
 
-That function works perfectly when `description` is a string.
+That code makes sense if `item` is one inventory object with a string `name`.
 
-So the useful next question is:
+So the next question is not "How should I rewrite `formatItemName()`?"
+
+It is:
 
 > **What value did the caller give it?**
 
-Look one frame lower in the stack. `buildItemSummary()` called it like this:
+## Read the stack from the failure backward
 
-```js
-formatDescription(item)
-```
+Each frame is one active function call.
 
-`item` is an entire object. Objects do not have a `trim()` string method.
+This stack tells you:
 
-The error was **noticed** inside `formatDescription()`, but the wrong value was **supplied** by `buildItemSummary()`.
+1. `formatItemName()` failed,
+2. because `printItem()` called it,
+3. `printItem()` was called by `printFeaturedItem()`,
+4. and `printFeaturedItem()` was called from the main body of the program.
+
+If the code in the first frame looks correct for the value it expects, move down the stack one frame at a time and inspect the values being passed between functions.
 
 <Callout type="tip" title="The first frame is a starting point, not always the fix">
   <p className="m-0">
-    Start where the stack says JavaScript failed. If the code on that line looks correct for the value it expects, move down the stack and inspect the call that supplied that value.
+    The crash location tells you where the bad value became a problem. The rest of the stack can tell you where that bad value came from.
   </p>
 </Callout>
 
 <HandbookChallenge
-  title="Trace the wrong value back to its caller"
+  title="Trace the bad argument"
   hints={[
-    <>Do not rewrite <code>formatDescription()</code>. Its job is still to trim a description string.</>,
-    <>The next stack frame is <code>buildItemSummary()</code>. Inspect the argument it passes into <code>formatDescription()</code>.</>,
-    <>Pass <code>item.description</code>, not the entire <code>item</code> object.</>,
+    <>If <code>formatItemName()</code> expects one item, ask what <code>printItem()</code> gave it.</>,
+    <>Move down the stack until you reach <code>printFeaturedItem()</code>, then inspect what was passed into that function.</>,
+    <>The call at the bottom of the file passes an array where the parameter represents one item.</>,
   ]}
   expected={
-    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
-Number of Items: 2
----
-For Sale:
-Holy Umbrella - $22.23
-An umbrella with holes in it.
-Definitely Normal Mirror - $48.99
-Your reflection blinks slightly late.`}</pre>
+    <div className="space-y-2">
+      <pre className="m-0 whitespace-pre-wrap">{`FEATURED ITEM
+DEFINITELY NORMAL MIRROR - $48.99`}</pre>
+      <p className="m-0">The featured item prints successfully, and JavaScript then reaches one final <code>TypeError</code> while printing the requested item.</p>
+    </div>
   }
   solution={
-    <pre className="m-0 whitespace-pre-wrap">{`function buildItemSummary(item) {
-  const price = formatPrice(item.priceInPennies);
-  const description = formatDescription(item.description);
-
-  return \`\${item.name} - \${price}
-\${description}\`;
-}`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{'printFeaturedItem(inventory[1]);'}</pre>
   }
 >
   <p className="m-0">
-    Run the program and use the stack trace to follow the call chain from <code>formatDescription()</code> back to <code>buildItemSummary()</code>. Fix the argument that introduced the wrong value. Leave <code>formatDescription()</code> unchanged.
+    Follow the stack from <code>formatItemName()</code> back through its callers until you find the call that introduced the wrong value.
+  </p>
+  <p className="m-0">
+    Fix that call so <code>printFeaturedItem()</code> receives the <strong>Definitely Normal Mirror</strong> object instead of the entire inventory array. Leave the helper functions unchanged.
   </p>
 </HandbookChallenge>
 
-You can now read a stack trace as more than a location:
+Now you have used a stack trace in two different ways:
 
-> **Where did JavaScript fail, and what chain of function calls brought execution there?**
+- the first useful frame took you directly to a typo,
+- the full call chain helped you trace a bad value back to an earlier call.
 
-The final skill in this chapter is different. Instead of asking where the error happened, you will ask **what conditions make it happen reliably**.
+There is one error left in Mook's program.
+
+For the last one, we are going to stop fixing immediately and learn how to make a bug happen on purpose.
