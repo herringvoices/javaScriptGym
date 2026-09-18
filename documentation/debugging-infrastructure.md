@@ -11,7 +11,7 @@ Run `npm ci`, `npx playwright install chromium`, and `npm run dev`. Open `/tools
 3. Expand **Stack trace**, then click the main.js caller. Expect line 3, column 15.
 4. Edit a file. Expect a “Code changed since this run” notice and disabled old location links. Run again to refresh them.
 5. Click Run again without editing. Expect the program to execute again and a fresh console.
-6. In desktop Chrome, open DevTools → Sources. Enable JavaScript source maps (the default), use Ctrl+P to find helpers.js, and select the authored source under `jsgym://`. The namespace identifies the handbook/project/challenge; `jsgym-runtime://` contains generated execution sources and `jsgym-internal://` contains helpers.
+6. In desktop Chrome, open DevTools → Sources. Enable JavaScript source maps (the default), use Ctrl+P to find helpers.js, and select the authored source under `student`. The readable folders below it identify the handbook/project/challenge. Ignore `generated`, which contains rewritten execution sources, and `jsgym-internal`, which contains runner helpers.
 7. Place a breakpoint on helpers.js line 2, then Run again. Inspect `value`, step over, inspect `doubled`, and resume. A second unchanged Run should hit the same breakpoint. Remove the throw to let the program finish.
 8. Repeat a location click with the editor hidden or with the mobile Editor section collapsed. It should reopen. Check `/challenge/JS.AS.FET-004` with a completed fetch implementation to confirm mock data and preview behavior.
 
@@ -19,7 +19,7 @@ Chrome's [source-map documentation](https://developer.chrome.com/docs/devtools/j
 
 ## Execution and source mapping
 
-`buildSrcDoc` still builds a sandboxed iframe document. Student scripts load as external data URL resources, with stable workspace-specific `sourceURL` names and inline source maps containing the original student text. The same loader handles JS entry files, HTML script references, and dependencies. Untyped HTML scripts now follow normal browser classic-script semantics; use `type="module"` for imports and exports.
+`buildSrcDoc` still builds a sandboxed iframe document. Student scripts load as external data URL resources, with stable workspace-specific `sourceURL` names and inline source maps containing the original student text. DevTools groups authored files below `student/<kind>/<standard>/<workspace>` and rewritten execution files below `generated/<kind>/<standard>/<workspace>`. The same loader handles JS entry files, HTML script references, and dependencies. Untyped HTML scripts now follow normal browser classic-script semantics; use `type="module"` for imports and exports.
 
 Acorn identifies static imports, re-exports, and dynamic import expressions. Relative and root virtual paths resolve through one import map; extensionless `.js` references are supported. Filename-only aliases across unrelated folders are not created. Computed imports resolve relative to their containing virtual file. MagicString maps rewritten import columns back to the original text. Parse5 provides exact HTML script ranges; extracted inline scripts map back to their original HTML lines and columns.
 

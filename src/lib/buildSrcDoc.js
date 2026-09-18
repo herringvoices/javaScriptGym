@@ -43,8 +43,8 @@ const escapeAttribute = value => value.replace(/&/g, '&amp;').replace(/"/g, '&qu
 /** Each run has a fresh document but stable source identities within its workspace. */
 export function buildSrcDoc({ files, entry, workspaceId = 'workspace', runId = 'standalone' }) {
   entry = normalizePath(entry);
-  const namespace = encodeURIComponent(workspaceId);
-  const prefix = `jsgym-module://${namespace}`;
+  const namespace = String(workspaceId || 'workspace').split(':').filter(Boolean).map(encodeURIComponent).join('/');
+  const prefix = `jsgym-module://modules/${namespace}`;
   const paths = Object.keys(files).filter(path => /\.(m?js)$/i.test(path) && !path.startsWith('/__'));
   const sources = {};
   const aliases = {};
@@ -81,8 +81,8 @@ export function buildSrcDoc({ files, entry, workspaceId = 'workspace', runId = '
       });
     }
     const encodedPath = identity.split('/').map(encodeURIComponent).join('/');
-    const url = `jsgym-runtime://${namespace}${encodedPath}${module ? '' : '?classic'}`;
-    const source = `jsgym://${namespace}${file.split('/').map(encodeURIComponent).join('/')}`;
+    const url = `jsgym-runtime://generated/${namespace}${encodedPath}${module ? '' : '?classic'}`;
+    const source = `jsgym://student/${namespace}${file.split('/').map(encodeURIComponent).join('/')}`;
     const map = transformed.generateMap({ source, includeContent: true, hires: true });
     const decoded = transformed.generateDecodedMap({ source, hires: true });
     const compiled = `${transformed.toString()}\n//# sourceURL=${url}\n//# sourceMappingURL=${map.toUrl()}`;

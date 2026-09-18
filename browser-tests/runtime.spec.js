@@ -11,8 +11,8 @@ async function setup(page) {
     window.addEventListener('message', e => { if (e.data?.source === 'sandbox-console') window.messages.push(e.data); });
   });
 }
-async function run(page, files, entry = '/main.js', runId = 'fixture') {
-  const doc = buildSrcDoc({ files: fileMap(files), entry, workspaceId: 'fixture', runId });
+async function run(page, files, entry = '/main.js', runId = 'fixture', workspaceId = 'fixture') {
+  const doc = buildSrcDoc({ files: fileMap(files), entry, workspaceId, runId });
   await page.evaluate(doc => { window.messages = []; document.querySelector('iframe').srcdoc = doc; }, doc);
 }
 async function error(page) {
@@ -134,10 +134,11 @@ test('Chrome breakpoints survive rerun, inspect locals, step into/over/out and r
   cdp.on('Debugger.scriptParsed', event => { if (event.url.startsWith('jsgym-runtime:')) parsed.push(event); });
   const nextPause = () => new Promise(resolve => cdp.once('Debugger.paused', resolve));
   const code = 'function double(value) {\n  const result = value * 2;\n  return result;\n}\nconst start = 21;\nconst answer = double(start);\nconsole.log(answer);';
-  await cdp.send('Debugger.setBreakpointByUrl', { url: 'jsgym-runtime://fixture/main.js', lineNumber: 5 });
+  const workspaceId = 'handbook:developer:debugging-acceptance';
+  await cdp.send('Debugger.setBreakpointByUrl', { url: 'jsgym-runtime://generated/handbook/developer/debugging-acceptance/main.js', lineNumber: 5 });
   for (const runId of ['first', 'second']) {
     const pause = nextPause();
-    await run(page, { '/main.js': code }, '/main.js', runId);
+    await run(page, { '/main.js': code }, '/main.js', runId, workspaceId);
     const paused = await pause;
     expect(paused.callFrames[0].location.lineNumber).toBe(5);
     expect((await cdp.send('Debugger.evaluateOnCallFrame', { callFrameId: paused.callFrames[0].callFrameId, expression: 'start' })).result.value).toBe(21);
@@ -157,6 +158,6 @@ test('Chrome breakpoints survive rerun, inspect locals, step into/over/out and r
   }
   expect(parsed).toHaveLength(2);
   const map = JSON.parse(Buffer.from(parsed[0].sourceMapURL.split(',')[1], 'base64').toString());
-  expect(map.sources).toEqual(['jsgym://fixture/main.js']);
+  expect(map.sources).toEqual(['jsgym://student/handbook/developer/debugging-acceptance/main.js']);
   expect(map.sourcesContent).toEqual([code]);
 });

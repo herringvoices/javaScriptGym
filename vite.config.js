@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
 import rehypeSlug from "rehype-slug";
 import rehypePrettyCode from "rehype-pretty-code";
+import remarkMdxParagraphs from "./src/lib/remarkMdxParagraphs.js";
 const prettyCodeOptions = {
   theme: "dracula",
   keepBackground: false,
@@ -21,7 +22,7 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     mdx({
-      remarkPlugins: [remarkGfm, remarkFrontmatter],
+      remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxParagraphs],
       rehypePlugins: [rehypeSlug, [rehypePrettyCode, prettyCodeOptions]],
       providerImportSource: "@mdx-js/react",
     }),
