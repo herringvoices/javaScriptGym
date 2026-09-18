@@ -6,66 +6,41 @@ short: Use the first useful stack frame to jump from an error message to the fun
 
 # Stack Traces → Find the Failure
 
-So far, you have mostly cared about the **first line** of an error:
+After fixing `inventory.length`, the program prints three lines successfully.
+
+Then another `TypeError` appears.
+
+This one points into a function:
 
 ```text
-TypeError: item.priceInPennies is not a function
-```
-
-But JavaScript usually gives you more information underneath it.
-
-That extra information is the **stack trace**.
-
-For this page, keep your existing inventory and `formatPrice()` function. Replace the entire `For Sale` section at the bottom of `main.js` with this version:
-
-```js
-function printItem(item) {
-  console.log(`${item.name} - ${formatPrice(item.priceInPennies)}`);
-  console.log(item.details.trim());
-}
-
-console.log("---");
-console.log("For Sale:");
-
-for (const item of inventory) {
-  printItem(item);
-}
-```
-
-Run it.
-
-You should get a `TypeError`. Depending on the exact line numbers in your editor, the trace will look something like:
-
-```text
-TypeError: Cannot read properties of undefined (reading 'trim')
-    at printItem (main.js:LINE:COLUMN)
+TypeError: Cannot read properties of undefined (reading 'toUpperCase')
+    at printDescription (main.js:LINE:COLUMN)
     at main.js:LINE:COLUMN
 ```
 
-Your actual line and column numbers are the useful part. Do not worry if they differ from an example.
+Your exact line and column numbers may differ. That is fine. Those numbers are there to help you find the code that failed.
 
-## A stack frame is one stop in the call history
+The lines underneath the error message are the **stack trace**.
 
 A line such as:
 
 ```text
-at printItem (main.js:24:28)
+at printDescription (main.js:LINE:COLUMN)
 ```
 
 is a **stack frame**.
 
 It tells you:
 
-- the function that was running: `printItem`,
-- the file: `main.js`,
-- the line: `24`,
-- and the column: `28`.
+- which function was running,
+- which file contains the code,
+- and the line and column where JavaScript failed.
 
-When you are debugging your own code, the first frame that points into your readable student file is often the fastest place to start.
+When you are debugging your own code, the first frame that points into your readable student file is usually the best place to start.
 
-<Callout type="note" title="Your challenge files in DevTools">
+<Callout type="note" title="The locations are clickable">
   <p className="m-0">
-    After you click <strong>Run</strong>, Chrome exposes your challenge code under <code>Sources → about:srcdoc → student → handbook/...</code>. Open <code>main.js</code> there if you want to inspect the exact line the stack trace points to. Ignore the <code>generated</code> folder during handbook exercises.
+    The console can take you straight back to the matching line in your editor. In desktop Chrome DevTools, the same authored files appear under <code>student</code> in <strong>Sources</strong>; the <code>generated</code> and <code>jsgym-internal</code> sources are runner machinery, not the code you wrote.
   </p>
 </Callout>
 
@@ -73,35 +48,52 @@ The important habit is simple:
 
 > **Read the location before you start scanning the file.**
 
+The first useful frame sends you here:
+
+```js
+function printDescription(item) {
+  console.log(item.descripton.toUpperCase());
+}
+```
+
+The error says JavaScript tried to use `toUpperCase` on `undefined`.
+
+That gives you two pieces of evidence:
+
+1. the stack trace tells you **where** the failure happened,
+2. the error tells you **what kind of value caused it**.
+
 <HandbookChallenge
-  title="Use the stack trace to find the bad property"
+  title="Find the bad property"
   hints={[
-    <>Start with the first stack frame that names <code>main.js</code> and one of your functions.</>,
-    <>The failing line is inside <code>printItem()</code>, on the line that calls <code>trim()</code>.</>,
-    <>Inventory items have a <code>description</code> property, not a <code>details</code> property.</>,
+    <>Start with the first stack frame that points into <code>main.js</code>.</>,
+    <>On the failing line, look at the value immediately before <code>.toUpperCase()</code>.</>,
+    <>Compare that property name with the property on each inventory object.</>,
   ]}
   expected={
-    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
-Number of Items: 2
----
-For Sale:
-Holy Umbrella - $22.23
-An umbrella with holes in it.
-Definitely Normal Mirror - $48.99
-Your reflection blinks slightly late.`}</pre>
+    <div className="space-y-2">
+      <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+Manager: Mike
+Number of Items: 4
+AN UMBRELLA WITH HOLES IN IT.
+FEATURED ITEM`}</pre>
+      <p className="m-0">JavaScript then stops with another <code>TypeError</code> inside <code>formatItemName()</code>.</p>
+    </div>
   }
   solution={
-    <pre className="m-0 whitespace-pre-wrap">{`function printItem(item) {
-  console.log(\`\${item.name} - \${formatPrice(item.priceInPennies)}\`);
-  console.log(item.description.trim());
-}`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{'console.log(item.description.toUpperCase());'}</pre>
   }
 >
   <p className="m-0">
-    Run the broken report first. Use the first useful stack frame to go directly to the failing line in <code>printItem()</code>, then fix the wrong property name and run again.
+    Use the first useful stack frame to go directly to the failing line in <code>printDescription()</code>.
+  </p>
+  <p className="m-0">
+    Determine why the value before <code>.toUpperCase()</code> is <code>undefined</code>, fix that property access, and run again.
   </p>
 </HandbookChallenge>
 
-The stack trace did more than say "something broke." It gave you a direct route to the failure.
+The stack trace did more than say "something broke."
 
-On the next page, the first frame will still show where JavaScript **noticed** the problem, but the mistake you need to fix will be one function farther up the call chain.
+It gave you a direct route to the failure.
+
+On the next run, the first frame still tells you where JavaScript notices the problem. But this time, the mistake you need to fix is somewhere else in the call chain.
