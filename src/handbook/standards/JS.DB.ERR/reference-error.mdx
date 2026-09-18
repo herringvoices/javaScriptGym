@@ -6,70 +6,63 @@ short: Recognize a ReferenceError as valid JavaScript that refers to a name Java
 
 # Error Messages → `ReferenceError`
 
-Your syntax is fixed, and Weird Mike's shop heading prints correctly.
+Run the program again after fixing the missing comma.
 
-Now the report needs to list the inventory.
-
-Add this section underneath the two heading logs in your existing `main.js`:
-
-```js
-console.log("---");
-console.log("For Sale:");
-
-for (const item of inventory) {
-  console.log(`\${item.name} - ${priceInPennies}`);
-  console.log(item.description);
-}
-```
-
-Then run the program.
-
-This time JavaScript understands the file perfectly well. It creates the inventory, prints the heading, begins the `for...of` loop, and only then stops with an error similar to:
+Good news: JavaScript made it far enough to print:
 
 ```text
-ReferenceError: priceInPennies is not defined
+WEIRD MIKE'S PAWN SHOP
 ```
 
-That difference matters.
+Then it stopped with an error like:
 
-A **`ReferenceError`** usually means JavaScript understood the instruction, but the instruction refers to a name that does not exist in the current scope.
+```text
+ReferenceError: managerName is not defined
+```
 
-You have already seen the pieces involved here:
+That is different from the `SyntaxError`.
 
-- `item` is the current inventory object from the loop.
-- each item has a `priceInPennies` property,
-- but there is no standalone variable named `priceInPennies`.
+JavaScript understood the file well enough to start running it. This time it reached a name it could not find.
 
-<Callout type="tip" title="Read the name in the message">
-  <p className="m-0">When JavaScript says <code>priceInPennies is not defined</code>, start by looking for exactly that name. Ask: where was this supposed to come from?</p>
+A **`ReferenceError`** usually means JavaScript was asked to use a variable or other name that does not exist in the current scope.
+
+When you see one, pay attention to the exact name in the message.
+
+Then ask:
+
+- Is that name spelled correctly?
+- Was it declared?
+- Is there a similarly named variable nearby?
+
+<Callout type="tip" title="Let the error name your search">
+  <p className="m-0">
+    If JavaScript says <code>managerName is not defined</code>, start by searching for <code>managerName</code>. Do not scan every function in the file. The error has already narrowed the problem down for you.
+  </p>
 </Callout>
 
 <HandbookChallenge
-  title="Read the price from the current item"
+  title="Repair the manager reference"
   hints={[
-    <>The error names <code>priceInPennies</code> because JavaScript is looking for a variable with that name.</>,
-    <>Inside the loop, <code>item</code> is the current object from <code>inventory</code>.</>,
-    <>Read the property from the object with <code>item.priceInPennies</code>.</>,
+    <>The error names the identifier JavaScript cannot find.</>,
+    <>Compare <code>managerName</code> with the manager variable declared above the functions.</>,
+    <>A manager variable already exists. You do not need to declare another one.</>,
   ]}
   expected={
-    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
-Number of Items: 2
----
-For Sale:
-Holy Umbrella - 2223
-An umbrella with holes in it.
-Definitely Normal Mirror - 4899
-Your reflection blinks slightly late.`}</pre>
+    <div className="space-y-2">
+      <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+Manager: Mike`}</pre>
+      <p className="m-0">The <code>ReferenceError</code> is gone, and JavaScript now stops with a <code>TypeError</code> saying <code>inventory.length is not a function</code>.</p>
+    </div>
   }
   solution={
-    <pre className="m-0 whitespace-pre-wrap">{`for (const item of inventory) {
-  console.log(\`${item.name} - \${item.priceInPennies}\`);
-  console.log(item.description);
-}`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`console.log(`Manager: ${shopManager}`);`}</pre>
   }
 >
   <p className="m-0">
-    Run the report and read the <code>ReferenceError</code>. Fix the unknown reference without creating a new variable: the price is already stored on the current inventory item.
+    Read the <code>ReferenceError</code>, find the variable Mook actually declared for the shop manager, and correct the bad reference in the log.
+  </p>
+  <p className="m-0">
+    Change only that reference, then run the program again.
   </p>
 </HandbookChallenge>
 
@@ -77,6 +70,6 @@ A `ReferenceError` is JavaScript saying, roughly:
 
 > **"I understand this code, but I do not know what that name refers to."**
 
-That is different from a `SyntaxError`: this program was valid enough to start running.
+The program now gets through two lines of output.
 
-Next, Weird Mike decides that displaying every price in pennies is "unprofessional," which is apparently where his standards begin.
+Then it finds a value, recognizes it perfectly well, and objects to what Mook tries to do with it.
