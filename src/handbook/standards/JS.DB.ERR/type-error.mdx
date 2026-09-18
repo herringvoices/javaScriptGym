@@ -1,0 +1,149 @@
+---
+id: JS.DB.ERR.1.TYPE
+title: Error Messages · TypeError
+short: Recognize a TypeError as JavaScript finding a value but being unable to use it the way the code asks.
+---
+
+# Error Messages → `TypeError`
+
+Weird Mike has reviewed the inventory report and discovered that customers prefer prices like `$22.23` over `2223`.
+
+Reasonable. Unexpected, but reasonable.
+
+Add this helper above your report code:
+
+```js
+function formatPrice(priceInPennies) {
+  const priceInDollars = priceInPennies / 100;
+  return `$${priceInDollars.toFixed(2)}`;
+}
+```
+
+Then change the price line inside your inventory loop to this intentionally broken version:
+
+```js
+console.log(`${item.name} - ${item.priceInPennies()}`);
+```
+
+Run the program.
+
+You should get an error similar to:
+
+```text
+TypeError: item.priceInPennies is not a function
+```
+
+JavaScript successfully found `item`.
+
+It successfully found `item.priceInPennies`.
+
+For the Holy Umbrella, that value is the number `2223`.
+
+The problem is the parentheses:
+
+```js
+item.priceInPennies()
+```
+
+Parentheses after a value mean **call this like a function**. But `2223` is a number, not a function.
+
+That is the basic idea behind a **`TypeError`**:
+
+> JavaScript found a value, but the code is trying to use that value in a way its type does not support.
+
+<HandbookChallenge
+  title="Send the price through the formatter"
+  hints={[
+    <>The error says the price itself is "not a function." Look for the place where the price is followed by <code>()</code>.</>,
+    <>The function you actually want to call is already named <code>formatPrice</code>.</>,
+    <>Pass <code>item.priceInPennies</code> as the argument to <code>formatPrice()</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+Number of Items: 2
+---
+For Sale:
+Holy Umbrella - $22.23
+An umbrella with holes in it.
+Definitely Normal Mirror - $48.99
+Your reflection blinks slightly late.`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function formatPrice(priceInPennies) {
+  const priceInDollars = priceInPennies / 100;
+  return \`$\${priceInDollars.toFixed(2)}\`;
+}
+
+for (const item of inventory) {
+  console.log(\`\${item.name} - \${formatPrice(item.priceInPennies)}\`);
+  console.log(item.description);
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Use the <code>TypeError</code> to find the value being called like a function. Fix the line so the item's numeric price is passed into <code>formatPrice()</code> instead.
+  </p>
+</HandbookChallenge>
+
+## TypeErrors come in several shapes
+
+You do not need to memorize every possible `TypeError` message. The useful habit is to ask **what value JavaScript actually has** and **what operation the code is trying to perform on it**.
+
+Here are several common forms:
+
+### Reading from `null` or `undefined`
+
+```js
+let customer = null;
+console.log(customer.name);
+// TypeError: Cannot read properties of null
+```
+
+### Calling something that is not a function
+
+```js
+const config = { start: true };
+config();
+// TypeError: config is not a function
+```
+
+### Reassigning a `const`
+
+```js
+const maxItems = 100;
+maxItems = 200;
+// TypeError: Assignment to constant variable.
+```
+
+### Setting a property on `undefined` or `null`
+
+```js
+let settings;
+settings.theme = "dark";
+// TypeError: Cannot set properties of undefined
+```
+
+### Looping over something that is not iterable
+
+```js
+const data = 12345;
+
+for (const item of data) {
+  console.log(item);
+}
+// TypeError: data is not iterable
+```
+
+These messages look different, but they all point back to the same question:
+
+> **What kind of value did JavaScript actually have at the moment this operation failed?**
+
+You now have the three error categories we will focus on first:
+
+| Error type | Useful first translation |
+| --- | --- |
+| `SyntaxError` | "I cannot understand this code." |
+| `ReferenceError` | "I do not know that name." |
+| `TypeError` | "I found the value, but it cannot be used that way." |
+
+Next, we stop looking only at the first line of an error and learn what the rest of the stack trace can tell us.
