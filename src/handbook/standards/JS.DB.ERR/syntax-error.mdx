@@ -1,0 +1,101 @@
+---
+id: JS.DB.ERR.1.SYNTAX
+title: Error Messages · SyntaxError
+short: Read a SyntaxError as JavaScript telling you it cannot understand the code well enough to run it.
+---
+
+# Error Messages → `SyntaxError`
+
+Welcome to **Weird Mike's Pawn Shop**.
+
+Nobody is completely sure whether "Weird Mike" describes Mike or the pawn shop. Either way, the inventory is unusual and the software needs work.
+
+From this page through the end of Error Messages & Stack Traces, you will keep improving the same `main.js` file.
+
+<Callout type="note" title="Start Weird Mike's Pawn Shop">
+  <p className="m-0">Clear the debugging-intro code from your editor and replace it with this starting point. Do not fix it yet. Run it first.</p>
+  <pre className="m-0 whitespace-pre-wrap">{`const inventory = [
+  {
+    id: 1,
+    name: "Holy Umbrella",
+    description: "An umbrella with holes in it.",
+    clearance: true
+    priceInPennies: 2223,
+  },
+  {
+    id: 2,
+    name: "Definitely Normal Mirror",
+    description: "Your reflection blinks slightly late.",
+    clearance: false,
+    priceInPennies: 4899,
+  },
+];
+
+console.log("WEIRD MIKE'S PAWN SHOP");
+console.log(\`Number of Items: ${inventory.length}\`);`}</pre>
+</Callout>
+
+When you run this program, JavaScript does not make it to the shop heading. It stops before the program can really begin.
+
+That is because JavaScript first has to **parse** your code: it has to read the characters you wrote and understand them as valid JavaScript instructions.
+
+The rules for writing valid code are called **syntax**.
+
+A `SyntaxError` means JavaScript reached code that does not follow those rules closely enough for it to understand the program.
+
+Common causes include:
+
+- a missing `)`, `]`, or `}`,
+- a string with a missing quote,
+- a missing comma between values or object properties,
+- or another piece of malformed JavaScript.
+
+<Callout type="tip" title="Read before you edit">
+  <p className="m-0">The error usually includes a line and column near the place where JavaScript became unable to continue. That location is evidence. Start there instead of scanning the entire file at random.</p>
+</Callout>
+
+In Weird Mike's inventory, compare the two item objects. They use the same shape, but one of them is missing a small piece of punctuation.
+
+<HandbookChallenge
+  title="Get the inventory report running"
+  hints={[
+    <>Object properties must be separated from one another.</>,
+    <>Compare the lines around <code>clearance</code> and <code>priceInPennies</code> in the two inventory objects.</>,
+    <>The first item's <code>clearance: true</code> property needs a comma after it.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+Number of Items: 2`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`const inventory = [
+  {
+    id: 1,
+    name: "Holy Umbrella",
+    description: "An umbrella with holes in it.",
+    clearance: true,
+    priceInPennies: 2223,
+  },
+  {
+    id: 2,
+    name: "Definitely Normal Mirror",
+    description: "Your reflection blinks slightly late.",
+    clearance: false,
+    priceInPennies: 4899,
+  },
+];
+
+console.log("WEIRD MIKE'S PAWN SHOP");
+console.log(\`Number of Items: ${inventory.length}\`);`}</pre>
+  }
+>
+  <p className="m-0">
+    Run the broken program and read the <code>SyntaxError</code> before changing anything. Use the location it gives you to inspect the inventory, fix the syntax mistake, and run the program again.
+  </p>
+</HandbookChallenge>
+
+A `SyntaxError` is JavaScript saying, roughly:
+
+> **"I cannot understand this code well enough to run it."**
+
+Next, you will see what happens when the code is perfectly valid JavaScript, but refers to a name that does not exist.
