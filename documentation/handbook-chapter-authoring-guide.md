@@ -157,6 +157,34 @@ The first example should be:
 
 ---
 
+## 2.5.1 Examples should prepare, not answer
+
+A worked example should demonstrate the same **kind of thinking** the learner will need in the following challenge, but it should usually not be the challenge itself with different variable names.
+
+Prefer **parallel examples**:
+
+- the example demonstrates the exact concept,
+- the challenge uses that concept in a closely related situation,
+- the syntax and reasoning transfer cleanly,
+- but the learner still has to decide how to apply it.
+
+For example:
+
+- **Example:** concatenate an animal and a mood into a sentence.
+- **Challenge:** concatenate several existing values into an invitation.
+
+The challenge should feel like:
+
+> "I just saw how to do this kind of thing."
+
+not:
+
+> "I can copy the line above and replace one word."
+
+Examples and challenges may share a larger project or theme when that continuity is useful. They do not need to use unrelated subject matter. The important distinction is that the worked example should **model the move without supplying the challenge's answer**.
+
+---
+
 ## 2.6 Give immediate practice
 
 Do not teach several sections of new material before the learner touches the first idea.
@@ -911,15 +939,36 @@ The challenge component already has strong visual separation. Do not surround ev
 
 # 19. Technical Vocabulary
 
-Teach the idea first, then summarize it.
+When a chapter introduces important technical terms, include a **Technical Vocabulary** section near the end of the instructional material.
 
-Example:
+Technical Vocabulary is a **reference and reinforcement tool**, not the place where terminology is first taught.
+
+Follow the handbook's normal sequence:
+
+1. show the behavior,
+2. explain it plainly,
+3. let the learner use it,
+4. give the technical name,
+5. collect the important terms in the vocabulary table.
+
+Use the standard three-column table:
 
 | Term | Plain-English meaning | Tiny example |
 | --- | --- | --- |
 | property | A named piece of data stored on an object | `book.title` |
 | index | The numbered position of an item in an array | `books[0]` |
 | method | A function attached to a value or object that you call with parentheses | `name.trim()` |
+
+Include terms that learners will need to recognize and use later. Do not turn the table into a glossary of every word that appeared on the page.
+
+Definitions should be:
+
+- short,
+- written in plain English,
+- specific enough to distinguish the term from related ideas,
+- consistent with how the chapter explained the concept.
+
+The **Tiny example** should make the term concrete whenever possible. Prefer actual syntax, values, output, or a very small programming situation over another abstract definition.
 
 Avoid circular definitions.
 
@@ -1010,8 +1059,16 @@ Before considering a chapter complete, verify the following.
 
 - [ ] Is new material introduced in small steps?
 - [ ] Does practice occur soon after instruction?
+- [ ] Does the worked example model the same kind of thinking without giving away the challenge?
 - [ ] Does each challenge have one primary new target?
 - [ ] Does difficulty increase through independence rather than random complexity?
+
+## Technical vocabulary
+
+- [ ] Are important new technical terms collected near the end of the chapter?
+- [ ] Were those terms taught in context before appearing in the vocabulary table?
+- [ ] Are definitions short, plain-English, and non-circular?
+- [ ] Does each tiny example make the term more concrete?
 
 ## Challenge titles
 
