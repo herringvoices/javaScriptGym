@@ -6,119 +6,113 @@ short: Treat bugs as evidence: run the program, observe what happens, investigat
 
 # Debugging → Finding What Went Wrong
 
-Before we talk about debugging, let's break something.
+Sooner or later, every program does something you did not mean for it to do.
 
-Actually, somebody already took care of that for us.
+Sometimes JavaScript stops running and prints a bright red error message. Sometimes nothing crashes at all, but the result is still wrong. A label is swapped. A total is off. An item disappears from a list.
 
-Welcome to **Weird Mike's Pawn Shop**.
+The computer followed the instructions it was given. Unfortunately, those instructions were not quite the ones you intended.
 
-Nobody is completely sure whether "Weird Mike" describes Mike or the pawn shop. Either way, the inventory is unusual and the software needs work.
+That is a **bug**.
 
-Mike had his nephew, Mook, put together a program for the shop.
+**Debugging** is the process of figuring out why a program's actual behavior does not match the behavior you expected, then correcting the problem.
 
-It does not work.
-
-This is the `main.js` already waiting in your editor:
-
-```js
-const inventory = [
-  {
-    id: 1,
-    name: "Holy Umbrella",
-    description: "An umbrella with holes in it.",
-    clearance: true
-    priceInPennies: 2223,
-  },
-  {
-    id: 2,
-    name: "Definitely Normal Mirror",
-    description: "Your reflection blinks slightly late.",
-    clearance: false,
-    priceInPennies: 4899,
-  },
-  {
-    id: 3,
-    name: "Possibly Haunted Toaster",
-    description: "Burns an image of someone you miss into every slice.",
-    clearance: true,
-    priceInPennies: 1599,
-  },
-  {
-    id: 4,
-    name: 8,
-    description: "A Magic 8 Ball with suspiciously specific answers.",
-    clearance: false,
-    priceInPennies: 1199,
-  },
-];
-
-const shopManager = "Mike";
-
-function printDescription(item) {
-  console.log(item.descripton.toUpperCase());
-}
-
-function formatItemName(item) {
-  return item.name.toUpperCase();
-}
-
-function formatPrice(item) {
-  return `$${(item.priceInPennies / 100).toFixed(2)}`;
-}
-
-function printItem(item) {
-  console.log(`${formatItemName(item)} - ${formatPrice(item)}`);
-}
-
-function printFeaturedItem(item) {
-  console.log("FEATURED ITEM");
-  printItem(item);
-}
-
-console.log("WEIRD MIKE'S PAWN SHOP");
-console.log(`Manager: ${managerName}`);
-console.log(`Number of Items: ${inventory.length()}`);
-
-printDescription(inventory[0]);
-printFeaturedItem(inventory);
-
-const requestedItemId = 4;
-const requestedItem = inventory.find((item) => item.id === requestedItemId);
-printItem(requestedItem);
-```
-
-**Do not fix it yet. Run it first.**
-
-The program fails.
-
-That is where debugging begins.
-
-**Debugging** is the process of figuring out why a program is not behaving the way you expect and making a change that fixes the problem.
-
-Sometimes a bug makes JavaScript stop with an error. Sometimes the program keeps running but produces the wrong result. Either way, the useful first move is the same: **observe what actually happened before you start changing code**.
-
-For Weird Mike's program, we are going to use this rhythm:
+A useful debugging rhythm is:
 
 1. **Run** the program.
-2. **Read** what JavaScript reports.
-3. **Investigate** that one problem.
-4. **Change** the code.
-5. **Run again**.
+2. **Observe** what actually happens.
+3. **Compare** that with what should happen.
+4. **Investigate** the difference.
+5. **Change** the code.
+6. **Run again** to see whether your change actually fixed the problem.
 
-<Callout type="important" title="One file. One problem at a time.">
-  <p className="m-0">
-    Mook left several mistakes in this program, and they are all here from the beginning. Do not clean up everything you notice. Fix the problem JavaScript is reporting right now, then run again.
-  </p>
-</Callout>
+That order matters.
 
-That last step matters.
+Changing code before you understand what went wrong is mostly guessing. Sometimes the guess works. Sometimes you turn one bug into three, which is a fun way to spend an afternoon if your afternoon was going suspiciously well.
 
-When you fix one problem, JavaScript may immediately show you another one.
+---
 
-That does not mean your first fix failed.
+## Bugs do not always come with error messages
 
-> **A new error can be progress.**
+Consider this program:
 
-You will keep this same `main.js` through the entire Error Messages & Stack Traces project. Each successful fix lets JavaScript get a little farther into Mook's program.
+```js
+const firstName = "Mina";
+const lastName = "Lopez";
 
-On the next page, we start with the error that prevents it from beginning at all.
+console.log(`First name: ${lastName}`);
+console.log(`Last name: ${firstName}`);
+```
+
+JavaScript can run this code without a problem. The syntax is valid. Nothing crashes.
+
+But look at the output:
+
+```text
+First name: Lopez
+Last name: Mina
+```
+
+That is not what the programmer intended.
+
+The **expected behavior** was:
+
+```text
+First name: Mina
+Last name: Lopez
+```
+
+The **actual behavior** was different.
+
+That difference is the bug.
+
+This distinction is important because JavaScript cannot always tell you when your program is wrong. It can tell you when it cannot understand or perform an instruction, but it does not know what you *meant* your program to do.
+
+That part is your job.
+
+---
+
+## Errors are evidence
+
+Other bugs are easier to notice because JavaScript stops the program and reports an **error**.
+
+At first, an error message can look like a wall of red text standing between you and a working program. But an error message is not just a complaint. It is information.
+
+It can tell you things like:
+
+- what kind of problem occurred,
+- where JavaScript noticed the problem,
+- and which parts of your code were involved.
+
+A debugger learns to treat that information as **evidence**.
+
+Instead of asking:
+
+> How do I make this error disappear?
+
+you want to start asking:
+
+> What is this telling me about what went wrong?
+
+That is what this module is about.
+
+You will learn how to read JavaScript's error messages, follow stack traces, inspect a running program, pause your code with breakpoints, and trace values through a program step by step.
+
+---
+
+## Technical Vocabulary
+
+| Term | Plain-English meaning | Tiny example |
+| :--- | :--- | :--- |
+| bug | A problem that causes a program to behave differently from what was intended | A total displays <code>12</code> when it should display <code>15</code> |
+| debugging | Finding the cause of a bug and correcting it | Tracing where the wrong total came from |
+| expected behavior | What the program is supposed to do | <code>First name: Mina</code> |
+| actual behavior | What the program really does when it runs | <code>First name: Lopez</code> |
+| error | A problem JavaScript detects while reading or running your code | <code>TypeError</code>, <code>ReferenceError</code> |
+| error message | Information JavaScript provides about an error | <code>ReferenceError: total is not defined</code> |
+| evidence | Information you can use to narrow down the cause of a bug | Output, error messages, variable values |
+
+---
+
+Next, JavaScript is going to start complaining.
+
+Fortunately, **Weird Mike's Pawn Shop** has plenty for it to complain about.
