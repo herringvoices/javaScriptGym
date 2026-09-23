@@ -49,9 +49,12 @@ export default function HandbookPage() {
   const [loadingMdx, setLoadingMdx] = useState(false);
 
   // Chapter-specific MDX (new sidebar chapters)
-  const [chapterModule, setChapterModule] = useState(null);
-  const [chapterError, setChapterError] = useState(null);
-  const [loadingChapter, setLoadingChapter] = useState(false);
+  const [chapterLoad, setChapterLoad] = useState(null);
+  const chapterKey = chapterId ? `${resolvedId}/${chapterId}` : null;
+  const currentChapterLoad = chapterLoad?.key === chapterKey ? chapterLoad : null;
+  const chapterModule = currentChapterLoad?.module ?? null;
+  const chapterError = currentChapterLoad?.error ?? null;
+  const loadingChapter = Boolean(chapterId && (!currentChapterLoad || currentChapterLoad.loading));
 
   // Load new-style entry if available
   useEffect(() => {
@@ -110,33 +113,24 @@ export default function HandbookPage() {
   // Load chapter module if chapterId present and structure declares it
   useEffect(() => {
     let cancelled = false;
-    setChapterModule(null);
-    setChapterError(null);
-    setLoadingChapter(false);
     if (!chapterId) return;
     const loader = getChapterLoader(resolvedId, chapterId);
-    if (!loader) return;
-    setLoadingChapter(true);
+    if (!loader) {
+      setChapterLoad({ key: chapterKey, module: null, error: null, loading: false });
+      return;
+    }
+    setChapterLoad({ key: chapterKey, module: null, error: null, loading: true });
     loader()
       .then((mod) => {
-        if (!cancelled) {
-          setChapterModule(mod);
-          setChapterError(null);
-        }
+        if (!cancelled) setChapterLoad({ key: chapterKey, module: mod, error: null, loading: false });
       })
       .catch((err) => {
-        if (!cancelled) {
-          setChapterError(err);
-          setChapterModule(null);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingChapter(false);
+        if (!cancelled) setChapterLoad({ key: chapterKey, module: null, error: err, loading: false });
       });
     return () => {
       cancelled = true;
     };
-  }, [resolvedId, chapterId]);
+  }, [resolvedId, chapterId, chapterKey]);
 
   // Ensure navigating via previous/next lands at the top of the page
   useEffect(() => {
@@ -452,12 +446,17 @@ function HandbookContent({
   meta,
   loadingEntry,
 }) {
-  if (chapterId && chapterModule) {
-    const Chapter = chapterModule.default;
+  if (chapterId) {
+    const Chapter = chapterModule?.default;
 
     return (
       <div>
-        {loadingChapter && <p className="text-sm text-slate-400">Loading chapter...</p>}
+        {loadingChapter && (
+          <div role="status" className="not-prose flex items-center gap-3 py-4 text-sm text-slate-400">
+            <span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border-2 border-slate-600 border-t-brand-400 motion-reduce:animate-none" />
+            Loading chapter...
+          </div>
+        )}
         {chapterError && (
           <p className="text-sm text-red-400">Failed to load chapter: {chapterError.message}</p>
         )}
@@ -465,6 +464,9 @@ function HandbookContent({
           <HandbookMDXProvider>
             <Chapter />
           </HandbookMDXProvider>
+        )}
+        {!loadingChapter && !chapterError && !Chapter && (
+          <p className="text-sm text-slate-400">Chapter not found.</p>
         )}
       </div>
     );

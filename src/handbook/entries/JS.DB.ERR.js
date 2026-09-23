@@ -66,11 +66,11 @@ function formatItemName(item) {
 }
 
 function formatPrice(item) {
-  return `$${(item.priceInPennies / 100).toFixed(2)}`;
+  return \`$\${(item.priceInPennies / 100).toFixed(2)}\`;
 }
 
 function printItem(item) {
-  console.log(`${formatItemName(item)} - ${formatPrice(item)}`);
+  console.log(\`\${formatItemName(item)} - \${formatPrice(item)}\`);
 }
 
 function printFeaturedItem(item) {
@@ -79,8 +79,8 @@ function printFeaturedItem(item) {
 }
 
 console.log("WEIRD MIKE'S PAWN SHOP");
-console.log(`Manager: ${managerName}`);
-console.log(`Number of Items: ${inventory.length()}`);
+console.log(\`Manager: \${managerName}\`);
+console.log(\`Number of Items: \${inventory.length()}\`);
 
 printDescription(inventory[0]);
 printFeaturedItem(inventory);
