@@ -1,99 +1,220 @@
 ---
 id: JS.DB.ERR.2.LOCATE
-title: Stack Traces · Find the Failure
-short: Use the first useful stack frame to jump from an error message to the function, file, line, and column where JavaScript failed.
+title: Stack Traces · Follow the Call Chain
+short: Use stack frames to find where JavaScript failed, identify the calls that led there, and trace a bad value back toward its source.
 ---
 
-# Stack Traces → Find the Failure
+# Stack Traces → Follow the Call Chain
 
-After fixing `inventory.length`, the program prints three lines successfully.
+After fixing `inventory.length()`, the program makes it as far as:
 
-Then another `TypeError` appears.
+```text
+======INVENTORY======
+```
 
-This one points into a function:
+Then JavaScript stops with another error. Click **Stack trace** to expand the information underneath it:
 
 ```text
 TypeError: Cannot read properties of undefined (reading 'toUpperCase')
-    at printDescription (main.js:LINE:COLUMN)
-    at main.js:LINE:COLUMN
+/main.js:35:20
+▼ Stack trace
+formatItemName — /main.js:35:20
+printItem — /main.js:43:18
+(anonymous) — /main.js:52:3
+▶ Raw browser stack
 ```
 
-Your exact line and column numbers may differ. That is fine. Those numbers are there to help you find the code that failed.
+You already know how to read the error message: JavaScript tried to use `toUpperCase()` on `undefined`. You also know that `/main.js:35:20` points to the file, line, and character where it happened.
 
-The lines underneath the error message are the **stack trace**.
+The expanded stack trace gives you something new: the chain of function calls that brought the program to that location.
 
-A line such as:
+## Stack traces and stack frames
+
+A **stack trace** is a list of locations JavaScript was working through when an error happened. Each line in that list is a **stack frame**.
+
+Start with the first frame:
 
 ```text
-at printDescription (main.js:LINE:COLUMN)
+formatItemName — /main.js:35:20
 ```
 
-is a **stack frame**.
+It tells you that JavaScript was inside `formatItemName()` when it failed. The function is in `main.js`, and the failure happened on line `35`, character `20`.
 
-It tells you:
+The next frame tells you where `formatItemName()` was called:
 
-- which function was running,
-- which file contains the code,
-- and the line and column where JavaScript failed.
+```text
+printItem — /main.js:43:18
+```
 
-When you are debugging your own code, the first frame that points into your readable student file is usually the best place to start.
+Line `43` is the **call site**: the place inside `printItem()` where the program called `formatItemName()`.
 
-<Callout type="note" title="The locations are clickable">
+That caller can be just as useful as the failure location, especially when a function is called more than once.
+
+Take this code for example:
+
+```js
+function capitalize(str) {
+  return str.toUpperCase();
+}
+
+capitalize("i'm a string!");
+capitalize(24);
+```
+
+That second call would produce a `TypeError`. Its stack trace would look something like:
+
+```text
+TypeError: str.toUpperCase is not a function
+capitalize — /main.js:2:17
+(anonymous) — /main.js:6:1
+```
+
+Both calls reach the same line inside `capitalize()`, but only the second one fails. The first stack frame points inside the function, where JavaScript finally breaks. The next frame points back to the particular call that passed in `24`.
+
+The parameter may be named `str`, but the argument in that second call is still a number. `toUpperCase()` is a string method, so the number can't use it.
+
+<Callout type="tip" title="Read the failure, then the caller">
   <p className="m-0">
-    The console can take you straight back to the matching line in your editor. In desktop Chrome DevTools, the same authored files appear under <code>student</code> in <strong>Sources</strong>; the <code>generated</code> and <code>jsgym-internal</code> sources are runner machinery, not the code you wrote.
+    The error message tells you <strong>what</strong> went wrong. The first frame tells you <strong>where</strong> JavaScript noticed it. The frames underneath it show <strong>which calls</strong> brought the program there.
   </p>
 </Callout>
 
-The important habit is simple:
+<br/>
 
-> **Read the location before you start scanning the file.**
+<Callout type="note" title="The locations are clickable">
+  <p className="m-0">
+    Click a location such as <code>/main.js:35:20</code> to jump directly to it in the editor. You can leave <strong>Raw browser stack</strong> collapsed for now; it includes lower-level browser and runner details that you don't need for this investigation.
+  </p>
+</Callout>
 
-The first useful frame sends you here:
+## Follow this call chain
+
+The trace starts where JavaScript failed, then works backward through the calls that led there. Read this one from the first frame downward:
+
+1. `formatItemName()` is where JavaScript failed.
+2. `printItem()` called `formatItemName()`.
+3. The main body of `main.js` called `printItem()`.
+
+That sequence is the **call chain**.
+
+Start by inspecting the function in the first frame:
 
 ```js
-function printDescription(item) {
-  console.log(item.descripton.toUpperCase());
+function formatItemName(item) {
+  return item.name.toUpperCase();
 }
 ```
 
-The error says JavaScript tried to use `toUpperCase` on `undefined`.
+That code works when `item` is one inventory object with a string `name`. So don't immediately rewrite the function. Ask:
 
-That gives you two pieces of evidence:
+> **What value did its caller give it?**
 
-1. the stack trace tells you **where** the failure happened,
-2. the error tells you **what kind of value caused it**.
+Then move down one frame and inspect that call. If the value was already wrong there, move down again. At each step, compare the argument being passed with the kind of value the next function expects.
+
+<Callout type="tip" title="The first frame is a starting point, not always the fix">
+  <p className="m-0">
+    The first frame shows where a bad value finally caused an error. A later frame may show where that value entered the call chain. Follow the value backward before deciding which line needs to change.
+  </p>
+</Callout>
 
 <HandbookChallenge
-  title="Find the bad property"
+  title="Print the inventory one item at a time"
   hints={[
-    <>Start with the first stack frame that points into <code>main.js</code>.</>,
-    <>On the failing line, look at the value immediately before <code>.toUpperCase()</code>.</>,
-    <>Compare that property name with the property on each inventory object.</>,
+    <>Start at <code>formatItemName()</code>. Follow the <code>item</code> argument backward through <code>printItem()</code>.</>,
+    <>The last frame points inside the <code>for...of</code> loop on line 52. Compare the argument passed to <code>printItem()</code> with its parameter.</>,
+    <>The loop's <code>item</code> variable holds one inventory object at a time. Pass that value to <code>printItem()</code>.</>,
   ]}
   expected={
     <div className="space-y-2">
-      <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
-Manager: Mike
-Number of Items: 4
-AN UMBRELLA WITH HOLES IN IT.
-FEATURED ITEM`}</pre>
-      <p className="m-0">JavaScript then stops with another <code>TypeError</code> inside <code>formatItemName()</code>.</p>
+      <pre className="m-0 whitespace-pre-wrap">{`======INVENTORY======
+HOLY UMBRELLA - $22.23
+DEFINITELY NORMAL MIRROR - $48.99
+POSSIBLY HAUNTED TOASTER - $15.99
+MAGIC 8 BALL - $11.99
+======REQUESTED ITEM======
+HOLY UMBRELLA - $22.23`}</pre>
+      <p className="m-0">Every inventory item prints, the requested item prints, and the program finishes without an error.</p>
     </div>
   }
   solution={
-    <pre className="m-0 whitespace-pre-wrap">{'console.log(item.description.toUpperCase());'}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{'printItem(item);'}</pre>
   }
 >
   <p className="m-0">
-    Use the first useful stack frame to go directly to the failing line in <code>printDescription()</code>.
+    Follow the stack from the failure back through each caller. At every call, compare the argument being passed with the value the function expects.
   </p>
   <p className="m-0">
-    Determine why the value before <code>.toUpperCase()</code> is <code>undefined</code>, fix that property access, and run again.
+    The loop is already visiting every item in the inventory. Fix the argument inside it so <code>printItem()</code> receives one item at a time, then run the program again. Leave the loop and helper functions unchanged.
   </p>
 </HandbookChallenge>
 
-The stack trace did more than say "something broke."
+## Wrap up
 
-It gave you a direct route to the failure.
+A stack trace is JavaScript saying, roughly:
 
-On the next run, the first frame still tells you where JavaScript notices the problem. But this time, the mistake you need to fix is somewhere else in the call chain.
+> **"Here's where I failed, and these are the calls that brought me here."**
+
+Use the first useful frame to find the failure. Then follow the remaining frames through the callers when you need to trace a value back toward its source.
+
+Mook's program now runs all the way through. In the next section, a bug report will give you a reason to test other inputs—and reproduce a failure that doesn't appear in this successful run.
+
+---
+
+## Technical Vocabulary
+
+<table>
+  <thead>
+    <tr>
+      <th>Term</th>
+      <th>Plain-English meaning</th>
+      <th>Tiny example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>stack trace</td>
+      <td>A list of locations JavaScript was working through when an error happened</td>
+      <td>The expanded list beneath an error</td>
+    </tr>
+    <tr>
+      <td>stack frame</td>
+      <td>One location in a stack trace</td>
+      <td><code>formatItemName — /main.js:35:20</code></td>
+    </tr>
+    <tr>
+      <td>call site</td>
+      <td>The place where one function is called</td>
+      <td><code>printItem(item)</code></td>
+    </tr>
+    <tr>
+      <td>call chain</td>
+      <td>The sequence of function calls that led to the current point</td>
+      <td><code>main.js → printItem → formatItemName</code></td>
+    </tr>
+    <tr>
+      <td>caller</td>
+      <td>The code or function that calls another function</td>
+      <td><code>printItem()</code> is the caller of <code>formatItemName()</code></td>
+    </tr>
+    <tr>
+      <td>argument</td>
+      <td>A value passed into a function when the function is called</td>
+      <td><code>"Mook"</code> in <code>greet("Mook")</code></td>
+    </tr>
+    <tr>
+      <td>parameter</td>
+      <td>The name a function uses for the value it receives</td>
+      <td><code>name</code> in <code>function greet(name)</code></td>
+    </tr>
+    <tr>
+      <td><code>(anonymous)</code></td>
+      <td>Code running outside a named function</td>
+      <td>The main body of <code>main.js</code></td>
+    </tr>
+    <tr>
+      <td>root cause</td>
+      <td>The earlier mistake that ultimately produced the error</td>
+      <td>A wrong value passed several calls earlier</td>
+    </tr>
+  </tbody>
+</table>

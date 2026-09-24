@@ -81,5 +81,6 @@ test('existing HTML fetch challenge retains mock data and original source', asyn
   await page.getByRole('button', { name: 'Run preview', exact: true }).click();
   await expect(page.frameLocator('iframe[title="preview"]').locator('#product-list')).toHaveText('Colombian Coffee');
   await page.getByRole('button', { name: 'Console', exact: true }).click();
-  await expect(page.getByRole('button', { name: '/main.js:3:9', exact: true })).toBeVisible();
+  await expect(page.getByText('loaded 3', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: '/main.js:3:9', exact: true })).toHaveCount(0);
 });

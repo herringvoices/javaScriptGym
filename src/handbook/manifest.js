@@ -261,13 +261,8 @@ export const handbookStructure = {
       },
       {
         id: 'stack-trace-location',
-        title: 'Stack Traces · Find the Failure',
-        load: () => import('./standards/JS.DB.ERR/stack-trace-location.mdx'),
-      },
-      {
-        id: 'stack-trace-frames',
         title: 'Stack Traces · Follow the Call Chain',
-        load: () => import('./standards/JS.DB.ERR/stack-trace-frames.mdx'),
+        load: () => import('./standards/JS.DB.ERR/stack-trace-location.mdx'),
       },
       {
         id: 'reproducing-errors',

@@ -6,39 +6,47 @@ short: Recognize a ReferenceError as valid JavaScript that refers to a name Java
 
 # Error Messages → `ReferenceError`
 
-Run the program again after fixing the missing comma.
+Run the program again after fixing the `SyntaxError`.
 
 Good news: JavaScript made it far enough to print:
 
 ```text
-WEIRD MIKE'S PAWN SHOP
+======WEIRD MIKE'S PAWN SHOP======
 ```
 
 Then it stopped with an error like:
 
 ```text
 ReferenceError: managerName is not defined
+/main.js:47:25
 ```
 
-That is different from the `SyntaxError`.
+So what is this new message telling us? Let's break it down.
 
-JavaScript understood the file well enough to start running it. This time it reached a name it could not find.
+The first thing we see is `ReferenceError`. This is the type of error JavaScript found. Unlike the `SyntaxError`, JavaScript understood the file well enough to start running it.
 
-A **`ReferenceError`** usually means JavaScript was asked to use a variable or other name that does not exist in the current scope.
+Next we see `managerName is not defined`. JavaScript reached the name `managerName` and tried to find it, but it couldn't.
 
-When you see one, pay attention to the exact name in the message.
+Finally, `/main.js:47:25` tells you where the program broke: `main.js`, line 47, character 25. That is the line where JavaScript tried to use `managerName`, but it isn't necessarily where the mistake began.
 
-Then ask:
+## ReferenceError
 
-- Is that name spelled correctly?
-- Was it declared?
+A **`ReferenceError`** usually means JavaScript was asked to use a variable or other name it can't find in the current scope.
+
+When you get one, start with the exact name JavaScript printed. Then ask:
+
+- Is the name spelled correctly where it is used?
+- Was the variable declared with that exact name?
+- Is the declaration in a scope this line can access?
 - Is there a similarly named variable nearby?
 
 <Callout type="tip" title="Let the error name your search">
   <p className="m-0">
-    If JavaScript says <code>managerName is not defined</code>, start by searching for <code>managerName</code>. Do not scan every function in the file. The error has already narrowed the problem down for you.
+    If JavaScript says <code>managerName is not defined</code>, start by searching for <code>managerName</code>. Don't scan every function in the file. The error has already narrowed the problem down for you.
   </p>
 </Callout>
+
+The line number shows where JavaScript tried—and failed—to find the name. The mistake could be on that line: perhaps the reference was misspelled. Or it could be earlier in the code: perhaps the variable was declared with the wrong name, declared in a different scope, or never declared at all. Compare the name where it is used with the name in its declaration to find which side is wrong.
 
 <HandbookChallenge
   title="Repair the manager reference"
@@ -49,7 +57,7 @@ Then ask:
   ]}
   expected={
     <div className="space-y-2">
-      <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+      <pre className="m-0 whitespace-pre-wrap">{`======WEIRD MIKE'S PAWN SHOP======
 Manager: Mike`}</pre>
       <p className="m-0">The <code>ReferenceError</code> is gone, and JavaScript now stops with a <code>TypeError</code> saying <code>inventory.length is not a function</code>.</p>
     </div>
@@ -66,10 +74,59 @@ Manager: Mike`}</pre>
   </p>
 </HandbookChallenge>
 
+## Wrap up
 A `ReferenceError` is JavaScript saying, roughly:
 
-> **"I understand this code, but I do not know what that name refers to."**
+> **"I understand this code, but I don't know what that name refers to."**
 
 The program now gets through two lines of output.
 
 Then it finds a value, recognizes it perfectly well, and objects to what Mook tries to do with it.
+
+Next, you'll meet and fix the `TypeError`.
+
+---
+
+## Technical Vocabulary
+
+<table>
+  <thead>
+    <tr>
+      <th>Term</th>
+      <th>Plain-English meaning</th>
+      <th>Tiny example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ReferenceError</code></td>
+      <td>An error JavaScript reports when it tries to use a name it can't find</td>
+      <td><code>managerName is not defined</code></td>
+    </tr>
+    <tr>
+      <td>reference</td>
+      <td>Using a name to get the value it stands for</td>
+      <td><code>console.log(shopManager)</code> uses the name <code>shopManager</code></td>
+    </tr>
+    <tr>
+      <td>identifier</td>
+      <td>A name JavaScript uses for something, such as a variable or property</td>
+      <td><code>managerName</code> is an identifier</td>
+    </tr>
+    <tr>
+      <td>declaration</td>
+      <td>Code that creates a variable and gives it a name</td>
+      <td><code>const shopManager = "Mike";</code></td>
+    </tr>
+    <tr>
+      <td>scope</td>
+      <td>The part of a program where a name is available to use</td>
+      <td>A variable declared inside a function usually can't be used outside it</td>
+    </tr>
+    <tr>
+      <td>line number</td>
+      <td>The line JavaScript points to when it gets stuck; it is a clue, not always the root cause</td>
+      <td>Line <code>56</code> uses <code>managerName</code>, but <code>shopManager</code> was declared earlier</td>
+    </tr>
+  </tbody>
+</table>

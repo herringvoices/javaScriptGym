@@ -6,31 +6,50 @@ short: Recognize a TypeError as JavaScript finding a value but being unable to u
 
 # Error Messages → `TypeError`
 
-Your program now knows who manages Weird Mike's Pawn Shop.
+Your program now knows who manages Weird Mike's Pawn Shop. It makes it far enough to print:
 
-Then it reaches this line:
-
-```js
-console.log(`Number of Items: ${inventory.length()}`);
+```text
+======WEIRD MIKE'S PAWN SHOP======
+Manager: Mike
 ```
 
-and reports something like:
+Then it stops with another error:
 
 ```text
 TypeError: inventory.length is not a function
+/main.js:48:43
 ```
 
-This time JavaScript successfully found `inventory`.
+So what is this message telling us? Let's break it down.
 
-It successfully found `inventory.length`.
+The first thing we see is `TypeError`. This is the type of error JavaScript found. The program is valid JavaScript, and JavaScript found the names it needed. The problem is how the code tries to use one of the values.
 
-The problem is what the code asks JavaScript to **do with that value**.
+Next we see `inventory.length is not a function`. JavaScript found the expression `inventory.length`, but the value it produced wasn't a function. That's our clue about what went wrong.
 
-A **`TypeError`** happens when JavaScript has a value, but the code tries to use that value in a way that does not work for its type.
+Finally, `/main.js:48:43` tells you where the program broke: `main.js`, line 48, character 43. That's where JavaScript tried to perform the operation that didn't work.
 
-The message gives you an important clue:
+## TypeError
 
-> `inventory.length` exists, but it is **not a function**.
+A **`TypeError`** usually means JavaScript found a value, but the code tried to use it in a way that doesn't work for that kind of value.
+
+When you get a `TypeError`, ask:
+
+- What value or expression does the message name?
+- What value did JavaScript actually get?
+- What operation did the code try to perform?
+- Can that kind of value perform that operation?
+
+<Callout type="tip" title="Identify the value before you edit">
+  <p className="m-0">
+    When JavaScript says something <code>is not a function</code>, find out what that expression actually evaluates to. The code may have found the right value but asked it to do the wrong job.
+  </p>
+</Callout>
+<br/>
+<Callout type="note" title="Need a refresher?">
+  <p className="m-0">
+    If the difference between properties and methods/functions feels fuzzy, revisit <a className="font-medium text-brand-200 underline underline-offset-2" href="/handbook/JS.VDT.MTH">Methods: Tools for Your Data Types</a>, then come back and use that distinction to investigate this error.
+  </p>
+</Callout>
 
 <HandbookChallenge
   title="Use array length correctly"
@@ -41,7 +60,7 @@ The message gives you an important clue:
   ]}
   expected={
     <div className="space-y-2">
-      <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
+      <pre className="m-0 whitespace-pre-wrap">{`======WEIRD MIKE'S PAWN SHOP======
 Manager: Mike
 Number of Items: 4`}</pre>
       <p className="m-0">JavaScript then stops with another <code>TypeError</code>, this time involving <code>toUpperCase</code>.</p>
@@ -52,22 +71,18 @@ Number of Items: 4`}</pre>
   }
 >
   <p className="m-0">
-    Inspect the line named by the error. Fix it so the program reads the array's <code>length</code> property instead of trying to call that number like a function.
+    Inspect the line named by the error. Use the message and the questions above to identify the value JavaScript found and what the code asks it to do.
   </p>
   <p className="m-0">
-    Run again as soon as you make that one change.
+    Make the smallest change that resolves that mismatch, then run the program again.
   </p>
 </HandbookChallenge>
 
 ## TypeErrors come in different shapes
 
-You do not need to memorize every possible `TypeError` message.
+You don't need to memorize every possible `TypeError` message. Use the same two questions each time: **What value did JavaScript have, and what did the code ask it to do?**
 
-The useful habit is to ask:
-
-> **What value did JavaScript actually have, and what operation did the code try to perform on it?**
-
-Here are a few common forms:
+Here are a few common shapes:
 
 ### Reading a property from `undefined` or `null`
 
@@ -77,6 +92,8 @@ console.log(user.name);
 // TypeError: Cannot read properties of null
 ```
 
+JavaScript had `null`, and the code asked it to read a `name` property.
+
 ### Calling something that is not a function
 
 ```js
@@ -85,24 +102,80 @@ config();
 // TypeError: config is not a function
 ```
 
-### Reassigning a `const`
+JavaScript had an object, and the code asked it to behave like a function.
+
+### Using a method that the value doesn't have
 
 ```js
-const maxItems = 100;
-maxItems = 200;
-// TypeError: Assignment to constant variable.
+const itemName = 8;
+itemName.toUpperCase();
+// TypeError: itemName.toUpperCase is not a function
 ```
 
-The messages look different, but all three involve a value being used in a way JavaScript cannot perform.
+JavaScript had a number, and the code asked it to use a string method.
+
+The messages look different, but the debugging move is the same: identify the value, identify the attempted operation, and compare the two.
+
+## Wrap up
+
+A `TypeError` is JavaScript saying, roughly:
+
+> **"I found the value, but it can't do what this code is asking it to do."**
 
 So far, you have met three useful error categories:
 
 | Error type | Useful first translation |
 | --- | --- |
-| `SyntaxError` | "I cannot understand this code." |
-| `ReferenceError` | "I do not know that name." |
-| `TypeError` | "I found the value, but it cannot be used that way." |
+| `SyntaxError` | "I can't understand this code." |
+| `ReferenceError` | "I don't know that name." |
+| `TypeError` | "I found the value, but it can't be used that way." |
 
-After fixing `inventory.length()`, you immediately hit another `TypeError`.
+After fixing `inventory.length()`, the program reaches `======INVENTORY======`. Then it hits another `TypeError` inside `formatItemName()`.
 
-This time, we are going to use the information underneath the error message to find it.
+We've already been using the file, line, and character beneath each error to find where the program stopped. In the next section, we'll expand the **stack trace** and use its full trail of locations to learn not only where JavaScript failed, but how it got there.
+
+---
+
+## Technical Vocabulary
+
+<table>
+  <thead>
+    <tr>
+      <th>Term</th>
+      <th>Plain-English meaning</th>
+      <th>Tiny example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>TypeError</code></td>
+      <td>An error JavaScript reports when a value can't perform the operation the code asks for</td>
+      <td><code>inventory.length is not a function</code></td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>The kind of value JavaScript is working with</td>
+      <td><code>4</code> is a number; <code>"Mike"</code> is a string</td>
+    </tr>
+    <tr>
+      <td>property</td>
+      <td>A named value you read from an object, array, or other value</td>
+      <td><code>inventory.length</code></td>
+    </tr>
+    <tr>
+      <td>method</td>
+      <td>A function attached to a value</td>
+      <td><code>inventory.push("new item")</code></td>
+    </tr>
+    <tr>
+      <td>call</td>
+      <td>Run a function by placing parentheses after it</td>
+      <td><code>printItems()</code></td>
+    </tr>
+    <tr>
+      <td>operation</td>
+      <td>Something the code asks JavaScript to do with a value</td>
+      <td>Reading a property or calling a function</td>
+    </tr>
+  </tbody>
+</table>

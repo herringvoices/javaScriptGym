@@ -6,109 +6,95 @@ short: Vary one input at a time, identify the cases that fail, and describe the 
 
 # Reproducing Errors → Make It Happen on Purpose
 
-The final error should look familiar:
+Mook's program finally runs all the way through. It prints every inventory item, then successfully prints the requested item with ID `1`.
 
-```text
-TypeError: item.name.toUpperCase is not a function
-```
+That's good news—but one successful run doesn't prove every input works.
 
-You already know what a `TypeError` is.
+Imagine Mook gives you a new bug report:
 
-You know how to find the line where it happened.
+> **"Whenever I request item 99, the program crashes."**
 
-But before you fix this one, do something different.
-
-Make sure you can make it happen **reliably**.
+Don't start rewriting the program yet. First, make sure you can make the failure happen **reliably**.
 
 A bug is much easier to investigate when you can **reproduce** it: make the same failure happen again under known conditions.
 
 At the bottom of Mook's program, one value controls which inventory item gets printed:
 
 ```js
-const requestedItemId = 4;
+const requestedItemId = 1;
 const requestedItem = inventory.find((item) => item.id === requestedItemId);
+console.log("======REQUESTED ITEM======");
 printItem(requestedItem);
 ```
 
-That gives you an experiment.
-
-Keep the rest of the program the same and change only `requestedItemId`.
+That gives you an experiment. Keep the rest of the program the same and change only `requestedItemId`.
 
 Try `1`. Run.
 
-Then `2`.
+Then `2`, `3`, and `4`.
 
-Then `3`.
-
-Then `4`.
+Finally, try `99`.
 
 ## An example is not yet a condition
 
-You should find that IDs `1`, `2`, and `3` print successfully.
+"The program breaks when I request item 99" is useful because you can reproduce the report. But you can do better.
 
-ID `4` produces the error.
+Compare the successful runs with the failing run and ask:
 
-"The program breaks on item 4" is useful because you can reproduce it.
+> **What is different about the value that reaches `printItem()`?**
 
-But you can do better.
-
-Compare item 4 with the items that work and ask:
-
-> **What is different about the value that reaches `formatItemName()`?**
+The answer should describe a condition—not merely repeat one ID that happened to fail.
 
 <Callout type="tip" title="Change one thing at a time">
   <p className="m-0">
-    Reproduction is an experiment. If you change only the requested item ID, then a change in the result tells you something useful about that item.
+    Reproduction is an experiment. If you change only the requested item ID, then a change in the result tells you something useful about that input.
   </p>
 </Callout>
 
 <HandbookChallenge
-  title="Reproduce the final error"
+  title="Reproduce the reported error"
   hints={[
-    <>Test all four IDs before changing the inventory data.</>,
-    <>Compare the <code>name</code> values on the items that work with the <code>name</code> on item 4.</>,
-    <><code>toUpperCase()</code> is a string method. What type of value is item 4 using for its name?</>,
+    <>Test IDs <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, and <code>99</code> before changing anything else.</>,
+    <>When an ID has no matching item, what value does <code>inventory.find()</code> return?</>,
+    <>Check whether <code>requestedItem</code> exists before passing it to <code>printItem()</code>. Use an <code>else</code> block to print a useful message when it doesn't.</>,
   ]}
   expected={
     <div className="space-y-2">
-      <p className="m-0">Your code includes a comment describing the condition that reproduced the failure, and the full program runs without an error.</p>
-      <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP
-Manager: Mike
-Number of Items: 4
-AN UMBRELLA WITH HOLES IN IT.
-FEATURED ITEM
-DEFINITELY NORMAL MIRROR - $48.99
-MAGIC 8 BALL - $11.99`}</pre>
+      <p className="m-0">Your code includes a comment describing the condition that reproduced the failure, and requesting ID <code>99</code> no longer crashes the program.</p>
+      <pre className="m-0 whitespace-pre-wrap">{`======REQUESTED ITEM======
+No item found with ID 99.`}</pre>
     </div>
   }
   solution={
-    <pre className="m-0 whitespace-pre-wrap">{`name: "Magic 8 Ball",
+    <pre className="m-0 whitespace-pre-wrap">{`const requestedItemId = 99;
+const requestedItem = inventory.find((item) => item.id === requestedItemId);
 
-// Reproduces when: the requested item's name is not a string`}</pre>
+// Reproduces when: the requested ID does not match an inventory item
+console.log("======REQUESTED ITEM======");
+
+if (requestedItem) {
+  printItem(requestedItem);
+} else {
+  console.log(\`No item found with ID \${requestedItemId}.\`);
+}`}</pre>
   }
 >
   <div className="space-y-2">
     <p className="m-0">
-      Change only <code>requestedItemId</code> and run the program with IDs <code>1</code>, <code>2</code>, <code>3</code>, and <code>4</code>. Identify which value reliably produces the same error.
+      Change only <code>requestedItemId</code> and run the program with IDs <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, and <code>99</code>. Record which inputs succeed and which reliably produce the reported error.
     </p>
     <p className="m-0">
       Before fixing it, add a one-line comment near <code>requestedItemId</code> describing the condition that causes the failure.
     </p>
     <p className="m-0">
-      Restore <code>requestedItemId</code> to <code>4</code>, then correct item 4's bad <code>name</code> value so its name is <strong>Magic 8 Ball</strong>. Run the program one final time.
+      Leave <code>requestedItemId</code> set to <code>99</code>, then prevent the bad value from reaching <code>printItem()</code>. Print a useful message when no item can be printed.
     </p>
   </div>
 </HandbookChallenge>
 
-You moved from:
+You moved from a vague symptom, to a repeatable input, to a condition you could test in code.
 
-- **"The program throws a TypeError."**
-- to **"The program throws it when I request item 4."**
-- to **"The program throws it when the requested item's name is not a string."**
-
-That last statement describes the **condition**, not just one example.
-
-And that is the point of reproduction: turn a mysterious failure into something specific enough to test.
+That is the point of reproduction: turn a mysterious failure into something specific enough to explain, test, and handle.
 
 ---
 
@@ -128,4 +114,4 @@ And along the way, something important happened over and over:
 
 > **A new error meant the program got farther.**
 
-In the next debugging standard, the program will not always be kind enough to throw an error. You will trace values and execution while the code runs.
+In the next debugging standard, the program won't always be kind enough to throw an error. You'll trace values and execution while the code runs.

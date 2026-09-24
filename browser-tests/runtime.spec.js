@@ -77,7 +77,9 @@ for (const type of ['', ' type="module"']) {
 
 test('classic scripts keep global scope and parser order', async ({ page }) => {
   await run(page, { '/index.html': '<script src="/one.js"></script><script src="/two.js"></script>', '/one.js': 'var shared = 42;', '/two.js': 'console.log(shared, document.currentScript !== null);' }, '/index.html');
-  expect((await logs(page))[0].args).toEqual([42, true]);
+  const output = (await logs(page))[0];
+  expect(output.args).toEqual([42, true]);
+  expect(output.loc).toBeNull();
 });
 
 test('event errors and unhandled promise rejections preserve locations', async ({ page }) => {

@@ -48,7 +48,7 @@ const entry = {
   },
   {
     id: 4,
-    name: 8,
+    name: "Magic 8 Ball",
     description: "A Magic 8 Ball with suspiciously specific answers.",
     clearance: false,
     priceInPennies: 1199,
@@ -56,10 +56,6 @@ const entry = {
 ];
 
 const shopManager = "Mike";
-
-function printDescription(item) {
-  console.log(item.descripton.toUpperCase());
-}
 
 function formatItemName(item) {
   return item.name.toUpperCase();
@@ -73,20 +69,18 @@ function printItem(item) {
   console.log(\`\${formatItemName(item)} - \${formatPrice(item)}\`);
 }
 
-function printFeaturedItem(item) {
-  console.log("FEATURED ITEM");
-  printItem(item);
-}
-
-console.log("WEIRD MIKE'S PAWN SHOP");
+console.log("======WEIRD MIKE'S PAWN SHOP======");
 console.log(\`Manager: \${managerName}\`);
 console.log(\`Number of Items: \${inventory.length()}\`);
 
-printDescription(inventory[0]);
-printFeaturedItem(inventory);
+console.log("======INVENTORY======");
+for (const item of inventory) {
+  printItem(inventory);
+}
 
-const requestedItemId = 4;
+const requestedItemId = 1;
 const requestedItem = inventory.find((item) => item.id === requestedItemId);
+console.log("======REQUESTED ITEM======");
 printItem(requestedItem);
 `,
     },

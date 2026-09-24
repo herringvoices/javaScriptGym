@@ -65,11 +65,10 @@ export function installConsoleBridge(config, createProtocol) {
   }
 
   function send(type, args, error = null) {
-    const frames = protocol.frames(new Error().stack);
     try {
       parent.postMessage({ source: 'sandbox-console', version: 1, runId: config.runId, type,
         args: Array.from(args).map(safe), error,
-        loc: error ? error.loc : frames.find(frame => frame.loc)?.loc || null }, '*');
+        loc: error?.loc || null }, '*');
     } catch { /* An uncloneable value must not stop the student's program. */ }
   }
   for (const type of ['log', 'warn', 'error', 'info', 'debug', 'dir', 'table']) {

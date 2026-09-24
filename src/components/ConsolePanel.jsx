@@ -17,7 +17,7 @@ export default function ConsolePanel({ className = "", compact = true, logs = []
 							<div className="whitespace-pre-wrap break-words">
 								{row.error ? <><strong>{row.error.name}: </strong>{row.error.message}{row.error.unhandledRejection && <span className="ml-2 text-xs text-slate-400">Unhandled promise rejection</span>}</> : <ConsoleArgs args={row.args} compact={compact} />}
 							</div>
-							{renderLocation(row.loc || row.error?.loc)}
+							{renderLocation(row.error?.loc)}
 							{row.error && !row.error.loc && <div className="text-xs text-slate-400">Source location unavailable</div>}
 							{row.error?.stack && <details className="mt-1 text-xs text-slate-300"><summary className="cursor-pointer">Stack trace</summary><ol className="my-2 space-y-1">{row.error.frames?.filter(frame => frame.loc).map((frame, index) => <li key={index}>{frame.name || '(anonymous)'} — {renderLocation(frame.loc)}</li>)}</ol><details><summary className="cursor-pointer text-slate-400">Raw browser stack</summary><pre className="mt-1 whitespace-pre-wrap break-all">{row.error.stack}</pre></details></details>}
 						</div>

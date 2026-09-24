@@ -12,27 +12,67 @@ Before we start reading errors, you need something broken to debug.
 
 Welcome to **Weird Mike's Pawn Shop**.
 
-Nobody is completely sure whether "Weird Mike" describes Mike or the pawn shop. Either way, the inventory is unusual and the software needs work.
+No one's completely sure whether "Weird Mike" describes Mike or the pawn shop. Either way, the inventory is unusual and the software needs work.
 
 Mike had his nephew, **Mook**, put together a program for the shop.
 
-It does not work.
+It...doesn't work.
 
-The broken program is already waiting for you in `main.js`. Mook left several mistakes in it, and they are all there from the beginning.
+If you open up `main.js` in the editor, you can see poor Mook's faulty code.
 
-**Do not start fixing things yet. Run the program first.**
+<Callout type="danger" title="Important">
+  <p className="m-0">
+    Don't start fixing things yet. <strong>Run the program first.</strong>
+  </p>
+</Callout>
 
-JavaScript does not make it to the shop heading. It stops before the program can really begin.
+<p className="m-0">Mike and Mook are expecting an output like this:</p>
 
-That first error is where the debugging begins.
+```text
+======WEIRD MIKE'S PAWN SHOP======
+Manager: Mike
+Number of Items: 4
+```
 
-You will keep this same `main.js` through the Error Messages & Stack Traces project. Each time you understand and fix one problem, run the program again and see how much farther JavaScript gets.
+<p className="m-0 mt-2">Instead, as you've noticed, they get this:</p>
 
-Before JavaScript can run your code, it first has to **parse** it. JavaScript has to read what you wrote and recognize it as valid JavaScript instructions.
+```bash
+SyntaxError: Unexpected identifier 'priceInPennies'
+/main.js:7:5
+```
 
-The rules for writing valid JavaScript are called **syntax**.
+So what does this strange, cryptic message mean? Let's peel back the curtain and break it down piece by piece.
 
-A `SyntaxError` means JavaScript found code that does not follow those rules closely enough for it to understand the program.
+The first thing we see is `SyntaxError`.
+
+This is the type of error JavaScript found. We'll talk more about what this error means in a bit.
+
+Next we see `Unexpected identifier 'priceInPennies'`.  This is JavaScript's first clue about what confused it: it found the name `priceInPennies` where it was expecting something else.
+
+Finally, JavaScript tells you where it got stuck: `/main.js:7:5`. This kind of location information is part of what developers call a **stack trace**.
+
+In this case:
+- `/main.js` is the file,
+- `7` is the line number, and
+- `5` is the character position on that line.
+
+We'll learn more about stack traces later on, but for now, the most important piece is the **line number**.
+
+The location doesn't always identify the actual mistake, but it's a good place to start looking.
+
+JavaScript doesn't even make it to the first `console.log()` because it can't get past this problem. It stops before the program can really begin.
+
+
+## SyntaxError
+Before JavaScript can run your code, it first has to **parse** it. That means reading what you wrote and recognizing it as valid JavaScript instructions. The rules for writing valid JavaScript are called **syntax**.
+
+A `SyntaxError` means JavaScript found code that doesn't follow those rules closely enough for it to understand the program.
+
+<Callout type="note" title="JavaScript follows instructions literally">
+  <p className="m-0">
+    Once JavaScript has parsed the file and starts running it, it generally works from top to bottom, roughly line by line and one statement at a time. We can read ahead, use context clues, and make inferences about what someone meant. JavaScript doesn't. The good news is that JavaScript does exactly what you tell it to. The bad news is that...it does <strong>exactly</strong> what you tell it to.
+  </p>
+</Callout>
 
 Common causes include:
 
@@ -43,7 +83,7 @@ Common causes include:
 
 <Callout type="tip" title="Read before you edit">
   <p className="m-0">
-    The error points to a location near the place where JavaScript became unable to continue. That location is evidence. Start there instead of scanning the entire file at random.
+    The error points to a location near the place where JavaScript couldn't continue. That location is evidence. Start there instead of scanning the entire file at random.
   </p>
 </Callout>
 
@@ -58,7 +98,7 @@ In Weird Mike's inventory, compare the first item object with the objects undern
   ]}
   expected={
     <div className="space-y-2">
-      <pre className="m-0 whitespace-pre-wrap">{`WEIRD MIKE'S PAWN SHOP`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`======WEIRD MIKE'S PAWN SHOP======`}</pre>
       <p className="m-0">The <code>SyntaxError</code> is gone, and JavaScript now stops with a <code>ReferenceError</code> about <code>managerName</code>.</p>
     </div>
   }
@@ -75,10 +115,61 @@ priceInPennies: 2223,`}</pre>
   </p>
 </HandbookChallenge>
 
+## Wrap up
 A `SyntaxError` is JavaScript saying, roughly:
 
-> **"I cannot understand this code well enough to run it."**
+> **"I can't understand this code well enough to run it."**
 
-After your fix, the shop heading appears before JavaScript stops again.
+After your fix, the shop heading appears!
 
-That means you got farther.
+...right before JavaScript stops again...
+
+Congratulations on fixing your first bug!
+
+Next, you'll meet and fix the `ReferenceError`.
+
+---
+
+## Technical Vocabulary
+
+<table>
+  <thead>
+    <tr>
+      <th>Term</th>
+      <th>Plain-English meaning</th>
+      <th>Tiny example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>parsing</td>
+      <td>JavaScript reading code to make sure it is written in a form it understands before running it</td>
+      <td>JavaScript parses <code>const price = 5;</code> before it runs it</td>
+    </tr>
+    <tr>
+      <td>syntax</td>
+      <td>The rules for writing valid JavaScript</td>
+      <td>Object properties need commas between them</td>
+    </tr>
+    <tr>
+      <td><code>SyntaxError</code></td>
+      <td>An error JavaScript reports when it cannot understand the code's syntax</td>
+      <td>A missing comma between object properties</td>
+    </tr>
+    <tr>
+      <td>identifier</td>
+      <td>A name JavaScript uses for something, such as a variable or property</td>
+      <td><code>priceInPennies</code> is an identifier</td>
+    </tr>
+    <tr>
+      <td>stack trace</td>
+      <td>Location information that helps you find where an error happened; a full stack trace can show several steps leading to the error</td>
+      <td><code>/main.js:7:5</code></td>
+    </tr>
+    <tr>
+      <td>line number</td>
+      <td>The number of the line JavaScript points to in a file</td>
+      <td>The <code>7</code> in <code>/main.js:7:5</code></td>
+    </tr>
+  </tbody>
+</table>
