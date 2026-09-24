@@ -1,0 +1,120 @@
+---
+id: JS.DB.TRC.2.TARGET
+title: Event Inspection · The Picky Cryptid Card
+short: Reproduce a click bug, inspect event.target, and trace a bad value back to the element that produced it.
+---
+
+# Event Inspection → The Picky Cryptid Card
+
+Turn **Confirmed only** back off.
+
+Click the empty space inside Bigfoot's card.
+
+The details panel works.
+
+Now click directly on the word **Bigfoot**.
+
+The program can crash.
+
+That is strange until you reproduce it carefully:
+
+- some clicks on the card work,
+- some clicks on the same card fail.
+
+You already know what to do with a repeatable error: read the error and use the stack trace as evidence.
+
+But the line where the program finally crashes is not necessarily where the bad value began.
+
+This time, trace backward.
+
+## What did you actually click?
+
+The handler begins with:
+
+```js
+cryptidList.addEventListener("click", (event) => {
+  const id = Number(event.target.dataset.id);
+
+  state.selectedId = id;
+  renderDetails();
+});
+```
+
+The important value is `event.target`.
+
+It is the specific element that received the click.
+
+A cryptid card contains several nested elements:
+
+```html
+<button class="cryptid-card" data-id="1">
+  <strong>Bigfoot</strong>
+  <span>Pacific Northwest</span>
+  <span>CONFIRMED</span>
+</button>
+```
+
+Click the button's empty space and the target can be the button.
+
+Click the word Bigfoot and the target is the `<strong>` inside the button.
+
+Only the button has `data-id`.
+
+The starter code already includes this helper:
+
+```js
+function findCryptidCard(element) {
+  return element.closest(".cryptid-card");
+}
+```
+
+You do not need to write a new DOM technique here. That helper's job is to take the exact clicked element and find the surrounding cryptid card.
+
+Your job is to prove why the current value is wrong, then use the existing helper in the event flow.
+
+<HandbookChallenge
+  title="Trace the clicked element"
+  hints={[
+    <>Pause at the first line of the click handler and inspect <code>event.target</code> after clicking directly on a cryptid name.</>,
+    <>Check whether that exact element has a <code>data-id</code> value.</>,
+    <>Use the provided <code>findCryptidCard()</code> helper before reading the card's <code>dataset.id</code>.</>,
+  ]}
+  expected={
+    <div className="space-y-2">
+      <p className="m-0">Clicking a cryptid's name, region, status, or card background all select the same cryptid.</p>
+      <p className="m-0">Clicking empty space in the Records panel does not crash the program.</p>
+    </div>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`cryptidList.addEventListener("click", (event) => {
+  const card = findCryptidCard(event.target);
+
+  if (!card) {
+    return;
+  }
+
+  const id = Number(card.dataset.id);
+
+  state.selectedId = id;
+  renderDetails();
+});`}</pre>
+  }
+>
+  <p className="m-0">
+    Reproduce the bug by clicking directly on a cryptid name. Use a breakpoint to inspect <code>event.target</code>, follow the bad ID value, and then update the handler so it reads the ID from the cryptid card instead of assuming the exact clicked element owns it.
+  </p>
+</HandbookChallenge>
+
+Notice how ERR and TRC worked together here.
+
+The stack trace showed you where the bad value finally caused a failure.
+
+Tracing showed you where that bad value entered the program.
+
+Those are not competing debugging techniques. They are different pieces of evidence.
+
+<Callout type="note" title="Checkpoint">
+  <p className="m-0">
+    Every part of a cryptid card should now be clickable without producing an error.
+  </p>
+</Callout>
