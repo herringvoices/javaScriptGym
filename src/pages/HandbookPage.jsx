@@ -18,10 +18,10 @@ import useResizableDesktopPanels from "../hooks/useResizableDesktopPanels";
 // Removed page-level heading TOC ("On this page"); keep file lean.
 
 const DESKTOP_PANEL_SIZES = [
-  { key: "toc", min: 220, defaultWeight: 0.75, defaultColumn: "minmax(220px,0.75fr)" },
-  { key: "handbook", min: 280, defaultWeight: 1, defaultColumn: "minmax(280px,1fr)" },
-  { key: "editor", min: 360, defaultWeight: 2, defaultColumn: "minmax(0,2fr)" },
-  { key: "console", min: 320, defaultWeight: 1.2, defaultColumn: "minmax(320px,1.2fr)" },
+  { key: "toc", min: 0, defaultWeight: 0.75, defaultColumn: "minmax(0,0.75fr)" },
+  { key: "handbook", min: 0, defaultWeight: 1, defaultColumn: "minmax(0,1fr)" },
+  { key: "editor", min: 0, defaultWeight: 2, defaultColumn: "minmax(0,2fr)" },
+  { key: "console", min: 0, defaultWeight: 1.2, defaultColumn: "minmax(0,1.2fr)" },
 ];
 
 export default function HandbookPage() {
@@ -141,10 +141,10 @@ export default function HandbookPage() {
 
   const desktopPanelSlots = useMemo(
     () => [
-      { key: "toc", visible: showTOC, preview: !showTOC },
-      { key: "handbook", visible: showHandbook, preview: !showHandbook },
-      { key: "editor", visible: showEditor, preview: !showEditor },
-      { key: "console", visible: showConsole, preview: !showConsole },
+      { key: "toc", visible: showTOC, preview: !showTOC, onCollapse: () => setShowTOC(false) },
+      { key: "handbook", visible: showHandbook, preview: !showHandbook, onCollapse: () => setShowHandbook(false) },
+      { key: "editor", visible: showEditor, preview: !showEditor, onCollapse: () => setShowEditor(false) },
+      { key: "console", visible: showConsole, preview: !showConsole, onCollapse: () => setShowConsole(false) },
     ],
     [showTOC, showHandbook, showEditor, showConsole]
   );

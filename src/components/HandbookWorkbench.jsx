@@ -28,7 +28,7 @@ export default function HandbookWorkbench({
   getDesktopPanelSlotProps,
   renderDesktopResizeHandleAfter,
 }) {
-  const [showFiles, setShowFiles] = useState(false);
+  const [showFiles, setShowFiles] = useState(true);
   const [bottomPanel, setBottomPanel] = useState(entry?.sandbox?.defaultPanel || DIAGRAM_PANEL.CONSOLE);
   const storageKey = entry ? (entry.standard ? `handbook:${entry.standard}:${entry.id}` : `project:${entry.id}`) : null;
   const model = useMemo(() => {
@@ -214,6 +214,7 @@ export default function HandbookWorkbench({
       onDelete={virtualWorkspace.remove}
       onActiveChange={(path) => setActiveFile(path)}
       showExplorer={showFiles}
+      onShowExplorerChange={setShowFiles}
       className="h-full flex-1"
       onEditorMount={(editor) => {
         editorRef.current = editor;

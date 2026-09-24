@@ -257,6 +257,28 @@
   touch-action: none;
 }
 
+.monaco-file-tree {
+  height: 12rem;
+  width: 100%;
+}
+
+.monaco-file-tree-rail {
+  height: 2.25rem;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .monaco-file-tree {
+    height: 100%;
+    width: var(--file-tree-width, 16rem);
+  }
+
+  .monaco-file-tree-rail {
+    height: 100%;
+    width: 2.25rem;
+  }
+}
+
 .desktop-resize-handle-line {
   position: absolute;
   bottom: 0.75rem;

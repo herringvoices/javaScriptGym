@@ -25,9 +25,9 @@ import useRuntimeConsole from "../hooks/useRuntimeConsole";
 // ChallengeTypes import removed (only CODE_AND_SEE exists now and not referenced directly)
 
 const CHALLENGE_DESKTOP_PANEL_SIZES = [
-  { key: "details", min: 220, defaultWeight: 1, defaultColumn: "minmax(280px,1fr)" },
-  { key: "editor", min: 360, defaultWeight: 2, defaultColumn: "minmax(0,2fr)" },
-  { key: "console", min: 320, defaultWeight: 1.2, defaultColumn: "minmax(320px,1.2fr)" },
+  { key: "details", min: 0, defaultWeight: 1, defaultColumn: "minmax(0,1fr)" },
+  { key: "editor", min: 0, defaultWeight: 2, defaultColumn: "minmax(0,2fr)" },
+  { key: "console", min: 0, defaultWeight: 1.2, defaultColumn: "minmax(0,1.2fr)" },
 ];
 
 const difficultyLabel = (value) => {
@@ -233,9 +233,7 @@ function ChallengeSandboxUI({
   previewFullScreen,
   setPreviewFullScreen,
 }) {
-  const [showExplorer, setShowExplorer] = useState(
-    challenge.sandbox?.showExplorer !== undefined ? challenge.sandbox.showExplorer : true
-  );
+  const [showExplorer, setShowExplorer] = useState(true);
   const [rightPanel, setRightPanel] = useState(
     challenge.sandbox?.defaultPanel ? challenge.sandbox.defaultPanel : DIAGRAM_PANEL.PREVIEW
   );
@@ -281,9 +279,9 @@ function ChallengeSandboxUI({
 
   const desktopPanelSlots = useMemo(
     () => [
-      { key: "details", visible: showDetailsColumn, preview: !showDetailsColumn },
-      { key: "editor", visible: showEditorColumn, preview: !showEditorColumn },
-      { key: "console", visible: showRunnerColumn, preview: !showRunnerColumn },
+      { key: "details", visible: showDetailsColumn, preview: !showDetailsColumn, onCollapse: () => setShowDetailsColumn(false) },
+      { key: "editor", visible: showEditorColumn, preview: !showEditorColumn, onCollapse: () => setShowEditorColumn(false) },
+      { key: "console", visible: showRunnerColumn, preview: !showRunnerColumn, onCollapse: () => setShowRunnerColumn(false) },
     ],
     [showDetailsColumn, showEditorColumn, showRunnerColumn]
   );
@@ -515,6 +513,7 @@ function ChallengeSandboxUI({
                   onDelete={onDelete}
                   onActiveChange={setActiveFile}
                   showExplorer={showExplorer}
+                  onShowExplorerChange={setShowExplorer}
                   className="h-full"
                   onEditorMount={(ed) => {
                     editorRef.current = ed;
@@ -748,6 +747,7 @@ function ChallengeSandboxUI({
                   onDelete={onDelete}
                   onActiveChange={setActiveFile}
                   showExplorer={showExplorer}
+                  onShowExplorerChange={setShowExplorer}
                   className="h-full"
                   onEditorMount={(ed) => {
                     editorRef.current = ed;

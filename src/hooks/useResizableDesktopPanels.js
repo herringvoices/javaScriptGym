@@ -3,6 +3,7 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 const HANDLE_COLUMN = "0px";
 const PREVIEW_COLUMN = "10px";
 const RESIZE_STEP = 0.02;
+const COLLAPSE_THRESHOLD = 1;
 
 function clamp(value, min, max) {
   if (max < min) return min;
@@ -23,6 +24,7 @@ export default function useResizableDesktopPanels({ panels, slots }) {
   const [resizeSignal, setResizeSignal] = useState(0);
   const [isResizing, setIsResizing] = useState(false);
   const resizeFrameRef = useRef(0);
+  const collapsedPanelKeyRef = useRef(null);
 
   const getNextVisibleSlot = useCallback(
     (index) => slots.slice(index + 1).find((slot) => slot.visible),
@@ -167,7 +169,21 @@ export default function useResizableDesktopPanels({ panels, slots }) {
 
   useLayoutEffect(() => {
     let raf = 0;
-    raf = requestAnimationFrame(() => {
+    let secondRaf = 0;
+    const collapsedKey = collapsedPanelKeyRef.current;
+    const collapsedPanelIsVisible = collapsedKey
+      ? slots.some((slot) => slot.key === collapsedKey && slot.visible)
+      : false;
+
+    // Keep ratios cleared while a drag-collapsed panel is hidden. Otherwise,
+    // measuring the remaining panels would make the restored panel's default
+    // weight compete with normalized resize ratios.
+    if (collapsedKey && !collapsedPanelIsVisible) {
+      emitResize();
+      return undefined;
+    }
+
+    const measure = () => {
       const measured = measureVisibleSizes();
       const measuredRatios = widthsToRatios(measured);
       if (Object.keys(measuredRatios).length) {
@@ -179,11 +195,22 @@ export default function useResizableDesktopPanels({ panels, slots }) {
         });
       }
       emitResize();
-    });
+    };
+
+    if (collapsedKey) {
+      collapsedPanelKeyRef.current = null;
+      setRatios({});
+      raf = requestAnimationFrame(() => {
+        secondRaf = requestAnimationFrame(measure);
+      });
+    } else {
+      raf = requestAnimationFrame(measure);
+    }
     return () => {
       if (raf) cancelAnimationFrame(raf);
+      if (secondRaf) cancelAnimationFrame(secondRaf);
     };
-  }, [emitResize, measureVisibleSizes, visibleSignature, widthsToRatios]);
+  }, [emitResize, measureVisibleSizes, slots, visibleSignature, widthsToRatios]);
 
   useLayoutEffect(
     () => () => {
@@ -209,12 +236,18 @@ export default function useResizableDesktopPanels({ panels, slots }) {
       const leftMin = leftPanel.min ?? 0;
       const rightMin = rightPanel.min ?? 0;
       const maxLeft = Math.max(leftMin, pairTotal - rightMin);
+      const leftSlot = slots.find((slot) => slot.key === leftKey);
+      const rightSlot = slots.find((slot) => slot.key === rightKey);
+      let finalLeft = leftStart;
+      let finalRight = rightStart;
 
       setIsResizing(true);
       const handleMove = (moveEvent) => {
         const delta = getPointerX(moveEvent) - startX;
         const left = clamp(leftStart + delta, leftMin, maxLeft);
         const right = pairTotal - left;
+        finalLeft = left;
+        finalRight = right;
         const nextWidths = {
           ...measured,
           [leftKey]: left,
@@ -234,6 +267,18 @@ export default function useResizableDesktopPanels({ panels, slots }) {
         window.removeEventListener("pointermove", handleMove);
         window.removeEventListener("pointerup", handleUp);
         window.removeEventListener("pointercancel", handleUp);
+        const collapsedSlot = finalLeft <= COLLAPSE_THRESHOLD
+          ? leftSlot
+          : finalRight <= COLLAPSE_THRESHOLD
+            ? rightSlot
+            : null;
+        if (collapsedSlot?.onCollapse) {
+          // A restore should use the configured default proportions, not the
+          // near-zero ratio produced by the collapse gesture.
+          collapsedPanelKeyRef.current = collapsedSlot.key;
+          setRatios({});
+          collapsedSlot.onCollapse();
+        }
         emitResize();
       };
 
@@ -243,7 +288,7 @@ export default function useResizableDesktopPanels({ panels, slots }) {
       window.addEventListener("pointerup", handleUp, { once: true });
       window.addEventListener("pointercancel", handleUp, { once: true });
     },
-    [emitResize, ensureMeasuredWidths, panelsByKey, widthsToRatios]
+    [emitResize, ensureMeasuredWidths, panelsByKey, slots, widthsToRatios]
   );
 
   const getHandleProps = useCallback(

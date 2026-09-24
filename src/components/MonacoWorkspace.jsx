@@ -1,16 +1,22 @@
 import React from "react";
 import Editor from "@monaco-editor/react";
-import { VscChevronDown, VscChevronRight, VscEdit, VscFile, VscFolder, VscFolderOpened, VscNewFile, VscNewFolder, VscTrash, VscClose } from "react-icons/vsc";
+import { VscChevronDown, VscChevronRight, VscEdit, VscFile, VscFolder, VscFolderOpened, VscLayoutSidebarLeft, VscLayoutSidebarLeftOff, VscNewFile, VscNewFolder, VscTrash, VscClose } from "react-icons/vsc";
 import { buildAutoImportSuggestions } from "../lib/autoImports";
 
-export default function MonacoWorkspace({ files = {}, folders = [], resetKey, onChange, onCreateFile, onCreateFolder, onRename, onDelete, onActiveChange, showExplorer = true, className = "", onEditorMount, navigationRequest }) {
+const DEFAULT_EXPLORER_WIDTH = 256;
+const EXPLORER_RAIL_WIDTH = 36;
+
+export default function MonacoWorkspace({ files = {}, folders = [], resetKey, onChange, onCreateFile, onCreateFolder, onRename, onDelete, onActiveChange, showExplorer = true, onShowExplorerChange, className = "", onEditorMount, navigationRequest }) {
   const [activePath, setActivePath] = React.useState(() => firstVisibleFile(files));
   const [openPaths, setOpenPaths] = React.useState(() => new Set(firstVisibleFile(files) ? [firstVisibleFile(files)] : []));
   const [expanded, setExpanded] = React.useState(() => new Set(["/"]));
   const [draft, setDraft] = React.useState(null);
   const [error, setError] = React.useState("");
   const [monacoApi, setMonacoApi] = React.useState(null);
+  const [explorerOpen, setExplorerOpen] = React.useState(showExplorer);
+  const [explorerWidth, setExplorerWidth] = React.useState(DEFAULT_EXPLORER_WIDTH);
   const editorRef = React.useRef(null);
+  const workspaceRef = React.useRef(null);
   const filesRef = React.useRef(files);
   const activePathRef = React.useRef(activePath);
   filesRef.current = files;
@@ -19,6 +25,7 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
   const activeFile = activePath ? files[activePath] : null;
 
   React.useEffect(() => { setDraft(null); setError(""); }, [resetKey]);
+  React.useEffect(() => { setExplorerOpen(showExplorer); }, [showExplorer]);
 
   React.useEffect(() => {
     if (!navigationRequest || !files[navigationRequest.file] || files[navigationRequest.file].hidden) return;
@@ -122,11 +129,78 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
     event.stopPropagation();
     window.scrollBy({ top: event.deltaY * multiplier, left: event.deltaX * multiplier, behavior: "auto" });
   }, []);
+  const scheduleEditorLayout = React.useCallback(() => {
+    requestAnimationFrame(() => {
+      try { editorRef.current?.layout(); } catch (cause) { void cause; }
+    });
+  }, []);
+  const setExplorerVisibility = React.useCallback((open) => {
+    setExplorerOpen(open);
+    onShowExplorerChange?.(open);
+    scheduleEditorLayout();
+  }, [onShowExplorerChange, scheduleEditorLayout]);
+  const collapseExplorer = React.useCallback(() => {
+    setExplorerWidth(EXPLORER_RAIL_WIDTH);
+    setExplorerVisibility(false);
+  }, [setExplorerVisibility]);
+  const openExplorer = React.useCallback(() => {
+    setExplorerWidth(DEFAULT_EXPLORER_WIDTH);
+    setExplorerVisibility(true);
+  }, [setExplorerVisibility]);
+  const beginExplorerResize = React.useCallback((event) => {
+    event.preventDefault();
+    const root = workspaceRef.current;
+    if (!root) return;
+    const startX = event.clientX;
+    const startWidth = explorerWidth;
+    const maxWidth = Math.max(0, root.getBoundingClientRect().width - 120);
+    let finalWidth = startWidth;
+    let dragOpen = explorerOpen;
+
+    const handleMove = (moveEvent) => {
+      finalWidth = Math.min(Math.max(startWidth + moveEvent.clientX - startX, 0), maxWidth);
+      const nextOpen = finalWidth > EXPLORER_RAIL_WIDTH;
+      if (nextOpen !== dragOpen) {
+        dragOpen = nextOpen;
+        setExplorerVisibility(nextOpen);
+      }
+      setExplorerWidth(nextOpen ? finalWidth : EXPLORER_RAIL_WIDTH);
+      scheduleEditorLayout();
+    };
+    const finish = () => {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", finish);
+      window.removeEventListener("pointercancel", finish);
+      scheduleEditorLayout();
+    };
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", finish, { once: true });
+    window.addEventListener("pointercancel", finish, { once: true });
+  }, [explorerOpen, explorerWidth, scheduleEditorLayout, setExplorerVisibility]);
+  const resizeExplorerWithKeyboard = React.useCallback((event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const delta = event.key === "ArrowLeft" ? -24 : 24;
+    const maxWidth = Math.max(0, (workspaceRef.current?.getBoundingClientRect().width ?? DEFAULT_EXPLORER_WIDTH) - 120);
+    const nextWidth = Math.min(Math.max(explorerWidth + delta, 0), maxWidth);
+    if (nextWidth <= EXPLORER_RAIL_WIDTH) collapseExplorer();
+    else {
+      if (!explorerOpen) setExplorerVisibility(true);
+      setExplorerWidth(nextWidth);
+      scheduleEditorLayout();
+    }
+  }, [collapseExplorer, explorerOpen, explorerWidth, scheduleEditorLayout, setExplorerVisibility]);
   const visibleTabs = [...openPaths].filter((path) => !files[path]?.hidden);
 
-  return <div className={`flex w-full min-h-0 grow flex-col lg:flex-row ${className}`}>
-    {showExplorer && <aside className="flex h-48 w-full shrink-0 flex-col border-b border-slate-800 bg-slate-950/80 lg:h-full lg:w-64 lg:border-b-0 lg:border-r">
-      <div className="flex items-center justify-between border-b border-slate-800 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400"><span>Explorer</span><span className="flex gap-1"><IconButton title="New file" onClick={() => beginCreate("file")}><VscNewFile /></IconButton><IconButton title="New folder" onClick={() => beginCreate("folder")}><VscNewFolder /></IconButton></span></div>
+  return <div ref={workspaceRef} className={`flex w-full min-h-0 grow flex-col lg:flex-row ${className}`}>
+    {explorerOpen ? <>
+    <aside data-file-tree="open" className="monaco-file-tree flex shrink-0 flex-col border-b border-slate-800 bg-slate-950/80 lg:border-b-0 lg:border-r" style={{ "--file-tree-width": `${explorerWidth}px` }}>
+      <div className="flex items-center justify-between border-b border-slate-800 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400"><span>Explorer</span><span className="flex gap-1"><IconButton title="New file" onClick={() => beginCreate("file")}><VscNewFile /></IconButton><IconButton title="New folder" onClick={() => beginCreate("folder")}><VscNewFolder /></IconButton><IconButton title="Collapse file tree" onClick={collapseExplorer}><VscLayoutSidebarLeftOff /></IconButton></span></div>
       {error && <p className="px-3 pt-2 text-xs text-rose-300">{error}</p>}
       <ul className="min-h-0 overflow-auto p-1 text-sm">
         {draft?.parent === "/" && <DraftRow draft={draft} setDraft={setDraft} submit={submitDraft} cancel={() => setDraft(null)} depth={0} />}
@@ -138,6 +212,17 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
           {draft?.parent === row.path && <DraftRow draft={draft} setDraft={setDraft} submit={submitDraft} cancel={() => setDraft(null)} depth={row.depth + 1} />}
         </li>)}
       </ul>
+    </aside>
+    <div className="relative z-20 hidden h-full w-0 shrink-0 lg:flex">
+      <button type="button" role="separator" aria-orientation="vertical" aria-label="Resize file tree" onPointerDown={beginExplorerResize} onKeyDown={resizeExplorerWithKeyboard} className="absolute left-1/2 top-0 h-full w-3 -translate-x-1/2 cursor-col-resize touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/80">
+        <span aria-hidden="true" className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-700/70" />
+      </button>
+    </div>
+    </> : <aside data-file-tree="collapsed" className="monaco-file-tree-rail relative flex shrink-0 items-start justify-center border-b border-slate-800 bg-slate-950/80 py-1 lg:border-b-0 lg:border-r">
+      <IconButton title="Open file tree" onClick={openExplorer}><VscLayoutSidebarLeft /></IconButton>
+      <button type="button" role="separator" aria-orientation="vertical" aria-label="Resize file tree" onPointerDown={beginExplorerResize} onKeyDown={resizeExplorerWithKeyboard} className="absolute right-0 top-0 hidden h-full w-3 translate-x-1/2 cursor-col-resize touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/80 lg:block">
+        <span aria-hidden="true" className="absolute inset-y-0 right-1/2 w-px translate-x-1/2 bg-slate-700/70" />
+      </button>
     </aside>}
     <div className="flex min-w-0 min-h-0 grow flex-col"><div className="flex min-h-9 items-center gap-1 overflow-x-auto border-b border-slate-800 bg-slate-950/70 px-2">{visibleTabs.map((path) => <div key={path} className={`flex items-center gap-1 rounded px-2 py-1 text-sm ${path === activePath ? "bg-slate-800 text-white" : "text-slate-300 hover:bg-slate-800/50"}`}><button type="button" onClick={() => select(path)} title={path}>{basename(path)}</button><button type="button" className="text-slate-500 hover:text-white" aria-label={`Close ${basename(path)}`} onClick={() => setOpenPaths((prev) => { const next = new Set(prev); next.delete(path); if (path === activePath) setActivePath([...next][0] || firstVisibleFile(files)); return next; })}><VscClose /></button></div>)}</div>
       <div className="min-h-0 grow" onWheelCapture={handOffWheelAtEditorBoundary}>{activeFile ? <Editor path={activeFile.path} value={activeFile.code} language={languageFor(activeFile.path)} theme="dracula" beforeMount={beforeMount} onMount={mount} onChange={(value) => onChange?.(activeFile.path, value ?? "")} options={{ readOnly: Boolean(activeFile.readOnly), fontSize: 16, minimap: { enabled: false }, scrollBeyondLastLine: false, wordWrap: "on" }} height="100%" /> : <div className="p-4 text-slate-400">No file selected.</div>}</div>
