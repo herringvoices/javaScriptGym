@@ -1,0 +1,160 @@
+---
+id: JS.DB.TRC.1.LOGS
+title: Console Tracing · Find the Missing Cryptid
+short: Add temporary logs at useful points to see what a loop actually examines.
+---
+
+# Console Tracing → Find the Missing Cryptid
+
+The Census Office has eight records.
+
+Six of them say:
+
+```js
+confirmed: true
+```
+
+But the dashboard reports:
+
+```text
+8 records • 5 confirmed • 8 shown
+```
+
+There is no error message because nothing JavaScript considers illegal has happened.
+
+The program calculated a number.
+
+It was simply the wrong number.
+
+## Ask the code what it is doing
+
+The summary gets its confirmed count from this function:
+
+```js
+function countConfirmed(records) {
+  let count = 0;
+
+  for (let i = 0; i < records.length - 1; i++) {
+    if (records[i].confirmed) {
+      count++;
+    }
+  }
+
+  return count;
+}
+```
+
+You could read that function over and over and try to spot the mistake.
+
+Sometimes that works.
+
+A stronger debugging move is to collect evidence about what the loop **actually does**.
+
+A `console.log()` inside a loop can show you each pass as it happens.
+
+For example:
+
+```js
+const names = ["Mothman", "Bigfoot", "Nessie"];
+
+for (let i = 0; i < names.length; i++) {
+  console.log(i, names[i]);
+}
+```
+
+produces:
+
+```text
+0 Mothman
+1 Bigfoot
+2 Nessie
+```
+
+That log is useful because it answers a specific question:
+
+> Which indexes and values did this loop reach?
+
+Good tracing logs are temporary evidence. They should show the value you are investigating and enough context to know where it came from.
+
+<HandbookChallenge
+  title="Trace the confirmed count"
+  hints={[
+    <>Log the loop's current position and the record being examined.</>,
+    <>The useful evidence is not only whether a record is confirmed. You also want to know <em>which</em> record the loop reached.</>,
+    <>A useful log can include <code>i</code>, <code>records[i].name</code>, and <code>records[i].confirmed</code>.</>,
+  ]}
+  expected={
+    <div className="space-y-2">
+      <p className="m-0">Your console shows every record the loop examines.</p>
+      <p className="m-0">The final record, <strong>Flatwoods Monster</strong>, never appears in the trace.</p>
+    </div>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`for (let i = 0; i < records.length - 1; i++) {
+  console.log(i, records[i].name, records[i].confirmed);
+
+  if (records[i].confirmed) {
+    count++;
+  }
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Add a temporary <code>console.log()</code> inside <code>countConfirmed()</code> that lets you see which record is examined on each pass.
+  </p>
+  <p className="m-0">
+    Run the program and compare the trace with the <code>cryptids</code> array. Do not fix the loop yet.
+  </p>
+</HandbookChallenge>
+
+Now you have evidence.
+
+The loop reaches indexes `0` through `6`.
+
+The array also has an item at index `7`.
+
+That last item is Flatwoods Monster, and it is confirmed.
+
+The count is wrong because the loop stops too early.
+
+This is an **off-by-one error**: the loop boundary is one position away from where it should be.
+
+<HandbookChallenge
+  title="Fix the loop boundary"
+  hints={[
+    <>The last valid array index is one less than the array's length, but the loop condition decides whether that index gets a turn.</>,
+    <>Compare this loop with the normal pattern <code>i &lt; array.length</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`8 records • 6 confirmed • 8 shown`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`for (let i = 0; i < records.length; i++) {
+  if (records[i].confirmed) {
+    count++;
+  }
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Correct the loop so every census record gets examined. Remove the temporary tracing log when you are done, then run the program again.
+  </p>
+</HandbookChallenge>
+
+<Callout type="note" title="Checkpoint">
+  <p className="m-0">
+    The dashboard should now report <strong>8 records · 6 confirmed · 8 shown</strong>. Leave the rest of the suspicious code alone.
+  </p>
+</Callout>
+
+## Wrap up
+
+A useful `console.log()` is not random noise.
+
+You had a question:
+
+> Which records does this loop examine?
+
+Your log answered it.
+
+Next, you will get the same kind of evidence without changing the code at all.
