@@ -13,6 +13,7 @@ export const handbookChapters = {
   'JS.AR.ACC': () => import('./JS.AR.ACC.mdx'),
   'JS.AR.MTH': () => import('./JS.AR.MTH.mdx'),
   'JS.DB.ERR': () => import('./JS.DB.ERR.mdx'),
+  'JS.DB.TRC': () => import('./JS.DB.TRC.mdx'),
   'JS.SD.ELM': () => import('./JS.SD.ELM.mdx'),
   'JS.SD.EVH': () => import('./JS.SD.EVH.mdx'),
 };
@@ -29,6 +30,7 @@ export const handbookOrder = [
   'JS.AR.ACC',
   'JS.AR.MTH',
   'JS.DB.ERR',
+  'JS.DB.TRC',
   'JS.SD.ELM',
   'JS.SD.EVH',
 ];
@@ -46,6 +48,7 @@ export const handbookEntries = {
   'JS.AR.ACC': () => import('./entries/JS.AR.ACC.js').then(m => m.default),
   'JS.AR.MTH': () => import('./entries/JS.AR.MTH.js').then(m => m.default),
   'JS.DB.ERR': () => import('./entries/JS.DB.ERR.js').then(m => m.default),
+  'JS.DB.TRC': () => import('./entries/JS.DB.TRC.js').then(m => m.default),
 
   'JS.SD.ELM': () => import('./entries/JS.SD.ELM.js').then(m => m.default),
 
@@ -271,6 +274,48 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.DB.ERR.mdx'),
+  },
+
+
+  'JS.DB.TRC': {
+    chapters: [
+      {
+        id: 'console-tracing',
+        title: 'Console Tracing · Find the Missing Cryptid',
+        load: () => import('./standards/JS.DB.TRC/console-tracing.mdx'),
+      },
+      {
+        id: 'devtools-breakpoints',
+        title: 'DevTools · Pause the Census',
+        load: () => import('./standards/JS.DB.TRC/devtools-breakpoints.mdx'),
+      },
+      {
+        id: 'region-filter',
+        title: 'Tracing Values · Where Did the Northeast Go?',
+        load: () => import('./standards/JS.DB.TRC/region-filter.mdx'),
+      },
+      {
+        id: 'checkbox-state-sync',
+        title: 'State & Screen · The Checkbox That Lies',
+        load: () => import('./standards/JS.DB.TRC/checkbox-state-sync.mdx'),
+      },
+      {
+        id: 'event-target',
+        title: 'Event Inspection · The Picky Cryptid Card',
+        load: () => import('./standards/JS.DB.TRC/event-target.mdx'),
+      },
+      {
+        id: 'missing-last-seen',
+        title: 'Missing Data · The Dover Demon Incident',
+        load: () => import('./standards/JS.DB.TRC/missing-last-seen.mdx'),
+      },
+      {
+        id: 'stale-details',
+        title: 'Independent Debugging · The Ghost in the Details Panel',
+        load: () => import('./standards/JS.DB.TRC/stale-details.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.DB.TRC.mdx'),
   },
 
   'JS.SD.ELM': {
