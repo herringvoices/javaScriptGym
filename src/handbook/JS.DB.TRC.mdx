@@ -1,0 +1,112 @@
+---
+id: JS.DB.TRC
+title: Debugging · Tracing & Inspection
+short: Follow a running program with logs, breakpoints, stepping, and inspected values when JavaScript does not tell you what went wrong.
+---
+
+# Debugging → Following the Program
+
+At Weird Mike's Pawn Shop, JavaScript was surprisingly helpful.
+
+The program broke, JavaScript complained, and the error message gave you evidence about where to start looking.
+
+This time, JavaScript is less considerate.
+
+Welcome to the **National Cryptid Census**.
+
+The Census Office tracks reports of Bigfoot, Mothman, the Jersey Devil, and several creatures whose paperwork is somehow more mysterious than they are. Someone already built the census dashboard.
+
+It loads.
+
+It has data.
+
+It responds to clicks.
+
+And some of what it says is wrong.
+
+There is no red error waiting to explain the first problem. JavaScript is following the instructions perfectly. The trouble is that some of those instructions are bad.
+
+That means you need a different kind of debugging evidence.
+
+---
+
+## When there is no error message
+
+Suppose a program contains eight records, but the page says there are only seven.
+
+JavaScript does not know that seven is wrong. It cannot compare the program with the programmer's intention.
+
+You have to do that.
+
+A useful question is:
+
+> **At what point does the program's actual state stop matching what I expected?**
+
+To answer it, you will learn two ways to watch a program work:
+
+- add temporary `console.log()` calls at useful points,
+- pause the program in DevTools and inspect it one step at a time.
+
+The goal is not to stare at more code.
+
+The goal is to collect better evidence.
+
+---
+
+## Your project
+
+Open `main.js`.
+
+Everything for the Census dashboard lives in that one file. Keep it that way throughout this debugging project.
+
+You will work on the same program from beginning to end. Each fix lets you investigate the next problem.
+
+<Callout type="danger" title="Do not fix ahead">
+  <p className="m-0">
+    You will probably notice suspicious code before the lesson asks you to investigate it. Leave it alone for now. Debugging is most useful when you can connect one symptom to one cause.
+  </p>
+</Callout>
+
+On the first run, the dashboard should show all eight records.
+
+But the summary says:
+
+```text
+8 records • 5 confirmed • 8 shown
+```
+
+Look at the data.
+
+There are **six** records with `confirmed: true`.
+
+Nothing crashed.
+
+That is where tracing begins.
+
+---
+
+## The debugging rhythm
+
+For the rest of this project, keep returning to the same questions:
+
+1. What should happen?
+2. What actually happened?
+3. Where does the program decide or calculate that result?
+4. What values reach that code?
+5. At what step do expected and actual behavior separate?
+6. What is the smallest change that fixes the cause?
+
+You are not trying to become fast at clicking debugger buttons.
+
+You are learning to make the program show you what it is really doing.
+
+---
+
+## Technical Vocabulary
+
+| Term | Plain-English meaning | Tiny example |
+| --- | --- | --- |
+| tracing | Following execution or values through a program to see how a result was produced | Logging each item a loop examines |
+| inspection | Looking at the current values in a running program | Checking `state.region` while paused |
+| expected behavior | What the program should do | Six confirmed records |
+| actual behavior | What the program really does | Five confirmed records |
