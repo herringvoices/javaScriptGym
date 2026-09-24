@@ -1,0 +1,106 @@
+---
+id: JS.DB.TRC.2.NULL
+title: Missing Data · The Dover Demon Incident
+short: Combine stack-trace evidence with variable inspection to handle a real null value instead of assuming data is complete.
+---
+
+# Missing Data → The Dover Demon Incident
+
+Set the region to **Northeast**.
+
+Click **Dover Demon**.
+
+Now the program throws an error.
+
+This one should feel familiar from ERR.
+
+Read the error.
+
+Use the stack trace to find the line where JavaScript finally stopped.
+
+Then do one thing you could not do as comfortably before:
+
+> Pause the program before the failure and inspect the value that is about to cause it.
+
+The suspicious function is:
+
+```js
+function formatLastSeen(cryptid) {
+  return cryptid.lastSeen.trim();
+}
+```
+
+Most records have a string such as:
+
+```js
+lastSeen: "2026-09-12"
+```
+
+Dover Demon does not.
+
+## Inspect before you change
+
+Set a breakpoint inside `formatLastSeen()`.
+
+Click Dover Demon again.
+
+Inspect:
+
+```js
+cryptid.lastSeen
+```
+
+The value is:
+
+```js
+null
+```
+
+That matters.
+
+The program is not dealing with a misspelled method. It is dealing with a record that genuinely has no last-sighting value.
+
+Changing the data to invent a date would hide the bug instead of handling it.
+
+The formatter needs to account for valid missing data.
+
+<HandbookChallenge
+  title="Handle the missing sighting"
+  hints={[
+    <>Pause inside <code>formatLastSeen()</code> and confirm the value before changing the function.</>,
+    <>The record is allowed to have <code>null</code>. The formatter should decide what text to show in that case.</>,
+    <>Check for <code>null</code> before calling a string method.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`Dover Demon
+Region: Northeast
+Status: UNCONFIRMED
+Reported sightings: 3
+Last seen: No recent sighting on file`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function formatLastSeen(cryptid) {
+  if (cryptid.lastSeen === null) {
+    return "No recent sighting on file";
+  }
+
+  return cryptid.lastSeen;
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Use the error message and breakpoint together to confirm the value causing the failure. Then update <code>formatLastSeen()</code> so missing sighting data produces useful text instead of an error.
+  </p>
+</HandbookChallenge>
+
+<Callout type="tip" title="Missing data is not automatically bad data">
+  <p className="m-0">
+    A <code>null</code> value can be intentional. The bug was not that Dover Demon lacked a date. The bug was that the program treated every record as though a date must exist.
+  </p>
+</Callout>
+
+<Callout type="note" title="Checkpoint">
+  <p className="m-0">
+    You should be able to open every cryptid's details without crashing the dashboard.
+  </p>
+</Callout>
