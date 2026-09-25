@@ -14,6 +14,7 @@ export const handbookChapters = {
   'JS.AR.MTH': () => import('./JS.AR.MTH.mdx'),
   'JS.DB.ERR': () => import('./JS.DB.ERR.mdx'),
   'JS.DB.TRC': () => import('./JS.DB.TRC.mdx'),
+  'JS.DB.BUG': () => import('./JS.DB.BUG.mdx'),
   'JS.SD.ELM': () => import('./JS.SD.ELM.mdx'),
   'JS.SD.EVH': () => import('./JS.SD.EVH.mdx'),
 };
@@ -31,6 +32,7 @@ export const handbookOrder = [
   'JS.AR.MTH',
   'JS.DB.ERR',
   'JS.DB.TRC',
+  'JS.DB.BUG',
   'JS.SD.ELM',
   'JS.SD.EVH',
 ];
@@ -49,6 +51,7 @@ export const handbookEntries = {
   'JS.AR.MTH': () => import('./entries/JS.AR.MTH.js').then(m => m.default),
   'JS.DB.ERR': () => import('./entries/JS.DB.ERR.js').then(m => m.default),
   'JS.DB.TRC': () => import('./entries/JS.DB.TRC.js').then(m => m.default),
+  'JS.DB.BUG': () => import('./entries/JS.DB.BUG.js').then(m => m.default),
 
   'JS.SD.ELM': () => import('./entries/JS.SD.ELM.js').then(m => m.default),
 
@@ -296,6 +299,11 @@ export const handbookStructure = {
       },
     ],
     loadIntro: () => import('./JS.DB.TRC.mdx'),
+  },
+
+  'JS.DB.BUG': {
+    chapters: [],
+    loadIntro: () => import('./JS.DB.BUG.mdx'),
   },
 
   'JS.SD.ELM': {

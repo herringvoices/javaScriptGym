@@ -1,0 +1,106 @@
+---
+id: JS.DB.BUG
+title: Debugging · Lil' Florian's Video Rental Bug Hunt
+short: Use error messages, expected output, and purposeful console traces to repair a broken program.
+---
+
+# Debugging → Lil' Florian's Video Rental Bug Hunt
+
+Lil' Florian's Video Rental specializes in movies no one has heard of...and those that _have_ probably only remember as a weird fever dream. Before opening for the evening, Florian needs a report showing which movies have enough copies and which ones need more.
+
+The program is already written, but it doesn't work yet.
+
+This time, there isn't a new JavaScript tool to learn first. The challenge is to use the tools you already have:
+
+- reproduce the problem,
+- read the error message,
+- compare the actual output with the expected output,
+- add purposeful `console.log()` statements,
+- fix one cause at a time,
+- and run the program again after every change.
+
+The starter code contains **three bugs**. They aren't three versions of the same mistake. The first one stops the program. The other two let it run while producing a report that is quietly wrong.
+
+<Callout type="tip" title="Debug in the order JavaScript reveals">
+  <p className="m-0">
+    Don't try to find all three bugs before you run the program. Fix the first problem you can prove, then run again. Each run gives you new evidence about what to investigate next.
+  </p>
+</Callout>
+
+<HandbookChallenge
+  title="Repair Lil' Florian's copy inventory report"
+  hints={[
+    <>Start with the first red error. Compare the name used in the final function call with the name of the array declared at the top of the file.</>,
+    <>Once the program runs, count the movies and the movie lines in the report. For an array with four items, a classic <code>for</code> loop needs to visit indexes <code>0</code> through <code>3</code>.</>,
+    <>Inside the loop, log the current movie and the value passed to <code>getCopyStatus()</code>. Does that property name exist on the movie objects?</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`======LIL' FLORIAN'S COPY INVENTORY======
+The Moon Owes Me Five Dollars: 2 copies — ORDER MORE
+Attack of the Sentient Cardigan: 5 copies — READY TO RENT
+Tuesday Is Cancelled: 0 copies — ORDER MORE
+My Uncle Is a Time Machine: 3 copies — READY TO RENT
+Movies checked: 4
+Movies needing copies: 2`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function printCopyInventory(movies) {
+  let orderMoreCount = 0;
+
+  console.log("======LIL' FLORIAN'S COPY INVENTORY======");
+
+  for (let i = 0; i < movies.length; i++) {
+    const movie = movies[i];
+    const status = getCopyStatus(movie.copiesAvailable);
+
+    if (status === "ORDER MORE") {
+      orderMoreCount++;
+    }
+
+    console.log(
+      \`\${movie.title}: \${movie.copiesAvailable} copies — \${status}\`
+    );
+  }
+
+  console.log(\`Movies checked: \${movies.length}\`);
+  console.log(\`Movies needing copies: \${orderMoreCount}\`);
+}
+
+printCopyInventory(movies);`}</pre>
+  }
+>
+  <ol className="m-0 space-y-2 pl-5">
+    <li>Run the starter code. Read the first error and use its location to find the first bug.</li>
+    <li>Make the smallest change that fixes that cause, then run the program again.</li>
+    <li>When the program reaches the end, compare its output with the expected report line by line.</li>
+    <li>
+      Add temporary logs inside the loop. Use them to answer three questions: Which loop number is running? Which movie is JavaScript examining? What value reaches <code>getCopyStatus()</code>?
+    </li>
+    <li>Fix one proven cause at a time and run after every change.</li>
+    <li>When the report matches the expected result, remove your temporary debugging logs and run once more.</li>
+  </ol>
+</HandbookChallenge>
+
+## Before you call it fixed
+
+A matching report is important, but debugging also means understanding why the repairs worked. Before you open the solution, make sure you can explain:
+
+1. Why the original program stopped before printing anything.
+2. Why one inventory item disappeared even after the program could run.
+3. Why every movie originally received the same copy status.
+4. Which evidence led you to each cause.
+
+If you can explain those four things, you didn't guess your way to working code. You debugged it.
+
+## The rhythm to keep
+
+Real debugging rarely means staring harder until the answer appears. It is a loop:
+
+1. **Reproduce** the problem.
+2. **Observe** the actual behavior.
+3. **Compare** it with the expected behavior.
+4. **Collect evidence** with errors, output, and temporary logs.
+5. **Fix one cause.**
+6. **Run again.**
+
+That loop will keep working when the programs get bigger—even when the bugs get weirder.
