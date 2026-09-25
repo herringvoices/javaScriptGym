@@ -1,110 +1,74 @@
 ---
 id: JS.DB.TRC
 title: Debugging · Tracing & Inspection
-short: Follow a running program with logs, breakpoints, stepping, and inspected values when JavaScript does not tell you what went wrong.
+short: Follow a running program with purposeful logs when JavaScript does not tell you what went wrong.
 ---
 
 # Debugging → Following the Program
 
-At Weird Mike's Pawn Shop, JavaScript was surprisingly helpful.
-
-The program broke, JavaScript complained, and the error message gave you evidence about where to start looking.
+At Weird Mike's Pawn Shop, JavaScript was surprisingly helpful. The program broke, JavaScript complained, and the error message gave you somewhere to start.
 
 This time, JavaScript is less considerate.
 
-Welcome to the **National Cryptid Census**.
+Welcome to the **National Cryptid Census**. It tracks eight suspicious creatures, their regions, and the number of reported sightings for each one.
 
-The Census Office tracks reports of Bigfoot, Mothman, the Jersey Devil, and several creatures whose paperwork is somehow more mysterious than they are. Someone already built the census dashboard.
-
-It loads.
-
-It has data.
-
-It responds to clicks.
-
-And some of what it says is wrong.
-
-There is no red error waiting to explain the first problem. JavaScript is following the instructions perfectly. The trouble is that some of those instructions are bad.
-
-That means you need a different kind of debugging evidence.
-
----
-
-## When there is no error message
-
-Suppose a program contains eight records, but the page says there are only seven.
-
-JavaScript does not know that seven is wrong. It cannot compare the program with the programmer's intention.
-
-You have to do that.
-
-A useful question is:
-
-> **At what point does the program's actual state stop matching what I expected?**
-
-To answer it, you will learn two ways to watch a program work:
-
-- add temporary `console.log()` calls at useful points,
-- pause the program in DevTools and inspect it one step at a time.
-
-The goal is not to stare at more code.
-
-The goal is to collect better evidence.
-
----
-
-## Your project
-
-Open `main.js`.
-
-Everything for the Census dashboard lives in that one file. Keep it that way throughout this debugging project.
-
-You will work on the same program from beginning to end. Each fix lets you investigate the next problem.
-
-<Callout type="note" title="You are debugging existing code">
-  <p className="m-0">
-    The Census app already contains its page rendering and event-handling machinery. You are not being asked to build that machinery from scratch here. When a challenge depends on an unfamiliar helper, the helper is already provided so you can focus on tracing what the existing program does.
-  </p>
-</Callout>
-
-<Callout type="danger" title="Do not fix ahead">
-  <p className="m-0">
-    You will probably notice suspicious code before the lesson asks you to investigate it. Leave it alone for now. Debugging is most useful when you can connect one symptom to one cause.
-  </p>
-</Callout>
-
-On the first run, the dashboard should show all eight records.
-
-But the summary says:
+Run it now. You should see:
 
 ```text
-8 records • 5 confirmed • 8 shown
+======NATIONAL CRYPTID CENSUS======
+Records: 8
+Confirmed: 5
+======REQUESTED RECORD======
+No record found for Mothman.
+======REGION REPORT======
+Region: Northeast
+Total sightings: 3
 ```
 
-Look at the data.
+The program runs from beginning to end. JavaScript doesn't throw an error.
 
-There are **six** records with `confirmed: true`.
+Unfortunately, three results are wrong:
 
-Nothing crashed.
+- Six records are confirmed, not five.
+- Mothman is in the data.
+- The Northeast records contain fifteen total sightings, not three.
 
-That is where tracing begins.
+JavaScript did exactly what the code told it to do. Now you need evidence that shows **how** it arrived at the wrong answers.
 
----
+## Make the program narrate its work
+
+In this chapter, you'll use `console.log()` as a debugging tool. Instead of logging only the finished report, you'll place temporary logs at useful points inside the program. Those logs can show you:
+
+- whether JavaScript reached a particular line,
+- which values a function received,
+- which items a loop visited,
+- what a condition compared,
+- and how a value changed along the way.
+
+Each investigation will give you a little less direction about where those logs belong. The goal isn't to scatter logs everywhere. It's to choose checkpoints that help you answer one question:
+
+> **Where does the program's actual behavior first stop matching what I expected?**
+
+You'll work in the same `main.js` from beginning to end. Fix only the problem each lesson asks you to investigate; each correction clears the way for the next trace.
+
+<Callout type="danger" title="Don't fix ahead">
+  <p className="m-0">
+    You'll probably notice suspicious code before the lesson asks about it. Leave it alone for now. Tracing is most useful when you can connect one symptom to one cause.
+  </p>
+</Callout>
 
 ## The debugging rhythm
 
-For the rest of this project, keep returning to the same questions:
+Keep returning to the same questions:
 
 1. What should happen?
 2. What actually happened?
-3. Where does the program decide or calculate that result?
-4. What values reach that code?
-5. At what step do expected and actual behavior separate?
+3. Which function produces that result?
+4. What values reach that function?
+5. Where do the expected and actual values separate?
 6. What is the smallest change that fixes the cause?
 
-You are not trying to become fast at clicking debugger buttons.
-
-You are learning to make the program show you what it is really doing.
+You aren't trying to become fast at guessing. You're learning to make the program show you what it is really doing.
 
 ---
 
@@ -112,7 +76,8 @@ You are learning to make the program show you what it is really doing.
 
 | Term | Plain-English meaning | Tiny example |
 | --- | --- | --- |
-| tracing | Following execution or values through a program to see how a result was produced | Logging each item a loop examines |
-| inspection | Looking at the current values in a running program | Checking `state.region` while paused |
-| expected behavior | What the program should do | Six confirmed records |
-| actual behavior | What the program really does | Five confirmed records |
+| tracing | Following execution or values through a program | Logging the item examined during each loop |
+| inspection | Looking closely at values at a chosen point in the program | Logging `cryptid.name` before a condition |
+| expected behavior | What the program is supposed to do | Report six confirmed records |
+| actual behavior | What the program really does | Report five confirmed records |
+| evidence | Information that helps narrow down a cause | A trace showing that a loop never reached the final record |

@@ -6,26 +6,6 @@ const entry = {
   standard: "JS.AR.ACC",
   files: [
     {
-      path: "/index.html",
-      type: "html",
-      readOnly: true,
-      content:
-        "<!doctype html>\n" +
-        "<html>\n" +
-        "  <head>\n" +
-        "    <meta charset=\"utf-8\" />\n" +
-        "    <title>Arrays & Objects · Mutation Workbench</title>\n" +
-        "  </head>\n" +
-        "  <body>\n" +
-        "    <main>\n" +
-        "      <h1>Arrays & Objects · Mutation</h1>\n" +
-        "      <div id=\"app\"></div>\n" +
-        "    </main>\n" +
-        "    <script type=\"module\" src=\"/main.js\"></script>\n" +
-        "  </body>\n" +
-        "</html>",
-    },
-    {
       path: "/main.js",
       active: true,
         content: /*js*/ `//JS.AR.ACC
@@ -39,8 +19,8 @@ const hondordOrchard = {make: "Hondord", model: "Orchard", color: "beige", year:
 `,
     },
   ],
-  entry: "/index.html",
-  sandbox: { runtime: "dom" },
+  entry: "/main.js",
+  sandbox: { runtime: "dom", defaultPanel: "console" },
   mock: undefined,
   handbookMarkdown: "",
   tags: [],

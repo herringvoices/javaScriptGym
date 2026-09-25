@@ -1,0 +1,102 @@
+---
+id: JS.DB.TRC.3.INDEPENDENT
+title: Independent Console Tracing · Follow the Total
+short: Choose useful logging checkpoints, gather evidence, and repair one final wrong result on your own.
+---
+
+# Independent Console Tracing → Follow the Total
+
+Two results are now correct. One isn't.
+
+The region report says the Northeast has `3` total sightings. The data says the total should be `15`.
+
+This time, you decide how to investigate. Add temporary `console.log()` calls where they'll reveal the path JavaScript takes and how the total changes.
+
+Whichever checkpoints you choose, keep the same debugging rhythm:
+
+1. Predict what should happen.
+2. Observe what the program actually does.
+3. Find the first place those two stories separate.
+4. Fix the cause—not only the final output.
+
+<Callout type="tip" title="Make the program prove it">
+  <p className="m-0">
+    You may notice a suspicious line while reading. Don't change it yet. First collect enough evidence to explain what that line does to the values moving through the function.
+  </p>
+</Callout>
+
+<HandbookChallenge
+  title="Debug the region total"
+  hints={[
+    <>Begin with the function that calculates the value printed in the region report.</>,
+    <>Follow the loop one iteration at a time. Pay attention to the current record and the value the function is preparing to return.</>,
+    <>After more than one record matches the requested region, check whether the value being returned still represents all of those matches.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`======REGION REPORT======
+Region: Northeast
+Total sightings: 15`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`function totalSightingsInRegion(records, requestedRegion) {
+  let total = 0;
+
+  for (const cryptid of records) {
+    if (cryptid.region === requestedRegion) {
+      total += cryptid.sightings;
+    }
+  }
+
+  return total;
+}`}</pre>
+  }
+>
+  <p className="m-0">
+    Reproduce the wrong result and add temporary logs inside <code>totalSightingsInRegion()</code>. Use the evidence to identify and fix the cause. When the report is correct, remove your temporary logs.
+  </p>
+</HandbookChallenge>
+
+## Final checkpoint
+
+When all three investigations are complete, the console should show:
+
+```text
+======NATIONAL CRYPTID CENSUS======
+Records: 8
+Confirmed: 6
+======REQUESTED RECORD======
+Name: Mothman
+Region: Appalachia
+Sightings: 19
+======REGION REPORT======
+Region: Northeast
+Total sightings: 15
+```
+
+None of these problems produced an error message. The program ran exactly as written and reached the end every time. You found the bugs by making its hidden behavior visible.
+
+Keep the same rhythm for the next quiet, wrong result you meet:
+
+1. **Predict** what should happen.
+2. **Observe** what actually happens with purposeful logs.
+3. **Compare** the two and find the first place they separate.
+4. Fix the cause, then run the program again.
+
+---
+
+## Technical Vocabulary
+
+| Term | Plain-English meaning | Tiny example |
+| --- | --- | --- |
+| trace | A record of the path a program takes or the values it produces while running | A series of logs showing a value before and after each update |
+| console tracing | Using temporary console messages to follow a program's behavior | Logging each record visited by a loop |
+| checkpoint | A deliberately chosen place to observe what the program is doing | A log immediately before an `if` statement |
+| expected behavior | What you predict the program should do | Add both Northeast sighting counts |
+| actual behavior | What the program really does | Keep only the last Northeast sighting count |
+| evidence | Information that helps you narrow down a cause | A trace showing `total` change from `12` to `3` |
+
+<Callout type="note" title="There's another way to trace your code">
+  <p className="m-0">
+    Browser developer tools include a debugger that can pause JavaScript while it runs and show you the current values of your variables. It's powerful, but it comes with its own tools and vocabulary. For now, you've practiced the same underlying skill by placing <code>console.log()</code> calls deliberately: predict what should happen, choose a useful checkpoint, and compare the evidence with what you expected. We'll explore breakpoints and browser debugging in a future lesson.
+  </p>
+</Callout>

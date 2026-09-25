@@ -1,0 +1,76 @@
+---
+id: JS.DB.TRC.2.DECISIONS
+title: Console Tracing · Inspect a Decision
+short: Log the values involved in a decision to find out why a condition produces a surprising result.
+---
+
+# Console Tracing → Inspect a Decision
+
+The confirmed count is fixed, but the report still claims it can't find Mothman—even though Mothman is in the array.
+
+The first investigation followed a loop to see which records it visited. This result depends on a different question: **why doesn't a condition recognize the record you expected it to recognize?**
+
+## Make both sides visible
+
+A condition can look reasonable while the values reaching it aren't what you imagined. When a comparison produces a surprising result, log the actual values on both sides immediately before the decision.
+
+Suppose a shipping program needs to find a package with a particular ID:
+
+```js
+function findPackageById(packages, requestedId) {
+  for (const parcel of packages) {
+    console.log("current ID:", parcel.id);
+    console.log("requested ID:", requestedId);
+    console.log("is a match:", parcel.id === requestedId);
+
+    if (parcel.id === requestedId) {
+      return parcel;
+    }
+  }
+
+  return null;
+}
+```
+
+For a requested ID of `103`, part of the trace might look like this:
+
+```text
+current ID: 101
+requested ID: 103
+is a match: false
+current ID: 103
+requested ID: 103
+is a match: true
+```
+
+JavaScript reads the statements in order, then the loop sends it back through those statements for the next package. That makes the console a record of each decision: the two values JavaScript compared, followed by the result of the comparison.
+
+You don't always need three logs. The important move is to make the hidden question visible. Once the trace reaches the item you expected to match, you can compare the values JavaScript actually received—not the values you remember writing.
+
+<HandbookChallenge
+  title="Trace the missing record"
+  hints={[
+    <>A condition can only compare the values it actually receives. Make those values visible before deciding what to change.</>,
+    <>Place your logs immediately before the condition that decides whether the current cryptid should be returned.</>,
+    <>When the trace reaches Mothman, compare the exact spelling and capitalization on both sides of the decision.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`======REQUESTED RECORD======
+Name: Mothman
+Region: Appalachia
+Sightings: 19`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{'if (normalizedCryptidName === requestedName.toLowerCase()) {'}</pre>
+  }
+>
+  <p className="m-0">
+    The Census reports that it can't find Mothman. Add temporary <code>console.log()</code> calls inside <code>findCryptidByName()</code> to show the values involved each time the function decides whether a cryptid is a match. Use that evidence to find and fix the cause, then remove your temporary logs and run the program again.
+  </p>
+</HandbookChallenge>
+
+## What the trace gave you
+
+The trace showed that the search reached Mothman. It also exposed the exact values used in the matching decision. That evidence ruled out a missing record or a skipped loop iteration and narrowed the problem to the comparison itself.
+
+Next, you'll investigate the final wrong result with fewer instructions. You'll decide which checkpoints can reveal how the value changes.

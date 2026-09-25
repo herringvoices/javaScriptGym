@@ -6,33 +6,13 @@ const entry = {
   standard: "JS.VDT.PRM",
   files: [
     {
-      path: "/index.html",
-      type: "html",
-      readOnly: true,
-      content:
-        "<!doctype html>\n" +
-        "<html>\n" +
-        "  <head>\n" +
-        "    <meta charset=\"utf-8\" />\n" +
-        "    <title>Primitives Workbench</title>\n" +
-        "  </head>\n" +
-        "  <body>\n" +
-        "    <main>\n" +
-        "      <h1>Primitives</h1>\n" +
-        "      <div id=\"app\"></div>\n" +
-        "    </main>\n" +
-        "    <script type=\"module\" src=\"/main.js\"></script>\n" +
-        "  </body>\n" +
-        "</html>",
-    },
-    {
       path: "/main.js",
       active: true,
       content: "",
     },
   ],
-  entry: "/index.html",
-  sandbox: { runtime: "dom" },
+  entry: "/main.js",
+  sandbox: { runtime: "dom", defaultPanel: "console" },
   mock: undefined,
   handbookMarkdown: "",
   tags: [],

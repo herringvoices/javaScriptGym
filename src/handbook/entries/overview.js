@@ -35,27 +35,6 @@ const entry = {
   standard: "overview",
   files: [
     {
-      path: "/index.html",
-      type: "html",
-      readOnly: true,
-      content:
-        "<!doctype html>\n" +
-        "<html>\n" +
-        "  <head>\n" +
-        "    <meta charset=\"utf-8\" />\n" +
-        "    <title>Handbook Workbench</title>\n" +
-        "  </head>\n" +
-        "  <body>\n" +
-        "    <main>\n" +
-        "      <h1 id=\"title\">Handbook Workbench</h1>\n" +
-        "      <p id=\"message\">Open the Console, then edit /main.js and watch it re-run.</p>\n" +
-        "      <ul id=\"list\"></ul>\n" +
-        "    </main>\n" +
-        "    <script type=\"module\" src=\"/main.js\"></script>\n" +
-        "  </body>\n" +
-        "</html>",
-    },
-    {
       path: "/main.js",
       active: true,
       content:
@@ -67,10 +46,10 @@ const entry = {
         "console.log(\"Right here\"); // This note is for humans only\n",
     },
   ],
-  entry: "/index.html",
+  entry: "/main.js",
   sandbox: {
     runtime: "dom",
-    html: "<div id='app'></div>",
+    defaultPanel: "console",
   },
   mock: undefined,
   handbookMarkdown: "",

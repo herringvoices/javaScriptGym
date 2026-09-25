@@ -24,7 +24,13 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
   const rows = React.useMemo(() => buildRows(files, folders, expanded), [files, folders, expanded]);
   const activeFile = activePath ? files[activePath] : null;
 
-  React.useEffect(() => { setDraft(null); setError(""); }, [resetKey]);
+  React.useEffect(() => {
+    const firstPath = firstVisibleFile(filesRef.current);
+    setDraft(null);
+    setError("");
+    setActivePath(firstPath);
+    setOpenPaths(new Set(firstPath ? [firstPath] : []));
+  }, [resetKey]);
   React.useEffect(() => { setExplorerOpen(showExplorer); }, [showExplorer]);
 
   React.useEffect(() => {
@@ -65,7 +71,7 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
   React.useEffect(() => {
     const visible = Object.keys(files).filter((path) => !files[path]?.hidden);
     setOpenPaths((previous) => new Set([...previous].filter((path) => visible.includes(path))));
-    if (!activePath || !visible.includes(activePath)) setActivePath(visible[0] || null);
+    if (!activePath || !visible.includes(activePath)) setActivePath(firstVisibleFile(files));
   }, [files, activePath]);
   React.useEffect(() => { if (activePath) onActiveChange?.(activePath); }, [activePath, onActiveChange]);
   React.useEffect(() => {
@@ -232,7 +238,10 @@ export default function MonacoWorkspace({ files = {}, folders = [], resetKey, on
 
 function IconButton({ title, onClick, children }) { return <button type="button" title={title} aria-label={title} onClick={(event) => { event.stopPropagation(); onClick(); }} className="rounded p-1 text-slate-400 hover:bg-slate-700 hover:text-white">{children}</button>; }
 function DraftRow({ draft, setDraft, submit, cancel, depth }) { return <li className="flex gap-1 py-1" style={{ paddingLeft: `${depth * 14 + 24}px` }}><form className="flex min-w-0 gap-1" onSubmit={submit}><input autoFocus value={draft.value} onChange={(event) => setDraft({ ...draft, value: event.target.value })} onBlur={(event) => { if (!event.currentTarget.value) cancel(); }} placeholder={draft.kind === "file" ? "filename.js" : "folder name"} className="min-w-0 rounded border border-sky-500 bg-slate-900 px-1 py-0.5 text-xs text-white outline-none" /><button className="text-xs text-sky-300" type="submit">Add</button></form></li>; }
-function firstVisibleFile(files) { return Object.keys(files).find((path) => !files[path]?.hidden) || null; }
+function firstVisibleFile(files) {
+  const visible = Object.keys(files).filter((path) => !files[path]?.hidden);
+  return visible.find((path) => files[path]?.active) || visible[0] || null;
+}
 function parentOf(path) { const idx = path.lastIndexOf("/"); return idx <= 0 ? "/" : path.slice(0, idx); }
 function joinPath(parent, child) { return `${parent === "/" ? "" : parent}/${child}`.replace(/\\/g, "/").replace(/\/+/g, "/").replace(/^/, "/"); }
 function basename(path) { return path.slice(path.lastIndexOf("/") + 1); }

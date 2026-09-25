@@ -281,38 +281,18 @@ export const handbookStructure = {
     chapters: [
       {
         id: 'console-tracing',
-        title: 'Console Tracing · Find the Missing Cryptid',
+        title: 'Console Tracing · Follow the Program',
         load: () => import('./standards/JS.DB.TRC/console-tracing.mdx'),
       },
       {
-        id: 'devtools-breakpoints',
-        title: 'DevTools · Pause the Census',
-        load: () => import('./standards/JS.DB.TRC/devtools-breakpoints.mdx'),
+        id: 'tracing-decisions',
+        title: 'Console Tracing · Inspect a Decision',
+        load: () => import('./standards/JS.DB.TRC/tracing-decisions.mdx'),
       },
       {
-        id: 'region-filter',
-        title: 'Tracing Values · Where Did the Northeast Go?',
-        load: () => import('./standards/JS.DB.TRC/region-filter.mdx'),
-      },
-      {
-        id: 'checkbox-state-sync',
-        title: 'State & Screen · The Checkbox That Lies',
-        load: () => import('./standards/JS.DB.TRC/checkbox-state-sync.mdx'),
-      },
-      {
-        id: 'event-target',
-        title: 'Event Inspection · The Picky Cryptid Card',
-        load: () => import('./standards/JS.DB.TRC/event-target.mdx'),
-      },
-      {
-        id: 'missing-last-seen',
-        title: 'Missing Data · The Dover Demon Incident',
-        load: () => import('./standards/JS.DB.TRC/missing-last-seen.mdx'),
-      },
-      {
-        id: 'stale-details',
-        title: 'Independent Debugging · The Ghost in the Details Panel',
-        load: () => import('./standards/JS.DB.TRC/stale-details.mdx'),
+        id: 'independent-tracing',
+        title: 'Independent Console Tracing · Follow the Total',
+        load: () => import('./standards/JS.DB.TRC/independent-tracing.mdx'),
       },
     ],
     loadIntro: () => import('./JS.DB.TRC.mdx'),

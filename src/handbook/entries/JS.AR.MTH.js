@@ -1,49 +1,16 @@
-// Handbook entry for JS.AR.ACC (Arrays & Objects · Mutation and the "Wait… Why Did That Change?!" Bug)
+// Handbook entry for JS.AR.MTH (Array Methods)
 
 /** @type {import('./overview.js').HandbookEntry} */
 const entry = {
-  id: "JS.AR.ACC-wb",
-  standard: "JS.AR.ACC",
+  id: "JS.AR.MTH-wb",
+  standard: "JS.AR.MTH",
   files: [
     {
-      path: "/index.html",
-      type: "html",
-      readOnly: true,
-      content:
-        "<!doctype html>\n" +
-        "<html>\n" +
-        "  <head>\n" +
-        "    <meta charset=\"utf-8\" />\n" +
-        "    <title>Arrays · Array Methods</title>\n" +
-        "  </head>\n" +
-        "  <body>\n" +
-        "    <main>\n" +
-        "      <h1>Arrays · Array Methods</h1>\n" +
-        "      <div id=\"app\"></div>\n" +
-        "    </main>\n" +
-        "    <script type=\"module\" src=\"/scripts/main.js\"></script>\n" +
-        "  </body>\n" +
-        "</html>",
-    },
-    {
-      path: "/scripts/main.js",
+      path: "/main.js",
       active: true,
-      content: /*js*/ `//JS.AR.MTH
-// Imports — this gets the data from database.js in the same folder
-import { getStudents, getTeachers, getGrades, getFines } from "./database.js";
-//Here we fill these variables with our arrays of students, teachers, grades, and fines.
-const students = getStudents();
-const teachers = getTeachers();
-const grades = getGrades();
-const fines = getFines();
+      content: /*js*/ `// Array Methods — JS.AR.MTH
 
-`,
-    },
-  {
-    path: "/scripts/database.js",
-      active: true,
-      readOnly: true,
-      content: /*js*/ `//JS.AR.MTH Database
+// The data is grouped in one object so these related arrays stay together.
 const database = {
   students: [
     {
@@ -200,19 +167,16 @@ const database = {
   ],
 };
 
-// These functions return an array of shallow coppies of each object.
-// We export these getter functions here and import them in main.js
-export const getStudents = () => database.students.map((s) => ({ ...s }));
-export const getTeachers = () => database.teachers.map((t) => ({ ...t }));
-export const getGrades = () => database.grades.map((g) => ({ ...g }));
-export const getFines = () => database.fines.map((f) => ({ ...f }));
-
+const students = database.students;
+const teachers = database.teachers;
+const grades = database.grades;
+const fines = database.fines;
 
 `,
     },
   ],
-  entry: "/index.html",
-  sandbox: { runtime: "dom" },
+  entry: "/main.js",
+  sandbox: { runtime: "dom", defaultPanel: "console" },
   mock: undefined,
   handbookMarkdown: "",
   tags: [],
