@@ -332,28 +332,25 @@ The `potions` variable should stay because we will use it soon.
 <HandbookChallenge
   title="Add the data request to the flow diagram"
   hints={[
-    <>The import becomes available near the beginning of <code>main.js</code>, before the script calls the function.</>,
-    <>A function call travels from <code>Main</code> to <code>DB</code>, and the returned array travels back from <code>DB</code> to <code>Main</code>.</>,
+    <>Remember the distinction from Modules: an <code>import</code> belongs in a dependency graph, not as a runtime call in the sequence diagram.</>,
+    <>The actual function call travels from <code>Main</code> to <code>DB</code>, and the returned array travels back from <code>DB</code> to <code>Main</code>.</>,
     <>Keep the diagram in the same order as the working program rather than grouping all database arrows together.</>,
   ]}
   expected={
-    <pre className="m-0 whitespace-pre-wrap">{`Main->>DB: import getPotions
-...
-Main->>DB: call getPotions()
-DB-->>Main: return potions array`}</pre>
+    <pre className="m-0 whitespace-pre-wrap">{`Main->>DB: getPotions()
+DB-->>Main: potions array`}</pre>
   }
   solution={
     <pre className="m-0 whitespace-pre-wrap">{`Browser->>Main: load module script
-Main->>DB: import getPotions
 Main->>DOM: select #app
 Main->>DOM: render app shell
 Main->>DOM: select #potion-list
-Main->>DB: call getPotions()
-DB-->>Main: return potions array`}</pre>
+Main->>DB: getPotions()
+DB-->>Main: potions array`}</pre>
   }
 >
   <p className="m-0">
-    Open <code>/sequenceDiagram.mmd</code>. Add <code>Main-&gt;&gt;DB: import getPotions</code> after the browser loads <code>main.js</code>. After the existing list-selection step, add a call from <code>Main</code> to <code>DB</code> for <code>getPotions()</code> and a return arrow carrying the potions array back to <code>Main</code>. Preview the diagram and verify that the data is acquired before any potion names are rendered.
+    Open <code>/sequenceDiagram.mmd</code>. After the existing list-selection step, add a call from <code>Main</code> to <code>DB</code> for <code>getPotions()</code> and a return arrow carrying the potions array back to <code>Main</code>. Do not add an arrow for the import itself. Preview the diagram and verify that the data is acquired before any potion names are rendered.
   </p>
 </HandbookChallenge>
 
