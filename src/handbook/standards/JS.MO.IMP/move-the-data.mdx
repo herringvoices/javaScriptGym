@@ -1,0 +1,134 @@
+---
+id: JS.MO.IMP.DATA
+title: Modules · Move the Data
+short: Create a data module and reconnect main.js with a named export and import.
+---
+
+# Modules → Move the Data
+
+The Census works, but `main.js` owns everything.
+
+The easiest responsibility to separate is the data.
+
+Right now the file begins with the entire `cryptids` array. The reporting code needs that array, but the array does not need to live beside the reporting code.
+
+We are going to move it into its own module.
+
+## Create `data.js`
+
+Use the file explorer to create a new file at:
+
+```text
+/data.js
+```
+
+Cut the entire `cryptids` array out of `main.js` and paste it into `data.js`.
+
+Do **not** reconnect the files yet.
+
+Run the program.
+
+It should fail.
+
+That failure matters.
+
+`main.js` still uses a variable named `cryptids`, but that variable now exists inside a different module. Moving code to another file created a real boundary between the two files.
+
+A module does not automatically get access to variables declared in another module.
+
+## Export the name
+
+At the bottom of `data.js`, add:
+
+```js
+export { cryptids };
+```
+
+This is a **named export**.
+
+It means:
+
+> This module makes the name `cryptids` available for another module to import.
+
+The curly braces contain the exact exported name.
+
+Exporting the value does not automatically send it anywhere. It only makes that name available.
+
+## Import the name
+
+At the very top of `main.js`, add:
+
+```js
+import { cryptids } from "./data.js";
+```
+
+Read it from left to right:
+
+| Code | Meaning |
+| --- | --- |
+| `import` | Bring something into this module |
+| `{ cryptids }` | Bring in the named export called `cryptids` |
+| `from` | Specify which module provides it |
+| `"./data.js"` | Start in this folder and load `data.js` |
+
+The name inside the import must match the exported name.
+
+The path matters too. `./` means "start from the current folder."
+
+<Callout type="note" title="The behavior should not change">
+  <p className="m-0">
+    Modularizing is a refactor. The code lives in a different place, but the Census should still print exactly the same report.
+  </p>
+</Callout>
+
+<HandbookChallenge
+  title="Move the cryptid data into its own module"
+  hints={[
+    <>Create <code>/data.js</code> and move only the <code>cryptids</code> array there first.</>,
+    <>Run once before reconnecting the files. The failure proves that modules have separate scope.</>,
+    <>Export <code>cryptids</code> from <code>data.js</code>, then import that exact named export at the top of <code>main.js</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`======NATIONAL CRYPTID CENSUS======
+Records: 8
+Confirmed: 6
+======REQUESTED RECORD======
+Name: Mothman
+Region: Appalachia
+Sightings: 19
+======REGION REPORT======
+Region: Northeast
+Total sightings: 15`}</pre>
+  }
+  solution={
+    <div className="space-y-3">
+      <pre className="m-0 whitespace-pre-wrap">{`// data.js
+const cryptids = [
+  // all eight cryptid objects
+];
+
+export { cryptids };`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`// first line of main.js
+import { cryptids } from "./data.js";`}</pre>
+    </div>
+  }
+>
+  <p className="m-0">
+    Move the <code>cryptids</code> array into <code>/data.js</code>. Run once while <code>main.js</code> is still disconnected so you can observe the module boundary. Then add a named export in <code>data.js</code> and a matching named import in <code>main.js</code>. Run again and verify that the complete report is unchanged.
+  </p>
+</HandbookChallenge>
+
+## What changed?
+
+The program still has the same data and the same logic.
+
+But responsibility is now split:
+
+```text
+data.js   -> owns the cryptid data
+main.js   -> uses the data to run the application
+```
+
+That means `main.js` now **depends on** `data.js`.
+
+On the next page, you will draw that relationship.
