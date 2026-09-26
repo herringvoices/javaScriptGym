@@ -42,11 +42,11 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Browser regression tests
-        run: npm run test:browser
-
       - name: Build
         run: npm run build
+
+      - name: Browser regression tests
+        run: npm run test:browser
 
       - name: Production browser smoke tests
         run: npm run test:production
