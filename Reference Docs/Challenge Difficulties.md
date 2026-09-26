@@ -174,7 +174,7 @@
 
 | Standard        | Description                                           | Difficulty |
 | --------------- | ----------------------------------------------------- | ---------- |
-| **JS.MO.IMP.1** | Use ES module named vs default exports appropriately. | **2–3**    |
+| **JS.MO.IMP.1** | Export functions, objects, or data with named exports. | **2–3**    |
 | **JS.MO.IMP.2** | Import syntax and organized readable imports.         | **2**      |
 | **JS.MO.IMP.3** | Refactor into modules and reuse via imports.          | **2–3**    |
 

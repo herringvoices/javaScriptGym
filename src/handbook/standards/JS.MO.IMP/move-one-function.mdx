@@ -1,0 +1,119 @@
+---
+id: JS.MO.IMP.ONE_FUNCTION
+title: Modules · Move One Function
+short: Move one reusable operation into a function module and update the dependency graph.
+---
+
+# Modules → Move One Function
+
+The data has a home.
+
+Now look at what remains in `main.js`.
+
+Three functions perform reusable Census operations:
+
+- `countConfirmed()`
+- `findCryptidByName()`
+- `totalSightingsInRegion()`
+
+Eventually they can live together.
+
+Do not move all three yet.
+
+First, move one and prove that you can reconnect it correctly.
+
+## Create `census.js`
+
+Create:
+
+```text
+/census.js
+```
+
+Move only `countConfirmed()` from `main.js` into that file.
+
+Then export it:
+
+```js
+export { countConfirmed };
+```
+
+Back in `main.js`, import it:
+
+```js
+import { countConfirmed } from "./census.js";
+```
+
+Your imports should now be together at the top of the file:
+
+```js
+import { cryptids } from "./data.js";
+import { countConfirmed } from "./census.js";
+```
+
+Run the program.
+
+The confirmed count should still be `6`.
+
+## The architecture changed too
+
+You just added another import relationship.
+
+That means the dependency graph is now out of date.
+
+This is why diagrams are maintained with the code. They describe the current project, not the project you had twenty minutes ago.
+
+<HandbookChallenge
+  title="Move countConfirmed and update the graph"
+  hints={[
+    <>Move only <code>countConfirmed()</code> into <code>/census.js</code>.</>,
+    <>Export the function by name and import that same name into <code>main.js</code>.</>,
+    <>After the code works, read the imports in <code>main.js</code>. There are now two dependency arrows to draw.</>,
+  ]}
+  expected={
+    <div className="space-y-3">
+      <pre className="m-0 whitespace-pre-wrap">{`Confirmed: 6`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`graph TD
+  Main[main.js] --> Data[data.js]
+  Main --> Census[census.js]`}</pre>
+    </div>
+  }
+  solution={
+    <div className="space-y-3">
+      <pre className="m-0 whitespace-pre-wrap">{`// census.js
+function countConfirmed(records) {
+  let count = 0;
+
+  for (let i = 0; i < records.length; i++) {
+    if (records[i].confirmed) {
+      count++;
+    }
+  }
+
+  return count;
+}
+
+export { countConfirmed };`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`// main.js
+import { cryptids } from "./data.js";
+import { countConfirmed } from "./census.js";`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`graph TD
+  Main[main.js] --> Data[data.js]
+  Main --> Census[census.js]`}</pre>
+    </div>
+  }
+>
+  <p className="m-0">
+    Create <code>/census.js</code>, move <code>countConfirmed()</code> into it, and reconnect the program with a named export and import. Run the Census. Then update <code>/dependencyGraph.mmd</code> so the diagram matches both imports in <code>main.js</code>.
+  </p>
+</HandbookChallenge>
+
+## A useful habit
+
+Code first.
+
+Run it.
+
+Then update the diagram.
+
+That order lets the working code tell you what the architecture actually is.

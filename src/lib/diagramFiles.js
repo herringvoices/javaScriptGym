@@ -2,12 +2,18 @@ export const DIAGRAM_PANEL = {
   PREVIEW: "preview",
   CONSOLE: "console",
   SEQUENCE: "sequence",
+  DEPENDENCY: "dependency",
   ERD: "erd",
 };
 
 export const SEQUENCE_DIAGRAM_PATHS = [
   "/sequenceDiagram.mmd",
   "/sequenceDiagram.mermaid",
+];
+
+export const DEPENDENCY_DIAGRAM_PATHS = [
+  "/dependencyGraph.mmd",
+  "/dependencyGraph.mermaid",
 ];
 
 export const ERD_PATHS = ["/erd.dbml"];
@@ -35,12 +41,15 @@ export function getFirstExistingFile(files, paths) {
 
 export function getDiagramFiles(files) {
   const sequence = getFirstExistingFile(files, SEQUENCE_DIAGRAM_PATHS);
+  const dependency = getFirstExistingFile(files, DEPENDENCY_DIAGRAM_PATHS);
   const erd = getFirstExistingFile(files, ERD_PATHS);
 
   return {
     sequence,
+    dependency,
     erd,
     hasSequence: Boolean(sequence),
+    hasDependency: Boolean(dependency),
     hasErd: Boolean(erd),
   };
 }
@@ -49,6 +58,7 @@ export function isValidPanelForFiles(panel, files) {
   const diagrams = getDiagramFiles(files);
 
   if (panel === DIAGRAM_PANEL.SEQUENCE) return diagrams.hasSequence;
+  if (panel === DIAGRAM_PANEL.DEPENDENCY) return diagrams.hasDependency;
   if (panel === DIAGRAM_PANEL.ERD) return diagrams.hasErd;
 
   return true;

@@ -19,8 +19,8 @@
 13. [Error Messages & Stack Traces (DB.ERR)](#error-messages--stack-traces-dberr)
 14. [Tracing & Inspection (DB.TRC)](#tracing--inspection-dbtrc)
 15. [Common Bugs & Fixes (DB.BUG)](#common-bugs--fixes-dbbug)
-16. [Project Structure (MO.STR)](#project-structure-mostr)
-17. [Import/Export (MO.IMP)](#importexport-moimp)
+16. [Import/Export (MO.IMP)](#importexport-moimp)
+17. [Project Structure (MO.STR)](#project-structure-mostr)
 18. [Promises (AS.PRO)](#promises-aspro)
 19. [Async/Await (AS.AAW)](#asyncawait-asaaw)
 20. [Fetch & HTTP (AS.FET)](#fetch--http-asfet)
@@ -188,19 +188,19 @@ Alongside the categories, there are habits we want students to practice everywhe
 
 ---
 
+# Import/Export (MO.IMP)
+
+* **JS.MO.IMP.1** Export functions, objects, or data from a module using **named exports** so they can be used by other modules.
+* **JS.MO.IMP.2** Import functions, objects, or data from other modules using named ES module syntax and clear relative paths, keeping imports organized and readable.
+* **JS.MO.IMP.3** Refactor code by moving functions or data into modules and reusing them via imports without changing the program's behavior.
+
+---
+
 # Project Structure (MO.STR)
 
 * **JS.MO.STR.1** Organize code into feature-oriented directories (e.g., `users/`, `posts/`) or layer groups (e.g., `services/`, `components/`), and stick to one approach per project.
 * **JS.MO.STR.2** Use clear naming conventions for folders and files (lowercase-kebab or lowerCamelCase) so imports are predictable.
 * **JS.MO.STR.3** Keep assets (images, fonts, static data) in a dedicated `assets/` (or `public/`) folder and reference them consistently.
-
----
-
-# Import/Export (MO.IMP)
-
-* **JS.MO.IMP.1** Use ES module **named** and **default** exports appropriately to share code across files.
-* **JS.MO.IMP.2** Import functions, objects, or data from other modules using ES module syntax, and keep imports organized and readable.
-* **JS.MO.IMP.3** Refactor code by moving functions or data into modules and reusing them via imports.
 
 ---
 

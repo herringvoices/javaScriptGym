@@ -1,0 +1,142 @@
+---
+id: JS.MO.IMP.CHECKPOINT
+title: Modules · Rebuild the Architecture
+short: Reconstruct both diagrams from the finished code with less scaffolding.
+---
+
+# Modules → Rebuild the Architecture
+
+The National Cryptid Census now has three JavaScript modules:
+
+```text
+main.js
+data.js
+census.js
+```
+
+It also has two diagrams that you built a few lines at a time.
+
+Now you are going to prove that you can derive those diagrams from the code instead of remembering the previous answers.
+
+## Start from the source code
+
+Clear the contents of:
+
+```text
+/dependencyGraph.mmd
+/sequenceDiagram.mmd
+```
+
+Do not change the JavaScript.
+
+Then rebuild both diagrams by inspecting the finished project.
+
+## Rebuild the dependency graph
+
+Use the algorithm you learned:
+
+1. list the modules,
+2. inspect each import statement,
+3. identify the importer,
+4. identify the module named by the path,
+5. draw one arrow for each module dependency.
+
+Your graph should answer only:
+
+> Which module relies on which other module?
+
+Do not draw one arrow per imported function.
+
+## Rebuild the sequence diagram
+
+Then read `main.js` in execution order.
+
+For every call from `main.js` into `census.js`:
+
+1. draw the call arrow,
+2. show the repeated work inside `census.js` with a `loop` block,
+3. draw the returned result,
+4. continue downward to the next cross-module call.
+
+Your sequence diagram should answer:
+
+> What happens across these modules, and in what order?
+
+## One final consistency check
+
+When you finish, compare three artifacts:
+
+- the JavaScript modules,
+- the dependency graph,
+- the sequence diagram.
+
+They should tell compatible versions of the same story.
+
+<HandbookChallenge
+  title="Rebuild both diagrams from the code"
+  hints={[
+    <>For the dependency graph, the import statements at the top of <code>main.js</code> are your evidence.</>,
+    <>For the sequence diagram, do not start from the console output. Start at the top of the executable code in <code>main.js</code> and follow it downward.</>,
+    <>Each Census function loops internally, so each call can contain one <code>loop</code> block before its return arrow.</>,
+  ]}
+  expected={
+    <div className="space-y-3">
+      <p className="m-0"><strong>Dependency graph:</strong> three module nodes and two arrows from <code>main.js</code>.</p>
+      <p className="m-0"><strong>Sequence diagram:</strong> the three Census calls in true execution order, each with a return and an internal loop.</p>
+      <p className="m-0"><strong>Program:</strong> the final console report still matches the known-good output.</p>
+    </div>
+  }
+  solution={
+    <div className="space-y-3">
+      <pre className="m-0 whitespace-pre-wrap">{`graph TD
+  Main[main.js] --> Data[data.js]
+  Main --> Census[census.js]`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`sequenceDiagram
+  participant Main as main.js
+  participant Census as census.js
+
+  Main->>Census: findCryptidByName(cryptids, requestedName)
+  loop each cryptid until a match
+    Census->>Census: compare normalized names
+  end
+  Census-->>Main: Mothman object
+
+  Main->>Census: countConfirmed(cryptids)
+  loop each cryptid
+    Census->>Census: check confirmed
+  end
+  Census-->>Main: 6
+
+  Main->>Census: totalSightingsInRegion(cryptids, requestedRegion)
+  loop each cryptid
+    Census->>Census: add matching sightings
+  end
+  Census-->>Main: 15`}</pre>
+    </div>
+  }
+>
+  <p className="m-0">
+    Clear both Mermaid files and rebuild them from the finished JavaScript without copying the earlier diagrams. Preview each one. Then run the Census one final time and confirm that the code and both diagrams agree.
+  </p>
+</HandbookChallenge>
+
+## What you can do now
+
+You started with one working file.
+
+You can now:
+
+- move data or functions into separate modules without changing program behavior,
+- export several values by name,
+- import the exact names another module provides,
+- debug broken module paths and mismatched named imports,
+- derive a dependency graph from import relationships,
+- write a sequence diagram from execution order,
+- show repeated work with sequence-diagram loop blocks,
+- and check whether code and diagrams still describe the same system.
+
+The next Modules & Organization standard asks a larger architectural question:
+
+> Once a project has many files, how should those files be grouped and named so another developer can predict where things belong?
+
+That is project structure.

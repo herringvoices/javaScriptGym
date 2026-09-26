@@ -6,43 +6,22 @@ short: Track program flow before changing the DOM.
 
 # Flow Diagrams: Tracking What Happens First
 
-We have learned a lot so far.
+You already know how to write a sequence diagram.
 
-So far, you have practiced how to:
+In the Modules unit, you used one to follow calls from `main.js` into `census.js`, show returned values, and represent repeated work with `loop` blocks.
 
-- store values in variables
-- use strings, numbers, booleans, arrays, and objects
-- write functions that organize reusable logic
-- import code from another file
-- use the console to inspect what your code is doing
+Potion Shelf keeps that skill alive, but the system is getting a little bigger.
 
-That is a strong foundation.
+Now the participants include:
 
-But as our programs get bigger, there is another skill that starts to matter more and more:
+- the **browser**, which loads the application,
+- `main.js`, which runs your JavaScript,
+- `database.js`, which provides data through functions,
+- and the **DOM**, which represents the live page.
 
-**keeping track of what happens first.**
+That gives the sequence diagram a new job: help you track how browser loading, JavaScript execution, data requests, and DOM updates fit together in time.
 
-Up to this point, most of our JavaScript work has happened in fairly small examples. In smaller programs, it is usually not too hard to keep the order of events in your head. You write some code, the code runs, and you can often see what happened without much trouble.
-
-But as soon as a program starts involving multiple files, the browser, and eventually the DOM, that becomes harder.
-
-The browser has to load the page.
-
-It has to load your JavaScript.
-
-One file may ask another file for data.
-
-Later, JavaScript may update the DOM.
-
-And if those steps happen in the wrong order, things can break in ways that feel confusing.
-
-That is where a sequence diagram can help.
-
-A sequence diagram is not JavaScript. It is a simple visual tool that helps us show what happened, which part of the program was involved, and what happened next.
-
-So before we start learning new DOM methods, we are going to pause for one page and learn how to read that map.
-
-Before we start changing the page with JavaScript, we are going to pause for one page and learn how to track program flow first.
+You are not starting over with Mermaid. You are extending a diagramming skill you already have to a browser application.
 
 ## The Problem: Programs Happen in an Order
 
@@ -66,7 +45,7 @@ That means one of the most useful questions you can ask is:
 
 A sequence diagram helps answer that question.
 
-It gives us a simple way to show the order of events instead of trying to keep the whole flow floating around in our heads at once.
+It gives us a simple way to show the order of events instead of trying to keep the whole flow floating around in our heads at once. You already used that idea across JavaScript modules; now you will use it across the browser, JavaScript, data calls, and the DOM.
 
 ## What Is a Sequence Diagram?
 
@@ -247,7 +226,7 @@ We are not asking `database.js` for potion data yet.
 
 Those steps will come later.
 
-For now, the important thing is simply learning how to read the diagram.
+For now, the important thing is applying the diagram rules you already know to two new participants: the browser and the DOM.
 
 The participant names tell you which parts of the program are involved.
 
@@ -279,7 +258,7 @@ You now have the first version of the program flow diagram.
 
 It does not show much yet, but that is exactly the point.
 
-We are learning the tool before we ask it to carry more weight.
+We are reusing the tool in a new kind of program before we ask it to carry more weight.
 
 In the next chapter, the browser will turn the page into objects, and JavaScript will select one of those objects using `document`.
 

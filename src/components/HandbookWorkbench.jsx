@@ -252,6 +252,15 @@ export default function HandbookWorkbench({
           Sequence Diagram
         </button>
       ) : null}
+      {diagramFiles.hasDependency ? (
+        <button
+          type="button"
+          onClick={() => setBottomPanel(DIAGRAM_PANEL.DEPENDENCY)}
+          className={toggleClass(bottomPanel === DIAGRAM_PANEL.DEPENDENCY)}
+        >
+          Dependency Graph
+        </button>
+      ) : null}
       {diagramFiles.hasErd ? (
         <button
           type="button"
@@ -402,6 +411,13 @@ function RunnerBody({
             title="Sequence Diagram"
             source={diagramFiles.sequence?.code || ""}
             emptyMessage="Add /sequenceDiagram.mmd to this workspace to render a sequence diagram."
+          />
+        </div>
+        <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.DEPENDENCY ? "z-10" : "z-0 invisible"}`}>
+          <DiagramPanel
+            title="Dependency Graph"
+            source={diagramFiles.dependency?.code || ""}
+            emptyMessage="Add /dependencyGraph.mmd to this workspace to render a dependency graph."
           />
         </div>
         <div className={`absolute inset-0 ${bottomPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>

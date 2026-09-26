@@ -1,0 +1,90 @@
+---
+id: JS.MO.IMP
+title: Modules & Organization · Import/Export
+short: Split a working program across modules and reconnect it with named imports and exports.
+---
+
+# National Cryptid Census · Modules
+
+You already know this program.
+
+In the debugging unit, the National Cryptid Census gave you several quiet bugs. You traced loops, inspected decisions, followed values, and repaired the report until it produced the right results.
+
+Now the program works.
+
+That is exactly why we are going to change it.
+
+Not because the Census needs a new feature. Not because anything is broken. We are going to reorganize the same working program so that each file has a clearer job.
+
+## One file is doing every job
+
+Open `/main.js`.
+
+You can divide the file into three broad sections:
+
+1. **Data** - the `cryptids` array.
+2. **Reusable operations** - functions such as `countConfirmed()` and `findCryptidByName()`.
+3. **Application logic** - the code that chooses what to request and prints the report.
+
+Those sections can live in one file. JavaScript does not mind.
+
+People eventually do.
+
+As programs grow, one giant file becomes harder to scan, harder to change safely, and harder to explain to another developer. Modules let us separate those jobs without changing what the program does.
+
+A **module** is a JavaScript file with its own code and its own scope. Code in one module is not automatically available inside another module.
+
+That boundary creates the problem this unit will teach you to solve:
+
+> How do separate files share the specific data and functions they need?
+
+The answer is **named exports and named imports**.
+
+## The rule for this project
+
+We are refactoring, not redesigning the Census.
+
+After each code change, run the program again. Its output should remain:
+
+```text
+======NATIONAL CRYPTID CENSUS======
+Records: 8
+Confirmed: 6
+======REQUESTED RECORD======
+Name: Mothman
+Region: Appalachia
+Sightings: 19
+======REGION REPORT======
+Region: Northeast
+Total sightings: 15
+```
+
+If moving code changes the result, the refactor is not finished yet.
+
+## Two diagrams will grow with the code
+
+Splitting one file into several files makes the project easier to organize, but it also gives your working memory more places to track.
+
+So you will maintain two visual models as the project changes.
+
+### Dependency graph
+
+A dependency graph answers:
+
+> **Which module relies on which other module?**
+
+You will build it in `/dependencyGraph.mmd`.
+
+### Sequence diagram
+
+A sequence diagram answers:
+
+> **What happens, and in what order, when the program runs?**
+
+You will build it in `/sequenceDiagram.mmd`.
+
+These diagrams are not decorations at the end of the unit. You will write them as your project changes and preview them inside the workbench.
+
+By the end, you should be able to move code between modules, reconnect it with imports and exports, draw the module dependencies, and trace the important runtime interactions across those module boundaries.
+
+Start with the easiest responsibility to separate: the data.

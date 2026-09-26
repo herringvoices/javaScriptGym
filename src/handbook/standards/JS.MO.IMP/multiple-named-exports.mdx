@@ -1,0 +1,132 @@
+---
+id: JS.MO.IMP.MULTIPLE
+title: Modules · Multiple Named Exports
+short: Move the remaining operations and share several names from one module.
+---
+
+# Modules → Multiple Named Exports
+
+`census.js` currently owns one Census operation.
+
+Two more reusable operations are still sitting in `main.js`:
+
+- `findCryptidByName()`
+- `totalSightingsInRegion()`
+
+They do the same broad kind of work as `countConfirmed()`: they accept Census data, perform an operation, and return a result.
+
+They belong with the other Census operations.
+
+## One module can export several names
+
+Move both remaining functions into `census.js`.
+
+A module is not limited to one export.
+
+At the bottom of the file, you can export all three names together:
+
+```js
+export {
+  countConfirmed,
+  findCryptidByName,
+  totalSightingsInRegion,
+};
+```
+
+That is still one idea: **named exports**.
+
+Each name inside the braces is something another module is allowed to import.
+
+Then `main.js` can request those exact names:
+
+```js
+import {
+  countConfirmed,
+  findCryptidByName,
+  totalSightingsInRegion,
+} from "./census.js";
+```
+
+The braces do not mean "one object." They are the syntax JavaScript uses to list named exports and named imports.
+
+## Keep imports readable
+
+Once an import gets long, putting one name on each line makes the relationship easier to scan.
+
+After this refactor, the top of `main.js` should be:
+
+```js
+import { cryptids } from "./data.js";
+import {
+  countConfirmed,
+  findCryptidByName,
+  totalSightingsInRegion,
+} from "./census.js";
+```
+
+Everything below those imports should now be application logic.
+
+That is a useful sign that the file has a clearer job.
+
+<HandbookChallenge
+  title="Finish the Census function module"
+  hints={[
+    <>Move <code>findCryptidByName()</code> and <code>totalSightingsInRegion()</code> into <code>/census.js</code>.</>,
+    <>Add both names to the existing named export list, then add both names to the import from <code>./census.js</code>.</>,
+    <>Do not add more arrows to the dependency graph just because more names cross the same module boundary.</>,
+  ]}
+  expected={
+    <div className="space-y-3">
+      <pre className="m-0 whitespace-pre-wrap">{`======NATIONAL CRYPTID CENSUS======
+Records: 8
+Confirmed: 6
+======REQUESTED RECORD======
+Name: Mothman
+Region: Appalachia
+Sightings: 19
+======REGION REPORT======
+Region: Northeast
+Total sightings: 15`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`graph TD
+  Main[main.js] --> Data[data.js]
+  Main --> Census[census.js]`}</pre>
+    </div>
+  }
+  solution={
+    <div className="space-y-3">
+      <pre className="m-0 whitespace-pre-wrap">{`// bottom of census.js
+export {
+  countConfirmed,
+  findCryptidByName,
+  totalSightingsInRegion,
+};`}</pre>
+      <pre className="m-0 whitespace-pre-wrap">{`// top of main.js
+import { cryptids } from "./data.js";
+import {
+  countConfirmed,
+  findCryptidByName,
+  totalSightingsInRegion,
+} from "./census.js";`}</pre>
+    </div>
+  }
+>
+  <p className="m-0">
+    Move the remaining two Census functions into <code>/census.js</code>. Export all three functions by name and import all three into <code>main.js</code>. Run the complete report. Then inspect the dependency graph and decide whether it needs another arrow.
+  </p>
+</HandbookChallenge>
+
+## Why the graph does not change
+
+`main.js` imported one function from `census.js` before.
+
+Now it imports three.
+
+The number of imported names changed, but the module relationship did not:
+
+```text
+main.js depends on census.js
+```
+
+A dependency graph usually shows module-to-module relationships, not one arrow per imported function.
+
+Now that the project structure is visible, we can ask a different question: what happens across those module boundaries when the program actually runs?
