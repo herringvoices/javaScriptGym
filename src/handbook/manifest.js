@@ -15,6 +15,7 @@ export const handbookChapters = {
   'JS.DB.ERR': () => import('./JS.DB.ERR.mdx'),
   'JS.DB.TRC': () => import('./JS.DB.TRC.mdx'),
   'JS.DB.BUG': () => import('./JS.DB.BUG.mdx'),
+  'JS.MO.IMP': () => import('./JS.MO.IMP.mdx'),
   'JS.SD.ELM': () => import('./JS.SD.ELM.mdx'),
   'JS.SD.EVH': () => import('./JS.SD.EVH.mdx'),
 };
@@ -33,6 +34,7 @@ export const handbookOrder = [
   'JS.DB.ERR',
   'JS.DB.TRC',
   'JS.DB.BUG',
+  'JS.MO.IMP',
   'JS.SD.ELM',
   'JS.SD.EVH',
 ];
@@ -52,6 +54,7 @@ export const handbookEntries = {
   'JS.DB.ERR': () => import('./entries/JS.DB.ERR.js').then(m => m.default),
   'JS.DB.TRC': () => import('./entries/JS.DB.TRC.js').then(m => m.default),
   'JS.DB.BUG': () => import('./entries/JS.DB.BUG.js').then(m => m.default),
+  'JS.MO.IMP': () => import('./entries/JS.MO.IMP.js').then(m => m.default),
 
   'JS.SD.ELM': () => import('./entries/JS.SD.ELM.js').then(m => m.default),
 
@@ -304,6 +307,57 @@ export const handbookStructure = {
   'JS.DB.BUG': {
     chapters: [],
     loadIntro: () => import('./JS.DB.BUG.mdx'),
+  },
+
+  'JS.MO.IMP': {
+    chapters: [
+      {
+        id: 'move-the-data',
+        title: 'Modules · Move the Data',
+        load: () => import('./standards/JS.MO.IMP/move-the-data.mdx'),
+      },
+      {
+        id: 'dependency-graph',
+        title: 'Dependency Graphs · Draw the First Connection',
+        load: () => import('./standards/JS.MO.IMP/dependency-graph.mdx'),
+      },
+      {
+        id: 'move-one-function',
+        title: 'Modules · Move One Function',
+        load: () => import('./standards/JS.MO.IMP/move-one-function.mdx'),
+      },
+      {
+        id: 'multiple-named-exports',
+        title: 'Modules · Multiple Named Exports',
+        load: () => import('./standards/JS.MO.IMP/multiple-named-exports.mdx'),
+      },
+      {
+        id: 'sequence-calls-and-returns',
+        title: 'Sequence Diagrams · Calls and Returns',
+        load: () => import('./standards/JS.MO.IMP/sequence-calls-and-returns.mdx'),
+      },
+      {
+        id: 'sequence-full-flow',
+        title: 'Sequence Diagrams · Follow the Full Report',
+        load: () => import('./standards/JS.MO.IMP/sequence-full-flow.mdx'),
+      },
+      {
+        id: 'sequence-loops',
+        title: 'Sequence Diagrams · Show Repeated Work',
+        load: () => import('./standards/JS.MO.IMP/sequence-loops.mdx'),
+      },
+      {
+        id: 'debug-module-connections',
+        title: 'Modules · Debug Broken Connections',
+        load: () => import('./standards/JS.MO.IMP/debug-module-connections.mdx'),
+      },
+      {
+        id: 'rebuild-the-diagrams',
+        title: 'Modules · Rebuild the Architecture',
+        load: () => import('./standards/JS.MO.IMP/rebuild-the-diagrams.mdx'),
+      },
+    ],
+    loadIntro: () => import('./JS.MO.IMP.mdx'),
   },
 
   'JS.SD.ELM': {
