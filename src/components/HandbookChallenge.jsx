@@ -91,7 +91,7 @@ export default function HandbookChallenge({
   return (
     <section
       aria-labelledby={headingId}
-      className="not-prose my-10 overflow-hidden rounded-xl border border-pink-400/45 bg-slate-900 text-slate-200 shadow-card ring-1 ring-inset ring-pink-500/10"
+      className="handbook-challenge not-prose my-10 overflow-hidden rounded-xl border border-pink-400/45 bg-slate-900 text-slate-200 shadow-card ring-1 ring-inset ring-pink-500/10"
     >
       <div className="h-1 bg-gradient-to-r from-pink-400 via-fuchsia-500 to-transparent" />
 

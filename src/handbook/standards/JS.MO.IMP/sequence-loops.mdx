@@ -55,27 +55,18 @@ That is useful here because the loop lives inside the function in `census.js`. `
 
 ## Describe the algorithm, not every statement
 
-For `countConfirmed()`, a useful loop description is:
-
-```text
-loop each cryptid
-  Census->>Census: check confirmed
-end
-```
-
-You do not need separate arrows for:
-
-- reading `records[i]`,
-- reading `.confirmed`,
-- incrementing `count`,
-- incrementing `i`.
+The scores example does not need separate arrows for reading an array item, comparing its value, incrementing a count, and moving to the next index.
 
 The diagram should make the algorithm understandable, not duplicate the source code line by line.
 
-The other functions have different repeated jobs:
+To summarize a loop:
 
-- `findCryptidByName()` compares normalized names until it finds a match or runs out of records.
-- `totalSightingsInRegion()` checks each cryptid and adds sightings for matching regions.
+1. Identify what collection the function repeats over.
+2. Identify the main decision or update made during one pass.
+3. Write a short `loop` label for the repetition.
+4. Write one self-message that describes the important work.
+
+Different functions may loop over the same collection for different reasons. Read each Census function instead of assuming that all three loop blocks should say the same thing.
 
 <HandbookChallenge
   title="Add the Census loops to the sequence diagram"
@@ -85,7 +76,7 @@ The other functions have different repeated jobs:
     <>Describe the repeated decision or update, not every JavaScript statement inside the loop.</>,
   ]}
   expected={
-    <pre className="m-0 whitespace-pre-wrap">{`sequenceDiagram
+    <MermaidDiagram source={`sequenceDiagram
   participant Main as main.js
   participant Census as census.js
 
@@ -105,7 +96,7 @@ The other functions have different repeated jobs:
   loop each cryptid
     Census->>Census: add matching sightings
   end
-  Census-->>Main: 15`}</pre>
+  Census-->>Main: 15`} title="Census sequence diagram with loops" />
   }
   solution={
     <pre className="m-0 whitespace-pre-wrap">{`sequenceDiagram

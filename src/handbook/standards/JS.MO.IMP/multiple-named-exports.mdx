@@ -6,30 +6,16 @@ short: Move the remaining operations and share several names from one module.
 
 # Modules → Multiple Named Exports
 
-`census.js` currently owns one Census operation.
-
-Two more reusable operations are still sitting in `main.js`:
-
-- `findCryptidByName()`
-- `totalSightingsInRegion()`
-
-They do the same broad kind of work as `countConfirmed()`: they accept Census data, perform an operation, and return a result.
-
-They belong with the other Census operations.
-
 ## One module can export several names
-
-Move both remaining functions into `census.js`.
 
 A module is not limited to one export.
 
-At the bottom of the file, you can export all three names together:
+Imagine a `formatters.js` module with two related helpers. It can export both names together:
 
 ```js
 export {
-  countConfirmed,
-  findCryptidByName,
-  totalSightingsInRegion,
+  formatTitle,
+  formatRuntime,
 };
 ```
 
@@ -37,14 +23,13 @@ That is still one idea: **named exports**.
 
 Each name inside the braces is something another module is allowed to import.
 
-Then `main.js` can request those exact names:
+Another module can request those exact names:
 
 ```js
 import {
-  countConfirmed,
-  findCryptidByName,
-  totalSightingsInRegion,
-} from "./census.js";
+  formatTitle,
+  formatRuntime,
+} from "./formatters.js";
 ```
 
 The braces do not mean "one object." They are the syntax JavaScript uses to list named exports and named imports.
@@ -53,20 +38,18 @@ The braces do not mean "one object." They are the syntax JavaScript uses to list
 
 Once an import gets long, putting one name on each line makes the relationship easier to scan.
 
-After this refactor, the top of `main.js` should be:
+For example:
 
 ```js
-import { cryptids } from "./data.js";
 import {
-  countConfirmed,
-  findCryptidByName,
-  totalSightingsInRegion,
-} from "./census.js";
+  formatTitle,
+  formatRuntime,
+} from "./formatters.js";
 ```
 
-Everything below those imports should now be application logic.
+The importing file can now use either function while the formatting operations stay together in one module.
 
-That is a useful sign that the file has a clearer job.
+Use that pattern to decide how the remaining Census operations should cross the existing module boundary.
 
 <HandbookChallenge
   title="Finish the Census function module"
@@ -87,9 +70,9 @@ Sightings: 19
 ======REGION REPORT======
 Region: Northeast
 Total sightings: 15`}</pre>
-      <pre className="m-0 whitespace-pre-wrap">{`graph TD
+      <MermaidDiagram source={`graph TD
   Main[main.js] --> Data[data.js]
-  Main --> Census[census.js]`}</pre>
+  Main --> Census[census.js]`} title="Census module dependency graph" />
     </div>
   }
   solution={

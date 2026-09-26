@@ -75,9 +75,9 @@ They should tell compatible versions of the same story.
 <HandbookChallenge
   title="Rebuild both diagrams from the code"
   hints={[
-    <>For the dependency graph, the import statements at the top of <code>main.js</code> are your evidence.</>,
+    <>For the dependency graph, list the JavaScript modules and treat the import statements as your evidence. Do not rely on the diagram you remember.</>,
     <>For the sequence diagram, do not start from the console output. Start at the top of the executable code in <code>main.js</code> and follow it downward.</>,
-    <>Each Census function loops internally, so each call can contain one <code>loop</code> block before its return arrow.</>,
+    <>Inspect each called function. When a function performs meaningful repeated work, summarize that work between its call and return arrows.</>,
   ]}
   expected={
     <div className="space-y-3">

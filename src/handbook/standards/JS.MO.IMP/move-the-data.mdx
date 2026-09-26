@@ -6,74 +6,81 @@ short: Create a data module and reconnect main.js with a named export and import
 
 # Modules → Move the Data
 
-The Census works, but `main.js` owns everything.
+One common way to begin splitting a large file is to move its data into a module of its own.
 
-The easiest responsibility to separate is the data.
-
-Right now the file begins with the entire `cryptids` array. The reporting code needs that array, but the array does not need to live beside the reporting code.
-
-We are going to move it into its own module.
-
-## Create `data.js`
-
-Use the file explorer to create a new file at:
-
-```text
-/data.js
-```
-
-Cut the entire `cryptids` array out of `main.js` and paste it into `data.js`.
-
-Do **not** reconnect the files yet.
-
-Run the program.
-
-It should fail.
-
-That failure matters.
-
-`main.js` still uses a variable named `cryptids`, but that variable now exists inside a different module. Moving code to another file created a real boundary between the two files.
-
-A module does not automatically get access to variables declared in another module.
-
-## Export the name
-
-At the bottom of `data.js`, add:
+Imagine a tiny music program that starts like this:
 
 ```js
-export { cryptids };
+// player.js
+const songs = [
+  { title: "Static in the Attic", minutes: 3 },
+  { title: "Please Hold Forever", minutes: 4 },
+];
+
+console.log(`Songs queued: ${songs.length}`);
 ```
 
-This is a **named export**.
+The song records and the code using them have different jobs. We can move the array to `songs.js`.
 
-It means:
+## Moving code creates a boundary
 
-> This module makes the name `cryptids` available for another module to import.
-
-The curly braces contain the exact exported name.
-
-Exporting the value does not automatically send it anywhere. It only makes that name available.
-
-## Import the name
-
-At the very top of `main.js`, add:
+After the move, the files might temporarily look like this:
 
 ```js
-import { cryptids } from "./data.js";
+// songs.js
+const songs = [
+  { title: "Static in the Attic", minutes: 3 },
+  { title: "Please Hold Forever", minutes: 4 },
+];
 ```
 
-Read it from left to right:
+```js
+// player.js
+console.log(`Songs queued: ${songs.length}`);
+```
+
+That program fails. `songs` still exists, but it now belongs to another module. A module does not automatically get access to variables declared in a different file.
+
+Running at this awkward halfway point is useful. The failure proves that the boundary is real.
+
+## Export from the provider
+
+The module that owns a value can make its name available with a **named export**:
+
+```js
+// songs.js
+const songs = [
+  // song objects
+];
+
+export { songs };
+```
+
+The export does not push `songs` into every file. It says that another module is allowed to request that exact name.
+
+## Import into the consumer
+
+The file that needs the value can request it with a **named import**:
+
+```js
+// player.js
+import { songs } from "./songs.js";
+
+console.log(`Songs queued: ${songs.length}`);
+```
+
+Read the import from left to right:
 
 | Code | Meaning |
 | --- | --- |
 | `import` | Bring something into this module |
-| `{ cryptids }` | Bring in the named export called `cryptids` |
+| `{ songs }` | Bring in the named export called `songs` |
 | `from` | Specify which module provides it |
-| `"./data.js"` | Start in this folder and load `data.js` |
+| `"./songs.js"` | Start in this folder and load `songs.js` |
 
-The name inside the import must match the exported name.
+The imported name must match the exported name. The path must point to the file that provides it.
 
-The path matters too. `./` means "start from the current folder."
+Next, you'll apply that pattern to the Cryptid Census.
 
 <Callout type="note" title="The behavior should not change">
   <p className="m-0">
@@ -113,9 +120,21 @@ import { cryptids } from "./data.js";`}</pre>
     </div>
   }
 >
-  <p className="m-0">
-    Move the <code>cryptids</code> array into <code>/data.js</code>. Run once while <code>main.js</code> is still disconnected so you can observe the module boundary. Then add a named export in <code>data.js</code> and a matching named import in <code>main.js</code>. Run again and verify that the complete report is unchanged.
-  </p>
+  <ol className="m-0 space-y-3 pl-5">
+    <li>
+      <p className="m-0">Use the file explorer to create <code>/data.js</code>. Your file tree should look like this:</p>
+      <pre data-language="tree">{`/
+├── data.js
+├── dependencyGraph.mmd
+├── main.js
+└── sequenceDiagram.mmd`}</pre>
+      <p className="m-0 mt-2"><code>data.js</code> should be at the same level as <code>main.js</code>, not inside another folder.</p>
+    </li>
+    <li>Cut the entire <code>cryptids</code> array out of <code>main.js</code> and paste it into <code>data.js</code>.</li>
+    <li>Run the program before reconnecting the files. Observe what the new module boundary does.</li>
+    <li>Use the music example to decide what <code>data.js</code> must provide and what <code>main.js</code> must request.</li>
+    <li>Run again and verify that the complete Census report matches the expected output.</li>
+  </ol>
 </HandbookChallenge>
 
 ## What changed?

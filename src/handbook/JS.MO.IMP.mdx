@@ -30,7 +30,47 @@ Those sections can live in one file. JavaScript does not mind.
 
 People eventually do.
 
-As programs grow, one giant file becomes harder to scan, harder to change safely, and harder to explain to another developer. Modules let us separate those jobs without changing what the program does.
+## Why modules?
+
+Splitting code into more files is not automatically better. Fifty mystery files can be every bit as confusing as one enormous file.
+
+The goal is to give each file a clear job.
+
+### They make code easier to read
+
+When everything lives in `main.js`, finding one function means scrolling past the data, the other functions, and the code that prints the report.
+
+Once those responsibilities are separated, the filenames become a map:
+
+- Look in `inventory.js` for a shop's products.
+- Look in `prices.js` for the functions that calculate prices.
+- Look in `main.js` to see how the complete program is put together.
+
+You can focus on the part you need without holding the entire program in your head at once.
+
+### They separate different concerns
+
+The data, reusable operations, and application logic are related, but they do different jobs. Keeping those jobs separate is called **separation of concerns**.
+
+That separation makes changes easier to reason about. If the shape of a product changes, you know where the data lives. If a total is wrong, you know where the calculation lives. If the report needs another section, you know where the program is assembled.
+
+Instead of asking, “Where in this giant file is the code I need?” you can ask, “Which part of the program owns this job?”
+
+### They make code easier to reuse
+
+A useful function should not have to be copied every time another part of the project needs it. A module can export that function once, and other modules can import it where they need it.
+
+That gives the project one shared version of the function instead of several copies that can drift apart.
+
+### They help teams stay out of one another's way
+
+Imagine three developers working in one giant `main.js`. One edits the data, one repairs a Census function, and one changes the report. Even when they are working on different ideas, they are changing the same file. When Git tries to combine their work, those edits are more likely to collide.
+
+Modules let teammates work in different parts of the project. They do not make merge conflicts impossible, but they reduce unnecessary overlap and make it clearer who is changing what.
+
+That becomes increasingly valuable as both the program and the team grow.
+
+Modules let us create those boundaries without changing what the program does.
 
 A **module** is a JavaScript file with its own code and its own scope. Code in one module is not automatically available inside another module.
 

@@ -25,57 +25,43 @@ The debugging rhythm you already learned still works:
 5. make the smallest repair,
 6. run again.
 
-## Break a path on purpose
+## A path can point to the wrong place
 
-At the top of `main.js`, you currently have:
-
-```js
-import { cryptids } from "./data.js";
-```
-
-Temporarily change the path to a file that does not exist:
+Suppose `catalog.js` correctly imports a `books` array:
 
 ```js
-import { cryptids } from "./datum.js";
+import { books } from "./books.js";
 ```
 
-Run the program.
+This version points to a file that does not exist:
 
-Read the error before you fix it.
+```js
+import { books } from "./book.js";
+```
 
 The exact wording may vary, but the important evidence is the same: JavaScript cannot resolve the module named by that path.
 
-Repair the path and run again.
+The repair starts by comparing the path after `from` with the actual filename and location in the explorer.
 
-## Break a named import on purpose
+## A named import can request the wrong name
 
-Now temporarily change this:
-
-```js
-import {
-  countConfirmed,
-  findCryptidByName,
-  totalSightingsInRegion,
-} from "./census.js";
-```
-
-so that one requested name does not match the export:
+Suppose `inventory.js` provides:
 
 ```js
-import {
-  countConfirmedRecords,
-  findCryptidByName,
-  totalSightingsInRegion,
-} from "./census.js";
+export { countInStock };
 ```
 
-Run again and read the error.
+but `catalog.js` requests:
 
-`census.js` exports `countConfirmed`.
+```js
+import { countAvailable } from "./inventory.js";
+```
 
-`main.js` asks for `countConfirmedRecords`.
+The path is valid, but the two modules disagree about the exported name.
 
 Named imports are contracts between modules. Both sides have to agree on the name.
+
+Use those two comparisons—requested path versus real file, then imported name versus exported name—to create and repair the Census errors in the challenge.
 
 <HandbookChallenge
   title="Break and repair two module connections"

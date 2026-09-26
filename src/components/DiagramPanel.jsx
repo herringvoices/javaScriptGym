@@ -1,23 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import mermaid from "mermaid";
-
-let initialized = false;
-
-function ensureMermaidInitialized() {
-  if (initialized) return;
-
-  mermaid.initialize({
-    startOnLoad: false,
-    securityLevel: "strict",
-    theme: "default",
-  });
-
-  initialized = true;
-}
-
-function makeDiagramId() {
-  return `diagram-${Math.random().toString(36).slice(2)}`;
-}
+import { renderMermaid } from "../lib/mermaidRenderer";
 
 export default function DiagramPanel({
   source,
@@ -37,18 +19,13 @@ export default function DiagramPanel({
     let cancelled = false;
 
     async function renderDiagram() {
-      ensureMermaidInitialized();
-
       setError("");
       setSvg("");
 
       if (!diagramSource) return;
 
       try {
-        const id = makeDiagramId();
-
-        await mermaid.parse(diagramSource);
-        const result = await mermaid.render(id, diagramSource);
+        const result = await renderMermaid(diagramSource);
 
         if (!cancelled) {
           setSvg(result.svg);

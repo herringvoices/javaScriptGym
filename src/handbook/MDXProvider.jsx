@@ -3,6 +3,7 @@ import React from "react";
 import Callout from "../components/Callout";
 import PracticeCard from "../components/PracticeCard";
 import HandbookChallenge from "../components/HandbookChallenge";
+import MermaidDiagram from "../components/MermaidDiagram";
 import { Checklist, ChecklistItem } from "../components/Checklist";
 // Removed MiniSandpack and Playground (deprecated)
 
@@ -28,6 +29,7 @@ const components = {
   Callout,
   PracticeCard,
   HandbookChallenge,
+  MermaidDiagram,
   Checklist,
   ChecklistItem,
   Note,

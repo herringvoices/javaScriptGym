@@ -6,26 +6,17 @@ short: Translate an import relationship into a Mermaid dependency graph.
 
 # Dependency Graphs → Draw the First Connection
 
-The Census now has two modules:
+A **dependency graph** turns the import relationships between modules into a picture.
 
-```text
-main.js
-data.js
-```
+## Why make a dependency graph?
 
-More importantly, those modules are not independent.
+Because planning matters.
 
-`main.js` contains:
+When we map a program before changing it, we can see how its pieces fit together and predict where a change might cause problems. On a team, that same map helps people organize the work and avoid stepping on each other's toes.
 
-```js
-import { cryptids } from "./data.js";
-```
+Right now, dependency graphs also help you practice thinking like a computer. JavaScript doesn't look at a project and make an intuitive guess about how its files connect. It follows the import instructions you wrote. Tracing those connections one at a time helps you see the program the way JavaScript sees it—and that makes you a better programmer.
 
-That import tells us something about the architecture:
-
-> `main.js` depends on `data.js`.
-
-A **dependency graph** turns relationships like that into a picture.
+Our projects are still small enough that you might be able to keep every connection in your head. That's okay. We're learning the tool now so you'll know how to plan when your projects aren't so small.
 
 ## The question a dependency graph answers
 
@@ -39,9 +30,11 @@ It does not show which line runs first.
 
 It shows the structural connections between modules.
 
-## Mermaid starts by naming the kind of diagram
+## Building our graph with Mermaid
 
-Open `/dependencyGraph.mmd`.
+To build our dependency graph, we'll use a tool called **Mermaid**. Mermaid turns text instructions into diagrams. Instead of drawing and connecting every box by hand, we can describe the diagram in a few lines of text and let Mermaid draw it for us.
+
+Just like JavaScript, Mermaid needs us to be specific. We start by telling it what kind of diagram we want and which direction it should flow.
 
 A top-down Mermaid graph begins with:
 
@@ -53,31 +46,45 @@ graph TD
 
 Then you add nodes and arrows.
 
-Here is a different project:
+On the previous page, our music program connected its two modules with this import:
 
-```mermaid
+```js
+// player.js
+import { songs } from "./songs.js";
+```
+
+That tells us that `player.js` **depends on** `songs.js`—meaning it needs something from that module in order to run successfully. We can describe that relationship in Mermaid like this:
+
+```text
 graph TD
-  Shop[shop.js] --> Prices[prices.js]
+  Player[player.js] --> Songs[songs.js]
 ```
 
 Break that line apart:
 
 | Piece | Meaning |
 | --- | --- |
-| `Shop` | Mermaid's short identifier for the node |
-| `[shop.js]` | The label displayed in the box |
+| `Player` | Mermaid's short identifier for the node |
+| `[player.js]` | The label displayed in the box |
 | `-->` | A dependency arrow |
-| `Prices[prices.js]` | The module `shop.js` depends on |
+| `Songs[songs.js]` | The module `player.js` depends on |
 
 The arrow follows the dependency.
 
-If `shop.js` imports from `prices.js`:
+Because `player.js` imports from `songs.js`:
 
 ```text
-Shop --> Prices
+Player --> Songs
 ```
 
 The importer points toward the module it relies on.
+
+That gives us this graph when the Mermaid chart is rendered:
+
+```mermaid
+graph TD
+  Player[player.js] --> Songs[songs.js]
+```
 
 ## How to build a dependency graph from code
 
@@ -89,7 +96,9 @@ Use the same process every time:
 4. Identify the module named in the path.
 5. Draw an arrow from the importer to that dependency.
 
-Right now the Census has one import, so it has one dependency arrow.
+The number of arrows comes from the code—not from how many files happen to be visible in the explorer.
+
+Now inspect the Census files and build its graph from the import relationship you created.
 
 <HandbookChallenge
   title="Draw the Census dependency"
@@ -99,8 +108,8 @@ Right now the Census has one import, so it has one dependency arrow.
     <>The arrow starts at the module containing the import statement.</>,
   ]}
   expected={
-    <pre className="m-0 whitespace-pre-wrap">{`graph TD
-  Main[main.js] --> Data[data.js]`}</pre>
+    <MermaidDiagram source={`graph TD
+  Main[main.js] --> Data[data.js]`} title="main.js depends on data.js" />
   }
   solution={
     <pre className="m-0 whitespace-pre-wrap">{`graph TD

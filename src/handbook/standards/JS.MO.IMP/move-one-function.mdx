@@ -6,62 +6,75 @@ short: Move one reusable operation into a function module and update the depende
 
 # Modules → Move One Function
 
-The data has a home.
+Moving data is only one way to separate responsibilities. Reusable functions can have their own module too.
 
-Now look at what remains in `main.js`.
-
-Three functions perform reusable Census operations:
-
-- `countConfirmed()`
-- `findCryptidByName()`
-- `totalSightingsInRegion()`
-
-Eventually they can live together.
-
-Do not move all three yet.
-
-First, move one and prove that you can reconnect it correctly.
-
-## Create `census.js`
-
-Create:
-
-```text
-/census.js
-```
-
-Move only `countConfirmed()` from `main.js` into that file.
-
-Then export it:
+Our music program now imports its data from `songs.js`, but its playlist calculation still lives in `player.js`:
 
 ```js
-export { countConfirmed };
+// player.js
+import { songs } from "./songs.js";
+
+function getTotalMinutes(queue) {
+  let total = 0;
+
+  for (const song of queue) {
+    total += song.minutes;
+  }
+
+  return total;
+}
+
+console.log(`Playlist length: ${getTotalMinutes(songs)} minutes`);
 ```
 
-Back in `main.js`, import it:
+The calculation has a different job from running the player, so it can move to `playlist.js`:
 
 ```js
-import { countConfirmed } from "./census.js";
+// playlist.js
+function getTotalMinutes(queue) {
+  let total = 0;
+
+  for (const song of queue) {
+    total += song.minutes;
+  }
+
+  return total;
+}
+
+export { getTotalMinutes };
 ```
 
-Your imports should now be together at the top of the file:
+Then `player.js` requests both the data and the function it still uses:
 
 ```js
-import { cryptids } from "./data.js";
-import { countConfirmed } from "./census.js";
+// player.js
+import { songs } from "./songs.js";
+import { getTotalMinutes } from "./playlist.js";
+
+console.log(`Playlist length: ${getTotalMinutes(songs)} minutes`);
 ```
 
-Run the program.
+The function moved. The call and the result did not.
 
-The confirmed count should still be `6`.
+That is the test of this refactor: code has a clearer home while the program keeps the same behavior.
 
 ## The architecture changed too
 
-You just added another import relationship.
+Before the move, `player.js` depended on `songs.js`.
 
-That means the dependency graph is now out of date.
+Moving the function added another import relationship. Now the music program's dependency graph has two arrows:
+
+```mermaid
+graph TD
+  Player[player.js] --> Songs[songs.js]
+  Player --> Playlist[playlist.js]
+```
+
+The new arrow shows that `player.js` also depends on `playlist.js`.
 
 This is why diagrams are maintained with the code. They describe the current project, not the project you had twenty minutes ago.
+
+Now choose one Census function to move as directed in the challenge and update the Census graph from the imports that actually exist afterward.
 
 <HandbookChallenge
   title="Move countConfirmed and update the graph"
@@ -73,9 +86,9 @@ This is why diagrams are maintained with the code. They describe the current pro
   expected={
     <div className="space-y-3">
       <pre className="m-0 whitespace-pre-wrap">{`Confirmed: 6`}</pre>
-      <pre className="m-0 whitespace-pre-wrap">{`graph TD
+      <MermaidDiagram source={`graph TD
   Main[main.js] --> Data[data.js]
-  Main --> Census[census.js]`}</pre>
+  Main --> Census[census.js]`} title="Updated Census module dependency graph" />
     </div>
   }
   solution={
@@ -108,12 +121,8 @@ import { countConfirmed } from "./census.js";`}</pre>
   </p>
 </HandbookChallenge>
 
-## A useful habit
+## Up Next
 
-Code first.
+You moved one function into its own module and updated the dependency graph to match.
 
-Run it.
-
-Then update the diagram.
-
-That order lets the working code tell you what the architecture actually is.
+But modules aren't limited to exporting one thing at a time. Next, you'll learn how one module can provide several related functions without creating a separate file for every function.

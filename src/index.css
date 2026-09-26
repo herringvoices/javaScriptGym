@@ -260,11 +260,40 @@
 .monaco-file-tree {
   height: 12rem;
   width: 100%;
+  border-color: rgba(52, 211, 153, 0.18);
+  background:
+    linear-gradient(rgba(52, 211, 153, 0.075), rgba(52, 211, 153, 0.035)),
+    rgba(2, 6, 23, 0.96);
 }
 
 .monaco-file-tree-rail {
   height: 2.25rem;
   width: 100%;
+  border-color: rgba(52, 211, 153, 0.18);
+  background:
+    linear-gradient(rgba(52, 211, 153, 0.075), rgba(52, 211, 153, 0.035)),
+    rgba(2, 6, 23, 0.96);
+}
+
+[data-file-tree-header] {
+  border-color: rgba(52, 211, 153, 0.16);
+  background: rgba(52, 211, 153, 0.055);
+  color: rgba(167, 243, 208, 0.82);
+}
+
+[data-file-tree-row] {
+  transition: background-color 140ms ease, box-shadow 140ms ease, color 140ms ease;
+}
+
+[data-file-tree-row]:hover,
+[data-file-tree-row]:focus-within {
+  background: rgba(52, 211, 153, 0.1);
+  color: rgb(209, 250, 229);
+}
+
+[data-file-tree-row][data-active="true"] {
+  background: rgba(52, 211, 153, 0.16);
+  box-shadow: inset 3px 0 0 rgba(52, 211, 153, 0.85);
 }
 
 @media (min-width: 1024px) {
@@ -386,6 +415,71 @@ pre[data-theme] code > span.highlighted {
   margin: 0 -1rem;
   padding: 0 1rem;
   border-left: 2px solid #6da4ff; /* brand-400 */
+}
+
+/* Code authored inside HandbookChallenge lives outside Tailwind Typography. */
+.handbook-challenge pre {
+  position: relative;
+  margin: 0.75rem 0 0;
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid rgba(100, 116, 139, 0.55);
+  border-radius: 0.75rem;
+  background: #020617;
+  padding: 1rem;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  tab-size: 2;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 12px 30px -22px rgba(0, 0, 0, 0.95);
+}
+
+.handbook-challenge pre[data-theme] {
+  background: #282a36;
+  color: #f8f8f2;
+}
+
+.handbook-challenge figure[data-rehype-pretty-code-figure] {
+  margin: 0.75rem 0 0;
+}
+
+.handbook-challenge figure[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+}
+
+.handbook-challenge pre[data-language] {
+  padding-top: 2.25rem;
+}
+
+.handbook-challenge pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.55rem;
+  right: 0.75rem;
+  border: 1px solid rgba(244, 114, 182, 0.25);
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.72);
+  padding: 0.1rem 0.5rem;
+  color: #f9a8d4;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.handbook-challenge :not(pre) > code {
+  border-radius: 0.25rem;
+  background: #01071a;
+  padding: 0.125rem 0.375rem;
+  color: #c7d2fe;
+  font-size: 0.875em;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px rgba(109, 165, 255, 0.42);
 }
 
 /* MiniSandpack refinements */
