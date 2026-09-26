@@ -150,7 +150,7 @@ const standards = {
     id: "JS.MO.IMP",
     title: "Modules & Organization · Import/Export",
     short: "Share code with clean ES module imports and exports.",
-    bodyMd: `### Standards\n\n- **JS.MO.IMP.1** Use ES module **named** and **default** exports appropriately to share code across files.\n- **JS.MO.IMP.2** Import functions, objects, or data from other modules using ES module syntax, and keep imports organized and readable.\n- **JS.MO.IMP.3** Refactor code by moving functions or data into modules and reusing them via imports.`,
+    bodyMd: `### Standards\n\n- **JS.MO.IMP.1** Export functions, objects, or data from a module using **named exports** so they can be used by other modules.\n- **JS.MO.IMP.2** Import functions, objects, or data from other modules using named ES module syntax and clear relative paths, keeping imports organized and readable.\n- **JS.MO.IMP.3** Refactor code by moving functions or data into modules and reusing them via imports without changing the program's behavior.`,
   },
 };
 
@@ -168,8 +168,8 @@ export const standardOrder = [
   "JS.DB.ERR",
   "JS.DB.TRC",
   "JS.DB.BUG",
-  "JS.MO.STR",
   "JS.MO.IMP",
+  "JS.MO.STR",
   "JS.SD.ELM",
   "JS.SD.EVH",
   "JS.SD.STA",
