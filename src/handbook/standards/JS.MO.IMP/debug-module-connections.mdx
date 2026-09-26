@@ -1,0 +1,129 @@
+---
+id: JS.MO.IMP.DEBUG
+title: Modules · Debug Broken Connections
+short: Use module errors to diagnose bad paths and mismatched named imports.
+---
+
+# Modules → Debug Broken Connections
+
+Before modularization, most of your Census bugs lived inside one file.
+
+Now the project has boundaries between files.
+
+Those boundaries create a new family of mistakes:
+
+- the path points to the wrong module,
+- the importing module asks for a name the other module does not export,
+- an exported name is misspelled on one side of the connection.
+
+The debugging rhythm you already learned still works:
+
+1. reproduce the problem,
+2. read the error,
+3. identify the file or import involved,
+4. compare what one module provides with what the other module requests,
+5. make the smallest repair,
+6. run again.
+
+## Break a path on purpose
+
+At the top of `main.js`, you currently have:
+
+```js
+import { cryptids } from "./data.js";
+```
+
+Temporarily change the path to a file that does not exist:
+
+```js
+import { cryptids } from "./datum.js";
+```
+
+Run the program.
+
+Read the error before you fix it.
+
+The exact wording may vary, but the important evidence is the same: JavaScript cannot resolve the module named by that path.
+
+Repair the path and run again.
+
+## Break a named import on purpose
+
+Now temporarily change this:
+
+```js
+import {
+  countConfirmed,
+  findCryptidByName,
+  totalSightingsInRegion,
+} from "./census.js";
+```
+
+so that one requested name does not match the export:
+
+```js
+import {
+  countConfirmedRecords,
+  findCryptidByName,
+  totalSightingsInRegion,
+} from "./census.js";
+```
+
+Run again and read the error.
+
+`census.js` exports `countConfirmed`.
+
+`main.js` asks for `countConfirmedRecords`.
+
+Named imports are contracts between modules. Both sides have to agree on the name.
+
+<HandbookChallenge
+  title="Break and repair two module connections"
+  hints={[
+    <>Change only one thing at a time so each error has one cause.</>,
+    <>For the path error, compare the string after <code>from</code> with the actual filename in the explorer.</>,
+    <>For the named-import error, compare the names inside the import braces with the names inside the export braces in <code>census.js</code>.</>,
+  ]}
+  expected={
+    <pre className="m-0 whitespace-pre-wrap">{`======NATIONAL CRYPTID CENSUS======
+Records: 8
+Confirmed: 6
+======REQUESTED RECORD======
+Name: Mothman
+Region: Appalachia
+Sightings: 19
+======REGION REPORT======
+Region: Northeast
+Total sightings: 15`}</pre>
+  }
+  solution={
+    <pre className="m-0 whitespace-pre-wrap">{`import { cryptids } from "./data.js";
+import {
+  countConfirmed,
+  findCryptidByName,
+  totalSightingsInRegion,
+} from "./census.js";`}</pre>
+  }
+>
+  <ol className="m-0 space-y-2 pl-5">
+    <li>Change the data import path to <code>./datum.js</code>. Run the project, read the error, and repair the path.</li>
+    <li>Change <code>countConfirmed</code> to <code>countConfirmedRecords</code> only in the import. Run again, read the new error, and repair the named import.</li>
+    <li>Run one final time and verify that the complete Census report is correct.</li>
+  </ol>
+</HandbookChallenge>
+
+## Use the diagrams as evidence too
+
+When a module connection breaks, your dependency graph can help you remember the intended architecture.
+
+If the graph says:
+
+```text
+Main --> Data
+```
+
+but the path in `main.js` points to a nonexistent file, the code no longer matches the architecture you intended.
+
+Diagrams do not replace debugging.
+
+They give you another description of what the program is supposed to be.
