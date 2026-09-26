@@ -583,6 +583,15 @@ function ChallengeSandboxUI({
                           Sequence Diagram
                         </button>
                       ) : null}
+                      {diagramFiles.hasDependency ? (
+                        <button
+                          type="button"
+                          onClick={() => setRightPanel(DIAGRAM_PANEL.DEPENDENCY)}
+                          className={toggleClass(rightPanel === DIAGRAM_PANEL.DEPENDENCY)}
+                        >
+                          Dependency Graph
+                        </button>
+                      ) : null}
                       {diagramFiles.hasErd ? (
                         <button
                           type="button"
@@ -634,6 +643,20 @@ function ChallengeSandboxUI({
                     title="Sequence Diagram"
                     source={diagramFiles.sequence?.code || ""}
                     emptyMessage="Add /sequenceDiagram.mmd to this challenge to render a sequence diagram."
+                  />
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.DEPENDENCY ? "z-10" : "z-0 invisible"}`}>
+                  <DiagramPanel
+                    title="Dependency Graph"
+                    source={diagramFiles.dependency?.code || ""}
+                    emptyMessage="Add /dependencyGraph.mmd to this challenge to render a dependency graph."
+                  />
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.DEPENDENCY ? "z-10" : "z-0 invisible"}`}>
+                  <DiagramPanel
+                    title="Dependency Graph"
+                    source={diagramFiles.dependency?.code || ""}
+                    emptyMessage="Add /dependencyGraph.mmd to this challenge to render a dependency graph."
                   />
                 </div>
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>
@@ -783,6 +806,11 @@ function ChallengeSandboxUI({
                   {diagramFiles.hasSequence ? (
                     <button type="button" onClick={() => setRightPanel(DIAGRAM_PANEL.SEQUENCE)} className={toggleClass(rightPanel === DIAGRAM_PANEL.SEQUENCE)}>
                       Sequence
+                    </button>
+                  ) : null}
+                  {diagramFiles.hasDependency ? (
+                    <button type="button" onClick={() => setRightPanel(DIAGRAM_PANEL.DEPENDENCY)} className={toggleClass(rightPanel === DIAGRAM_PANEL.DEPENDENCY)}>
+                      Dependency
                     </button>
                   ) : null}
                   {diagramFiles.hasErd ? (
