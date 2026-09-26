@@ -652,13 +652,6 @@ function ChallengeSandboxUI({
                     emptyMessage="Add /dependencyGraph.mmd to this challenge to render a dependency graph."
                   />
                 </div>
-                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.DEPENDENCY ? "z-10" : "z-0 invisible"}`}>
-                  <DiagramPanel
-                    title="Dependency Graph"
-                    source={diagramFiles.dependency?.code || ""}
-                    emptyMessage="Add /dependencyGraph.mmd to this challenge to render a dependency graph."
-                  />
-                </div>
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>
                   <DiagramPanel
                     title="ERD"
@@ -846,6 +839,13 @@ function ChallengeSandboxUI({
                     title="Sequence Diagram"
                     source={diagramFiles.sequence?.code || ""}
                     emptyMessage="Add /sequenceDiagram.mmd to this challenge to render a sequence diagram."
+                  />
+                </div>
+                <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.DEPENDENCY ? "z-10" : "z-0 invisible"}`}>
+                  <DiagramPanel
+                    title="Dependency Graph"
+                    source={diagramFiles.dependency?.code || ""}
+                    emptyMessage="Add /dependencyGraph.mmd to this challenge to render a dependency graph."
                   />
                 </div>
                 <div className={`absolute inset-0 ${rightPanel === DIAGRAM_PANEL.ERD ? "z-10" : "z-0 invisible"}`}>
